@@ -36,7 +36,7 @@ namespace AcgnuX.Source.Utils
                 yp_title = DataUtil.GetXmlNodeValue(source, "yp_title"),
                 yp_page_count = Convert.ToByte(DataUtil.GetXmlNodeValue(source, "yp_page_count")),
                 ypad_url = DataUtil.GetXmlNodeValue(source, "ypad_url"),
-                ypad_url2 = DataUtil.GetXmlNodeValue(source, "ypad_url2"),
+                ypad_url2 = DataUtil.GetXmlNodeValue(source, "ypad_url2").Replace("ypa2", "ypdx"),
                 yp_page_width = Convert.ToInt16(DataUtil.GetXmlNodeValue(source, "yp_page_width")),
                 yp_page_height = Convert.ToInt16(DataUtil.GetXmlNodeValue(source, "yp_page_height")),
                 yp_is_dadiao = Convert.ToByte(DataUtil.GetXmlNodeValue(source, "yp_is_dadiao")),

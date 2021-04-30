@@ -533,8 +533,8 @@ namespace AcgnuX.Pages
             //}
             //下载v2版播放文件 ( flash无法播放, 仅下载 )
             bgworker.ReportProgress(0, CalcProgress(winProgress, "下载播放文件", 80));
-            var ypdxAddr = tan8Music.ypad_url2.Substring(0, tan8Music.ypad_url2.Length - 2) + "dx";
-            downResult = new FileDownloader().DownloadFile(ypdxAddr, folderPath + "play.ypdx");
+            //var ypdxAddr = tan8Music.ypad_url2.Substring(0, tan8Music.ypad_url2.Length - 2) + "dx";
+            downResult = new FileDownloader().DownloadFile(tan8Music.ypad_url2, folderPath + "play.ypdx");
             if (downResult != 0)
             {
                 return new InvokeResult<object>()
