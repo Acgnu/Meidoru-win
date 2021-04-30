@@ -46,6 +46,25 @@ namespace AcgnuX.Source.Utils
         }
 
         /// <summary>
+        /// 将文本保存至文件
+        /// 文件存在则覆盖
+        /// </summary>
+        /// <param name="content">文本内容</param>
+        /// <param name="fullPath">全路径</param>
+        /// <param name="fileName">文件名称</param>
+        public static void SaveStringToFile(string content, string filePath, string fileName)
+        {
+            if (!File.Exists(filePath + fileName))
+            {
+                if (!Directory.Exists(filePath))
+                {
+                    Directory.CreateDirectory(filePath);
+                }
+                File.WriteAllText(filePath + fileName, content, Encoding.UTF8);
+            }
+        }
+
+        /// <summary>
         /// 创建目标文件夹(存在则跳过)
         /// </summary>
         /// <param name="folderPath">目标目录</param>

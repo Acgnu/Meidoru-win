@@ -35,7 +35,7 @@ namespace AcgnuX.Source.Taskx
             ProxyFactory.StartCrawlIP();
 
             //启动HTTP服务
-            new HttpWebServer().StartListen();
+            //new HttpWebServer().StartListen();
             Task.Run(() =>
             {
             });

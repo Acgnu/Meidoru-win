@@ -217,7 +217,12 @@ namespace AcgnuX.Source.Utils
             try
             {
                 SQLiteCommand sqlcmd = new SQLiteCommand(sql, dbConnection());//sql语句
-                return sqlcmd.ExecuteScalar().ToString();
+                var obj = sqlcmd.ExecuteScalar();
+                if(null == obj)
+                {
+                    return string.Empty;
+                }
+                return obj.ToString();
             }
             catch
             {

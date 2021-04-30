@@ -48,6 +48,7 @@
                 <ListBox.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="{StaticResource Delete}" Click="OnDeleteClick"/>
+                        <MenuItem Header="{StaticResource OpenFolder}" Click="OnOpenFolderClick"/>
                     </ContextMenu>
                 </ListBox.ContextMenu>
             </ListBox>

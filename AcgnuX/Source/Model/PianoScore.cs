@@ -17,5 +17,9 @@ namespace AcgnuX.Source.Model
         public ImageSource cover { get; set; }
         //是否自动下载 (下载需要)
         public bool autoDownload { get; set; }
+        //曲谱下载地址 (适用于 v2 )
+        public string SheetUrl { get; set; }
+        //版本 1, 2
+        public int ver;
     }
 }

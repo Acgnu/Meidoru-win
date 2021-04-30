@@ -105,7 +105,7 @@
                             <Border DockPanel.Dock="Left" Style="{StaticResource PianoScorePreviewImageBorderStyle}">
                                 <Grid>
                                     <Image Source="{Binding cover}" Panel.ZIndex="0" Style="{StaticResource ImageBaseStyle}"/>
-                                    <Button x:Name="PlayCoverBorder" Style="{StaticResource PianoScorePlayButtonStyle}" Click="OnTan8PlayButtonClick">
+                                    <Button x:Name="PlayCoverBorder" Style="{StaticResource PianoScorePlayButtonStyle}" Click="OnTan8PlayButtonClickV2">
                                         <Path Width="30" Height="30" Margin="8 0 0 0" Data="{DynamicResource Icon_Play}" Style="{StaticResource MainStatusBarIcoPathStyle}"/>
                                     </Button>
                                 </Grid>

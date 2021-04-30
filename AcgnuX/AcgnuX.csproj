@@ -214,6 +214,7 @@
     <Compile Include="Source\Taskx\ApplicationInitTask.cs" />
     <Compile Include="Source\Taskx\HttpWebServer.cs" />
     <Compile Include="Source\Utils\Crypto\AlgorithmUtil.cs" />
+    <Compile Include="Source\Utils\FlashPlayUtil.cs" />
     <Compile Include="Source\Utils\DataUtil.cs" />
     <Compile Include="Source\Utils\EnumLoader.cs" />
     <Compile Include="Source\Utils\FileUtil.cs" />
@@ -426,16 +427,16 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="Assets\Images\tan8_sheet_preview_default.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Assets\Images\window_bg_default.jpg" />
     <Resource Include="Assets\data\init.sql" />
     <Content Include="Assets\flash\flashplayer.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\flash\fuckTan8\Main.swf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\flash\fuckTan8\RightBtn.swf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\flash\sounds.swf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -443,66 +444,6 @@
     <Resource Include="Assets\Images\application_bg_default.jpg" />
     <Resource Include="Assets\Ico\favicon.ico" />
     <Resource Include="Assets\Images\piano-cover-default.jpg" />
-    <Resource Include="Assets\flash\fuckTan8\ui\piano\PianoView_blackKey.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\flash\fuckTan8\ui\piano\PianoView_blackKeyDown.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\flash\fuckTan8\ui\piano\PianoView_whiteKey.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\flash\fuckTan8\ui\piano\PianoView_whiteKeyDown.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Content Include="Assets\flash\fuckTan8\UI_Full2.swf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\flash\fuckTan8\UI_FullScreen.swf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\flash\fuckTan8\UI_Help.swf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\flash\fuckTan8\UI_kp.swf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\flash\fuckTan8\UI_Next.swf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\flash\fuckTan8\UI_Pause.swf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\flash\fuckTan8\UI_Play.swf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\flash\fuckTan8\UI_PlayBtn.swf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\flash\fuckTan8\UI_Prev.swf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\flash\fuckTan8\UI_Print.swf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\flash\fuckTan8\UI_Share.swf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\flash\fuckTan8\UI_Tune.swf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\flash\fuckTan8\UI_Volume.swf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\flash\fuckTan8\ui__Help.swf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\flash\fuckTan8\ui__MoveTune.swf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\flash\fuckTan8\ui__PrintView.swf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

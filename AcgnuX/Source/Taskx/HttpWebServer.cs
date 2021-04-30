@@ -1,4 +1,6 @@
-﻿using AcgnuX.Source.Bussiness.Constants;
+﻿using AcgnuX.Source.Bussiness.Common;
+using AcgnuX.Source.Bussiness.Constants;
+using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using System;
 using System.Collections.Generic;
@@ -19,6 +21,9 @@ namespace AcgnuX.Source.Taskx.Http
     {
         //监听的地址
         private readonly string LISTENING_ADDRESS = @"http://localhost:7777/";
+
+        //flash发送消息时的主动推送触发事件
+        public event EditConfirmHandler<PianoScore> editConfirmHnadler;
 
         /// <summary>
         /// 启动监听
@@ -86,6 +91,11 @@ namespace AcgnuX.Source.Taskx.Http
             {
                 ResponsePlayFile(httpListenerContext);
             }
+            //监听曲谱地址
+            if (httpListenerContext.Request.Url.LocalPath.Equals("/yuepu/fetch"))
+            {
+                FetchPianoScore(httpListenerContext);
+            }
             //System.Type curType = curManagerObj.GetType();
             //System.Reflection.MethodInfo methodInfo = curType.GetMethod("Delete");
             //methodInfo.Invoke(curManagerObj, null);
@@ -101,9 +111,12 @@ namespace AcgnuX.Source.Taskx.Http
             var ypidQuery = httpListenerContext.Request.QueryString["ypid"];
             var ypidSplit = ypidQuery.Split('.');
             var folderName = GetDbFileName(ypidSplit[0]);
-            //返回指定页
-            var previewImgPath = AcgnuConfig.GetContext().pianoScorePath + "\\" + folderName + "\\" + "page." + ypidSplit[1] + ".png";
-            WriteFile(previewImgPath, httpListenerContext);
+            if(!string.IsNullOrEmpty(folderName))
+            {
+                //返回指定页
+                var previewImgPath = AcgnuConfig.GetContext().pianoScorePath + "\\" + folderName + "\\" + "page." + ypidSplit[1] + ".png";
+                WriteFile(previewImgPath, httpListenerContext);
+            }
         }
 
         /// <summary>
@@ -115,9 +128,31 @@ namespace AcgnuX.Source.Taskx.Http
             //ypid=666
             var ypid = httpListenerContext.Request.QueryString["ypid"];
             var folderName = GetDbFileName(ypid);
-            //返回指定页
-            var previewImgPath = AcgnuConfig.GetContext().pianoScorePath + "\\" + folderName + "\\" + "play.ypa2";
-            WriteFile(previewImgPath, httpListenerContext);
+            if (!string.IsNullOrEmpty(folderName))
+            {
+                //返回指定页
+                var previewImgPath = AcgnuConfig.GetContext().pianoScorePath + "\\" + folderName + "\\" + "play.ypa2";
+                WriteFile(previewImgPath, httpListenerContext);
+            }
+        }
+
+        /// <summary>
+        /// 监听flash主动发送的曲谱信息地址
+        /// </summary>
+        /// <param name="httpListenerContext"></param>
+        private void FetchPianoScore(HttpListenerContext httpListenerContext)
+        {
+            //?ypid=29189&sccode=0373ef7aa7c3e092b8c4e09748574186&r1=8538&r2=5971&input=123
+            editConfirmHnadler?.Invoke(new PianoScore()
+            {
+                id = Convert.ToInt32(httpListenerContext.Request.QueryString["ypid"]),
+                SheetUrl = string.Format("http://www.77music.com/flash_get_yp_info.php?ypid={0}&sccode={1}&r1={2}&r2={3}&input=123",
+                httpListenerContext.Request.QueryString["ypid"],
+                httpListenerContext.Request.QueryString["sccode"],
+                httpListenerContext.Request.QueryString["r1"],
+                httpListenerContext.Request.QueryString["r2"]),
+                ver = 2
+            });
         }
 
         /// <summary>
@@ -177,9 +212,17 @@ namespace AcgnuX.Source.Taskx.Http
             var ypid = httpListenerContext.Request.QueryString["ypid"];
             //根据乐谱ID得到数据中乐谱名称
             var folderName = GetDbFileName(ypid);
-            //根据名称返回文件夹中的乐谱第一页
-            var previewImgPath = AcgnuConfig.GetContext().pianoScorePath + "\\" + folderName + "\\" + "page.0.png";
-            WriteFile(previewImgPath, httpListenerContext);
+            if(!string.IsNullOrEmpty(folderName))
+            {
+                //根据名称返回文件夹中的乐谱第一页
+                var previewImgPath = AcgnuConfig.GetContext().pianoScorePath + "\\" + folderName + "\\" + "page.0.png";
+                WriteFile(previewImgPath, httpListenerContext);
+            }
+            else
+            {
+                //没有则返回默认图 (避免flash播放器报错, 无法用程序退出)
+                WriteFile(Environment.CurrentDirectory + @"\Assets\Images\tan8_sheet_preview_default.png", httpListenerContext);
+            }
         }
 
         /// <summary>

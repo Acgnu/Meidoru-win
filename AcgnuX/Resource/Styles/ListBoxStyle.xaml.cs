@@ -1,7 +1,10 @@
-﻿using AcgnuX.Source.Model;
+﻿using AcgnuX.Source.Bussiness.Constants;
+using AcgnuX.Source.Model;
+using AcgnuX.Source.Utils;
 using AcgnuX.WindowX;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,6 +66,47 @@ namespace AcgnuX.Resource.Styles
             //播放所选曲谱
             mTan8Player.Show();
             mTan8Player.PlaySelected(selected as PianoScore);
+        }
+
+        public void OnTan8PlayButtonClickV2(Object sender, RoutedEventArgs e)
+        {
+            //事件按钮对象
+            var eventButton = (Button)sender;
+
+            //如果ListBox没有初始化, 则根据触发节点寻找
+            if (null == pianoScoreListBox)
+            {
+                DependencyObject dep = (DependencyObject)e.OriginalSource;
+                while ((dep != null) && !(dep is ListBox))
+                {
+                    dep = VisualTreeHelper.GetParent(dep);
+                }
+                if (dep == null) return;
+                //找到之后赋值给成员对象
+                pianoScoreListBox = dep as ListBox;
+            }
+
+            //根据触发按钮获取点击的行
+            var selected = ((ListBoxItem)pianoScoreListBox.ContainerFromElement(eventButton)).Content;
+
+            //检查曲谱可否播放
+            var folderName = SQLite.sqlone(string.Format("SELECT name FROM tan8_music WHERE ypid = {0}", (selected as PianoScore).id.GetValueOrDefault()));
+            var playFilePath = AcgnuConfig.GetContext().pianoScorePath + "\\" + folderName + "\\" + "play.ypa2";
+            //手动选中行
+            pianoScoreListBox.SelectedItem = selected;
+            if (!File.Exists(playFilePath))
+            {
+                //无法播放的曲谱打开所在文件夹
+                var fullPath = AcgnuConfig.GetContext().pianoScorePath + Path.DirectorySeparatorChar + folderName;
+                if (Directory.Exists(fullPath))
+                {
+                    System.Diagnostics.Process.Start(fullPath);
+                }
+                return;
+            }
+
+            //播放所选曲谱
+            FlashPlayUtil.ExePlayById((selected as PianoScore).id.GetValueOrDefault());
         }
 
         //private void ListBoxItem_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
