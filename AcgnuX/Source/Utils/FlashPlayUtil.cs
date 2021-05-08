@@ -63,6 +63,10 @@ namespace AcgnuX.Source.Utils
             if (null != mFlashProcess && !mFlashProcess.HasExited)
             {
                 mFlashProcess.CloseMainWindow();
+                if(!mFlashProcess.HasExited)
+                {
+                    mFlashProcess.Kill();
+                }
             }
         }
     }

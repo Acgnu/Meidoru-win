@@ -32,16 +32,16 @@ namespace AcgnuX.Source.Utils
         {
             return new Tan8music()
             {
-                yp_create_time = Convert.ToUInt32(DataUtil.GetXmlNodeValue(source, "yp_create_time")),
-                yp_title = DataUtil.GetXmlNodeValue(source, "yp_title"),
-                yp_page_count = Convert.ToByte(DataUtil.GetXmlNodeValue(source, "yp_page_count")),
-                ypad_url = DataUtil.GetXmlNodeValue(source, "ypad_url"),
-                ypad_url2 = DataUtil.GetXmlNodeValue(source, "ypad_url2").Replace("ypa2", "ypdx"),
-                yp_page_width = Convert.ToInt16(DataUtil.GetXmlNodeValue(source, "yp_page_width")),
-                yp_page_height = Convert.ToInt16(DataUtil.GetXmlNodeValue(source, "yp_page_height")),
-                yp_is_dadiao = Convert.ToByte(DataUtil.GetXmlNodeValue(source, "yp_is_dadiao")),
-                yp_key_note = Convert.ToByte(DataUtil.GetXmlNodeValue(source, "yp_key_note")),
-                yp_is_yanyin = Convert.ToByte(DataUtil.GetXmlNodeValue(source, "yp_is_yanyin"))
+                yp_create_time = Convert.ToUInt32(GetXmlNodeValue(source, "yp_create_time")),
+                yp_title = GetXmlNodeValue(source, "yp_title"),
+                yp_page_count = Convert.ToByte(GetXmlNodeValue(source, "yp_page_count")),
+                ypad_url = GetXmlNodeValue(source, "ypad_url"),
+                ypad_url2 = GetXmlNodeValue(source, "ypad_url2").Replace("ypa2", "ypdx"),
+                yp_page_width = Convert.ToInt16(GetXmlNodeValue(source, "yp_page_width")),
+                yp_page_height = Convert.ToInt16(GetXmlNodeValue(source, "yp_page_height")),
+                yp_is_dadiao = Convert.ToByte(GetXmlNodeValue(source, "yp_is_dadiao")),
+                yp_key_note = Convert.ToByte(GetXmlNodeValue(source, "yp_key_note")),
+                yp_is_yanyin = Convert.ToByte(GetXmlNodeValue(source, "yp_is_yanyin"))
             };
         }
 

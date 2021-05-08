@@ -18,6 +18,8 @@ namespace AcgnuX.Source.Taskx
 {
     /// <summary>
     /// 代理IP抓取工厂
+    /// 抓取代理参考正则
+    /// (\d+\.\d+\.\d+\.\d+)</td>\s+<td>(\d+)</td>
     /// </summary>
     class ProxyFactory
     {
@@ -77,7 +79,7 @@ namespace AcgnuX.Source.Taskx
                         {
                             Console.WriteLine(taskName + "开始抓取IP代理, 目标 -> " + item.Url);
                             //请求目标地址, 获取目标地址HTML
-                            var crawlResult = RequestUtil.CrawlContentFromWebsit(string.Format(item.Url, currentPage, 10000), null);
+                            var crawlResult = RequestUtil.CrawlContentFromWebsit(string.Format(item.Url, currentPage), null);
                             if (!crawlResult.success)
                             {
                                 Console.WriteLine(taskName + "页面抓取失败" + item.Url);
@@ -115,7 +117,7 @@ namespace AcgnuX.Source.Taskx
         /// <returns></returns>
         private static bool IsProxyValid(string proxyAddress)
         {
-            var crawlResult = RequestUtil.CrawlContentFromWebsit(PROXY_TEST_URL, proxyAddress);
+            var crawlResult = RequestUtil.CrawlContentFromWebsit(PROXY_TEST_URL, proxyAddress, 3000);
             return PROXY_TEST_RESPONSE.Equals(crawlResult.data) ? true : false;
         }
 

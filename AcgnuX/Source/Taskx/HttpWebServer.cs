@@ -38,23 +38,30 @@ namespace AcgnuX.Source.Taskx.Http
             {
                 while (true)
                 {
-                    HttpListenerContext httpListenerContext = httpListener.GetContext();
-                    httpListenerContext.Response.StatusCode = 200;
-                    using (StreamWriter writer = new StreamWriter(httpListenerContext.Response.OutputStream))
+                    try
                     {
-                        DispacherRequest(httpListenerContext);
-                        //httpListenerContext.Response.ContentType = "application/octet-stream";
-                        //string fileName = @"D:\\Download\Tan8\a小调圆舞曲\page.0.png";
-                        ////httpListenerContext.Response.AddHeader("Content-Disposition", "attachment;FileName=" + fileName);
+                        HttpListenerContext httpListenerContext = httpListener.GetContext();
+                        httpListenerContext.Response.StatusCode = 200;
+                        using (StreamWriter writer = new StreamWriter(httpListenerContext.Response.OutputStream))
+                        {
+                            DispacherRequest(httpListenerContext);
+                            //httpListenerContext.Response.ContentType = "application/octet-stream";
+                            //string fileName = @"D:\\Download\Tan8\a小调圆舞曲\page.0.png";
+                            ////httpListenerContext.Response.AddHeader("Content-Disposition", "attachment;FileName=" + fileName);
 
-                        //using (System.IO.FileStream fs = new FileStream(@"D:\Download\Tan8\a小调圆舞曲\page.0.png", FileMode.Open, FileAccess.Read))
-                        //{
-                        //    byte[] data = new byte[fs.Length];
-                        //    httpListenerContext.Response.ContentLength64 = data.Length;
-                        //    System.IO.Stream output = httpListenerContext.Response.OutputStream;
-                        //    output.Write(data, 0, data.Length);
-                        //    output.Close();
-                        //}
+                            //using (System.IO.FileStream fs = new FileStream(@"D:\Download\Tan8\a小调圆舞曲\page.0.png", FileMode.Open, FileAccess.Read))
+                            //{
+                            //    byte[] data = new byte[fs.Length];
+                            //    httpListenerContext.Response.ContentLength64 = data.Length;
+                            //    System.IO.Stream output = httpListenerContext.Response.OutputStream;
+                            //    output.Write(data, 0, data.Length);
+                            //    output.Close();
+                            //}
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString());
                     }
                 }
             })).Start();
@@ -240,6 +247,7 @@ namespace AcgnuX.Source.Taskx.Http
                 {
                     picbyte = br.ReadBytes(Convert.ToInt32(fs.Length));
                     output.Write(picbyte, 0, picbyte.Length);
+                    output.Close();
                 }
             }
         }

@@ -39,7 +39,7 @@ namespace AcgnuX.Pages
         //tan8服务
         private HttpWebServer mTan8WebListener;
         //标识
-        private bool mIsV2 = false;
+        private bool isAutoDownload = false;
 
         public MusicScoreLibrary(MainWindow mainWin)
         {
@@ -270,20 +270,36 @@ namespace AcgnuX.Pages
             var sqlRowResult = SQLite.sqlone(string.Format("SELECT COUNT(1) total FROM tan8_music where ypid = {0}", pianoScore.id.GetValueOrDefault()));
             if (!string.IsNullOrEmpty(sqlRowResult) && Convert.ToInt32(sqlRowResult) > 0)
             {
-                //已存在则不下载
+                if(isAutoDownload)
+                {
+                    RewakeFlashPlayer(pianoScore.id.GetValueOrDefault() + 1);
+                }
                 return InvokeSuccess(pianoScore);
             }
-            //校验任务任务运行状态
-            if (bgworker.IsBusy)
+
+            var result = StartDownLoadV2(pianoScore);
+
+            //下载出错则给出提示, 并等待下次任务
+            if (!result.success)
             {
-                mMainWindow.SetStatustProgess(new MainWindowStatusNotify()
+                //如果是自动下载, 且由是由于网络连接出错, 则不保存下载记录, 直接重试
+                if ((result.code == 8 || result.code == 3 || result.code == 7) && isAutoDownload)
                 {
-                    alertLevel = AlertLevel.ERROR,
-                    message = "存在尚未结束的下载任务"
-                });
+                    RewakeFlashPlayer(pianoScore.id.GetValueOrDefault());
+                }
             }
-            mIsV2 = true;
-            bgworker.RunWorkerAsync(pianoScore);
+
+            //每次下载完, 保存最后下载的记录ID
+            SaveDownLoadRecord(pianoScore.id.GetValueOrDefault(), isAutoDownload, result);
+
+            //不是自动下载直接return
+            if (!isAutoDownload)
+            {
+                return InvokeSuccess(pianoScore);
+            }
+
+            //如果开启了自动下载, 则无限循环
+            RewakeFlashPlayer(pianoScore.id.GetValueOrDefault() + 1);
             return InvokeSuccess(pianoScore);
         }
 
@@ -305,6 +321,7 @@ namespace AcgnuX.Pages
                 });
                 return InvokeFail(pianoScore);
             }
+            isAutoDownload = pianoScore.autoDownload;
             //打开播放器, 触发主动下载
             FlashPlayUtil.ExePlayById(pianoScore.id.GetValueOrDefault());
             return InvokeSuccess(pianoScore);
@@ -316,6 +333,7 @@ namespace AcgnuX.Pages
         /// </summary>
         /// <param name="pianoScore">曲谱对象</param>
         /// <returns>公共函数返回结果</returns>
+        /***
         private InvokeResult<PianoScore> DownLoadTan8Music(PianoScore pianoScore)
         {
             //校验基本参数
@@ -359,6 +377,7 @@ namespace AcgnuX.Pages
             bgworker.RunWorkerAsync(pianoScore);
             return InvokeSuccess(pianoScore);
         }
+        ***/
 
         /// <summary>
         /// 准备下载任务
@@ -416,6 +435,16 @@ namespace AcgnuX.Pages
         }
 
         /// <summary>
+        /// 重新打开播放器
+        /// </summary>
+        /// <param name="ypid"></param>
+        private void RewakeFlashPlayer(int ypid)
+        {
+            FlashPlayUtil.ExitFlashPlayer();
+            FlashPlayUtil.ExePlayById(ypid);
+        }
+
+        /// <summary>
         ///  下载弹琴吧琴谱后台任务
         /// </summary>
         /// <param name="pianoScore">乐谱信息</param>
@@ -432,18 +461,12 @@ namespace AcgnuX.Pages
             //step.1 获取真实乐谱下载地址
             //var sample = "<string>http://www.77music.com/flash_get_yp_info.php?ypid=66138&amp;sccode=77c83a7bf44542486ff37815ab75c147&amp;r1=9185&amp;r2=6640&amp;input=123</string>";
             bgworker.ReportProgress(0, CalcProgress(winProgress, string.Format("开始下载 [{0}], 解析下载地址", pianoScore.Name), 0));
-            //默认直接使用v2版本的地址
-            var url = pianoScore.SheetUrl;
-            //如果没有v2版本地址
-            if(string.IsNullOrEmpty(pianoScore.SheetUrl))
-            {
-                //使用v1版本, 从flash播放器读取
-                var sample = mTan8Player.GetRealTan8URL(pianoScore.id.GetValueOrDefault());
-                //xml字符串去除转义
-                var urlFromSwf = DataUtil.GetXmlNodeValue(sample, "string").Replace("amp;", "");
-                //由于播放器被本地化, 请求乐谱信息时会访问本地地址, 此处在线下载需要修改为线上地址
-                url = urlFromSwf.Replace("localhost:7777/yuepu/info", "www.77music.com/flash_get_yp_info.php");
-            }
+            //使用v1版本, 从flash播放器读取
+            var sample = mTan8Player.GetRealTan8URL(pianoScore.id.GetValueOrDefault());
+            //xml字符串去除转义
+            var urlFromSwf = DataUtil.GetXmlNodeValue(sample, "string").Replace("amp;", "");
+            //由于播放器被本地化, 请求乐谱信息时会访问本地地址, 此处在线下载需要修改为线上地址
+            var url = urlFromSwf.Replace("localhost:7777/yuepu/info", "www.77music.com/flash_get_yp_info.php");
 
             //step.2 请求乐谱地址, 得到乐谱信息
             bgworker.ReportProgress(0, CalcProgress(winProgress, "下载地址解析成功, 开始加载乐谱信息", 10));
@@ -518,23 +541,9 @@ namespace AcgnuX.Pages
                 }
             }
 
-            //step.5 下载播放文件
-            //bgworker.ReportProgress(0, CalcProgress(winProgress, "下载播放文件", 80));
-            //downResult = new FileDownloader().DownloadFile(tan8Music.ypad_url2, folderPath + "play.ypa2");
-            //if (downResult != 0)
-            //{
-            //    return new InvokeResult<object>()
-            //    {
-            //        success = false,
-            //        code = (byte)PianoScoreDownloadResult.PLAY_FILE_DOWNLOAD_FAIL,
-            //        message = EnumLoader.GetEnumDesc(typeof(PianoScoreDownloadResult), PianoScoreDownloadResult.PLAY_FILE_DOWNLOAD_FAIL.ToString()),
-            //        data = folder
-            //    };
-            //}
-            //下载v2版播放文件 ( flash无法播放, 仅下载 )
+            //step.5 下载播放文件 ( 弹8已移除旧版播放文件, 此代码无法正常工作, 现在使用v2 )
             bgworker.ReportProgress(0, CalcProgress(winProgress, "下载播放文件", 80));
-            //var ypdxAddr = tan8Music.ypad_url2.Substring(0, tan8Music.ypad_url2.Length - 2) + "dx";
-            downResult = new FileDownloader().DownloadFile(tan8Music.ypad_url2, folderPath + "play.ypdx");
+            downResult = new FileDownloader().DownloadFile(tan8Music.ypad_url2, folderPath + "play.ypa2");
             if (downResult != 0)
             {
                 return new InvokeResult<object>()
@@ -552,6 +561,96 @@ namespace AcgnuX.Pages
 
             winProgress.alertLevel = AlertLevel.INFO;
             bgworker.ReportProgress(0, CalcProgress(winProgress, "下载完成", 100));
+            return new InvokeResult<object>()
+            {
+                success = true,
+                code = (byte)PianoScoreDownloadResult.SUCCESS,
+                message = EnumLoader.GetEnumDesc(typeof(PianoScoreDownloadResult), PianoScoreDownloadResult.SUCCESS.ToString()),
+                data = folder
+            };
+        }
+
+        /// <summary>
+        ///  下载弹琴吧琴谱后台任务 (不汇报进度)
+        /// </summary>
+        /// <param name="pianoScore">乐谱信息</param>
+        private InvokeResult<object> StartDownLoadV2(PianoScore pianoScore)
+        {
+            //直接使用v2版本的地址
+            var url = pianoScore.SheetUrl;
+
+            //step.2 请求乐谱地址, 得到乐谱信息
+            var proxyAddress = ProxyFactory.GetRandProxy();
+            var ypinfostring = RequestUtil.CrawlContentFromWebsit(url, proxyAddress).data;
+            //var ypinfostring = @"<html><body>yp_create_time=<yp_create_time>1573183398</yp_create_time><br/>yp_title=<yp_title>说好不哭（文武贝钢琴版）</yp_title><br/>yp_page_count=<yp_page_count>3</yp_page_count><br/>yp_page_width=<yp_page_width>1089</yp_page_width><br/>yp_page_height=<yp_page_height>1540</yp_page_height><br/>yp_is_dadiao=<yp_is_dadiao>1</yp_is_dadiao><br/>yp_key_note=<yp_key_note>10</yp_key_note><br/>yp_is_yanyin=<yp_is_yanyin>1</yp_is_yanyin><br/>ypad_url=<ypad_url>http://www.tan8.com//yuepuku/132/66138/66138_hegiahcc.ypad</ypad_url>ypad_url2=<ypad_url2>http://www.tan8.com//yuepuku/132/66138/66138_hegiahcc.ypa2</ypad_url2></body></html>";
+            //校验返回的乐谱信息
+            var checkResult = CheckYuepuInfo(ypinfostring);
+            if (checkResult != PianoScoreDownloadResult.SUCCESS)
+            {
+                return new InvokeResult<object>()
+                {
+                    success = false,
+                    code = (byte)checkResult,
+                    message = EnumLoader.GetEnumDesc(typeof(PianoScoreDownloadResult), checkResult.ToString()),
+                    data = "未知"
+                };
+            }
+            ProxyFactory.RemoveTemporary(proxyAddress, checkResult);
+            //从乐谱信息解析到对象
+            var tan8Music = DataUtil.ParseToModel(ypinfostring);
+
+            //step.3 创建文件夹
+            var folder = string.IsNullOrEmpty(pianoScore.Name) ? tan8Music.yp_title : pianoScore.Name;
+            //替换非法字符
+            folder = FileUtil.ReplaceInvalidChar(folder);
+            var folderPath = AcgnuConfig.GetContext().pianoScorePath + Path.DirectorySeparatorChar + folder;
+            FileUtil.CreateFolder(folderPath);
+            //添加分隔符
+            folderPath += Path.DirectorySeparatorChar;
+
+            //step.3 下载曲谱封面
+            var coverUrl = tan8Music.ypad_url.Substring(0, tan8Music.ypad_url.IndexOf('_')) + "_prev.jpg";
+            var downResult = new FileDownloader().DownloadFile(coverUrl, folderPath + DEFAULT_COVER_NAME);
+            //封面下载失败不管
+            if (downResult != 0) { }
+
+            //封面下载完后校验图片是否有效
+            var isValidPreviewImg = FileUtil.CheckImgIsValid(folderPath + DEFAULT_COVER_NAME);
+            //如果文件损坏则删除
+            if (!isValidPreviewImg) FileUtil.DeleteFile(folderPath + DEFAULT_COVER_NAME);
+
+            //step.4 下载乐谱图片
+            for (var i = 0; i < tan8Music.yp_page_count; i++)
+            {
+                var downloadUrl = tan8Music.ypad_url + string.Format(".{0}.png", i);
+                int pageDownloadResult = new FileDownloader().DownloadFile(downloadUrl, folderPath + string.Format("page.{0}.png", i));
+                //如果下载出错
+                if (pageDownloadResult != 0)
+                {
+                    return new InvokeResult<object>()
+                    {
+                        success = false,
+                        code = (byte)PianoScoreDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL,
+                        message = EnumLoader.GetEnumDesc(typeof(PianoScoreDownloadResult), PianoScoreDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL.ToString()),
+                        data = folder
+                    };
+                }
+            }
+            //下载v2版播放文件 ( flash无法播放, 仅下载 )
+            downResult = new FileDownloader().DownloadFile(tan8Music.ypad_url2, folderPath + "play.ypdx");
+            if (downResult != 0)
+            {
+                return new InvokeResult<object>()
+                {
+                    success = false,
+                    code = (byte)PianoScoreDownloadResult.PLAY_FILE_DOWNLOAD_FAIL,
+                    message = EnumLoader.GetEnumDesc(typeof(PianoScoreDownloadResult), PianoScoreDownloadResult.PLAY_FILE_DOWNLOAD_FAIL.ToString()),
+                    data = folder
+                };
+            }
+
+            //step.6 保存到数据库
+            SaveMusicToDB(pianoScore.id.GetValueOrDefault(), folder, tan8Music, ypinfostring);
             return new InvokeResult<object>()
             {
                 success = true,
@@ -624,15 +723,8 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void NotifyProgress(object sender, ProgressChangedEventArgs e)
         {
-            if(!mIsV2)
-            {
-                var windowStatusNotify = e.UserState as MainWindowStatusNotify;
-                mMainWindow.SetStatustProgess(windowStatusNotify);
-            } 
-            else
-            {
-                FlashPlayUtil.ExitFlashPlayer();
-            }
+            var windowStatusNotify = e.UserState as MainWindowStatusNotify;
+            mMainWindow.SetStatustProgess(windowStatusNotify);
         }
 
         /// <summary>
@@ -642,10 +734,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void DownLoadComplate(object sender, RunWorkerCompletedEventArgs e)
         {
-            if(!mIsV2)
-            {
-                LoadPianoScore();
-            }
+            LoadPianoScore();
         }
 
         /// <summary>

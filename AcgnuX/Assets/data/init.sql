@@ -42,12 +42,3 @@ CREATE TABLE IF NOT EXISTS "app_secret_keys" (
   "platform" TEXT(20) NOT NULL,
   PRIMARY KEY ("secret_key")
 );
-INSERT INTO "crawl_rules" VALUES (1, '西刺国内高匿代理', 'https://www.xicidaili.com/nn/{0}', '<td>(\d+\.\d+\.\d+\.\d+)</td>\s+<td>(\d+)</td>', 2, 1);
-INSERT INTO "crawl_rules" VALUES (2, '西刺国内普匿代理', 'https://www.xicidaili.com/nt/{0}', '<td>(\d+\.\d+\.\d+\.\d+)</td>\s+<td>(\d+)</td>', 1, 1);
-INSERT INTO "crawl_rules" VALUES (3, '云代理', 'http://www.ip3366.net/free/?stype=1&page={0}', '<td>(\d+\.\d+\.\d+\.\d+)</td>\s+<td>(\d+)</td>', 4, 1);
-INSERT INTO "crawl_rules" VALUES (4, 'IP海国内高匿代理', 'http://www.iphai.com/free/ng?p={0}', '<td>\s+(\d+\.\d+\.\d+\.\d+)\s+</td>\s+<td>\s+(\d+)\s+</td>', 1, 1);
-INSERT INTO "crawl_rules" VALUES (5, 'IP海国外高匿代理', 'http://www.iphai.com/free/wg?p={0}', '<td>\s+(\d+\.\d+\.\d+\.\d+)\s+</td>\s+<td>\s+(\d+)\s+</td>', 1, 1);
-INSERT INTO "crawl_rules" VALUES (6, '安小陌代理', 'http://www.66ip.cn/nmtq.php?getnum=10&isp=0&anonymoustype=3&start=&ports=&export=&ipaddress=&area=1&proxytype=2&api=66ip&p={0}', '(\d+\.\d+\.\d+\.\d+):(\d+)', 10, 1);
-INSERT INTO "crawl_rules" VALUES (7, '快代理国内高匿', 'https://www.kuaidaili.com/free/inha/{0}/', '<td data-title="IP">\s+(\d+\.\d+\.\d+\.\d+)\s+</td>\s+<td data-title="PORT">\s+(\d+)\s+</td>', 2, 1);
-INSERT INTO "crawl_rules" VALUES (8, '快代理国内普匿', 'https://www.kuaidaili.com/free/intr/{0}/', '<td data-title="IP">\s+(\d+\.\d+\.\d+\.\d+)\s+</td>\s+<td data-title="PORT">\s+(\d+)\s+</td>', 2, 1);
-INSERT INTO "crawl_rules" VALUES (9, '89免费代理', 'http://www.89ip.cn/index_{0}.html', '<td>\s+(\d+\.\d+\.\d+\.\d+)\s+</td>\s+<td>\s+(\d+)\s+</td>', 60, 1);
