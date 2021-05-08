@@ -306,7 +306,6 @@ namespace AcgnuX.Pages
             {
                 return InvokeSuccess(pianoScore);
             }
-
             //如果开启了自动下载, 则无限循环
             RewakeFlashPlayer(pianoScore.id.GetValueOrDefault() + 1);
             return InvokeSuccess(pianoScore);
