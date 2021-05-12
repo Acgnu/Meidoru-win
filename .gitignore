@@ -5,6 +5,8 @@ build/
 !**/src/main/**
 !**/src/test/**
 
+/.vs/
+
 /AcgnuX/.vs/
 /AcgnuX/bin/
 /AcgnuX/obj/
