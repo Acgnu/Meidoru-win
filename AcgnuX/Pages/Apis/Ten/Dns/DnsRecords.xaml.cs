@@ -72,7 +72,7 @@ namespace AcgnuX.Pages.Apis.Ten.Dns
 
             AsyncHandle = mTenCloudDns.queryRecordList<DnsRecordResult>(null, null, response =>
             {
-                this.Dispatcher.Invoke(() =>
+                Dispatcher.Invoke(() =>
                 {
                     //更新表格数据
                     if(null != response.Data.data)

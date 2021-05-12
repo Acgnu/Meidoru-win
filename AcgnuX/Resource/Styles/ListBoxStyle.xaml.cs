@@ -106,7 +106,7 @@ namespace AcgnuX.Resource.Styles
             }
 
             //播放所选曲谱
-            FlashPlayUtil.ExePlayById((selected as PianoScore).id.GetValueOrDefault());
+            FlashPlayUtil.ExePlayById((selected as PianoScore).id.GetValueOrDefault(), false);
         }
 
         //private void ListBoxItem_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)

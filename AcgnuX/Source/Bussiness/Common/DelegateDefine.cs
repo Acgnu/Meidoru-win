@@ -19,6 +19,12 @@ namespace AcgnuX.Source.Bussiness.Common
     public delegate void StopBtnClickHandler();
 
     /// <summary>
+    /// 状态栏变更委托
+    /// </summary>
+    /// <param name="statusNotify"></param>
+    public delegate void StatusBarNotifyHandler(MainWindowStatusNotify statusNotify);
+
+    /// <summary>
     /// DNS编辑完成
     /// </summary>
     /// <param name="result"></param>

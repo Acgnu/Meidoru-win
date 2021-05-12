@@ -91,8 +91,11 @@ namespace AcgnuX
         /// <param name="notify"></param>
         public void SetStatustProgess(MainWindowStatusNotify notify)
         {
-            SetStatusBarText(notify.alertLevel, notify.message);
-            SetProgess(notify);
+            MainProgressBar.Dispatcher.Invoke(() =>
+            {
+                SetStatusBarText(notify.alertLevel, notify.message);
+                SetProgess(notify);
+            });
         }
 
         /// <summary>
@@ -102,7 +105,6 @@ namespace AcgnuX
         /// <param name="message">提示文字</param>
         private void SetStatusBarText(AlertLevel alertLevel, string message)
         {
-
             switch (alertLevel)
             {
                 case AlertLevel.INFO: MainProgressBar.Foreground = Application.Current.FindResource("FooterBarColorBrush") as SolidColorBrush; break;

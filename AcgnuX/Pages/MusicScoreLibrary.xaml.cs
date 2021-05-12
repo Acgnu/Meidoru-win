@@ -31,20 +31,29 @@ namespace AcgnuX.Pages
         //列表数据对象
         private ObservableCollection<PianoScoreViewModel> mPianoScoreList = new ObservableCollection<PianoScoreViewModel>();
         //下载worker
-        private BackgroundWorker bgworker = new BackgroundWorker();
+        //private readonly BackgroundWorker bgworker = new BackgroundWorker()
+        //{
+        //    WorkerReportsProgress = true,
+        //    WorkerSupportsCancellation = true
+        //};
         //弹吧播放器
-        private Tan8PlayerWindow mTan8Player;
+        //private Tan8PlayerWindow mTan8Player;
         //分页
         private Pager pager = new Pager(1, 10);
         //tan8服务
         private HttpWebServer mTan8WebListener;
-        //标识
+        //标识是否自动下载
         private bool isAutoDownload = false;
+        //标识是否中止任务
+        private bool isTaskStop = false;
+        //下载进度变更事件
+        public event StatusBarNotifyHandler OnTaskBarEvent;
 
         public MusicScoreLibrary(MainWindow mainWin)
         {
             InitializeComponent();
             mMainWindow = mainWin;
+            OnTaskBarEvent += mainWin.SetStatustProgess;
         }
 
         private void OnPageLoaded(object sender, RoutedEventArgs e)
@@ -52,18 +61,14 @@ namespace AcgnuX.Pages
             LoadPianoScore();
             PianoScoreListBox.ItemsSource = mPianoScoreList;
             mMainWindow.OnClickStatusBarStop += ChangeTaskStatus;
-            //开启异步任务
-            bgworker.WorkerReportsProgress = true;
-            //支持取消
-            bgworker.WorkerSupportsCancellation = true;
             //工作任务
-            bgworker.DoWork += new DoWorkEventHandler(ReadyTask);
+            //bgworker.DoWork += new DoWorkEventHandler(ReadyTask);
             //进度通知
-            bgworker.ProgressChanged += new ProgressChangedEventHandler(NotifyProgress);
+            //bgworker.ProgressChanged += new ProgressChangedEventHandler(NotifyProgress);
             //下载完成事件
-            bgworker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(DownLoadComplate);
+            //bgworker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(DownLoadComplate);
             //开启http监听
-            if(null == mTan8WebListener)
+            if (null == mTan8WebListener)
             {
                 mTan8WebListener = new HttpWebServer();
                 mTan8WebListener.editConfirmHnadler += new EditConfirmHandler<PianoScore>(DownLoadTan8MusicV2Task);
@@ -267,7 +272,7 @@ namespace AcgnuX.Pages
             {
                 if(isAutoDownload)
                 {
-                    RewakeFlashPlayer(pianoScore.id.GetValueOrDefault() + 1);
+                    FlashPlayUtil.Restart(pianoScore.id.GetValueOrDefault() + 1, true);
                 }
                 return InvokeSuccess(pianoScore);
             }
@@ -278,10 +283,16 @@ namespace AcgnuX.Pages
             do
             {
                 result = StartDownLoadV2(pianoScore);
-
                 //下载出错则给出提示, 并等待下次任务
                 if (!result.success)
                 {
+                    OnTaskBarEvent?.Invoke(CalcProgress(new MainWindowStatusNotify()
+                    {
+                        alertLevel = isAutoDownload ? AlertLevel.RUN : AlertLevel.ERROR,
+                    },
+                    string.Format(string.Format("乐谱ID [{0}] 下载出错 {1}{2}", pianoScore.id, result.message, isAutoDownload ? ", 等待任务中..." : "")),
+                    isAutoDownload ? 99 : 100));
+
                     //如果是自动下载, 且由是由于网络连接出错, 则不保存下载记录, 直接重试
                     if ((result.code == 8 || result.code == 3 || result.code == 7) && isAutoDownload)
                     {
@@ -291,12 +302,12 @@ namespace AcgnuX.Pages
                             continue;
                         }
                         //超过一分钟, 重启播放器重试
-                        RewakeFlashPlayer(pianoScore.id.GetValueOrDefault());
+                        FlashPlayUtil.Restart(pianoScore.id, true);
                         return InvokeSuccess(pianoScore);
                     }
                 }
                 doContinue = false;
-            } while (doContinue);
+            } while (doContinue && !isTaskStop);
 
             //每次下载完, 保存最后下载的记录ID
             SaveDownLoadRecord(pianoScore.id.GetValueOrDefault(), isAutoDownload, result);
@@ -304,10 +315,26 @@ namespace AcgnuX.Pages
             //不是自动下载直接return
             if (!isAutoDownload)
             {
+                FlashPlayUtil.Exit();
+                return InvokeSuccess(pianoScore);
+            }
+
+            //判断任务是否已经中止
+            if (isTaskStop)
+            {
+                isAutoDownload = false;
+                FlashPlayUtil.Exit();
+                //任务停止, 上报进度100%
+                OnTaskBarEvent?.Invoke(CalcProgress(new MainWindowStatusNotify()
+                {
+                    alertLevel = AlertLevel.INFO,
+                    animateProgress = true,
+                    nowProgress = 0
+                }, "任务中止", 100));
                 return InvokeSuccess(pianoScore);
             }
             //如果开启了自动下载, 则无限循环
-            RewakeFlashPlayer(pianoScore.id.GetValueOrDefault() + 1);
+            FlashPlayUtil.Restart(pianoScore.id.GetValueOrDefault() + 1, true);
             return InvokeSuccess(pianoScore);
         }
 
@@ -322,16 +349,17 @@ namespace AcgnuX.Pages
             //校验基本参数
             if (null == pianoScore || null == pianoScore.id)
             {
-                mMainWindow.SetStatustProgess(new MainWindowStatusNotify()
+                OnTaskBarEvent?.Invoke(new MainWindowStatusNotify()
                 {
                     alertLevel = AlertLevel.ERROR,
                     message = "乐谱ID未填写"
                 });
                 return InvokeFail(pianoScore);
             }
+            isTaskStop = false;
             isAutoDownload = pianoScore.autoDownload;
             //打开播放器, 触发主动下载
-            FlashPlayUtil.ExePlayById(pianoScore.id.GetValueOrDefault());
+            FlashPlayUtil.ExePlayById(pianoScore.id.GetValueOrDefault(), true);
             return InvokeSuccess(pianoScore);
         }
 
@@ -392,6 +420,7 @@ namespace AcgnuX.Pages
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        /****
         private void ReadyTask(object sender, DoWorkEventArgs e)
         {
             var pianoScore = e.Argument as PianoScore;
@@ -441,21 +470,13 @@ namespace AcgnuX.Pages
             }
             while (pianoScore.autoDownload);   //如果开启了自动下载, 则无限循环
         }
-
-        /// <summary>
-        /// 重新打开播放器
-        /// </summary>
-        /// <param name="ypid"></param>
-        private void RewakeFlashPlayer(int ypid)
-        {
-            FlashPlayUtil.ExitFlashPlayer();
-            FlashPlayUtil.ExePlayById(ypid);
-        }
+        ***/
 
         /// <summary>
         ///  下载弹琴吧琴谱后台任务
         /// </summary>
         /// <param name="pianoScore">乐谱信息</param>
+        /***
         private InvokeResult<object> StartDownLoad(PianoScore pianoScore)
         {
             var winProgress = new MainWindowStatusNotify()
@@ -577,6 +598,7 @@ namespace AcgnuX.Pages
                 data = folder
             };
         }
+        ***/
 
         /// <summary>
         ///  下载弹琴吧琴谱后台任务 (不汇报进度)
@@ -584,8 +606,17 @@ namespace AcgnuX.Pages
         /// <param name="pianoScore">乐谱信息</param>
         private InvokeResult<object> StartDownLoadV2(PianoScore pianoScore)
         {
+            var winProgress = new MainWindowStatusNotify()
+            {
+                alertLevel = AlertLevel.RUN,
+                animateProgress = true,
+                progressDuration = 100,
+                nowProgress = 0
+            };
+
             //直接使用v2版本的地址
             var url = pianoScore.SheetUrl;
+            OnTaskBarEvent?.Invoke(CalcProgress(winProgress, string.Format("乐谱ID: {0} 下载地址解析成功, 开始加载乐谱信息", pianoScore.id), 10));
 
             //step.2 请求乐谱地址, 得到乐谱信息
             var proxyAddress = ProxyFactory.GetFirstProxy();
@@ -617,6 +648,7 @@ namespace AcgnuX.Pages
             folderPath += Path.DirectorySeparatorChar;
 
             //step.3 下载曲谱封面
+            OnTaskBarEvent?.Invoke(CalcProgress(winProgress, string.Format("下载 [{0}] 封面", folder), 30));
             var coverUrl = tan8Music.ypad_url.Substring(0, tan8Music.ypad_url.IndexOf('_')) + "_prev.jpg";
             var downResult = new FileDownloader().DownloadFile(coverUrl, folderPath + DEFAULT_COVER_NAME);
             //封面下载失败不管
@@ -630,6 +662,9 @@ namespace AcgnuX.Pages
             //step.4 下载乐谱图片
             for (var i = 0; i < tan8Music.yp_page_count; i++)
             {
+                var message = string.Format("下载 [{0}] 乐谱 {1} / {2}", folder, i + 1, tan8Music.yp_page_count);
+                OnTaskBarEvent?.Invoke(CalcProgress(winProgress, message, 50 / tan8Music.yp_page_count + winProgress.nowProgress));
+
                 var downloadUrl = tan8Music.ypad_url + string.Format(".{0}.png", i);
                 int pageDownloadResult = new FileDownloader().DownloadFile(downloadUrl, folderPath + string.Format("page.{0}.png", i));
                 //如果下载出错
@@ -645,6 +680,7 @@ namespace AcgnuX.Pages
                 }
             }
             //下载v2版播放文件 ( flash无法播放, 仅下载 )
+            OnTaskBarEvent?.Invoke(CalcProgress(winProgress, string.Format("下载 [{0}] 播放文件", folder), 80));
             downResult = new FileDownloader().DownloadFile(tan8Music.ypad_url2, folderPath + "play.ypdx");
             if (downResult != 0)
             {
@@ -658,7 +694,11 @@ namespace AcgnuX.Pages
             }
 
             //step.6 保存到数据库
+            OnTaskBarEvent?.Invoke(CalcProgress(winProgress, string.Format("[{0}] 保存数据库", folder), 90));
             SaveMusicToDB(pianoScore.id.GetValueOrDefault(), folder, tan8Music, ypinfostring);
+
+            winProgress.alertLevel = AlertLevel.INFO;
+            OnTaskBarEvent?.Invoke(CalcProgress(winProgress, string.Format("[{0}] 下载完成", folder), 100));
             return new InvokeResult<object>()
             {
                 success = true,
@@ -722,17 +762,6 @@ namespace AcgnuX.Pages
                invokeResult.message,
                isAuto);
             return SQLite.ExecuteNonQuery(sql);
-        }
-
-        /// <summary>
-        /// 下载进度发生变化时通知主窗口改变状态
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void NotifyProgress(object sender, ProgressChangedEventArgs e)
-        {
-            var windowStatusNotify = e.UserState as MainWindowStatusNotify;
-            mMainWindow.SetStatustProgess(windowStatusNotify);
         }
 
         /// <summary>
@@ -808,7 +837,8 @@ namespace AcgnuX.Pages
         /// </summary>
         private void ChangeTaskStatus()
         {
-            bgworker.CancelAsync();
+            isTaskStop = true;
+            //bgworker.CancelAsync();
         }
 
         /// <summary>
@@ -816,17 +846,17 @@ namespace AcgnuX.Pages
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnDefaultPlayButtonClick(object sender, RoutedEventArgs e)
-        {
-            //播放器未打开, 则创建一个新的播放器
-            if (null == mTan8Player)
-            {
-                mTan8Player = new Tan8PlayerWindow();
-            }
-            //播放所选曲谱
-            mTan8Player.Show();
-            mTan8Player.PlaySelected(new PianoScore() { id = 0 });
-        }
+        //private void OnDefaultPlayButtonClick(object sender, RoutedEventArgs e)
+        //{
+        //    //播放器未打开, 则创建一个新的播放器
+        //    if (null == mTan8Player)
+        //    {
+        //        mTan8Player = new Tan8PlayerWindow();
+        //    }
+        //    //播放所选曲谱
+        //    mTan8Player.Show();
+        //    mTan8Player.PlaySelected(new PianoScore() { id = 0 });
+        //}
 
         /// <summary>
         /// 由于Flash被禁用, 使用内置的flash播放器
@@ -835,7 +865,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnDefaultPlayButtonClickV2(object sender, RoutedEventArgs e)
         {
-            FlashPlayUtil.ExePlayById(0);
+            FlashPlayUtil.ExePlayById(0, false);
         }
 
         /// <summary>
