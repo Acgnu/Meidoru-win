@@ -174,12 +174,7 @@ namespace AcgnuX.Pages
         /// <returns></returns>
         private bool? OpenEditDialog(PianoScore pianoScore)
         {
-            var dialog = new AddSinglePianoScoreDialog(pianoScore)
-            {
-                Owner = mMainWindow,
-                ShowInTaskbar = false,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            };
+            var dialog = new AddSinglePianoScoreDialog(pianoScore);
             //绑定窗口点击事件
             if (null == pianoScore)
             {
@@ -277,17 +272,31 @@ namespace AcgnuX.Pages
                 return InvokeSuccess(pianoScore);
             }
 
-            var result = StartDownLoadV2(pianoScore);
-
-            //下载出错则给出提示, 并等待下次任务
-            if (!result.success)
+            var startTimeMill = TimeUtil.CurrentMillis();
+            var doContinue = true;
+            InvokeResult<object> result;
+            do
             {
-                //如果是自动下载, 且由是由于网络连接出错, 则不保存下载记录, 直接重试
-                if ((result.code == 8 || result.code == 3 || result.code == 7) && isAutoDownload)
+                result = StartDownLoadV2(pianoScore);
+
+                //下载出错则给出提示, 并等待下次任务
+                if (!result.success)
                 {
-                    RewakeFlashPlayer(pianoScore.id.GetValueOrDefault());
+                    //如果是自动下载, 且由是由于网络连接出错, 则不保存下载记录, 直接重试
+                    if ((result.code == 8 || result.code == 3 || result.code == 7) && isAutoDownload)
+                    {
+                        //一分钟之内不重启重试
+                        if (TimeUtil.CurrentMillis() - startTimeMill < 60000)
+                        {
+                            continue;
+                        }
+                        //超过一分钟, 重启播放器重试
+                        RewakeFlashPlayer(pianoScore.id.GetValueOrDefault());
+                        return InvokeSuccess(pianoScore);
+                    }
                 }
-            }
+                doContinue = false;
+            } while (doContinue);
 
             //每次下载完, 保存最后下载的记录ID
             SaveDownLoadRecord(pianoScore.id.GetValueOrDefault(), isAutoDownload, result);
@@ -485,7 +494,7 @@ namespace AcgnuX.Pages
                     data = "未知"
                 };
             }
-            ProxyFactory.RemoveTemporary(proxyAddress, checkResult);
+            ProxyFactory.RemoveTemporary(proxyAddress, checkResult == PianoScoreDownloadResult.VISTI_REACH_LIMIT ? 0 : 15 * 1000);
             //从乐谱信息解析到对象
             var tan8Music = DataUtil.ParseToModel(ypinfostring);
 
@@ -580,7 +589,7 @@ namespace AcgnuX.Pages
             var url = pianoScore.SheetUrl;
 
             //step.2 请求乐谱地址, 得到乐谱信息
-            var proxyAddress = ProxyFactory.GetRandProxy();
+            var proxyAddress = ProxyFactory.GetFirstProxy();
             var ypinfostring = RequestUtil.CrawlContentFromWebsit(url, proxyAddress).data;
             //var ypinfostring = @"<html><body>yp_create_time=<yp_create_time>1573183398</yp_create_time><br/>yp_title=<yp_title>说好不哭（文武贝钢琴版）</yp_title><br/>yp_page_count=<yp_page_count>3</yp_page_count><br/>yp_page_width=<yp_page_width>1089</yp_page_width><br/>yp_page_height=<yp_page_height>1540</yp_page_height><br/>yp_is_dadiao=<yp_is_dadiao>1</yp_is_dadiao><br/>yp_key_note=<yp_key_note>10</yp_key_note><br/>yp_is_yanyin=<yp_is_yanyin>1</yp_is_yanyin><br/>ypad_url=<ypad_url>http://www.tan8.com//yuepuku/132/66138/66138_hegiahcc.ypad</ypad_url>ypad_url2=<ypad_url2>http://www.tan8.com//yuepuku/132/66138/66138_hegiahcc.ypa2</ypad_url2></body></html>";
             //校验返回的乐谱信息
@@ -595,7 +604,7 @@ namespace AcgnuX.Pages
                     data = "未知"
                 };
             }
-            ProxyFactory.RemoveTemporary(proxyAddress, checkResult);
+            ProxyFactory.RemoveTemporary(proxyAddress, checkResult == PianoScoreDownloadResult.VISTI_REACH_LIMIT ? 0 : 15 * 1000);
             //从乐谱信息解析到对象
             var tan8Music = DataUtil.ParseToModel(ypinfostring);
 

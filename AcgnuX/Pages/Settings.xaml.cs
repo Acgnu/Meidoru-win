@@ -1,7 +1,10 @@
 ﻿using AcgnuX.Source.Bussiness.Constants;
+using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
+using AcgnuX.Utils;
 using AcgnuX.WindowX.Dialog;
+using System;
 using System.Windows;
 
 namespace AcgnuX.Pages
@@ -57,6 +60,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnChooseFIle(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            settingsViewModel.PianoScorePathAndView = Convert.ToString(TimeUtil.CurrentMillis());
             var path = FileUtil.OpenFileDialogForPath("C:\\", "JSON文件|*.JSON");
             if (!string.IsNullOrEmpty(path))
             {

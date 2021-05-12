@@ -10,6 +10,9 @@ namespace AcgnuX.WindowX.Dialog
     /// </summary>
     public class BaseDialog : Window
     {
+        //默认的标题栏高度
+        public int TitleHeightGridLength { get; set; } = 30;
+
         //关闭对话框命令
         public ICommand CloseCommand { get; set; }
 

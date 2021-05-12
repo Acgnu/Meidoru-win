@@ -1,6 +1,7 @@
 ﻿using AcgnuX.Pages;
 using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
+using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
 using AcgnuX.WindowX.Dialog;
 using System;
@@ -16,15 +17,25 @@ using System.Windows.Input;
 
 namespace AcgnuX.Source.ViewModel
 {
-    class CrawlConfigViewModel
+    class CrawlConfigViewModel : BasePropertyChangeNotifyModel
     {
         public ObservableCollection<CrawlRuleViewModel> CrawlRuls { get; set; } = new ObservableCollection<CrawlRuleViewModel>();
         private DataGrid mCrawlRulsDataGrid;
-        private Settings mHostPage;
+        //private Settings mHostPage;
+        public int ProxyCount { get; set; }
+        public int ProxyCountAndView
+        {
+            get { return ProxyCount; }
+            set
+            {
+                ProxyCount = value;
+                OnPropertyChanged(nameof(ProxyCount));
+            }
+        }
 
         public CrawlConfigViewModel(Settings hostPage)
         {
-            mHostPage = hostPage;
+            //mHostPage = hostPage;
             //获取规则表格对象
             mCrawlRulsDataGrid = hostPage.CrawlConfigDataGrid;
             //设置数据源
@@ -33,12 +44,14 @@ namespace AcgnuX.Source.ViewModel
             mCrawlRulsDataGrid.MouseDoubleClick += MCrawlRulsDataGrid_MouseDoubleClick;
             //表格右键展开菜单事件
             mCrawlRulsDataGrid.MouseRightButtonDown += OnItemMouseRightClick;
-
             //表格上下文菜单
             //(mCrawlRulsDataGrid.ContextMenu.Items[0] as MenuItem).Click += OnDeleteContextMenuClick;
-
             //添加按钮
             hostPage.AddCrawlButton.Click += OnAddCrawlClick;
+            //代理池数量变更监听
+            ProxyCount = ProxyFactory.GetProxyCount();
+            ProxyFactory.mProxyPoolCountChangeHandler += OnProxyPoolCountChange;
+            hostPage.ProxyCountTextBlock.DataContext = this;
         }
 
         /// <summary>
@@ -82,17 +95,6 @@ namespace AcgnuX.Source.ViewModel
                     Enable = Convert.ToByte(dataRow["enable"]),
                 });
             }
-
-            LoadProxyCount();
-        }
-
-        /// <summary>
-        /// 读取当前代理总数
-        /// </summary>
-        private void LoadProxyCount()
-        {
-            var totalProxy = SQLite.sqlone("SELECT COUNT(1) NUM FROM PROXY_ADDRESS");
-            mHostPage.CurrentCrawlNumTextBlock.Text = "当前代理池IP总数: " + totalProxy;
         }
 
         /// <summary>
@@ -128,6 +130,15 @@ namespace AcgnuX.Source.ViewModel
                 SQLite.ExecuteNonQuery(string.Format("DELETE FROM crawl_rules WHERE ID = {0}", selected.Id));
                 CrawlRuls.Remove(selected);
             }
+        }
+
+        /// <summary>
+        /// IP代理池数量变化通知
+        /// </summary>
+        /// <param name="curNum"></param>
+        private void OnProxyPoolCountChange(int curNum)
+        {
+            ProxyCountAndView = curNum;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AcgnuX.Source.Utils;
+using AcgnuX.WindowX.Dialog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,7 +27,7 @@ namespace AcgnuX.Source.ViewModel
             new PianoScoreDownloadRecordFilterBox("播放文件下载失败", 7)
         };
 
-        public PianoScoreDownloadRecordViewModel(Window window) : base(window)
+        public PianoScoreDownloadRecordViewModel(BaseDialog window) : base(window)
         {
         }
     }

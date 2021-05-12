@@ -23,4 +23,10 @@ namespace AcgnuX.Source.Bussiness.Common
     /// </summary>
     /// <param name="result"></param>
     public delegate void BackgroundFinishHandler(DnsOperatorResult result);
+
+    /// <summary>
+    /// IP池数量变化事件
+    /// </summary>
+    /// <param name="curNum"></param>
+    public delegate void ProxyPoolCountChangeHandler(int curNum);
 }

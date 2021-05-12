@@ -1,5 +1,6 @@
 ﻿using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
+using AcgnuX.WindowX.Dialog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,7 +22,7 @@ namespace AcgnuX.WindowX
     /// <summary>
     /// Tan8DownloadRecordWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class Tan8DownloadRecordWindow : Window
+    public partial class Tan8DownloadRecordWindow : BaseDialog
     {
         //标识条件复选框是否初始化完成
         private bool IsCheckBoxInited = false;

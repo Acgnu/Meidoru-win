@@ -32,7 +32,7 @@ namespace AcgnuX.Source.Taskx
             AcgnuConfig.Init();
 
             //执行代理IP爬取任务
-            ProxyFactory.StartCrawlIP();
+            ProxyFactory.InitProxyFactoryTask();
 
             //启动HTTP服务
             //new HttpWebServer().StartListen();

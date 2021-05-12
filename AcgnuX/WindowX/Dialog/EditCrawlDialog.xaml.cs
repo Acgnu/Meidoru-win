@@ -1,5 +1,6 @@
 ﻿using AcgnuX.Pages;
 using AcgnuX.Source.Model;
+using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
 using System.Collections.ObjectModel;
@@ -38,16 +39,20 @@ namespace AcgnuX.WindowX.Dialog
         {
             var button = sender as Button;
             button.IsEnabled = false;
+            var successRow = 0;
             if(0 == McrawlRule.Id)
             {
-                SaveCrawlRule(McrawlRule);
+                successRow = SaveCrawlRule(McrawlRule);
             }
             else
             {
-                ModifyCrawlRule(McrawlRule);
+                successRow = ModifyCrawlRule(McrawlRule);
+            }
+            if (successRow > 0)
+            {
+                DialogResult = true;
             }
             button.IsEnabled = true;
-            DialogResult = true;
             Close();
         }
 
@@ -58,12 +63,17 @@ namespace AcgnuX.WindowX.Dialog
         /// <returns></returns>
         private int SaveCrawlRule(CrawlRuleViewModel crawlRule)
         {
+            if(string.IsNullOrEmpty(crawlRule.Name) || string.IsNullOrEmpty(crawlRule.Url) || string.IsNullOrEmpty(crawlRule.Partten))
+            {
+                return 0;
+            }
             var row = SQLite.ExecuteNonQuery(string.Format("INSERT INTO crawl_rules(ID, NAME, URL, PARTTEN, MAX_PAGE, ENABLE) VALUES ((SELECT MAX(ID)+1 FROM crawl_rules), '{0}', '{1}', '{2}', {3}, {4})",
                 crawlRule.Name,
                 crawlRule.Url,
                 crawlRule.Partten,
                 crawlRule.MaxPage,
                 crawlRule.Enable));
+            ProxyFactory.RestartCrawlIPTask();
             return row;
         }
 
@@ -81,6 +91,7 @@ namespace AcgnuX.WindowX.Dialog
                 crawlRule.MaxPage,
                 crawlRule.Enable,
                 crawlRule.Id));
+            ProxyFactory.RestartCrawlIPTask();
             return row;
         }
 

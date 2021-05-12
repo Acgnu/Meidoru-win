@@ -26,7 +26,7 @@ namespace AcgnuX.Source.Utils
             {
                 Directory.CreateDirectory(dbPath);
             }
-            string databaseFileName = dbPath + fileName;
+            var databaseFileName = dbPath + fileName;
             if (!File.Exists(databaseFileName))
             {
                 SQLiteConnection.CreateFile(databaseFileName);
@@ -38,7 +38,7 @@ namespace AcgnuX.Source.Utils
         /// <param name="fileName">文件名</param>
         public static void DeleteDBFile(string fileName)
         {
-            string path = Environment.CurrentDirectory + dbPath;
+            var path = Environment.CurrentDirectory + dbPath;
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -46,30 +46,18 @@ namespace AcgnuX.Source.Utils
         }
 
         /// <summary>
-        /// 生成连接字符串
-        /// </summary>
-        /// <returns></returns>
-        private static string CreateConnectionString()
-        {
-            SQLiteConnectionStringBuilder connectionString = new SQLiteConnectionStringBuilder();
-            connectionString.DataSource = string.Format("{0}{1}", dbPath, dbfile);
-
-            string conStr = connectionString.ToString();
-            return conStr;
-        }
-
-        static SQLiteConnection m_dbConnection;
-        /// <summary>
         /// 连接到数据库
         /// </summary>
         /// <returns></returns>
-        private static SQLiteConnection dbConnection()
+        private static SQLiteConnection GetConnection()
         {
-            m_dbConnection = new SQLiteConnection(CreateConnectionString());
-
-            m_dbConnection.Open();
-
-            return m_dbConnection;
+            var connectionString = new SQLiteConnectionStringBuilder
+            {
+                DataSource = string.Format("{0}{1}", dbPath, dbfile)
+            };
+            var connection = new SQLiteConnection(connectionString.ToString());
+            connection.Open();
+            return connection;
         }
 
         /// <summary>
@@ -79,9 +67,10 @@ namespace AcgnuX.Source.Utils
         /// <returns></returns>
         public static bool CreateTable(string sql)
         {
+            var connection = GetConnection();
             try
             {
-                SQLiteCommand command = new SQLiteCommand(sql, dbConnection());
+                var command = new SQLiteCommand(sql, connection);
                 command.ExecuteNonQuery();
                 return true;
             }
@@ -92,9 +81,8 @@ namespace AcgnuX.Source.Utils
             }
             finally
             {
-                closeConn();
+                CloseConnection(connection);
             }
-
         }
 
         /// <summary>
@@ -104,9 +92,10 @@ namespace AcgnuX.Source.Utils
         /// <returns></returns>
         public static bool DeleteTable(string tablename)
         {
+            var connection = GetConnection();
             try
             {
-                SQLiteCommand cmd = new SQLiteCommand("DROP TABLE IF EXISTS " + tablename, dbConnection());
+                var cmd = new SQLiteCommand("DROP TABLE IF EXISTS " + tablename, connection);
                 cmd.ExecuteNonQuery();
                 return true;
             }
@@ -117,7 +106,7 @@ namespace AcgnuX.Source.Utils
             }
             finally
             {
-                closeConn();
+                CloseConnection(connection);
             }
         }
 
@@ -130,9 +119,10 @@ namespace AcgnuX.Source.Utils
         /// <returns></returns>
         public static bool AddColumn(string tablename, string columnname, string ctype)
         {
+            var connection = GetConnection();
             try
             {
-                SQLiteCommand cmd = new SQLiteCommand("ALTER TABLE " + tablename + " ADD COLUMN " + columnname + " " + ctype, dbConnection());
+                var cmd = new SQLiteCommand("ALTER TABLE " + tablename + " ADD COLUMN " + columnname + " " + ctype, connection);
                 cmd.ExecuteNonQuery();
                 return true;
             }
@@ -143,7 +133,7 @@ namespace AcgnuX.Source.Utils
             }
             finally
             {
-                closeConn();
+                CloseConnection(connection);
             }
         }
 
@@ -154,10 +144,10 @@ namespace AcgnuX.Source.Utils
         /// <returns></returns>
         public static int ExecuteNonQuery(string sql)
         {
+            var connection = GetConnection();
             try
             {
-                SQLiteCommand cmd;
-                cmd = new SQLiteCommand(sql, dbConnection());
+                var cmd = new SQLiteCommand(sql, connection);
                 cmd.ExecuteNonQuery().ToString();
                 return 1;
             }
@@ -168,7 +158,7 @@ namespace AcgnuX.Source.Utils
             }
             finally
             {
-                closeConn();
+                CloseConnection(connection);
             }
         }
 
@@ -179,10 +169,11 @@ namespace AcgnuX.Source.Utils
         /// <returns>返回字符串数组</returns>
         public static string[] SqlRow(string sql)
         {
+            var connection = GetConnection();
             try
             {
-                SQLiteCommand sqlcmd = new SQLiteCommand(sql, dbConnection());//sql语句
-                SQLiteDataReader reader = sqlcmd.ExecuteReader();
+                var sqlcmd = new SQLiteCommand(sql, connection);//sql语句
+                var reader = sqlcmd.ExecuteReader();
                 if (!reader.Read())
                 {
                     return null;
@@ -202,7 +193,7 @@ namespace AcgnuX.Source.Utils
             }
             finally
             {
-                closeConn();
+                CloseConnection(connection);
             }
         }
 
@@ -213,10 +204,10 @@ namespace AcgnuX.Source.Utils
         /// <returns>返回一个字符串</returns>
         public static string sqlone(string sql)
         {
-
+            var connection = GetConnection();
             try
             {
-                SQLiteCommand sqlcmd = new SQLiteCommand(sql, dbConnection());//sql语句
+                var sqlcmd = new SQLiteCommand(sql, connection);//sql语句
                 var obj = sqlcmd.ExecuteScalar();
                 if(null == obj)
                 {
@@ -230,7 +221,7 @@ namespace AcgnuX.Source.Utils
             }
             finally
             {
-                closeConn();
+                CloseConnection(connection);
             }
         }
 
@@ -242,17 +233,18 @@ namespace AcgnuX.Source.Utils
         /// <returns>返回一个数组</returns>
         public static List<string> sqlcolumn(string sql)
         {
+            var connection = GetConnection();
             try
             {
-                List<string> Column = new List<string>();
-                SQLiteCommand sqlcmd = new SQLiteCommand(sql, dbConnection());//sql语句
-                SQLiteDataReader reader = sqlcmd.ExecuteReader();
+                var columnList = new List<string>();
+                var sqlcmd = new SQLiteCommand(sql, connection);//sql语句
+                var reader = sqlcmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    Column.Add(reader[0].ToString());
+                    columnList.Add(reader[0].ToString());
                 }
                 reader.Close();
-                return Column;
+                return columnList;
             }
             catch (Exception ex)
             {
@@ -261,7 +253,7 @@ namespace AcgnuX.Source.Utils
             }
             finally
             {
-                closeConn();
+                CloseConnection(connection);
             }
         }
 
@@ -272,12 +264,17 @@ namespace AcgnuX.Source.Utils
         /// <returns>返回查询结果集</returns>
         public static DataTable SqlTable(string sql)
         {
+            var connection = GetConnection();
             try
             {
-                SQLiteCommand sqlcmd = new SQLiteCommand(sql, dbConnection());//sql语句
-                sqlcmd.CommandTimeout = 120;
-                SQLiteDataReader reader = sqlcmd.ExecuteReader();
-                DataTable dt = new DataTable();
+                var sqlcmd = new SQLiteCommand()
+                {
+                    CommandText = sql,
+                    Connection = connection,
+                    CommandTimeout = 120
+                };
+                var reader = sqlcmd.ExecuteReader();
+                var dt = new DataTable();
                 if (reader != null)
                 {
                     dt.Load(reader, LoadOption.PreserveChanges, null);
@@ -291,21 +288,19 @@ namespace AcgnuX.Source.Utils
             }
             finally
             {
-                closeConn();
+                CloseConnection(connection);
             }
         }
         /// <summary>
         /// 关闭数据库连接
         /// </summary>
-        public static void closeConn()
+        public static void CloseConnection(SQLiteConnection connection)
         {
             try
             {
-                if (m_dbConnection.State == ConnectionState.Open)
-                    m_dbConnection.Close();
-                else if (m_dbConnection.State == ConnectionState.Broken)
+                if (connection.State == ConnectionState.Open || connection.State == ConnectionState.Broken)
                 {
-                    m_dbConnection.Close();
+                    connection.Close();
                 }
             }
             catch (Exception ex)

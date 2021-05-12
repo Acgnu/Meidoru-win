@@ -19,5 +19,15 @@ namespace AcgnuX.Utils
             DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             return timeStampStartTime.AddMilliseconds(longTimeStamp).ToLocalTime();
         }
+
+        /// <summary>
+        /// 返回d1 - d2 经过的毫秒数
+        /// </summary>
+        /// <param name="d1"></param>
+        /// <param name="d2"></param>
+        public static long PassedTimeMillis(DateTime d1, DateTime d2)
+        {
+            return Convert.ToInt64((d1.ToUniversalTime() - d2).TotalMilliseconds);
+        }
     }
 }
