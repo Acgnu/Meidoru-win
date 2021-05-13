@@ -1,4 +1,6 @@
-﻿using AcgnuX.Source.Utils;
+﻿using AcgnuX.Source.Bussiness.Constants;
+using AcgnuX.Source.Utils;
+using AcgnuX.Utils;
 using AcgnuX.WindowX.Dialog;
 using System;
 using System.Collections.Generic;
@@ -20,11 +22,11 @@ namespace AcgnuX.Source.ViewModel
         //筛选框对象
         public ObservableCollection<PianoScoreDownloadRecordFilterBox> FilterBoxList { get; set; } = new ObservableCollection<PianoScoreDownloadRecordFilterBox>()
         {
-            new PianoScoreDownloadRecordFilterBox("成功", 0),
-            new PianoScoreDownloadRecordFilterBox("解析失败", 1),
-            new PianoScoreDownloadRecordFilterBox("乐谱不存在", 2),
-            new PianoScoreDownloadRecordFilterBox("乐谱页下载失败", 5),
-            new PianoScoreDownloadRecordFilterBox("播放文件下载失败", 7)
+            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetEnumDesc(typeof(PianoScoreDownloadResult), PianoScoreDownloadResult.SUCCESS.ToString()), Convert.ToByte(PianoScoreDownloadResult.SUCCESS)),
+            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetEnumDesc(typeof(PianoScoreDownloadResult), PianoScoreDownloadResult.PLAYER_NO_RESPONSE.ToString()), Convert.ToByte(PianoScoreDownloadResult.PLAYER_NO_RESPONSE)),
+            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetEnumDesc(typeof(PianoScoreDownloadResult), PianoScoreDownloadResult.PIANO_SCORE_NOT_EXSITS.ToString()), Convert.ToByte(PianoScoreDownloadResult.PIANO_SCORE_NOT_EXSITS)),
+            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetEnumDesc(typeof(PianoScoreDownloadResult), PianoScoreDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL.ToString()), Convert.ToByte(PianoScoreDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL)),
+            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetEnumDesc(typeof(PianoScoreDownloadResult), PianoScoreDownloadResult.PLAY_FILE_DOWNLOAD_FAIL.ToString()), Convert.ToByte(PianoScoreDownloadResult.PLAY_FILE_DOWNLOAD_FAIL))
         };
 
         public PianoScoreDownloadRecordViewModel(BaseDialog window) : base(window)

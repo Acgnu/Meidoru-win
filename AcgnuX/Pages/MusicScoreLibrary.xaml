@@ -40,7 +40,7 @@
             <Button x:Name="DefaultOpenPlayerButton" Style="{StaticResource PianoScoreDefaultPlayButton}"  Grid.Row="1" Click="OnDefaultPlayButtonClickV2">
                 <WrapPanel>
                     <Path Style="{StaticResource PianoScoreDefaultPlayButtonIcoPath}" Data="{StaticResource Icon_Play}"/>
-                    <TextBlock Text="打开播放器" />
+                    <TextBlock Text="{StaticResource Str_OpenPlayer}" />
                 </WrapPanel>
             </Button>
             <!--ListBox-->

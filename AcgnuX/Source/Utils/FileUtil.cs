@@ -256,6 +256,17 @@ namespace AcgnuX.Source.Utils
             return text;
         }
 
+        /// <summary>
+        /// 以流的方式读取资源文件
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static StreamResourceInfo GetApplicationResourceAsStream(string path)
+        {
+            var uri = new Uri(path, UriKind.Relative);
+            var info = System.Windows.Application.GetResourceStream(uri);
+            return info;
+        }
 
         //public static JArray LoadJsonFile(string JsonFileFullPath)
         //{

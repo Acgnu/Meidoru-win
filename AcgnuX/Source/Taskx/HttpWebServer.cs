@@ -11,6 +11,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Resources;
 
 namespace AcgnuX.Source.Taskx.Http
 {
@@ -219,16 +220,16 @@ namespace AcgnuX.Source.Taskx.Http
             var ypid = httpListenerContext.Request.QueryString["ypid"];
             //根据乐谱ID得到数据中乐谱名称
             var folderName = GetDbFileName(ypid);
-            if(!string.IsNullOrEmpty(folderName))
+            if (!string.IsNullOrEmpty(folderName))
             {
                 //根据名称返回文件夹中的乐谱第一页
-                var previewImgPath = AcgnuConfig.GetContext().pianoScorePath + "\\" + folderName + "\\" + "page.0.png";
+                var previewImgPath = AcgnuConfig.GetContext().pianoScorePath + Path.DirectorySeparatorChar + folderName + Path.DirectorySeparatorChar + "page.0.png";
                 WriteFile(previewImgPath, httpListenerContext);
             }
             else
             {
                 //没有则返回默认图 (避免flash播放器报错, 无法用程序退出)
-                WriteFile(Environment.CurrentDirectory + @"\Assets\Images\tan8_sheet_preview_default.png", httpListenerContext);
+                WriteStream(FileUtil.GetApplicationResourceAsStream(@"/Assets/Images/tan8_sheet_preview_default.png"), httpListenerContext);
             }
         }
 
@@ -249,6 +250,30 @@ namespace AcgnuX.Source.Taskx.Http
                     output.Write(picbyte, 0, picbyte.Length);
                     output.Close();
                 }
+            }
+        }
+
+        /// <summary>
+        /// 以流的方式响应文件
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="httpListenerContext"></param>
+        private void WriteStream(StreamResourceInfo streamResourceInfo, HttpListenerContext httpListenerContext)
+        {
+            try
+            {
+                Stream output = httpListenerContext.Response.OutputStream;
+                byte[] picbyte;
+                using (BinaryReader br = new BinaryReader(streamResourceInfo.Stream))
+                {
+                    picbyte = br.ReadBytes(Convert.ToInt32(streamResourceInfo.Stream.Length));
+                    output.Write(picbyte, 0, picbyte.Length);
+                    output.Close();
+                }
+            } 
+            finally
+            {
+                streamResourceInfo.Stream.Close();
             }
         }
 

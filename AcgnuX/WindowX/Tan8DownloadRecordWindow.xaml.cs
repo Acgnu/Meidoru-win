@@ -1,9 +1,11 @@
-﻿using AcgnuX.Source.Utils;
+﻿using AcgnuX.Source.Model;
+using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
 using AcgnuX.WindowX.Dialog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -133,6 +135,38 @@ namespace AcgnuX.WindowX
             if (ids.Length == 0) return;
             //删除数据库中的记录
             SQLite.ExecuteNonQuery(string.Format("DELETE FROM tan8_music_down_record WHERE ID IN ({0})", ids.Substring(1)));
+        }
+
+        /// <summary>
+        /// 弹8曲谱下载完成事件
+        /// </summary>
+        /// <param name="pianoScore"></param>
+        public void OnTan8SheetDownloadFinish(PianoScore pianoScore)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                var dataRow = SQLite.SqlRow(string.Format("SELECT id, ypid, name, strftime('%Y-%m-%d %H:%M:%S', create_time) create_time, result  FROM tan8_music_down_record WHERE ypid = {0} ORDER BY create_time DESC LIMIT 1", pianoScore.id));
+                var context = DataContext as PianoScoreDownloadRecordViewModel;
+                var downloadList = context.DownloadRecordList;
+                downloadList.Insert(0, new PianoScoreDownloadRecord()
+                {
+                    Id = Convert.ToInt32(dataRow[0]),
+                    Ypid = Convert.ToInt32(dataRow[1]),
+                    Name = Convert.ToString(dataRow[2]),
+                    Create_time = Convert.ToString(dataRow[3]),
+                    Result = Convert.ToString(dataRow[4])
+                });
+            });
+        }
+
+        /// <summary>
+        /// 重写窗口关闭事件
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            e.Cancel = true;  //标识取消close
+            this.Hide();      // 隐藏, 方便再次调用show()
         }
     }
 }

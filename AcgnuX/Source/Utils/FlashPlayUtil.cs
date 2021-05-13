@@ -31,10 +31,10 @@ namespace AcgnuX.Source.Utils
         /// 使用外部flashplayer.exe播放swf文件
         /// </summary>
         /// <param name="command">
-        /// <param name="minimized">true 最小化启动</param>
+        /// <param name="isHide">true 最小化启动</param>
         /// 命令行
         /// </param>
-        public static void ExePlay(string command, bool minimized)
+        public static void ExePlay(string command, bool isHide)
         {
             //检查信任文件是否存在
             var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -47,14 +47,14 @@ namespace AcgnuX.Source.Utils
             //mFlashProcess.StartInfo.FileName = Environment.CurrentDirectory + @"\Assets\flash\flashplayer.exe";
             //mFlashProcess.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "/maininteractive/ccv/";//程序闪退问题，要强行指定工作目录
             //mFlashProcess.StartInfo.UseShellExecute = true;//关键代码
-            //mFlashProcess.StartInfo.WindowStyle = minimized ? ProcessWindowStyle.Minimized : ProcessWindowStyle.Normal;//关键代码
+            //mFlashProcess.StartInfo.WindowStyle = isHide ? ProcessWindowStyle.isHide : ProcessWindowStyle.Normal;//关键代码
             //mFlashProcess.StartInfo.Arguments = command;
             //mFlashProcess.Start();
             mFlashProcess = Process.Start(new ProcessStartInfo()
             {
                 FileName = Environment.CurrentDirectory + @"\Assets\flash\flashplayer.exe",
-                WindowStyle = minimized ? ProcessWindowStyle.Minimized : ProcessWindowStyle.Normal,//关键代码
-                Arguments = command
+                WindowStyle = isHide ? ProcessWindowStyle.Hidden : ProcessWindowStyle.Normal,//关键代码
+                Arguments = command,
             });
             //mFlashProcess = Process.Start(Environment.CurrentDirectory + @"\Assets\flash\flashplayer.exe", command);
         }
@@ -63,9 +63,9 @@ namespace AcgnuX.Source.Utils
         /// 根据乐谱id打开弹琴吧播放器
         /// </summary>
         /// <param name="ypid"></param>
-        public static void ExePlayById(int ypid, bool minimized)
+        public static void ExePlayById(int ypid, bool isHide)
         {
-            ExePlay(Environment.CurrentDirectory + @"\Assets\flash\fuckTan8\Main.swf?id=" + ypid, minimized);
+            ExePlay(Environment.CurrentDirectory + @"\Assets\flash\fuckTan8\Main.swf?id=" + ypid, isHide);
         }
 
         /// <summary>
@@ -89,11 +89,11 @@ namespace AcgnuX.Source.Utils
         /// 重启Flash播放器
         /// </summary>
         /// <param name="ypid"></param>
-        /// <param name="minimized"></param>
-        public static void Restart(int? ypid, bool minimized)
+        /// <param name="isHide"></param>
+        public static void Restart(int? ypid, bool isHide)
         {
             Exit();
-            ExePlayById(ypid.GetValueOrDefault(), minimized);
+            ExePlayById(ypid.GetValueOrDefault(), isHide);
         }
     }
 }

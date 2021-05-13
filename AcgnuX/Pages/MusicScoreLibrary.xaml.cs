@@ -48,12 +48,18 @@ namespace AcgnuX.Pages
         private bool isTaskStop = false;
         //下载进度变更事件
         public event StatusBarNotifyHandler OnTaskBarEvent;
+        //曲谱下载完成事件
+        public event Tan8SheetDownloadFinishHandler OnDownloadFinish;
+        //下载记录窗口
+        private Tan8DownloadRecordWindow mDownloadRecordWindow;
 
         public MusicScoreLibrary(MainWindow mainWin)
         {
             InitializeComponent();
             mMainWindow = mainWin;
+            mDownloadRecordWindow = new Tan8DownloadRecordWindow();
             OnTaskBarEvent += mainWin.SetStatustProgess;
+            OnDownloadFinish += mDownloadRecordWindow.OnTan8SheetDownloadFinish;
         }
 
         private void OnPageLoaded(object sender, RoutedEventArgs e)
@@ -169,7 +175,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnDownloadListButtonClick(object sender, RoutedEventArgs e)
         {
-            new Tan8DownloadRecordWindow().Show();
+            mDownloadRecordWindow.Show();
         }
 
         /// <summary>
@@ -296,12 +302,12 @@ namespace AcgnuX.Pages
                     //如果是自动下载, 且由是由于网络连接出错, 则不保存下载记录, 直接重试
                     if ((result.code == 8 || result.code == 3 || result.code == 7) && isAutoDownload)
                     {
-                        //一分钟之内不重启重试
-                        if (TimeUtil.CurrentMillis() - startTimeMill < 60000)
+                        //25秒内不重启重试 ( flash请求等待时间超过30秒会弹窗报错, 此处限定为25秒)
+                        if (TimeUtil.CurrentMillis() - startTimeMill < 25 * 1000)
                         {
                             continue;
                         }
-                        //超过一分钟, 重启播放器重试
+                        //超过25秒, 重启播放器重试
                         FlashPlayUtil.Restart(pianoScore.id, true);
                         return InvokeSuccess(pianoScore);
                     }
@@ -311,6 +317,9 @@ namespace AcgnuX.Pages
 
             //每次下载完, 保存最后下载的记录ID
             SaveDownLoadRecord(pianoScore.id.GetValueOrDefault(), isAutoDownload, result);
+
+            //触发下载完成事件
+            OnDownloadFinish?.Invoke(pianoScore);
 
             //不是自动下载直接return
             if (!isAutoDownload)
@@ -349,16 +358,19 @@ namespace AcgnuX.Pages
             //校验基本参数
             if (null == pianoScore || null == pianoScore.id)
             {
-                OnTaskBarEvent?.Invoke(new MainWindowStatusNotify()
+                var lastYpid = SQLite.sqlone(string.Format("SELECT ypid FROM tan8_music_down_record WHERE code = {0} or code = {1} ORDER BY ypid DESC LIMIT 1", 
+                    Convert.ToInt32(PianoScoreDownloadResult.SUCCESS),
+                    Convert.ToInt32(PianoScoreDownloadResult.PIANO_SCORE_NOT_EXSITS)));
+                pianoScore = new PianoScore
                 {
-                    alertLevel = AlertLevel.ERROR,
-                    message = "乐谱ID未填写"
-                });
-                return InvokeFail(pianoScore);
+                    id = string.IsNullOrEmpty(lastYpid) ? 1 : Convert.ToInt32(lastYpid) + 1,
+                    autoDownload = true
+                };
             }
             isTaskStop = false;
             isAutoDownload = pianoScore.autoDownload;
             //打开播放器, 触发主动下载
+            FlashPlayUtil.Exit();
             FlashPlayUtil.ExePlayById(pianoScore.id.GetValueOrDefault(), true);
             return InvokeSuccess(pianoScore);
         }
@@ -624,7 +636,7 @@ namespace AcgnuX.Pages
             //var ypinfostring = @"<html><body>yp_create_time=<yp_create_time>1573183398</yp_create_time><br/>yp_title=<yp_title>说好不哭（文武贝钢琴版）</yp_title><br/>yp_page_count=<yp_page_count>3</yp_page_count><br/>yp_page_width=<yp_page_width>1089</yp_page_width><br/>yp_page_height=<yp_page_height>1540</yp_page_height><br/>yp_is_dadiao=<yp_is_dadiao>1</yp_is_dadiao><br/>yp_key_note=<yp_key_note>10</yp_key_note><br/>yp_is_yanyin=<yp_is_yanyin>1</yp_is_yanyin><br/>ypad_url=<ypad_url>http://www.tan8.com//yuepuku/132/66138/66138_hegiahcc.ypad</ypad_url>ypad_url2=<ypad_url2>http://www.tan8.com//yuepuku/132/66138/66138_hegiahcc.ypa2</ypad_url2></body></html>";
             //校验返回的乐谱信息
             var checkResult = CheckYuepuInfo(ypinfostring);
-            ProxyFactory.RemoveTemporary(proxyAddress, checkResult == PianoScoreDownloadResult.VISTI_REACH_LIMIT ? 0 : 15 * 1000);
+            ProxyFactory.RemoveProxy(proxyAddress, checkResult == PianoScoreDownloadResult.VISTI_REACH_LIMIT ? 0 : 15 * 1000);
             if (checkResult != PianoScoreDownloadResult.SUCCESS)
             {
                 return new InvokeResult<object>()

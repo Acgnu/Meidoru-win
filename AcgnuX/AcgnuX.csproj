@@ -195,6 +195,7 @@
     <Compile Include="Pages\Index.xaml.cs">
       <DependentUpon>Index.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Source\Model\ProxyAddress.cs" />
     <Compile Include="Source\Model\Account.cs" />
     <Compile Include="Source\Model\BasePropertyChangeNotifyModel.cs" />
     <Compile Include="Source\Model\CrawlRule.cs" />
@@ -428,9 +429,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="Assets\Images\tan8_sheet_preview_default.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Resource Include="Assets\Images\tan8_sheet_preview_default.png" />
     <Resource Include="Assets\Images\window_bg_default.jpg" />
     <Resource Include="Assets\data\init.sql" />
     <Content Include="Assets\flash\flashplayer.exe">

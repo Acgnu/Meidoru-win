@@ -148,8 +148,7 @@ namespace AcgnuX.Source.Utils
             try
             {
                 var cmd = new SQLiteCommand(sql, connection);
-                cmd.ExecuteNonQuery().ToString();
-                return 1;
+                return cmd.ExecuteNonQuery();
             }
             catch (Exception ex)
             {

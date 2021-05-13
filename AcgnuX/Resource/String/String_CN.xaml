@@ -33,4 +33,5 @@
     <system:String x:Key="StatusBarDefaultText">就绪</system:String>
     <system:String x:Key="Setting">设置</system:String>
     <system:String x:Key="Str_AutoDownload">自动下载</system:String>
+    <system:String x:Key="Str_OpenPlayer">打开播放器</system:String>
 </ResourceDictionary>

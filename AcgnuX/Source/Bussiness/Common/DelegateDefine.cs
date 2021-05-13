@@ -35,4 +35,10 @@ namespace AcgnuX.Source.Bussiness.Common
     /// </summary>
     /// <param name="curNum"></param>
     public delegate void ProxyPoolCountChangeHandler(int curNum);
+
+    /// <summary>
+    /// 弹8曲谱下载成功事件
+    /// </summary>
+    /// <param name="pianoScore"></param>
+    public delegate void Tan8SheetDownloadFinishHandler(PianoScore pianoScore);
 }

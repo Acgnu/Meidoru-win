@@ -53,14 +53,11 @@ namespace AcgnuX.Utils
             var request = new RestRequest(type);
             request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
             request.OnBeforeDeserialization = response => response.ContentType = ContentType.Json;
-
             foreach (KeyValuePair<string, string> kvp in prams)
             {
                 request.AddParameter(kvp.Key, kvp.Value);
             }
-
             var client = new RestClient(url);
-
             var asyncHandle = client.ExecuteAsync<T>(request, callBackActoin);
             return asyncHandle;
         }

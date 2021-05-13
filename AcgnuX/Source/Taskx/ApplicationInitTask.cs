@@ -34,8 +34,6 @@ namespace AcgnuX.Source.Taskx
             //执行代理IP爬取任务
             ProxyFactory.InitProxyFactoryTask();
 
-            //启动HTTP服务
-            //new HttpWebServer().StartListen();
             Task.Run(() =>
             {
             });

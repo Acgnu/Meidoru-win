@@ -42,3 +42,4 @@ CREATE TABLE IF NOT EXISTS "app_secret_keys" (
   "platform" TEXT(20) NOT NULL,
   PRIMARY KEY ("secret_key")
 );
+CREATE INDEX IF NOT EXISTS 'INDEX_TAN8_NAME' ON 'tan8_music' ('name' ASC);

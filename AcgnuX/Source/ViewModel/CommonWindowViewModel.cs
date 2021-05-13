@@ -37,10 +37,10 @@ namespace AcgnuX.Source.ViewModel
             CloseCommand = new RelayCommand(() => mWindow.Close());
 
             //注册事件
-            mWindow.StateChanged += (sender, e) =>
-            {
+            //mWindow.StateChanged += (sender, e) =>
+            //{
 
-            };
+            //};
         }
     }
 }

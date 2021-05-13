@@ -4,6 +4,7 @@ using AcgnuX.Source.Bussiness.Common;
 using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Commands;
 using AcgnuX.Source.Model;
+using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
 using System;
 using System.Collections.ObjectModel;
@@ -31,7 +32,10 @@ namespace AcgnuX.ViewModel
             //初始化菜单
             InitializeMenus();
             //主窗口退出则强制退出所有
-            CloseCommand = new RelayCommand(() => Task.Run(() => Environment.Exit(0)));
+            CloseCommand = new RelayCommand(() => Task.Run(() => {
+                FlashPlayUtil.Exit();
+                Environment.Exit(0);
+            }));
         }
 
         /// <summary>

@@ -49,7 +49,7 @@ namespace AcgnuX.Source.ViewModel
             //添加按钮
             hostPage.AddCrawlButton.Click += OnAddCrawlClick;
             //代理池数量变更监听
-            ProxyCount = ProxyFactory.GetProxyCount();
+            ProxyCount = ProxyFactory.GetProxyCount;
             ProxyFactory.mProxyPoolCountChangeHandler += OnProxyPoolCountChange;
             hostPage.ProxyCountTextBlock.DataContext = this;
         }
