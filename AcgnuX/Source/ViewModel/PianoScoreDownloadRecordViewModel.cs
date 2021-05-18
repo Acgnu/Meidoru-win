@@ -1,4 +1,5 @@
 ﻿using AcgnuX.Source.Bussiness.Constants;
+using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using AcgnuX.Utils;
 using AcgnuX.WindowX.Dialog;
@@ -18,18 +19,18 @@ namespace AcgnuX.Source.ViewModel
     public class PianoScoreDownloadRecordViewModel : CommonWindowViewModel
     {
         //历史纪录列表数据对象
-        public ObservableCollection<PianoScoreDownloadRecord> DownloadRecordList { get; set; } = new ObservableCollection<PianoScoreDownloadRecord>();
+        public ObservableCollection<Tan8SheetDownloadRecord> DownloadRecordList { get; set; } = new ObservableCollection<Tan8SheetDownloadRecord>();
         //筛选框对象
         public ObservableCollection<PianoScoreDownloadRecordFilterBox> FilterBoxList { get; set; } = new ObservableCollection<PianoScoreDownloadRecordFilterBox>()
         {
-            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetEnumDesc(typeof(PianoScoreDownloadResult), PianoScoreDownloadResult.SUCCESS.ToString()), Convert.ToByte(PianoScoreDownloadResult.SUCCESS)),
-            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetEnumDesc(typeof(PianoScoreDownloadResult), PianoScoreDownloadResult.PLAYER_NO_RESPONSE.ToString()), Convert.ToByte(PianoScoreDownloadResult.PLAYER_NO_RESPONSE)),
-            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetEnumDesc(typeof(PianoScoreDownloadResult), PianoScoreDownloadResult.PIANO_SCORE_NOT_EXSITS.ToString()), Convert.ToByte(PianoScoreDownloadResult.PIANO_SCORE_NOT_EXSITS)),
-            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetEnumDesc(typeof(PianoScoreDownloadResult), PianoScoreDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL.ToString()), Convert.ToByte(PianoScoreDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL)),
-            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetEnumDesc(typeof(PianoScoreDownloadResult), PianoScoreDownloadResult.PLAY_FILE_DOWNLOAD_FAIL.ToString()), Convert.ToByte(PianoScoreDownloadResult.PLAY_FILE_DOWNLOAD_FAIL))
+            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.SUCCESS.ToString()), Convert.ToByte(Tan8SheetDownloadResult.SUCCESS)),
+            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.PLAYER_NO_RESPONSE.ToString()), Convert.ToByte(Tan8SheetDownloadResult.PLAYER_NO_RESPONSE)),
+            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.PIANO_SCORE_NOT_EXSITS.ToString()), Convert.ToByte(Tan8SheetDownloadResult.PIANO_SCORE_NOT_EXSITS)),
+            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL.ToString()), Convert.ToByte(Tan8SheetDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL)),
+            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.PLAY_FILE_DOWNLOAD_FAIL.ToString()), Convert.ToByte(Tan8SheetDownloadResult.PLAY_FILE_DOWNLOAD_FAIL))
         };
 
-        public PianoScoreDownloadRecordViewModel(BaseDialog window) : base(window)
+        public PianoScoreDownloadRecordViewModel() : base()
         {
         }
     }
@@ -47,19 +48,5 @@ namespace AcgnuX.Source.ViewModel
             Title = title;
             Value = value;
         }
-    }
-
-    public class PianoScoreDownloadRecord
-    {
-        //记录id
-        public int Id { get; set; }
-        //下载的乐谱id
-        public int Ypid { get; set; }
-        //乐谱名称
-        public string Name { get; set; }
-        //记录时间
-        public string Create_time { get; set; }
-        //下载结果
-        public string Result { get; set; }
     }
 }

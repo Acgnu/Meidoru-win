@@ -3,7 +3,7 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
     <system:String x:Key="EditDnsRecord">编辑解析记录</system:String>
     <system:String x:Key="EditAccount">编辑账号</system:String>
-    <system:String x:Key="Str_EditMusicScore">编辑乐谱</system:String>
+    <system:String x:Key="Str_EditPianoScore">编辑乐谱</system:String>
     <system:String x:Key="SubDomian">子域名</system:String>
     <system:String x:Key="DnsRecordValue">记录值</system:String>
     <system:String x:Key="DnsRecordType">类型</system:String>
@@ -34,4 +34,12 @@
     <system:String x:Key="Setting">设置</system:String>
     <system:String x:Key="Str_AutoDownload">自动下载</system:String>
     <system:String x:Key="Str_OpenPlayer">打开播放器</system:String>
+    <system:String x:Key="Str_CrawlAddress">抓取地址</system:String>
+    <system:String x:Key="Str_CrawlRule">抓取规则</system:String>
+    <system:String x:Key="Str_CrawlPages">抓取页数</system:String>
+    <system:String x:Key="Str_PwdConfigFilePath">密码配置文件路径</system:String>
+    <system:String x:Key="Str_Tan8SheetSavePath">Tan8曲谱保存路径</system:String>
+    <system:String x:Key="Str_DownloadRecord">下载记录</system:String>
+    <system:String x:Key="Str_DownloadFromCurId">从此ID开始下载</system:String>
+    <!--<system:String x:Key="Str_ProxyCount">代理数量</system:String>-->
 </ResourceDictionary>

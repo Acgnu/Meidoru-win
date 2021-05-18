@@ -1,11 +1,4 @@
-﻿using AcgnuX.Source.Utils;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data;
-using System.Web.UI.WebControls;
-using System.Windows;
-using System.Windows.Input;
+﻿using System.Windows;
 
 namespace AcgnuX.Source.ViewModel
 {
@@ -14,8 +7,9 @@ namespace AcgnuX.Source.ViewModel
     /// </summary>
     public class Tan8PlayerViewModel : CommonWindowViewModel
     {
-        public Tan8PlayerViewModel(Window window) : base(window)
+        public Tan8PlayerViewModel() : base()
         {
+
         }
     }
 }

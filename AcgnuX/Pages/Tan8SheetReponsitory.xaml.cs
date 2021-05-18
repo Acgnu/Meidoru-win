@@ -22,9 +22,9 @@ using System.Windows.Media.Imaging;
 namespace AcgnuX.Pages
 {
     /// <summary>
-    /// MusicScoreLibrary.xaml 的交互逻辑
+    /// Tan8SheetReponsitory.xaml 的交互逻辑
     /// </summary>
-    public partial class MusicScoreLibrary : BasePage
+    public partial class Tan8SheetReponsitory : BasePage
     {
         //默认的封面文件名
         private readonly string DEFAULT_COVER_NAME = "cover.jpg";
@@ -53,11 +53,12 @@ namespace AcgnuX.Pages
         //下载记录窗口
         private Tan8DownloadRecordWindow mDownloadRecordWindow;
 
-        public MusicScoreLibrary(MainWindow mainWin)
+        public Tan8SheetReponsitory(MainWindow mainWin)
         {
             InitializeComponent();
             mMainWindow = mainWin;
             mDownloadRecordWindow = new Tan8DownloadRecordWindow();
+            mDownloadRecordWindow.editConfirmHnadler += DownLoadTan8MusicV2;
             OnTaskBarEvent += mainWin.SetStatustProgess;
             OnDownloadFinish += mDownloadRecordWindow.OnTan8SheetDownloadFinish;
         }
@@ -120,7 +121,7 @@ namespace AcgnuX.Pages
             foreach (DataRow dataRow in dataSet.Rows)
             {
                 //拼接得到cover路径
-                var imgDir = string.Format("{0}/{1}/{2}", AcgnuConfig.GetContext().pianoScorePath, dataRow["name"], DEFAULT_COVER_NAME);
+                var imgDir = string.Format("{0}/{1}/{2}", ConfigUtil.Instance.PianoScorePath, dataRow["name"], DEFAULT_COVER_NAME);
 
                 dataList.Add(new PianoScoreViewModel()
                 {
@@ -255,11 +256,11 @@ namespace AcgnuX.Pages
             }
 
             //修改文件夹名称
-            FileUtil.RenameFolder(AcgnuConfig.GetContext().pianoScorePath + Path.DirectorySeparatorChar + dbName[0], pianoScore.Name);
+            FileUtil.RenameFolder(ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar + dbName[0], pianoScore.Name);
             //修改数据库名称
             SQLite.ExecuteNonQuery(string.Format("UPDATE tan8_music SET name = '{0}' WHERE ypid = {1}", pianoScore.Name, pianoScore.id));
             //更新列表显示
-            mPianoScoreList[PianoScoreListBox.SelectedIndex].NameAndView = pianoScore.Name;
+            mPianoScoreList[PianoScoreListBox.SelectedIndex].NameView = pianoScore.Name;
             return new InvokeResult<PianoScore>()
             {
                 success = true
@@ -358,9 +359,9 @@ namespace AcgnuX.Pages
             //校验基本参数
             if (null == pianoScore || null == pianoScore.id)
             {
-                var lastYpid = SQLite.sqlone(string.Format("SELECT ypid FROM tan8_music_down_record WHERE code = {0} or code = {1} ORDER BY ypid DESC LIMIT 1", 
-                    Convert.ToInt32(PianoScoreDownloadResult.SUCCESS),
-                    Convert.ToInt32(PianoScoreDownloadResult.PIANO_SCORE_NOT_EXSITS)));
+                var lastYpid = SQLite.sqlone(string.Format("SELECT ypid FROM tan8_music_down_record WHERE code = {0} or code = {1} ORDER BY create_time DESC LIMIT 1", 
+                    Convert.ToInt32(Tan8SheetDownloadResult.SUCCESS),
+                    Convert.ToInt32(Tan8SheetDownloadResult.PIANO_SCORE_NOT_EXSITS)));
                 pianoScore = new PianoScore
                 {
                     id = string.IsNullOrEmpty(lastYpid) ? 1 : Convert.ToInt32(lastYpid) + 1,
@@ -535,7 +536,7 @@ namespace AcgnuX.Pages
             var folder = string.IsNullOrEmpty(pianoScore.Name) ? tan8Music.yp_title : pianoScore.Name;
             //替换非法字符
             folder = FileUtil.ReplaceInvalidChar(folder);
-            var folderPath = AcgnuConfig.GetContext().pianoScorePath + Path.DirectorySeparatorChar + folder;
+            var folderPath = AcgnuConfig.GetContext().PianoScorePath + Path.DirectorySeparatorChar + folder;
             FileUtil.CreateFolder(folderPath);
             //添加分隔符
             folderPath += Path.DirectorySeparatorChar;
@@ -636,14 +637,14 @@ namespace AcgnuX.Pages
             //var ypinfostring = @"<html><body>yp_create_time=<yp_create_time>1573183398</yp_create_time><br/>yp_title=<yp_title>说好不哭（文武贝钢琴版）</yp_title><br/>yp_page_count=<yp_page_count>3</yp_page_count><br/>yp_page_width=<yp_page_width>1089</yp_page_width><br/>yp_page_height=<yp_page_height>1540</yp_page_height><br/>yp_is_dadiao=<yp_is_dadiao>1</yp_is_dadiao><br/>yp_key_note=<yp_key_note>10</yp_key_note><br/>yp_is_yanyin=<yp_is_yanyin>1</yp_is_yanyin><br/>ypad_url=<ypad_url>http://www.tan8.com//yuepuku/132/66138/66138_hegiahcc.ypad</ypad_url>ypad_url2=<ypad_url2>http://www.tan8.com//yuepuku/132/66138/66138_hegiahcc.ypa2</ypad_url2></body></html>";
             //校验返回的乐谱信息
             var checkResult = CheckYuepuInfo(ypinfostring);
-            ProxyFactory.RemoveProxy(proxyAddress, checkResult == PianoScoreDownloadResult.VISTI_REACH_LIMIT ? 0 : 15 * 1000);
-            if (checkResult != PianoScoreDownloadResult.SUCCESS)
+            ProxyFactory.RemoveProxy(proxyAddress, checkResult == Tan8SheetDownloadResult.VISTI_REACH_LIMIT ? 0 : 15 * 1000);
+            if (checkResult != Tan8SheetDownloadResult.SUCCESS)
             {
                 return new InvokeResult<object>()
                 {
                     success = false,
                     code = (byte)checkResult,
-                    message = EnumLoader.GetEnumDesc(typeof(PianoScoreDownloadResult), checkResult.ToString()),
+                    message = EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), checkResult.ToString()),
                     data = "未知"
                 };
             }
@@ -654,7 +655,7 @@ namespace AcgnuX.Pages
             var folder = string.IsNullOrEmpty(pianoScore.Name) ? tan8Music.yp_title : pianoScore.Name;
             //替换非法字符
             folder = FileUtil.ReplaceInvalidChar(folder);
-            var folderPath = AcgnuConfig.GetContext().pianoScorePath + Path.DirectorySeparatorChar + folder;
+            var folderPath = ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar + folder;
             FileUtil.CreateFolder(folderPath);
             //添加分隔符
             folderPath += Path.DirectorySeparatorChar;
@@ -685,8 +686,8 @@ namespace AcgnuX.Pages
                     return new InvokeResult<object>()
                     {
                         success = false,
-                        code = (byte)PianoScoreDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL,
-                        message = EnumLoader.GetEnumDesc(typeof(PianoScoreDownloadResult), PianoScoreDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL.ToString()),
+                        code = (byte)Tan8SheetDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL,
+                        message = EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL.ToString()),
                         data = folder
                     };
                 }
@@ -699,8 +700,8 @@ namespace AcgnuX.Pages
                 return new InvokeResult<object>()
                 {
                     success = false,
-                    code = (byte)PianoScoreDownloadResult.PLAY_FILE_DOWNLOAD_FAIL,
-                    message = EnumLoader.GetEnumDesc(typeof(PianoScoreDownloadResult), PianoScoreDownloadResult.PLAY_FILE_DOWNLOAD_FAIL.ToString()),
+                    code = (byte)Tan8SheetDownloadResult.PLAY_FILE_DOWNLOAD_FAIL,
+                    message = EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.PLAY_FILE_DOWNLOAD_FAIL.ToString()),
                     data = folder
                 };
             }
@@ -714,8 +715,8 @@ namespace AcgnuX.Pages
             return new InvokeResult<object>()
             {
                 success = true,
-                code = (byte)PianoScoreDownloadResult.SUCCESS,
-                message = EnumLoader.GetEnumDesc(typeof(PianoScoreDownloadResult), PianoScoreDownloadResult.SUCCESS.ToString()),
+                code = (byte)Tan8SheetDownloadResult.SUCCESS,
+                message = EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.SUCCESS.ToString()),
                 data = folder
             };
         }
@@ -725,19 +726,19 @@ namespace AcgnuX.Pages
         /// </summary>
         /// <param name="source">乐谱信息结果串</param>
         /// <returns></returns>
-        private PianoScoreDownloadResult CheckYuepuInfo(string source)
+        private Tan8SheetDownloadResult CheckYuepuInfo(string source)
         {
             //无返回
-            if (string.IsNullOrEmpty(source)) return PianoScoreDownloadResult.PLAYER_NO_RESPONSE;
+            if (string.IsNullOrEmpty(source)) return Tan8SheetDownloadResult.PLAYER_NO_RESPONSE;
             //乐谱不存在
-            if (source.Contains("该乐谱不存在!")) return PianoScoreDownloadResult.PIANO_SCORE_NOT_EXSITS;
-            if (source.Contains("您访问太频繁啦")) return PianoScoreDownloadResult.TOO_MANY_VISIT;
-            if (source.Contains("您访问的次数太多了")) return PianoScoreDownloadResult.VISTI_REACH_LIMIT;
-            if (source.Contains("验证错误")) return PianoScoreDownloadResult.VALID_ERROR;
+            if (source.Contains("该乐谱不存在!")) return Tan8SheetDownloadResult.PIANO_SCORE_NOT_EXSITS;
+            if (source.Contains("您访问太频繁啦")) return Tan8SheetDownloadResult.TOO_MANY_VISIT;
+            if (source.Contains("您访问的次数太多了")) return Tan8SheetDownloadResult.VISTI_REACH_LIMIT;
+            if (source.Contains("验证错误")) return Tan8SheetDownloadResult.VALID_ERROR;
             //网络连接出错
-            if (source.Equals(RequestUtil.CONNECTION_ERROR)) return PianoScoreDownloadResult.NETWORK_ERROR;
+            if (source.Equals(RequestUtil.CONNECTION_ERROR)) return Tan8SheetDownloadResult.NETWORK_ERROR;
             //默认返回成功
-            return PianoScoreDownloadResult.SUCCESS;
+            return Tan8SheetDownloadResult.SUCCESS;
         }
 
         /// <summary>
@@ -818,7 +819,7 @@ namespace AcgnuX.Pages
                 mPianoScoreList.Remove(selected);
 
                 //删除文件夹
-                FileUtil.DeleteDir(AcgnuConfig.GetContext().pianoScorePath + Path.DirectorySeparatorChar + selected.Name);
+                FileUtil.DeleteDir(ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar + selected.Name);
 
                 //删除数据库数据
                 SQLite.ExecuteNonQuery(string.Format("DELETE FROM tan8_music WHERE ypid = {0}", selected.id));
@@ -837,7 +838,7 @@ namespace AcgnuX.Pages
         {
             var selected = PianoScoreListBox.SelectedItem as PianoScoreViewModel;
             if (null == selected) return;
-            var fullPath = AcgnuConfig.GetContext().pianoScorePath + Path.DirectorySeparatorChar + selected.Name;
+            var fullPath = ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar + selected.Name;
             if(Directory.Exists(fullPath))
             {
                 System.Diagnostics.Process.Start(fullPath);

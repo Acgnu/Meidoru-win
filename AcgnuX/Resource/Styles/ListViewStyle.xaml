@@ -39,7 +39,7 @@
                                 <Image Source="{Binding BitImg}" Panel.ZIndex="0"/>
                                 <Path Width="20" Height="20" Margin="80 70 0 0" Data="{DynamicResource Icon_Play}" Style="{StaticResource MainStatusBarIcoPathStyle}"/>
                             </Grid>
-                            <Label Content="{Binding ImgNameAndView}" Height="20" Width="100" Margin="0 2 0 0" Padding="0"></Label>
+                            <Label Content="{Binding ImgNameView}" Height="20" Width="100" Margin="0 2 0 0" Padding="0"></Label>
                         </StackPanel>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -103,7 +103,7 @@
                     <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="Transparent" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true" CornerRadius="2">
                         <StackPanel Orientation="Vertical">
                             <WrapPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                                <Label Content="{Binding FolderNameAndView}" Margin="10 5 0 2" FontSize="14" FontWeight="Bold" Foreground="#FF252525"/>
+                                <Label Content="{Binding FolderNameView}" Margin="10 5 0 2" FontSize="14" FontWeight="Bold" Foreground="#FF252525"/>
                                 <Button Style="{StaticResource AddButtonStyle}">
                                     <WrapPanel>
                                         <Path Style="{StaticResource CommonAddButtonPathIcoStyle}"/>

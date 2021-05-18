@@ -18,7 +18,6 @@ namespace AcgnuX.WindowX
         public Tan8PlayerWindow()
         {
             InitializeComponent();
-            DataContext = new Tan8PlayerViewModel(this);
         }
 
         /// <summary>

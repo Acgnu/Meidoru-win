@@ -1,56 +1,57 @@
-ï»¿using AcgnuX.Pages;
+using AcgnuX.Pages;
 using AcgnuX.Pages.Apis.Ten.Dns;
-using AcgnuX.Source.Bussiness.Common;
-using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Source.Commands;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
-using AcgnuX.Source.ViewModel;
+using GalaSoft.MvvmLight.CommandWpf;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
 
-namespace AcgnuX.ViewModel
+namespace AcgnuX.Source.ViewModel
 {
     /// <summary>
-    /// ä¸»çª—å£è§†å›¾æ¨¡å‹
+    /// This class contains properties that the main View can data bind to.
+    /// <para>
+    /// Use the <strong>mvvminpc</strong> snippet to add bindable properties to this ViewModel.
+    /// </para>
+    /// <para>
+    /// You can also use Blend to data bind with the tool's support.
+    /// </para>
+    /// <para>
+    /// See http://www.galasoft.ch/mvvm
+    /// </para>
     /// </summary>
-    class MainWindowViewModel : CommonWindowViewModel
+    public class MainWindowViewModel : CommonWindowViewModel
     {
-        //èœå•é›†åˆ
+        //²Ëµ¥¼¯ºÏ
         public ObservableCollection<NavMenu> navMenus { get; set; } = null;
 
-        public MainWindowViewModel(Window window) : base(window)
+        public MainWindowViewModel() : base()
         {
-            //åˆå§‹åŒ–èœå•
+            //³õÊ¼»¯²Ëµ¥
             InitializeMenus();
-            //ä¸»çª—å£é€€å‡ºåˆ™å¼ºåˆ¶é€€å‡ºæ‰€æœ‰
-            CloseCommand = new RelayCommand(() => Task.Run(() => {
+            //Ö÷´°¿ÚÍË³öÔòÇ¿ÖÆÍË³öËùÓĞ
+            CloseCommand = new RelayCommand<Window>((win) => Task.Run(() => {
                 FlashPlayUtil.Exit();
                 Environment.Exit(0);
             }));
         }
 
         /// <summary>
-        /// åˆå§‹åŒ–èœå•
+        /// ³õÊ¼»¯²Ëµ¥
         /// </summary>
         private void InitializeMenus()
         {
             navMenus = new ObservableCollection<NavMenu>()
             {
-                new NavMenu() { name = "ç–¼é€Šäº‘è§£æ", pageType = typeof(DnsRecords), icon=(Geometry)Application.Current.FindResource("Icon_Paperclip") },
-                new NavMenu() { name = "WEBæœåŠ¡",pageType = typeof (WebServer), icon=(Geometry)Application.Current.FindResource("Icon_Server") },
-                new NavMenu() { name = "å¯†ç åº“",pageType = typeof( PwdRepositroy), icon=(Geometry)Application.Current.FindResource("Icon_PasswordBox") },
-                new NavMenu() { name = "è°±åº“",pageType = typeof( MusicScoreLibrary), icon=(Geometry)Application.Current.FindResource("Icon_Book") },
-                new NavMenu() { name = "çˆªæœºåŒæ­¥",pageType =typeof ( MobileDeviceControl), icon=(Geometry)Application.Current.FindResource("Icon_Cloud") },
-                new NavMenu() { name = "è®¾ç½®",pageType = typeof (Settings), icon=(Geometry)Application.Current.FindResource("Icon_Setting") }
+                new NavMenu() { name = "ÌÛÑ·ÔÆ½âÎö", pageType = typeof(DnsRecords), icon=(Geometry)Application.Current.FindResource("Icon_Paperclip") },
+                new NavMenu() { name = "WEB·şÎñ",pageType = typeof (WebServer), icon=(Geometry)Application.Current.FindResource("Icon_Server") },
+                new NavMenu() { name = "ÃÜÂë¿â",pageType = typeof( PwdRepositroy), icon=(Geometry)Application.Current.FindResource("Icon_PasswordBox") },
+                new NavMenu() { name = "Æ×¿â",pageType = typeof( Tan8SheetReponsitory), icon=(Geometry)Application.Current.FindResource("Icon_Book") },
+                new NavMenu() { name = "×¦»úÍ¬²½",pageType =typeof ( MobileDeviceControl), icon=(Geometry)Application.Current.FindResource("Icon_Cloud") },
+                new NavMenu() { name = "ÉèÖÃ",pageType = typeof (AppSettings), icon=(Geometry)Application.Current.FindResource("Icon_Setting") }
             };
 
             //DataContext = navMenus;

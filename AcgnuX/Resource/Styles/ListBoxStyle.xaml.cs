@@ -91,13 +91,13 @@ namespace AcgnuX.Resource.Styles
 
             //检查曲谱可否播放
             var folderName = SQLite.sqlone(string.Format("SELECT name FROM tan8_music WHERE ypid = {0}", (selected as PianoScore).id.GetValueOrDefault()));
-            var playFilePath = AcgnuConfig.GetContext().pianoScorePath + "\\" + folderName + "\\" + "play.ypa2";
+            var playFilePath = ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar + folderName + Path.DirectorySeparatorChar + "play.ypa2";
             //手动选中行
             pianoScoreListBox.SelectedItem = selected;
             if (!File.Exists(playFilePath))
             {
                 //无法播放的曲谱打开所在文件夹
-                var fullPath = AcgnuConfig.GetContext().pianoScorePath + Path.DirectorySeparatorChar + folderName;
+                var fullPath = ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar + folderName;
                 if (Directory.Exists(fullPath))
                 {
                     System.Diagnostics.Process.Start(fullPath);
@@ -106,6 +106,7 @@ namespace AcgnuX.Resource.Styles
             }
 
             //播放所选曲谱
+            FlashPlayUtil.Exit();
             FlashPlayUtil.ExePlayById((selected as PianoScore).id.GetValueOrDefault(), false);
         }
 

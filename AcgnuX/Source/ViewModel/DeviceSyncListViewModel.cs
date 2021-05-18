@@ -5,7 +5,7 @@ namespace AcgnuX.Source.ViewModel
 {
     class DeviceSyncListViewModel : BasePropertyChangeNotifyModel
     {
-        public string FolderNameAndView { get; set; }
+        public string FolderNameView { get; set; }
         public ObservableCollection<DeviceSyncListImgViewItem> ImgItemList { get; set; }
     }
 }

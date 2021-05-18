@@ -4,7 +4,7 @@ namespace AcgnuX.Source.ViewModel
 {
     class PianoScoreViewModel : PianoScore
     {
-        public string NameAndView
+        public string NameView
         {
             get 
             {

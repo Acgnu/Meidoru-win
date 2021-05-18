@@ -5,8 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AcgnuX.WindowX.Dialog"
         mc:Ignorable="d"
-        Title="下载记录" Height="500" Width="600" Style="{StaticResource CommonWindowStyle}" Loaded="OnWindowLoaded">
+        Title="{StaticResource Str_DownloadRecord}" Height="500" Width="600" Style="{StaticResource CommonWindowStyle}" Loaded="OnWindowLoaded">
 
+    <Window.DataContext>
+        <Binding Path="Tan8DownloadRecord" Source="{StaticResource Locator}"></Binding>
+    </Window.DataContext>
+    
     <Window.Icon>
         <DrawingImage>
             <DrawingImage.Drawing>
@@ -65,12 +69,13 @@
                               PreviewKeyDown="OnDownloadRecordGridKeyDown">
             <DataGrid.ContextMenu>
                 <ContextMenu>
+                    <MenuItem Header="{StaticResource Str_DownloadFromCurId}" Click="OnCopyIncrIdContextMenuClick" />
                     <MenuItem Header="{StaticResource Delete}" Click="OnDeleteContextMenuClick" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Ypid}" Header="乐谱ID" Width="0.5*" />
-                <DataGridTextColumn Binding="{Binding Name}" Header="名称" Width="1.5*" />
+                <DataGridTextColumn Binding="{Binding Ypid}" Header="{StaticResource Str_MusicId}" Width="0.5*" />
+                <DataGridTextColumn Binding="{Binding Name}" Header="{StaticResource Str_Name}" Width="1.5*" />
                 <DataGridTextColumn Binding="{Binding Create_time}" Header="下载时间" Width="*" />
                 <DataGridTextColumn Binding="{Binding Result}" Header="下载结果" Width="*" />
             </DataGrid.Columns>

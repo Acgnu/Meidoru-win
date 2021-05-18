@@ -37,7 +37,7 @@ namespace AcgnuX.Pages.MobileSync
                 ImgItemList.Add(
                 new DeviceSyncListImgViewItem()
                 {
-                    ImgNameAndView = "图片" + i,
+                    ImgNameView = "图片" + i,
                     BitImg = new BitmapImage(new Uri("/Assets/Images/piano-cover-default.jpg", UriKind.Relative))
                 });
             }
@@ -48,7 +48,7 @@ namespace AcgnuX.Pages.MobileSync
                 mSyncDataList.Add(
                 new DeviceSyncListViewModel
                 {
-                    FolderNameAndView = "这个只是一个文件目录" + i,
+                    FolderNameView = "这个只是一个文件目录" + i,
                     ImgItemList = ImgItemList
                 }
               );

@@ -37,6 +37,8 @@ namespace AcgnuX.Source.Taskx
         private static Timer mCrawlIPTask;
         //测试代理IP有效性的定时任务
         private static Timer mCheckProxyTask;
+        //标识最新抓取IP任务的ID, ID不一致则终止旧线程
+        private static int mTaskId = 0;
 
         /// <summary>
         /// 读取爬取规则
@@ -85,6 +87,7 @@ namespace AcgnuX.Source.Taskx
         /// </summary>
         private static void StartCrawlIP(object state)
         {
+            mTaskId++;
             var taskName = "\n[ 抓取IP任务 ]";
             var crawRules = GetCrawlRules();
             //遍历所有规则
@@ -92,9 +95,11 @@ namespace AcgnuX.Source.Taskx
             {
                 //对每一条规则单开一个线程
                 Task.Run(() => {
+                    int threadTaskId = mTaskId;
                     //设置爬取的页数, 以第一页为当前页
                     for (var currentPage = 1; currentPage <= item.MaxPage; currentPage++)
                     {
+                        if (threadTaskId != mTaskId) return;
                         var curTaskDesc = string.Format("{0} 规则 -> {1} ", taskName, item.Name);
                         //请求目标地址, 获取目标地址HTML
                         var crawlResult = RequestUtil.CrawlContentFromWebsit(string.Format(item.Url, currentPage), null);
@@ -109,14 +114,11 @@ namespace AcgnuX.Source.Taskx
                         //开始逐行爬取IP
                         while (mstr.Success)
                         {
+                            if (threadTaskId != mTaskId) return;
                             var proxyAddress = mstr.Groups[1].Value + ":" + mstr.Groups[2].Value;
                             mstr = mstr.NextMatch();
-                            //如果IP池已包含则匹配下一条
-                            //if (mProxyIpPool.Contains(proxyAddress)) continue;
-                            //只有代理有效才加入代理池
                             if (IsProxyValid(proxyAddress))
                             {
-                                //AddToPoolNotExsits(proxyAddress);
                                 SaveProxyToDB(proxyAddress);
                             }
                         }
@@ -159,15 +161,6 @@ namespace AcgnuX.Source.Taskx
         //    if (mProxyIpPool.IsEmpty) return null;
         //    var index = mProxyIpPool.Count - 1 >= 0 ? mProxyIpPool.Count - 1 : 0;
         //    return mProxyIpPool.ElementAt(new Random().Next(index));
-        //}
-
-        /// <summary>
-        /// 返回IP池数量
-        /// </summary>
-        /// <returns></returns>
-        //public static int GetProxyCount()
-        //{
-            //return mProxyIpPool.Count();
         //}
 
         /// <summary>

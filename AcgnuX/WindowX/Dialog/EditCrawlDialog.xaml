@@ -22,24 +22,24 @@
             <!--名称-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{StaticResource Str_Name}" Style="{StaticResource FormFieldTextBlock}" />
-                <TextBox Name="TextBlockName" Style="{StaticResource TextBoxBase}" Text="{Binding Path=McrawlRule.Name}"/>
+                <TextBox Name="TextBlockName" Style="{StaticResource TextBoxBase}" Text="{Binding Path=McrawlRule.NameView, UpdateSourceTrigger=Explicit}"/>
             </DockPanel>
             <!--地址-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{StaticResource Site}" Style="{StaticResource FormFieldTextBlock}" />
-                <TextBox Name="TextBlockSite" Style="{StaticResource TextBoxBase}" Text="{Binding Path=McrawlRule.Url}"/>
+                <TextBox Name="TextBlockSite" Style="{StaticResource TextBoxBase}" Text="{Binding Path=McrawlRule.UrlView, UpdateSourceTrigger=Explicit}"/>
             </DockPanel>
             <!--规则-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="匹配规则" Style="{StaticResource FormFieldTextBlock}"/>
-                <TextBox Name="TextBlockParttten" Style="{StaticResource TextBoxBase}" Text="{Binding Path=McrawlRule.Partten}"/>
+                <TextBox Name="TextBlockParttten" Style="{StaticResource TextBoxBase}" Text="{Binding Path=McrawlRule.ParttenView, UpdateSourceTrigger=Explicit}"/>
             </DockPanel>
             <!--页数-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="抓取页数" Style="{StaticResource FormFieldTextBlock}"/>
                 <Grid>
-                    <TextBox Name="TextBlockPage" Style="{StaticResource TextBoxBase}" Text="{Binding Path=McrawlRule.MaxPage}"/>
-                    <CheckBox Content="启用" IsChecked="{Binding McrawlRule.Enable}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    <TextBox Name="TextBlockPage" Style="{StaticResource TextBoxBase}" Text="{Binding Path=McrawlRule.MaxPageView, UpdateSourceTrigger=Explicit}"/>
+                    <CheckBox Name="CheckboxEnable" Content="启用" IsChecked="{Binding McrawlRule.EnableView, UpdateSourceTrigger=Explicit}" HorizontalAlignment="Right" VerticalAlignment="Center" />
                 </Grid>
              </DockPanel>
         </StackPanel>

@@ -55,7 +55,8 @@
                                     </Border>
                                     <!--对话框关闭按钮-->
                                     <Button Grid.Column="1"  WindowChrome.IsHitTestVisibleInChrome="True"   
-                                        Command="{Binding CloseCommand}" Padding="15,1" Content="✕"
+                                        Command="{Binding CloseCommand}" 
+                                        Padding="15,1" Content="✕"
                                         Style="{DynamicResource NoneStyleButtonStyle}" 
                                         Template="{DynamicResource WindowCloseButtonTemplate}">
                                     </Button>
@@ -116,9 +117,9 @@
 
                                     <!--主窗口操作按钮-->
                                     <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MinimizeCommand}" Content="_" Padding="15 6 15 6" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource CommonNoStyleButtonTemplate}"/>
-                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MaximizeCommand}" Content="☐" Padding="15 6 15 2" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource CommonNoStyleButtonTemplate}"/>
-                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding CloseCommand}" Content="✕" Padding="15 6 15 4" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource WindowCloseButtonTemplate}"/>
+                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MinimizeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="_" Padding="15 6 15 6" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource CommonNoStyleButtonTemplate}"/>
+                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MaximizeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="☐" Padding="15 6 15 2" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource CommonNoStyleButtonTemplate}"/>
+                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding CloseCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="✕" Padding="15 6 15 4" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource WindowCloseButtonTemplate}"/>
                                     </StackPanel>
                                 </Grid>
 
@@ -169,9 +170,9 @@
 
                                     <!--主窗口操作按钮-->
                                     <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MinimizeCommand}" Content="_" Padding="15 6 15 6" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource CommonNoStyleButtonTemplate}"/>
-                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MaximizeCommand}" Content="☐" Padding="15 6 15 2" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource CommonNoStyleButtonTemplate}"/>
-                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding CloseCommand}" Content="✕" Padding="15 6 15 4" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource WindowCloseButtonTemplate}"/>
+                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MinimizeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="_" Padding="15 6 15 6" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource CommonNoStyleButtonTemplate}"/>
+                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MaximizeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="☐" Padding="15 6 15 2" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource CommonNoStyleButtonTemplate}"/>
+                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding CloseCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="✕" Padding="15 6 15 4" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource WindowCloseButtonTemplate}"/>
                                     </StackPanel>
                                 </Grid>
 

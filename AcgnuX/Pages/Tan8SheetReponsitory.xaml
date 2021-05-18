@@ -1,11 +1,11 @@
-﻿<local:BasePage x:Class="AcgnuX.Pages.MusicScoreLibrary"
+﻿<local:BasePage x:Class="AcgnuX.Pages.Tan8SheetReponsitory"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:local="clr-namespace:AcgnuX.Pages"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
-      Title="MusicScoreLibrary" Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
+      Title="Tan8SheetReponsitory" Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
 
     <Page.Resources>
         <Style TargetType="Path" x:Key="RefreshHistoryIcoStyle" BasedOn="{StaticResource MainStatusBarIcoPathStyle}">
@@ -47,8 +47,8 @@
             <ListBox Name="PianoScoreListBox" Grid.Row="1" MouseDoubleClick="OnListBoxDoubleClick" ContextMenuOpening="OnContextMenuOpen" ItemContainerStyle="{StaticResource PianoScoreListBoxItemContainerStyle}" Template="{StaticResource PianoScoreListBoxTemplate}" Visibility="Collapsed" ScrollViewer.ScrollChanged="OnPianoScoreListBoxScroll">
                 <ListBox.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="{StaticResource Delete}" Click="OnDeleteClick"/>
                         <MenuItem Header="{StaticResource OpenFolder}" Click="OnOpenFolderClick"/>
+                        <MenuItem Header="{StaticResource Delete}" Click="OnDeleteClick"/>
                     </ContextMenu>
                 </ListBox.ContextMenu>
             </ListBox>

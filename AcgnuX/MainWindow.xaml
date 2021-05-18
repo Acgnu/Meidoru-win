@@ -6,6 +6,10 @@
         mc:Ignorable="d"
         Title="AcgnuX" Height="720" Width="1000" Style="{StaticResource MainWindowStyle}" Loaded="OnWindowLoaded">
 
+    <Window.DataContext>
+        <Binding Path="Main" Source="{StaticResource Locator}"></Binding>
+    </Window.DataContext>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"></ColumnDefinition>

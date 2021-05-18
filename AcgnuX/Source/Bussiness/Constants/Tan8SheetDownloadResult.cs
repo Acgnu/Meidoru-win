@@ -6,7 +6,7 @@ namespace AcgnuX.Source.Bussiness.Constants
     /// <summary>
     /// tan8曲谱下载结果
     /// </summary>
-    public enum PianoScoreDownloadResult
+    public enum Tan8SheetDownloadResult
     {
         [EnumMember]
         [Description("下载成功")]

@@ -43,7 +43,7 @@ namespace AcgnuX.Pages
         /// </summary>
         private void LoadAllPassword()
         {
-            var accountFilePath = AcgnuConfig.GetContext().accountJsonPath;
+            var accountFilePath = ConfigUtil.Instance.AccountJsonPath;
             accountList = FileUtil.DeserializeJsonFromFile<ObservableCollection<Account>>(accountFilePath);
             PasswordDataGrid.ItemsSource = accountList;
         }
@@ -96,7 +96,7 @@ namespace AcgnuX.Pages
             if (result.GetValueOrDefault())
             {
                 accountList.Remove(selected);
-                FileUtil.SaveJsonToFile(accountList, AcgnuConfig.GetContext().accountJsonPath);
+                FileUtil.SaveJsonToFile(accountList, ConfigUtil.Instance.AccountJsonPath);
             }
         }
 
@@ -163,7 +163,7 @@ namespace AcgnuX.Pages
                 accountList[PasswordDataGrid.SelectedIndex] = account;
             }
             //保存到文件
-            FileUtil.SaveJsonToFile(accountList, AcgnuConfig.GetContext().accountJsonPath);
+            FileUtil.SaveJsonToFile(accountList, ConfigUtil.Instance.AccountJsonPath);
 
             return InvokeSuccess(account);
         }

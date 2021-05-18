@@ -3,9 +3,11 @@ using AcgnuX.Source.Model;
 using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
+using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace AcgnuX.WindowX.Dialog
 {
@@ -39,8 +41,9 @@ namespace AcgnuX.WindowX.Dialog
         {
             var button = sender as Button;
             button.IsEnabled = false;
-            var successRow = 0;
-            if(0 == McrawlRule.Id)
+            int successRow;
+            ManualTriggerSourceUpdate();
+            if (0 == McrawlRule.Id)
             {
                 successRow = SaveCrawlRule(McrawlRule);
             }
@@ -54,6 +57,24 @@ namespace AcgnuX.WindowX.Dialog
             }
             button.IsEnabled = true;
             Close();
+        }
+
+        /// <summary>
+        /// 手动更新源
+        /// </summary>
+        private void ManualTriggerSourceUpdate()
+        {
+            //手动表格更新vm
+            BindingExpression binding = TextBlockName.GetBindingExpression(TextBox.TextProperty);
+            binding.UpdateSource();
+            binding = TextBlockSite.GetBindingExpression(TextBox.TextProperty);
+            binding.UpdateSource();
+            binding = TextBlockParttten.GetBindingExpression(TextBox.TextProperty);
+            binding.UpdateSource();
+            binding = TextBlockPage.GetBindingExpression(TextBox.TextProperty);
+            binding.UpdateSource();
+            binding = CheckboxEnable.GetBindingExpression(CheckBox.IsCheckedProperty);
+            binding.UpdateSource();
         }
 
         /// <summary>
@@ -73,7 +94,17 @@ namespace AcgnuX.WindowX.Dialog
                 crawlRule.Partten,
                 crawlRule.MaxPage,
                 crawlRule.Enable));
-            ProxyFactory.RestartCrawlIPTask();
+           
+            if(row > 0)
+            {
+                //查询最新添加的记录ID
+                var newID = SQLite.sqlone("SELECT MAX(id) FROM crawl_rules");
+                crawlRule.Id = Convert.ToInt32(newID);
+            }
+            if(crawlRule.Enable == Convert.ToByte(1))
+            {
+                ProxyFactory.RestartCrawlIPTask();
+            }
             return row;
         }
 
@@ -91,7 +122,10 @@ namespace AcgnuX.WindowX.Dialog
                 crawlRule.MaxPage,
                 crawlRule.Enable,
                 crawlRule.Id));
-            ProxyFactory.RestartCrawlIPTask();
+            if (crawlRule.Enable == Convert.ToByte(1))
+            {
+                ProxyFactory.RestartCrawlIPTask();
+            }
             return row;
         }
 

@@ -122,7 +122,7 @@ namespace AcgnuX.Source.Taskx.Http
             if(!string.IsNullOrEmpty(folderName))
             {
                 //返回指定页
-                var previewImgPath = AcgnuConfig.GetContext().pianoScorePath + "\\" + folderName + "\\" + "page." + ypidSplit[1] + ".png";
+                var previewImgPath = ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar + folderName + Path.DirectorySeparatorChar + "page." + ypidSplit[1] + ".png";
                 WriteFile(previewImgPath, httpListenerContext);
             }
         }
@@ -139,7 +139,7 @@ namespace AcgnuX.Source.Taskx.Http
             if (!string.IsNullOrEmpty(folderName))
             {
                 //返回指定页
-                var previewImgPath = AcgnuConfig.GetContext().pianoScorePath + "\\" + folderName + "\\" + "play.ypa2";
+                var previewImgPath = ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar + folderName + Path.DirectorySeparatorChar + "play.ypa2";
                 WriteFile(previewImgPath, httpListenerContext);
             }
         }
@@ -223,7 +223,7 @@ namespace AcgnuX.Source.Taskx.Http
             if (!string.IsNullOrEmpty(folderName))
             {
                 //根据名称返回文件夹中的乐谱第一页
-                var previewImgPath = AcgnuConfig.GetContext().pianoScorePath + Path.DirectorySeparatorChar + folderName + Path.DirectorySeparatorChar + "page.0.png";
+                var previewImgPath = ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar + folderName + Path.DirectorySeparatorChar + "page.0.png";
                 WriteFile(previewImgPath, httpListenerContext);
             }
             else

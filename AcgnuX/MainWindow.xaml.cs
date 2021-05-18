@@ -5,6 +5,7 @@ using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
+using AcgnuX.Source.ViewModel;
 using AcgnuX.ViewModel;
 using System;
 using System.Collections.ObjectModel;
@@ -31,11 +32,9 @@ namespace AcgnuX
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainWindowViewModel(this);
+            //DataContext = new MainWindowViewModel(this);
             //注册菜单点击事件
             NavMenuListBox.MouseLeftButtonUp += OnNavMenuClick;
-            //执行系统初始化
-            new ApplicationInitTask().Init();
         }
 
         /// <summary>

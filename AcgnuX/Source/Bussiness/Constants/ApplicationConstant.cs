@@ -9,11 +9,8 @@ namespace AcgnuX.Source.Bussiness.Constants
     /// <summary>
     /// 通用常量类
     /// </summary>
-    public static class AcgnuConstant
+    public static class ApplicationConstant
     {
-        //方法执行成功
-        public static readonly bool INVOKE_SUCCESS = true;
-        //方法执行失败
-        public static readonly bool INVOKE_FAIL = false;
+
     }
 }
