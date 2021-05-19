@@ -231,14 +231,20 @@ namespace AcgnuX.Source.Utils
         /// <returns></returns>
         public static string ReplaceInvalidChar(string source)
         {
-            return source.Replace("\\", "")
-                .Replace("/", "")
-                .Replace("|", "")
-                .Replace("*", "")
-                .Replace(":", "")
-                .Replace("?", "")
-                .Replace("<", "")
-                .Replace(">", "");
+            var invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+            foreach (char c in invalid)
+            {
+                source = source.Replace(c.ToString(), "");
+            }
+            return source;
+            //return source.Replace("\\", "")
+            //    .Replace("/", "")
+            //    .Replace("|", "")
+            //    .Replace("*", "")
+            //    .Replace(":", "")
+            //    .Replace("?", "")
+            //    .Replace("<", "")
+            //    .Replace(">", "");
         }
 
         /// <summary>
