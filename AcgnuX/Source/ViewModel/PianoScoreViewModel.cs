@@ -4,6 +4,13 @@ namespace AcgnuX.Source.ViewModel
 {
     class PianoScoreViewModel : PianoScore
     {
+        public string IdView
+        {
+            get
+            {
+                return "📄 " + id;
+            }
+        }
         public string NameView
         {
             get 
@@ -15,6 +22,22 @@ namespace AcgnuX.Source.ViewModel
             {
                 Name = value;
                 OnPropertyChanged(nameof(Name));
+            }
+        }
+
+        public string YpCountView
+        {
+            get
+            {
+                return "📒 " + YpCount;
+            }
+        }
+
+        public string VerView
+        {
+            get
+            {
+                return Ver == 1 ? "🎵" : "🎹";
             }
         }
     }

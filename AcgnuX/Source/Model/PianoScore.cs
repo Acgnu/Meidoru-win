@@ -19,7 +19,8 @@ namespace AcgnuX.Source.Model
         public bool autoDownload { get; set; }
         //曲谱下载地址 (适用于 v2 )
         public string SheetUrl { get; set; }
+        public byte YpCount { get; set; }
         //版本 1, 2
-        public int ver;
+        public byte Ver { get; set; }
     }
 }

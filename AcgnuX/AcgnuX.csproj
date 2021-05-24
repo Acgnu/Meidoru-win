@@ -230,7 +230,7 @@
     <Compile Include="Source\Taskx\HttpWebServer.cs" />
     <Compile Include="Source\Utils\Crypto\AlgorithmUtil.cs" />
     <Compile Include="Source\Utils\ConfigUtil.cs" />
-    <Compile Include="Source\Utils\FlashPlayUtil.cs" />
+    <Compile Include="Source\Utils\Tan8PlayUtil.cs" />
     <Compile Include="Source\Utils\DataUtil.cs" />
     <Compile Include="Source\Utils\EnumLoader.cs" />
     <Compile Include="Source\Utils\FileUtil.cs" />
@@ -431,6 +431,12 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include=".editorconfig" />
+    <Content Include="Assets\exe\wzsfont.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\exe\ypres.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -448,6 +454,24 @@
     <Resource Include="Assets\Images\tan8_sheet_preview_default.png" />
     <Resource Include="Assets\Images\window_bg_default.jpg" />
     <Resource Include="Assets\data\init.sql" />
+    <Content Include="Assets\exe\77player.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\exe\intl.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\exe\libglib-2.0-0.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\exe\libgthread-2.0-0.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\exe\pdflib.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\exe\pmady.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\flash\flashplayer.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

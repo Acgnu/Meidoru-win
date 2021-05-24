@@ -34,7 +34,7 @@ namespace AcgnuX.Source.ViewModel
             InitializeMenus();
             //主窗口退出则强制退出所有
             CloseCommand = new RelayCommand<Window>((win) => Task.Run(() => {
-                FlashPlayUtil.Exit();
+                Tan8PlayUtil.Exit();
                 Environment.Exit(0);
             }));
         }

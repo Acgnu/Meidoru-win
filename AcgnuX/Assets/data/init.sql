@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS "tan8_music" (
   "name" TEXT(100) NOT NULL,
   "star" integer(1),
   "yp_count" integer(2),
+  "ver" integer(1),
   "origin_data" TEXT(1200),
   PRIMARY KEY ("ypid")
 );

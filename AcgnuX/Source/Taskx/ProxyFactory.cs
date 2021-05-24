@@ -134,7 +134,7 @@ namespace AcgnuX.Source.Taskx
         /// <returns></returns>
         private static bool IsProxyValid(string proxyAddress)
         {
-            var crawlResult = RequestUtil.CrawlContentFromWebsit(PROXY_TEST_URL, proxyAddress, 3000);
+            var crawlResult = RequestUtil.CrawlContentFromWebsit(PROXY_TEST_URL, proxyAddress, 5000);
             return PROXY_TEST_RESPONSE.Equals(crawlResult.data) ? true : false;
         }
 

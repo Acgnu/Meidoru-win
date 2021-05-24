@@ -90,8 +90,11 @@ namespace AcgnuX.Resource.Styles
             var selected = ((ListBoxItem)pianoScoreListBox.ContainerFromElement(eventButton)).Content;
 
             //检查曲谱可否播放
-            var folderName = SQLite.sqlone(string.Format("SELECT name FROM tan8_music WHERE ypid = {0}", (selected as PianoScore).id.GetValueOrDefault()));
-            var playFilePath = ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar + folderName + Path.DirectorySeparatorChar + "play.ypa2";
+            var tan8Music = SQLite.SqlRow(string.Format("SELECT name, ver FROM tan8_music WHERE ypid = {0}", (selected as PianoScore).id.GetValueOrDefault()));
+            var folderName = tan8Music[0];
+            var ver = Convert.ToInt32(tan8Music[1]);
+            var playFileName = ver == 1 ? "play.ypa2" : "play.ypdx";
+            var playFilePath = ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar + folderName + Path.DirectorySeparatorChar + playFileName;
             //手动选中行
             pianoScoreListBox.SelectedItem = selected;
             if (!File.Exists(playFilePath))
@@ -104,10 +107,9 @@ namespace AcgnuX.Resource.Styles
                 }
                 return;
             }
-
             //播放所选曲谱
-            FlashPlayUtil.Exit();
-            FlashPlayUtil.ExePlayById((selected as PianoScore).id.GetValueOrDefault(), false);
+            Tan8PlayUtil.Exit();
+            Tan8PlayUtil.ExePlayById((selected as PianoScore).id.GetValueOrDefault(), ver, false);
         }
 
         //private void ListBoxItem_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)

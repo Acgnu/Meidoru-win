@@ -114,7 +114,7 @@ namespace AcgnuX.Pages
             if (totalRow == 0) return;
             pager.TotalPage = (totalRow + pager.MaxRow - 1) / pager.MaxRow;
             //查询记录
-            var dataSet = SQLite.SqlTable(string.Format("select ypid, name, star FROM tan8_music {0} order by star desc limit {1} OFFSET {1} * ({2} - 1)", condition, pager.MaxRow, pager.CurrentPage));
+            var dataSet = SQLite.SqlTable(string.Format("select ypid, name, star, yp_count, ver FROM tan8_music {0} order by star desc limit {1} OFFSET {1} * ({2} - 1)", condition, pager.MaxRow, pager.CurrentPage));
 
             //封装进对象
             var dataList = new List<PianoScoreViewModel>();
@@ -128,6 +128,8 @@ namespace AcgnuX.Pages
                     id = Convert.ToInt32(dataRow["ypid"]),
                     Name = Convert.ToString(dataRow["name"]),
                     star = Convert.ToByte(dataRow["star"]),
+                    YpCount = Convert.ToByte(dataRow["yp_count"]),
+                    Ver = Convert.ToByte(dataRow["ver"]),
                     //对于不存在cover的路径使用默认图片
                     cover = File.Exists(imgDir) ? FileUtil.GetBitmapImage(imgDir) : new BitmapImage(new Uri("/Assets/Images/piano-cover-default.jpg", UriKind.Relative))
                 });
@@ -279,7 +281,7 @@ namespace AcgnuX.Pages
             {
                 if(isAutoDownload)
                 {
-                    FlashPlayUtil.Restart(pianoScore.id.GetValueOrDefault() + 1, true);
+                    Tan8PlayUtil.Restart(pianoScore.id.GetValueOrDefault() + 1, 1, true);
                 }
                 return InvokeSuccess(pianoScore);
             }
@@ -309,7 +311,7 @@ namespace AcgnuX.Pages
                             continue;
                         }
                         //超过25秒, 重启播放器重试
-                        FlashPlayUtil.Restart(pianoScore.id, true);
+                        Tan8PlayUtil.Restart(pianoScore.id, 1, true);
                         return InvokeSuccess(pianoScore);
                     }
                 }
@@ -325,7 +327,7 @@ namespace AcgnuX.Pages
             //不是自动下载直接return
             if (!isAutoDownload)
             {
-                FlashPlayUtil.Exit();
+                Tan8PlayUtil.Exit();
                 return InvokeSuccess(pianoScore);
             }
 
@@ -333,7 +335,7 @@ namespace AcgnuX.Pages
             if (isTaskStop)
             {
                 isAutoDownload = false;
-                FlashPlayUtil.Exit();
+                Tan8PlayUtil.Exit();
                 //任务停止, 上报进度100%
                 OnTaskBarEvent?.Invoke(CalcProgress(new MainWindowStatusNotify()
                 {
@@ -344,7 +346,7 @@ namespace AcgnuX.Pages
                 return InvokeSuccess(pianoScore);
             }
             //如果开启了自动下载, 则无限循环
-            FlashPlayUtil.Restart(pianoScore.id.GetValueOrDefault() + 1, true);
+            Tan8PlayUtil.Restart(pianoScore.id.GetValueOrDefault() + 1, 1, true);
             return InvokeSuccess(pianoScore);
         }
 
@@ -371,8 +373,8 @@ namespace AcgnuX.Pages
             isTaskStop = false;
             isAutoDownload = pianoScore.autoDownload;
             //打开播放器, 触发主动下载
-            FlashPlayUtil.Exit();
-            FlashPlayUtil.ExePlayById(pianoScore.id.GetValueOrDefault(), true);
+            Tan8PlayUtil.Exit();
+            Tan8PlayUtil.ExePlayById(pianoScore.id.GetValueOrDefault(), 1, true);
             return InvokeSuccess(pianoScore);
         }
 
@@ -878,7 +880,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnDefaultPlayButtonClickV2(object sender, RoutedEventArgs e)
         {
-            FlashPlayUtil.ExePlayById(0, false);
+            Tan8PlayUtil.ExePlayById(0, 1, false);
         }
 
         /// <summary>

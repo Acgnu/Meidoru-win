@@ -21,7 +21,7 @@ namespace AcgnuX.Source.Taskx.Http
     public class HttpWebServer
     {
         //监听的地址
-        private readonly string LISTENING_ADDRESS = @"http://localhost:7777/";
+        private readonly string LISTENING_ADDRESS = @"http://127.0.0.1:7777/";
 
         //flash发送消息时的主动推送触发事件
         public event EditConfirmHandler<PianoScore> editConfirmHnadler;
@@ -104,9 +104,11 @@ namespace AcgnuX.Source.Taskx.Http
             {
                 FetchPianoScore(httpListenerContext);
             }
-            //System.Type curType = curManagerObj.GetType();
-            //System.Reflection.MethodInfo methodInfo = curType.GetMethod("Delete");
-            //methodInfo.Invoke(curManagerObj, null);
+            //v2版曲谱地址
+            if(httpListenerContext.Request.Url.LocalPath.Equals("/yuepu/info/v2"))
+            {
+                ResponseV2Yuepu(httpListenerContext);
+            }
         }
 
         /// <summary>
@@ -135,11 +137,17 @@ namespace AcgnuX.Source.Taskx.Http
         {
             //ypid=666
             var ypid = httpListenerContext.Request.QueryString["ypid"];
+            var v = httpListenerContext.Request.QueryString["v"];
             var folderName = GetDbFileName(ypid);
             if (!string.IsNullOrEmpty(folderName))
             {
+                var playFileSuf = ".ypa2";
+                if("2".Equals(v))
+                {
+                    playFileSuf = ".ypdx";
+                }
                 //返回指定页
-                var previewImgPath = ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar + folderName + Path.DirectorySeparatorChar + "play.ypa2";
+                var previewImgPath = ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar + folderName + Path.DirectorySeparatorChar + "play" + playFileSuf;
                 WriteFile(previewImgPath, httpListenerContext);
             }
         }
@@ -159,7 +167,7 @@ namespace AcgnuX.Source.Taskx.Http
                 httpListenerContext.Request.QueryString["sccode"],
                 httpListenerContext.Request.QueryString["r1"],
                 httpListenerContext.Request.QueryString["r2"]),
-                ver = 2
+                Ver = 1
             });
         }
 
@@ -178,7 +186,7 @@ namespace AcgnuX.Source.Taskx.Http
 
             //替换乐谱页和播放文件下载地址
             var pageUrl = LISTENING_ADDRESS + "yuepu/page?ypid=" + ypid;
-            var playFileUrl = LISTENING_ADDRESS + "yuepu/playfile?ypid=" + ypid;
+            var playFileUrl = LISTENING_ADDRESS + "yuepu/playfile?v=1&ypid=" + ypid;
 
             //响应体
             StringBuilder resHtm = new StringBuilder();
@@ -234,6 +242,44 @@ namespace AcgnuX.Source.Taskx.Http
         }
 
         /// <summary>
+        /// 响应V2版乐谱资源
+        /// </summary>
+        /// <param name="httpListenerContext"></param>
+        private void ResponseV2Yuepu(HttpListenerContext httpListenerContext)
+        {
+            //http://www.tan8.com/codeindex.php?d=api&c=check77playerPower&m=index&ypid=76202&uid=999999999&token=fbf0ab24ee47bfa1cb460e41c1f61fdb
+            var ypid = httpListenerContext.Request.QueryString["ypid"];
+            var method = httpListenerContext.Request.QueryString["m"];
+            string responseText = "";
+            if (method.Equals("index"))
+            {
+                responseText = "{\"responseCode\":\"1000\",\"message\":\"\\u6b63\\u5e38\",\"power\":{\"openPower\":\"1\",\"printPower\":\"1\",\"printCount\":\"30\",\"vstPower\":\"1\",\"pdfPower\":\"1\"}}";
+            }
+            //http://www.tan8.com/codeindex.php?d=api&c=check77playerPower&m=getYpdsUrl&ypid=76202&uid=999999999&token=d58c1bf196fc7e95c7fe05bd693a2af0
+            if (method.Equals("getYpdsUrl"))
+            {
+                var responsBuilder = new StringBuilder("{\"data\":{\"code\":\"1000\",\"message\":\"\\u83b7\\u53d6\\u6210\\u529f\",\"result\":{\"ypdsUrl\":\"")
+                    //.Append("http:\\/\\/oss.tan8.com\\/yuepuku\\/115\\/57806\\/57806_hhdafigb.ypds")
+                    .Append("http:\\/\\/127.0.0.1:7777\\/yuepu\\/playfile?v=2&ypid=" + ypid)
+                    .Append("\",\"ypdxUrl\":\"")
+                    //.Append("http:\\/\\/oss.tan8.com\\/yuepuku\\/115\\/57806\\/57806_hhdafigb.ypdx")
+                    .Append("http:\\/\\/127.0.0.1:7777\\/yuepu\\/playfile?v=2&ypid=" + ypid)
+                    .Append("\"}}}");
+                responseText = responsBuilder.ToString();
+            }
+            //http://www.tan8.com/codeindex.php?d=api&c=check77playerPower&m=addDynamic&ypid=74205&uid=999999999&token=092e0f2b7e27b1aaf003b2f5d42d25e1&dynamicType=preservePianoPdf
+            if (method.Equals("addDynamic"))
+            {
+                responseText = "{\"data\":{\"code\":\"1000\",\"message\":\"\\u6b63\\u5e38\",\"result\":{\"printCount\":\"30\"}}}";
+            }
+            //刷写结果
+            using (StreamWriter writer = new StreamWriter(httpListenerContext.Response.OutputStream))
+            {
+                writer.Write(responseText);
+            }
+        }
+
+        /// <summary>
         /// 响应文件
         /// </summary>
         /// <param name="filePath"></param>
@@ -242,6 +288,10 @@ namespace AcgnuX.Source.Taskx.Http
         {
             using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
+                //add for v2
+                httpListenerContext.Response.ContentType = "application/octet-stream";
+                httpListenerContext.Response.ContentLength64 = fs.Length;
+                ///---end
                 Stream output = httpListenerContext.Response.OutputStream;
                 byte[] picbyte = new byte[fs.Length];
                 using (BinaryReader br = new BinaryReader(fs))
