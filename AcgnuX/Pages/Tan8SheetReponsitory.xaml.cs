@@ -656,7 +656,7 @@ namespace AcgnuX.Pages
             //step.3 创建文件夹
             var folder = string.IsNullOrEmpty(pianoScore.Name) ? tan8Music.yp_title : pianoScore.Name;
             //替换非法字符
-            folder = FileUtil.ReplaceInvalidChar(folder);
+            folder = FileUtil.ReplaceInvalidChar(folder, "_" + pianoScore.id);
             var folderPath = ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar + folder;
             FileUtil.CreateFolder(folderPath);
             //添加分隔符

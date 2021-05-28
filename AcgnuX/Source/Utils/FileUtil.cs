@@ -16,6 +16,11 @@ namespace AcgnuX.Source.Utils
     public class FileUtil
     {
         /// <summary>
+        /// windows系统保留文件夹名
+        /// </summary>
+        private static readonly string[] RESERVED_FOLDER_NAMES = { "CON", "PRN", "AUX", "CLOCK$", "NUL", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "LPT1"};
+
+        /// <summary>
         /// 从文件反序列化JSON到目标实体
         /// </summary>
         /// <typeparam name="T">目标实体</typeparam>
@@ -227,14 +232,26 @@ namespace AcgnuX.Source.Utils
         /// <summary>
         /// 替换文件名中的非法字符
         /// </summary>
-        /// <param name="source"></param>
+        /// <param name="source">原始名称</param>
+        /// <param name="conflict">冲突时名称</param>
         /// <returns></returns>
-        public static string ReplaceInvalidChar(string source)
+        public static string ReplaceInvalidChar(string source, string conflict)
         {
             var invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
             foreach (char c in invalid)
             {
                 source = source.Replace(c.ToString(), "");
+            }
+            if (string.IsNullOrEmpty(source))
+            {
+                return source + conflict;
+            }
+            for (var i = 0; i < RESERVED_FOLDER_NAMES.Length; i++)
+            {
+                if (string.Compare(RESERVED_FOLDER_NAMES[i], source, true) == 0)
+                {
+                    return source + conflict;
+                }
             }
             return source;
             //return source.Replace("\\", "")
