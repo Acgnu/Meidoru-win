@@ -1,5 +1,6 @@
 ﻿using AcgnuX.Source.Model;
 using System;
+using System.Data.SQLite;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -27,7 +28,10 @@ namespace AcgnuX.Source.Utils
         {
             AccountJsonPath = settings.AccountJsonPath;
             PianoScorePath = settings.PianoScorePath;
-            SQLite.ExecuteNonQuery(string.Format("update pref set account_file_dir = '{0}', tan8_home_dir = '{1}'", settings.AccountJsonPath, settings.PianoScorePath));
+            SQLite.ExecuteNonQuery("update pref set account_file_dir = @account_file_dir, tan8_home_dir = @tan8_home_dir", new SQLiteParameter[] { 
+                new SQLiteParameter("@account_file_dir", settings.AccountJsonPath) ,
+                new SQLiteParameter("@tan8_home_dir", settings.PianoScorePath) 
+            });
         }
     }
 }

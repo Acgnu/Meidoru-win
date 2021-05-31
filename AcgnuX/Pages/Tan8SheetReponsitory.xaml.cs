@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SQLite;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -260,7 +261,11 @@ namespace AcgnuX.Pages
             //修改文件夹名称
             FileUtil.RenameFolder(ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar + dbName[0], pianoScore.Name);
             //修改数据库名称
-            SQLite.ExecuteNonQuery(string.Format("UPDATE tan8_music SET name = '{0}' WHERE ypid = {1}", pianoScore.Name, pianoScore.id));
+            SQLite.ExecuteNonQuery("UPDATE tan8_music SET name = @name WHERE ypid = @ypid", new SQLiteParameter[] 
+            { 
+                new SQLiteParameter("@name", pianoScore.Name), 
+                new SQLiteParameter("@ypid", pianoScore.id) 
+            });
             //更新列表显示
             mPianoScoreList[PianoScoreListBox.SelectedIndex].NameView = pianoScore.Name;
             return new InvokeResult<PianoScore>()
@@ -753,12 +758,14 @@ namespace AcgnuX.Pages
         /// <returns>数据库操作成功条数</returns>
         private int SaveMusicToDB(int ypid, string name, Tan8music tan8Music, string originstr)
         {
-            var sql = string.Format("insert or ignore into tan8_music(ypid, `name`, star, yp_count, origin_data) VALUES ({0}, '{1}', 0, '{2}', '{3}')",
-                ypid,
-                name,
-                tan8Music.yp_page_count,
-                originstr);
-            return SQLite.ExecuteNonQuery(sql);
+            return SQLite.ExecuteNonQuery("insert or ignore into tan8_music(ypid, `name`, star, yp_count, origin_data) VALUES (@ypid, @name, @star, @yp_count, @origin_data)", new SQLiteParameter[] 
+                {
+                    new SQLiteParameter("@ypid", ypid) ,
+                    new SQLiteParameter("@name", name) ,
+                    new SQLiteParameter("@star", 0 as object) ,
+                    new SQLiteParameter("@yp_count", tan8Music.yp_page_count) ,
+                    new SQLiteParameter("@origin_data", originstr)
+                 });
         }
 
         /// <summary>
@@ -770,13 +777,14 @@ namespace AcgnuX.Pages
         /// <returns></returns>
         private int SaveDownLoadRecord(int ypid, bool isAuto, InvokeResult<Object> invokeResult)
         {
-            var sql = string.Format("INSERT INTO tan8_music_down_record(id, ypid, name, code, result, create_time, is_auto) VALUES((SELECT IFNULL(MAX(id),0)  + 1 FROM tan8_music_down_record), {0}, '{1}', {2}, '{3}', datetime('now', 'localtime'), {4})",
-               ypid,
-               Convert.ToString(invokeResult.data),
-               invokeResult.code,
-               invokeResult.message,
-               isAuto);
-            return SQLite.ExecuteNonQuery(sql);
+            return SQLite.ExecuteNonQuery("INSERT INTO tan8_music_down_record(id, ypid, name, code, result, create_time, is_auto) VALUES((SELECT IFNULL(MAX(id),0)  + 1 FROM tan8_music_down_record), @ypid, @result, @code, @message, datetime('now', 'localtime'), @isAuto)", 
+                new SQLiteParameter[] {
+                    new SQLiteParameter("@ypid", ypid) ,
+                    new SQLiteParameter("@result", Convert.ToString(invokeResult.data)) ,
+                    new SQLiteParameter("@code", invokeResult.code) ,
+                    new SQLiteParameter("@message", invokeResult.message) ,
+                    new SQLiteParameter("@isAuto", isAuto)
+                 });
         }
 
         /// <summary>
@@ -824,7 +832,7 @@ namespace AcgnuX.Pages
                 FileUtil.DeleteDir(ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar + selected.Name);
 
                 //删除数据库数据
-                SQLite.ExecuteNonQuery(string.Format("DELETE FROM tan8_music WHERE ypid = {0}", selected.id));
+                SQLite.ExecuteNonQuery("DELETE FROM tan8_music WHERE ypid = @ypid", new SQLiteParameter[] { new SQLiteParameter("@ypid", selected.id)});
 
                 //如果没有曲谱了, 则展示默认按钮
                 if (mPianoScoreList.Count == 0) SetListBoxVisibility(false);

@@ -1,5 +1,7 @@
 ﻿using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 
@@ -21,7 +23,7 @@ namespace AcgnuX
             }
             //创建必须的表
             var initSQL = FileUtil.GetApplicationResourceAsString(SQLite.dbPath + SQLite.initfile);
-            SQLite.ExecuteNonQuery(initSQL);
+            SQLite.ExecuteNonQuery(initSQL, null);
 
             //初始化设置
             ConfigUtil.Instance.Load();

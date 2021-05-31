@@ -218,6 +218,7 @@
     <Compile Include="Source\Model\NavMenu.cs" />
     <Compile Include="Source\Model\Pager.cs" />
     <Compile Include="Source\Model\PianoScore.cs" />
+    <Compile Include="Source\Model\SQLiteParam.cs" />
     <Compile Include="Source\Model\Tan8SheetDownloadRecord.cs" />
     <Compile Include="Source\Model\Tan8music.cs" />
     <Compile Include="Source\Model\Ten\Dns\DnsDomain.cs" />

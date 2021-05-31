@@ -4,6 +4,7 @@ using AcgnuX.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -181,7 +182,8 @@ namespace AcgnuX.Source.Taskx
         /// <param name="requeeTime">重新放入IP池的等待时间 (毫秒), 0 = 抛弃</param>
         public static void RemoveProxy(string proxyAddress, int requeeTime)
         {
-            if (SQLite.ExecuteNonQuery(string.Format("DELETE from proxy_address WHERE address = '{0}'", proxyAddress)) > 0)
+            if (SQLite.ExecuteNonQuery("DELETE from proxy_address WHERE address = @address",
+                new SQLiteParameter[] { new SQLiteParameter("@address", proxyAddress)}) > 0)
             {
                 Interlocked.Decrement(ref ProxyCount);
                 mProxyPoolCountChangeHandler?.Invoke(ProxyCount);
@@ -204,7 +206,8 @@ namespace AcgnuX.Source.Taskx
         /// <param name="proxyAddress"></param>
         private static void SaveProxyToDB(string proxyAddress)
         {
-            if (SQLite.ExecuteNonQuery(string.Format("INSERT OR IGNORE INTO proxy_address(address, addtime) VALUES ('{0}', datetime('now', 'localtime'))", proxyAddress)) > 0)
+            if (SQLite.ExecuteNonQuery("INSERT OR IGNORE INTO proxy_address(address, addtime) VALUES (@address, datetime('now', 'localtime'))",
+                new SQLiteParameter[] { new SQLiteParameter("@address", proxyAddress) }) > 0)
             {
                 Interlocked.Increment(ref ProxyCount);
                 mProxyPoolCountChangeHandler?.Invoke(ProxyCount);

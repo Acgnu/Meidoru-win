@@ -140,7 +140,7 @@ namespace AcgnuX.Source.ViewModel
         {
             SQLite.ExecuteNonQuery(string.Format("UPDATE crawl_rules SET enable = {0} {1}",
                 enable ? 1 : 0,
-                null == id ? "" : " WHERE id = " + id));
+                null == id ? "" : " WHERE id = " + id), null);
         }
         
         /// <summary>

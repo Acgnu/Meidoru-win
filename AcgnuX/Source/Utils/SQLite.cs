@@ -141,13 +141,18 @@ namespace AcgnuX.Source.Utils
         /// 执行增删改查操作
         /// </summary>
         /// <param name="sql">查询语言</param>
+        /// <param name="sqlArgs">执行的参数</param>
         /// <returns></returns>
-        public static int ExecuteNonQuery(string sql)
+        public static int ExecuteNonQuery(string sql, SQLiteParameter[] sqlParams)
         {
             var connection = GetConnection();
             try
             {
                 var cmd = new SQLiteCommand(sql, connection);
+                if(null != sqlParams && sqlParams.Length > 0)
+                {
+                    cmd.Parameters.AddRange(sqlParams);
+                }
                 return cmd.ExecuteNonQuery();
             }
             catch (Exception ex)

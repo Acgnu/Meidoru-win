@@ -157,7 +157,7 @@ namespace AcgnuX.WindowX
             }
             if (ids.Length == 0) return;
             //删除数据库中的记录
-            SQLite.ExecuteNonQuery(string.Format("DELETE FROM tan8_music_down_record WHERE ID IN ({0})", ids.Substring(1)));
+            SQLite.ExecuteNonQuery(string.Format("DELETE FROM tan8_music_down_record WHERE ID IN ({0})", ids.Substring(1)), null);
         }
 
         /// <summary>
