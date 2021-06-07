@@ -42,7 +42,7 @@ namespace AcgnuX.Pages
         //弹吧播放器
         //private Tan8PlayerWindow mTan8Player;
         //分页
-        private Pager pager = new Pager(1, 10);
+        private Pager pager = new Pager(1, 20);
         //tan8服务
         private HttpWebServer mTan8WebListener;
         //标识是否自动下载
@@ -105,8 +105,10 @@ namespace AcgnuX.Pages
             var keyword = SearchTextBox.Text;
             var sql = new StringBuilder(" FROM tan8_music WHERE 1 = 1");
             List<SQLiteParameter> sqlArgs = new List<SQLiteParameter>();
+            pager.MaxRow = 20;
             if (!string.IsNullOrEmpty(keyword))
             {
+                pager.MaxRow = int.MaxValue;
                 sql.Append(" and name like @name");
                 sqlArgs.Add(new SQLiteParameter("@name", "%" + keyword + "%"));
                 if (DataUtil.IsNum(keyword))
@@ -867,7 +869,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void DownLoadComplate(object sender, RunWorkerCompletedEventArgs e)
         {
-            LoadPianoScore();
+            //LoadPianoScore();
         }
 
         /// <summary>
