@@ -70,7 +70,7 @@ namespace AcgnuX.Source.ViewModel
         private void InitCrawlRules()
         {
             //从数据库读取规则
-            var dataSet = SQLite.SqlTable("SELECT id, name, url, partten, max_page, enable FROM crawl_rules");
+            var dataSet = SQLite.SqlTable("SELECT id, name, url, partten, max_page, enable FROM crawl_rules", null);
             if (null == dataSet) return;
             //封装进对象
             foreach (DataRow dataRow in dataSet.Rows)

@@ -4,6 +4,7 @@ using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.SQLite;
 using System.Windows;
@@ -88,7 +89,7 @@ namespace AcgnuX.WindowX.Dialog
             if(string.IsNullOrEmpty(crawlRule.Name) || string.IsNullOrEmpty(crawlRule.Url) || string.IsNullOrEmpty(crawlRule.Partten)) return 0;
 
             var row = SQLite.ExecuteNonQuery("INSERT INTO crawl_rules(ID, NAME, URL, PARTTEN, MAX_PAGE, ENABLE) VALUES ((SELECT MAX(ID)+1 FROM crawl_rules), @Name, @Url, @Partten, @MaxPage, @Enable)",
-                new SQLiteParameter[] {
+                new List<SQLiteParameter> {
                     new SQLiteParameter("@Name", crawlRule.Name) ,
                     new SQLiteParameter("@Url", crawlRule.Url) ,
                     new SQLiteParameter("@Partten", crawlRule.Partten) ,
@@ -99,7 +100,7 @@ namespace AcgnuX.WindowX.Dialog
             if (row > 0)
             {
                 //查询最新添加的记录ID
-                var newID = SQLite.sqlone("SELECT MAX(id) FROM crawl_rules");
+                var newID = SQLite.sqlone("SELECT MAX(id) FROM crawl_rules", null);
                 crawlRule.Id = Convert.ToInt32(newID);
             }
             if(crawlRule.Enable == Convert.ToByte(1))
@@ -117,7 +118,7 @@ namespace AcgnuX.WindowX.Dialog
         private int ModifyCrawlRule(CrawlRuleViewModel crawlRule)
         {
             var row = SQLite.ExecuteNonQuery("UPDATE crawl_rules SET NAME = @Name, URL = @Url, PARTTEN = @Partten, MAX_PAGE = @MaxPage, ENABLE = @Enable WHERE ID = @Id",
-                new SQLiteParameter[] {
+                new List<SQLiteParameter> {
                     new SQLiteParameter("@Name", crawlRule.Name) ,
                     new SQLiteParameter("@Url", crawlRule.Url) ,
                     new SQLiteParameter("@Partten", crawlRule.Partten) ,

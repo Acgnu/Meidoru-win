@@ -4,6 +4,7 @@ using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -179,7 +180,7 @@ namespace AcgnuX.Source.Taskx.Http
         {
             var ypid = httpListenerContext.Request.QueryString["ypid"];
             //找到存储的曲谱源数据
-            var rawData = SQLite.sqlone(string.Format("SELECT origin_data FROM tan8_music WHERE ypid = {0}", ypid));
+            var rawData = SQLite.sqlone("SELECT origin_data FROM tan8_music WHERE ypid = @ypid", new SQLiteParameter[] { new SQLiteParameter("@ypid", ypid) });
 
             //从乐谱信息解析到对象
             var tan8Music = DataUtil.ParseToModel(rawData);
@@ -334,7 +335,7 @@ namespace AcgnuX.Source.Taskx.Http
         /// <returns></returns>
         private string GetDbFileName(string ypid)
         {
-            return SQLite.sqlone(string.Format("SELECT name FROM tan8_music WHERE ypid = {0}", ypid));
+            return SQLite.sqlone("SELECT name FROM tan8_music WHERE ypid = @ypid", new SQLiteParameter[] { new SQLiteParameter("@ypid", ypid) });
         }
     }
 }

@@ -7,7 +7,7 @@ namespace AcgnuX.Source.Utils
     /// <summary>
     /// 一般的数据处理工具类
     /// </summary>
-    class DataUtil
+    public class DataUtil
     {
         /// <summary>
         /// 简单的解析普通的xml格式文档, 单节点

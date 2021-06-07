@@ -3,7 +3,7 @@
     /// <summary>
     /// tan8接口返回的乐谱信息
     /// </summary>
-    class Tan8music
+    public class Tan8music
     {
         /// <summary>
         /// 创建时间

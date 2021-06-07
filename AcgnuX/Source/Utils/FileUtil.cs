@@ -59,14 +59,15 @@ namespace AcgnuX.Source.Utils
         /// <param name="fileName">文件名称</param>
         public static void SaveStringToFile(string content, string filePath, string fileName)
         {
-            if (!File.Exists(filePath + fileName))
+            if (!Directory.Exists(filePath))
             {
-                if (!Directory.Exists(filePath))
-                {
-                    Directory.CreateDirectory(filePath);
-                }
-                File.WriteAllText(filePath + fileName, content, Encoding.UTF8);
+                Directory.CreateDirectory(filePath);
             }
+            if(! filePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
+            {
+                filePath += Path.DirectorySeparatorChar;
+            }
+            File.WriteAllText(filePath + fileName, content, Encoding.UTF8);
         }
 
         /// <summary>
@@ -83,11 +84,12 @@ namespace AcgnuX.Source.Utils
             return true;
         }
 
+
         /// <summary>
-        /// 删除目标文件夹
+        /// 删除文件夹
         /// </summary>
-        /// <param name="dir">目标文件夹</param>
-        public static void DeleteDir(string dir)
+        /// <param name=""></param>
+        private static void DeleteDir(string dir)
         {
             if (Directory.Exists(dir)) //如果存在这个文件夹删除之 
             {
@@ -100,6 +102,27 @@ namespace AcgnuX.Source.Utils
                 }
                 Directory.Delete(dir, true); //删除已空文件夹                 
             }
+        }
+
+        /// <summary>
+        /// 删除目标文件夹
+        /// 例如删除 C:\AAA\BBB
+        /// 参数1=C:\AAA, 参数2=BBB
+        /// </summary>
+        /// <param name="dirPrePath">目标文件夹上级路径</param>
+        /// <param name="dirName">目标文件夹名称</param>
+        public static void DeleteDirWithName(string dirPrePath, string dirName)
+        {
+
+            if (string.IsNullOrEmpty(dirName))
+            {
+                throw new Exception("文件夹名称不能为空");
+            }
+            if (!dirPrePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
+            {
+                dirPrePath += Path.DirectorySeparatorChar;
+            }
+            DeleteDir(dirPrePath + dirName);
         }
 
        /// <summary>
@@ -235,33 +258,21 @@ namespace AcgnuX.Source.Utils
         /// <param name="source">原始名称</param>
         /// <param name="conflict">冲突时名称</param>
         /// <returns></returns>
-        public static string ReplaceInvalidChar(string source, string conflict)
+        public static string ReplaceInvalidChar(string source)
         {
             var invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
             foreach (char c in invalid)
             {
                 source = source.Replace(c.ToString(), "");
             }
-            if (string.IsNullOrEmpty(source))
-            {
-                return source + conflict;
-            }
             for (var i = 0; i < RESERVED_FOLDER_NAMES.Length; i++)
             {
                 if (string.Compare(RESERVED_FOLDER_NAMES[i], source, true) == 0)
                 {
-                    return source + conflict;
+                    return string.Empty;
                 }
             }
             return source;
-            //return source.Replace("\\", "")
-            //    .Replace("/", "")
-            //    .Replace("|", "")
-            //    .Replace("*", "")
-            //    .Replace(":", "")
-            //    .Replace("?", "")
-            //    .Replace("<", "")
-            //    .Replace(">", "");
         }
 
         /// <summary>

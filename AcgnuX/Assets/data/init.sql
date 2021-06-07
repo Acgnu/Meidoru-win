@@ -43,4 +43,8 @@ CREATE TABLE IF NOT EXISTS "app_secret_keys" (
   "platform" TEXT(20) NOT NULL,
   PRIMARY KEY ("secret_key")
 );
+CREATE TABLE "tan8_music_down_task" (
+  "ypid" integer(11) NOT NULL,
+  PRIMARY KEY ("ypid")
+);
 CREATE INDEX IF NOT EXISTS 'INDEX_TAN8_NAME' ON 'tan8_music' ('name' ASC);

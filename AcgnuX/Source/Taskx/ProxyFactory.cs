@@ -47,7 +47,7 @@ namespace AcgnuX.Source.Taskx
         private static List<CrawlRule> GetCrawlRules()
         {
             var crawlRules = new List<CrawlRule>();
-            var dataSet = SQLite.SqlTable("SELECT url, partten, name, max_page FROM crawl_rules WHERE enable = 1");
+            var dataSet = SQLite.SqlTable("SELECT url, partten, name, max_page FROM crawl_rules WHERE enable = 1", null);
             if (null == dataSet) return crawlRules;
             foreach (DataRow dataRow in dataSet.Rows)
             {
@@ -172,7 +172,7 @@ namespace AcgnuX.Source.Taskx
         {
             //if (mProxyIpPool.IsEmpty) return null;
             //return mProxyIpPool.ElementAt(0);
-            return SQLite.sqlone("SELECT address FROM proxy_address ORDER BY addtime LIMIT 1");
+            return SQLite.sqlone("SELECT address FROM proxy_address ORDER BY addtime LIMIT 1", null);
         }
 
         /// <summary>
@@ -183,7 +183,7 @@ namespace AcgnuX.Source.Taskx
         public static void RemoveProxy(string proxyAddress, int requeeTime)
         {
             if (SQLite.ExecuteNonQuery("DELETE from proxy_address WHERE address = @address",
-                new SQLiteParameter[] { new SQLiteParameter("@address", proxyAddress)}) > 0)
+                new List<SQLiteParameter> { new SQLiteParameter("@address", proxyAddress)}) > 0)
             {
                 Interlocked.Decrement(ref ProxyCount);
                 mProxyPoolCountChangeHandler?.Invoke(ProxyCount);
@@ -207,7 +207,7 @@ namespace AcgnuX.Source.Taskx
         private static void SaveProxyToDB(string proxyAddress)
         {
             if (SQLite.ExecuteNonQuery("INSERT OR IGNORE INTO proxy_address(address, addtime) VALUES (@address, datetime('now', 'localtime'))",
-                new SQLiteParameter[] { new SQLiteParameter("@address", proxyAddress) }) > 0)
+                new List<SQLiteParameter> { new SQLiteParameter("@address", proxyAddress) }) > 0)
             {
                 Interlocked.Increment(ref ProxyCount);
                 mProxyPoolCountChangeHandler?.Invoke(ProxyCount);
@@ -234,7 +234,7 @@ namespace AcgnuX.Source.Taskx
         private static List<ProxyAddress> GetAllProxyFromDB()
         {
             var proxyList = new List<ProxyAddress>();
-            var dataSet = SQLite.SqlTable("SELECT address, addtime FROM proxy_address ORDER BY addtime");
+            var dataSet = SQLite.SqlTable("SELECT address, addtime FROM proxy_address ORDER BY addtime", null);
             if (null == dataSet) return proxyList;
             foreach (DataRow dataRow in dataSet.Rows)
             {

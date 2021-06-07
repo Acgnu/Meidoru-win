@@ -9,7 +9,7 @@ namespace AcgnuX.Source.Utils
     /// <summary>
     /// SQLite查询类
     /// </summary>
-    class SQLite
+    public class SQLite
     {
         public readonly static string dbPath = @"Assets/data/";
         public readonly static string dbfile = "master.db";
@@ -143,15 +143,15 @@ namespace AcgnuX.Source.Utils
         /// <param name="sql">查询语言</param>
         /// <param name="sqlArgs">执行的参数</param>
         /// <returns></returns>
-        public static int ExecuteNonQuery(string sql, SQLiteParameter[] sqlParams)
+        public static int ExecuteNonQuery(string sql, List<SQLiteParameter> sqlParams)
         {
             var connection = GetConnection();
             try
             {
                 var cmd = new SQLiteCommand(sql, connection);
-                if(null != sqlParams && sqlParams.Length > 0)
+                if(null != sqlParams && sqlParams.Count > 0)
                 {
-                    cmd.Parameters.AddRange(sqlParams);
+                    cmd.Parameters.AddRange(sqlParams.ToArray());
                 }
                 return cmd.ExecuteNonQuery();
             }
@@ -205,13 +205,18 @@ namespace AcgnuX.Source.Utils
         /// 唯一结果查询
         /// </summary>
         /// <param name="sql">sql查询语言</param>
+        /// <param name="sql">sqlParams</param>
         /// <returns>返回一个字符串</returns>
-        public static string sqlone(string sql)
+        public static string sqlone(string sql, SQLiteParameter[] sqlParams)
         {
             var connection = GetConnection();
             try
             {
                 var sqlcmd = new SQLiteCommand(sql, connection);//sql语句
+                if (null != sqlParams && sqlParams.Length > 0)
+                {
+                    sqlcmd.Parameters.AddRange(sqlParams);
+                }
                 var obj = sqlcmd.ExecuteScalar();
                 if(null == obj)
                 {
@@ -235,13 +240,17 @@ namespace AcgnuX.Source.Utils
         /// <param name="sql">单列查询</param>
         /// <param name="count">返回结果数量</param>
         /// <returns>返回一个数组</returns>
-        public static List<string> sqlcolumn(string sql)
+        public static List<string> sqlcolumn(string sql, List<SQLiteParameter> sqlArgs)
         {
             var connection = GetConnection();
             try
             {
                 var columnList = new List<string>();
                 var sqlcmd = new SQLiteCommand(sql, connection);//sql语句
+                if(null != sqlArgs && sqlArgs.Count > 0)
+                {
+                    sqlcmd.Parameters.AddRange(sqlArgs.ToArray());
+                }
                 var reader = sqlcmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -266,7 +275,7 @@ namespace AcgnuX.Source.Utils
         /// </summary>
         /// <param name="sql">sql查询语言</param>
         /// <returns>返回查询结果集</returns>
-        public static DataTable SqlTable(string sql)
+        public static DataTable SqlTable(string sql, List<SQLiteParameter> sqlArgs)
         {
             var connection = GetConnection();
             try
@@ -277,6 +286,10 @@ namespace AcgnuX.Source.Utils
                     Connection = connection,
                     CommandTimeout = 120
                 };
+                if(null != sqlArgs && sqlArgs.Count > 0)
+                {
+                    sqlcmd.Parameters.AddRange(sqlArgs.ToArray());
+                }
                 var reader = sqlcmd.ExecuteReader();
                 var dt = new DataTable();
                 if (reader != null)

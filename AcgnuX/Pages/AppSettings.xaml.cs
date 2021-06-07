@@ -6,6 +6,7 @@ using AcgnuX.Utils;
 using AcgnuX.WindowX.Dialog;
 using GalaSoft.MvvmLight.Command;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.Windows;
@@ -112,7 +113,7 @@ namespace AcgnuX.Pages
             var result = new ConfirmDialog(AlertLevel.WARN, string.Format((string)Application.Current.FindResource("DeleteConfirm"), string.Format("{0}", selected.Name))).ShowDialog();
             if (result.GetValueOrDefault())
             {
-                SQLite.ExecuteNonQuery("DELETE FROM crawl_rules WHERE ID = @id", new SQLiteParameter[] { new SQLiteParameter("@id", selected.Id) });
+                SQLite.ExecuteNonQuery("DELETE FROM crawl_rules WHERE ID = @id", new List<SQLiteParameter> { new SQLiteParameter("@id", selected.Id) });
                 var vm = DataContext as SettingsViewModel;
                 vm.CrawlRuls.Remove(selected);
                 vm.CheckIsCheckedAll(true);

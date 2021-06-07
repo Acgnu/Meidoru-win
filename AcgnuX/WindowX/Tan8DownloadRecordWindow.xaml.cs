@@ -66,7 +66,7 @@ namespace AcgnuX.WindowX
             if (condition.Length == 0) return;
             condition.Length -= 1;
 
-            var dataSet = SQLite.SqlTable(string.Format("SELECT id, ypid, name, strftime('%Y-%m-%d %H:%M:%S', create_time) create_time, result FROM tan8_music_down_record WHERE code in({0}) ORDER BY id DESC LIMIT 100", condition.ToString()));
+            var dataSet = SQLite.SqlTable(string.Format("SELECT id, ypid, name, strftime('%Y-%m-%d %H:%M:%S', create_time) create_time, result FROM tan8_music_down_record WHERE code in({0}) ORDER BY id DESC LIMIT 100", condition.ToString()), null);
             if (null == dataSet) return;
             //封装进对象
             foreach (DataRow dataRow in dataSet.Rows)
