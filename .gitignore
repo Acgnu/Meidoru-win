@@ -7,13 +7,10 @@ build/
 
 /.vs/
 
-/AcgnuX/.vs/
-/AcgnuX/bin/
-/AcgnuX/obj/
+**/.vs/
+**/bin/
+**/obj/
 /AcgnuX/packages/
 /AcgnuX/.editorconfig
 /AcgnuX/AcgnuX.csproj.user
 
-/FlashControlLibrary/.vs/
-/FlashControlLibrary/bin/
-/FlashControlLibrary/obj/
