@@ -46,6 +46,10 @@ namespace AcgnuX.Source.Bussiness.Constants
 
         [EnumMember]
         [Description("验证错误")]
-        VALID_ERROR = 9
+        VALID_ERROR = 9,
+
+        [EnumMember]
+        [Description("没有乐谱页")]
+        NO_SHEETS = 10
     }
 }

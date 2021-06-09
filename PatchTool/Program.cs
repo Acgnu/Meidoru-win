@@ -63,7 +63,7 @@ namespace PatchTool
                 case "?": ShowTips(); break;
                 case "ckdir": ShowFolderNotExistsDB(dbPath, savePath, autoDel); break;
                 case "cknon": Clean0PageYuepu(dbPath, autoDel); break;
-                case "ckrpt": RedownloadRepeat(dbPath, savePath, autoDel); break;
+                case "ckrpt": CheckRepeat(dbPath, savePath, autoDel); break;
                 case "ckold": RedownloadOldVer(dbPath, maxYpid); break;
                 case "ckdb": ShowNameNotExistsFolder(dbPath, savePath); break;
             }
@@ -125,6 +125,7 @@ namespace PatchTool
             var ypHomePath = ConfigUtil.Instance.Load().PianoScorePath;
             var dir = Directory.GetDirectories(ypHomePath);
             var allFolderNames = new StringBuilder();
+            var total = 0;
             foreach (var d in dir)
             {
                 var name = Path.GetFileName(d);
@@ -132,15 +133,20 @@ namespace PatchTool
                 var num32 = Convert.ToInt32(num);
                 if(num32 == 0)
                 {
+                    total++;
                     allFolderNames.Append(name).Append("\r\n");
                     Console.WriteLine(name);
                     if (autoDel) FileUtil.DeleteDirWithName(ypHomePath, name);
                 }
             }
-            if(allFolderNames.Length > 0 && !string.IsNullOrEmpty(savePath))
+            if(allFolderNames.Length > 0)
             {
-                FileUtil.SaveStringToFile(allFolderNames.ToString(), Path.GetDirectoryName(savePath), Path.GetFileName(savePath));
-                Console.WriteLine("文件已保存至" + savePath);
+                Console.WriteLine("\n共" + total + "个");
+                if(!string.IsNullOrEmpty(savePath))
+                {
+                    FileUtil.SaveStringToFile(allFolderNames.ToString(), Path.GetDirectoryName(savePath), Path.GetFileName(savePath));
+                    Console.WriteLine("文件已保存至" + savePath);
+                }
             }
             else
             {
@@ -152,7 +158,7 @@ namespace PatchTool
         /// <summary>
         /// 重新下载重名的
         /// </summary>
-        private static void RedownloadRepeat(string dbPath, string savePath, bool autoDel)
+        private static void CheckRepeat(string dbPath, string savePath, bool autoDel)
         {
             Console.WriteLine("检查并重新下载重名的乐谱");
             InitDB(dbPath);

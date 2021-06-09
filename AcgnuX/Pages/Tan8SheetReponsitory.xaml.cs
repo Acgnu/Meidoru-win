@@ -347,7 +347,7 @@ namespace AcgnuX.Pages
                     //如果是自动下载, 且由是由于网络连接出错, 则不保存下载记录, 直接重试
                     if ((result.code == 8 || result.code == 3 || result.code == 7) && isAutoDownload)
                     {
-                        //25秒内不重启重试 ( flash请求等待时间超过30秒会弹窗报错, 此处限定为25秒)
+                        //25秒内不重启重试 ( flash请求等待时间超过30秒会弹窗报错, 此处限定为25秒 )
                         if (TimeUtil.CurrentMillis() - startTimeMill < 25 * 1000)
                         {
                             continue;
@@ -717,6 +717,18 @@ namespace AcgnuX.Pages
             }
             //从乐谱信息解析到对象
             var tan8Music = DataUtil.ParseToModel(ypinfostring);
+
+            //没有有效的乐谱页, 直接返回
+            if(tan8Music.yp_page_count == 0)
+            {
+                return new InvokeResult<object>()
+                {
+                    success = false,
+                    code = (byte)Tan8SheetDownloadResult.NO_SHEETS,
+                    message = EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.NO_SHEETS.ToString()),
+                    data = tan8Music.yp_title
+                };
+            }
 
             var ypNameFolder = string.IsNullOrEmpty(pianoScore.Name) ? tan8Music.yp_title : pianoScore.Name;
             //替换非法字符
