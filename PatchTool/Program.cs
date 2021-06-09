@@ -93,7 +93,7 @@ namespace PatchTool
             foreach (DataRow dataRow in dataSet.Rows)
             {
                 cur++;
-                if (!Directory.Exists(ypHomePath + Path.DirectorySeparatorChar + dataRow["name"]))
+                if (!Directory.Exists(Path.Combine(ypHomePath, dataRow["name"] as string)))
                 {
                     totalNe++;
                     Console.WriteLine(dataRow["name"] + "   ----进度:" + cur + "/" + total + "");
@@ -180,7 +180,7 @@ namespace PatchTool
                 //指定了ID保存路径, 自动删除才有效
                 if(autoDel && !string.IsNullOrEmpty(savePath))
                 {
-                    FileUtil.DeleteDirWithName(ypHomePath + Path.DirectorySeparatorChar, dataRow["name"] as string);
+                    FileUtil.DeleteDirWithName(ypHomePath, dataRow["name"] as string);
                 }
             }
             if(total == 0)
@@ -223,11 +223,11 @@ namespace PatchTool
             var fixNum = 0;
             foreach (DataRow dataRow in dataSet.Rows)
             {
-                if (!File.Exists(ypHomePath + Path.DirectorySeparatorChar + Convert.ToString(dataRow["name"]) + Path.DirectorySeparatorChar + "play.ypdx"))
+                if (!File.Exists(Path.Combine(ypHomePath, Convert.ToString(dataRow["name"]), "play.ypdx")))
                 {
                     fixNum++;
                     var tan8Music = DataUtil.ParseToModel(Convert.ToString(dataRow["origin_data"]));
-                    var downResult = new FileDownloader().DownloadFile(tan8Music.ypad_url2, ypHomePath + Path.DirectorySeparatorChar + Convert.ToString(dataRow["name"]) + Path.DirectorySeparatorChar + "play.ypdx");
+                    var downResult = new FileDownloader().DownloadFile(tan8Music.ypad_url2, Path.Combine(ypHomePath, Convert.ToString(dataRow["name"]), "play.ypdx"));
                     Console.WriteLine(Convert.ToInt32(dataRow["ypid"]) + " - " + Convert.ToString(dataRow["name"]) + "   播放文件下载" + (downResult == 0 ? "成功" : "失败"));
                 }
             }
@@ -247,11 +247,27 @@ namespace PatchTool
             var yp0Names = SQLite.sqlcolumn("SELECT name FROM tan8_music WHERE yp_count = 0", null);
             foreach(var name in yp0Names)
             {
-                total++;
-                Console.WriteLine(name);
-                if(autoDel)
+                var files = Directory.GetFiles(Path.Combine(ypHomePath, name));
+                var len = 0;
+                if(files.Length > 0)
                 {
-                    FileUtil.DeleteDirWithName(ypHomePath, name);
+                    foreach(var fileName in files)
+                    {
+                        if(fileName.EndsWith("ypdx") || fileName.EndsWith("ypa2"))
+                        {
+                            len++;
+                            break;
+                        }
+                    }
+                }
+                if (len == 0)
+                {
+                    total++;
+                    Console.WriteLine(name);
+                    if (autoDel)
+                    {
+                        FileUtil.DeleteDirWithName(ypHomePath, name);
+                    }
                 }
             }
             Console.WriteLine("共" + total + "个");

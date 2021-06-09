@@ -63,11 +63,7 @@ namespace AcgnuX.Source.Utils
             {
                 Directory.CreateDirectory(filePath);
             }
-            if(! filePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
-            {
-                filePath += Path.DirectorySeparatorChar;
-            }
-            File.WriteAllText(filePath + fileName, content, Encoding.UTF8);
+            File.WriteAllText(Path.Combine(filePath, fileName), content, Encoding.UTF8);
         }
 
         /// <summary>
@@ -118,11 +114,7 @@ namespace AcgnuX.Source.Utils
             {
                 throw new Exception("文件夹名称不能为空");
             }
-            if (!dirPrePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
-            {
-                dirPrePath += Path.DirectorySeparatorChar;
-            }
-            DeleteDir(dirPrePath + dirName);
+            DeleteDir(Path.Combine(dirPrePath, dirName));
         }
 
        /// <summary>

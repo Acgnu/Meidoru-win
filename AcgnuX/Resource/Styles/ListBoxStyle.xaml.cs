@@ -94,13 +94,13 @@ namespace AcgnuX.Resource.Styles
             var folderName = tan8Music[0];
             var ver = Convert.ToInt32(tan8Music[1]);
             var playFileName = ver == 1 ? "play.ypa2" : "play.ypdx";
-            var playFilePath = ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar + folderName + Path.DirectorySeparatorChar + playFileName;
+            var playFilePath = Path.Combine(ConfigUtil.Instance.PianoScorePath, folderName, playFileName);
             //手动选中行
             pianoScoreListBox.SelectedItem = selected;
             if (!File.Exists(playFilePath))
             {
                 //无法播放的曲谱打开所在文件夹
-                var fullPath = ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar + folderName;
+                var fullPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, folderName);
                 if (Directory.Exists(fullPath))
                 {
                     System.Diagnostics.Process.Start(fullPath);

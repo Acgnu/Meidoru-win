@@ -279,7 +279,7 @@ namespace AcgnuX.Pages
             }
 
             //修改文件夹名称
-            FileUtil.RenameFolder(ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar + dbName[0], pianoScore.Name);
+            FileUtil.RenameFolder(Path.Combine(ConfigUtil.Instance.PianoScorePath, dbName[0]), pianoScore.Name);
             //修改数据库名称
             SQLite.ExecuteNonQuery("UPDATE tan8_music SET name = @name WHERE ypid = @ypid", new List<SQLiteParameter>
             { 
@@ -718,18 +718,6 @@ namespace AcgnuX.Pages
             //从乐谱信息解析到对象
             var tan8Music = DataUtil.ParseToModel(ypinfostring);
 
-            //没有有效的乐谱页, 直接返回
-            if(tan8Music.yp_page_count == 0)
-            {
-                return new InvokeResult<object>()
-                {
-                    success = false,
-                    code = (byte)Tan8SheetDownloadResult.NO_SHEETS,
-                    message = EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.NO_SHEETS.ToString()),
-                    data = tan8Music.yp_title
-                };
-            }
-
             var ypNameFolder = string.IsNullOrEmpty(pianoScore.Name) ? tan8Music.yp_title : pianoScore.Name;
             //替换非法字符
             ypNameFolder = FileUtil.ReplaceInvalidChar(ypNameFolder);
@@ -738,28 +726,27 @@ namespace AcgnuX.Pages
                 ypNameFolder = "非法名称_" + pianoScore.id;
             }
             //校验保存路径是否重复
-            var libFolder = ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar;
-            if(Directory.Exists(libFolder + ypNameFolder))
+            var libFolder = ConfigUtil.Instance.PianoScorePath;
+            if(Directory.Exists(Path.Combine(libFolder, ypNameFolder)))
             {
                 ypNameFolder += "(" + pianoScore.id + ")";
             }
-            var saveFullPath = libFolder + ypNameFolder;
+            var saveFullPath = Path.Combine(libFolder, ypNameFolder);
             //step.3 创建文件夹
             FileUtil.CreateFolder(saveFullPath);
-            //添加分隔符
-            saveFullPath += Path.DirectorySeparatorChar;
 
             //step.3 下载曲谱封面
+            var coverSavePath = Path.Combine(saveFullPath, DEFAULT_COVER_NAME);
             OnTaskBarEvent?.Invoke(CalcProgress(winProgress, string.Format("下载 [{0}] 封面", ypNameFolder), 30));
             var coverUrl = tan8Music.ypad_url.Substring(0, tan8Music.ypad_url.IndexOf('_')) + "_prev.jpg";
-            var downResult = new FileDownloader().DownloadFile(coverUrl, saveFullPath + DEFAULT_COVER_NAME);
+            var downResult = new FileDownloader().DownloadFile(coverUrl, coverSavePath);
             //封面下载失败不管
             if (downResult != 0) { }
 
             //封面下载完后校验图片是否有效
-            var isValidPreviewImg = FileUtil.CheckImgIsValid(saveFullPath + DEFAULT_COVER_NAME);
+            var isValidPreviewImg = FileUtil.CheckImgIsValid(coverSavePath);
             //如果文件损坏则删除
-            if (!isValidPreviewImg) FileUtil.DeleteFile(saveFullPath + DEFAULT_COVER_NAME);
+            if (!isValidPreviewImg) FileUtil.DeleteFile(coverSavePath);
 
             //step.4 下载乐谱图片
             for (var i = 0; i < tan8Music.yp_page_count; i++)
@@ -768,7 +755,7 @@ namespace AcgnuX.Pages
                 OnTaskBarEvent?.Invoke(CalcProgress(winProgress, message, 50 / tan8Music.yp_page_count + winProgress.nowProgress));
 
                 var downloadUrl = tan8Music.ypad_url + string.Format(".{0}.png", i);
-                int pageDownloadResult = new FileDownloader().DownloadFile(downloadUrl, saveFullPath + string.Format("page.{0}.png", i));
+                int pageDownloadResult = new FileDownloader().DownloadFile(downloadUrl, Path.Combine(saveFullPath, string.Format("page.{0}.png", i)));
                 //如果下载出错
                 if (pageDownloadResult != 0)
                 {
@@ -786,9 +773,15 @@ namespace AcgnuX.Pages
             }
             //下载v2版播放文件
             OnTaskBarEvent?.Invoke(CalcProgress(winProgress, string.Format("下载 [{0}] 播放文件", ypNameFolder), 80));
-            downResult = new FileDownloader().DownloadFile(tan8Music.ypad_url2, saveFullPath + "play.ypdx");
+            downResult = new FileDownloader().DownloadFile(tan8Music.ypad_url2, Path.Combine(saveFullPath, "play.ypdx"));
             if (downResult != 0)
             {
+                //没有播放文件, 又没有谱页的, 清理数据
+                if (tan8Music.yp_page_count == 0)
+                {   
+                    //清理下载文件
+                    FileUtil.DeleteDirWithName(libFolder, ypNameFolder);
+                }
                 return new InvokeResult<object>()
                 {
                     success = false,
@@ -938,7 +931,7 @@ namespace AcgnuX.Pages
         {
             var selected = PianoScoreListBox.SelectedItem as PianoScoreViewModel;
             if (null == selected) return;
-            var fullPath = ConfigUtil.Instance.PianoScorePath + Path.DirectorySeparatorChar + selected.Name;
+            var fullPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, selected.Name);
             if(Directory.Exists(fullPath))
             {
                 System.Diagnostics.Process.Start(fullPath);
