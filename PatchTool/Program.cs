@@ -32,7 +32,9 @@ namespace PatchTool
         {
             var command = "?";
             var autoDel = false;
+            var autoCopy = false;
             var savePath = string.Empty;
+            var oldHomePath = string.Empty;
             var dbPath = string.Empty;
             var maxYpid = 0;
             if (args.Length > 0)
@@ -56,6 +58,14 @@ namespace PatchTool
                     {
                         maxYpid = Convert.ToInt32(arg.Substring(2));
                     }
+                    if(arg.StartsWith("-h"))
+                    {
+                        oldHomePath = arg.Substring(2);
+                    }
+                    if (arg.Equals("-c"))
+                    {
+                        autoCopy = true;
+                    }
                 }
             }
             switch (command)
@@ -66,7 +76,9 @@ namespace PatchTool
                 case "ckrpt": CheckRepeat(dbPath, savePath, autoDel); break;
                 case "ckold": RedownloadOldVer(dbPath, maxYpid); break;
                 case "ckdb": ShowNameNotExistsFolder(dbPath, savePath); break;
+                case "ckodh": CheckOldHome(dbPath, oldHomePath, autoCopy); break;
             }
+            Console.ReadKey();
         }
 
         private static void ShowTips()
@@ -242,25 +254,25 @@ namespace PatchTool
         private static void Clean0PageYuepu(string dbPath, bool autoDel)
         {
             InitDB(dbPath);
-            int total = 0;
+            var total = 0;
             var ypHomePath = ConfigUtil.Instance.Load().PianoScorePath;
             var yp0Names = SQLite.sqlcolumn("SELECT name FROM tan8_music WHERE yp_count = 0", null);
             foreach(var name in yp0Names)
             {
                 var files = Directory.GetFiles(Path.Combine(ypHomePath, name));
-                var len = 0;
+                var hasPlayFile = false;
                 if(files.Length > 0)
                 {
                     foreach(var fileName in files)
                     {
                         if(fileName.EndsWith("ypdx") || fileName.EndsWith("ypa2"))
                         {
-                            len++;
+                            hasPlayFile = true;
                             break;
                         }
                     }
                 }
-                if (len == 0)
+                if (!hasPlayFile)
                 {
                     total++;
                     Console.WriteLine(name);
@@ -271,6 +283,77 @@ namespace PatchTool
                 }
             }
             Console.WriteLine("共" + total + "个");
+        }
+
+        /// <summary>
+        /// 从旧乐谱库直接复制到新乐谱库
+        /// </summary>
+        /// <param name="dbPath"></param>
+        /// <param name="oldHomePath"></param>
+        /// <param name="autoCopy"></param>
+        private static void CheckOldHome(string dbPath, string oldHomePath, bool autoCopy)
+        {
+            Console.WriteLine("检查旧乐谱谱库");
+            if (string.IsNullOrEmpty(oldHomePath))
+            {
+                Console.WriteLine("没有指定旧乐谱路径");
+                return;
+            }
+            InitDB(dbPath);
+            var ypHomePath = ConfigUtil.Instance.Load().PianoScorePath;
+            var dataSet = SQLite.SqlTable("SELECT * FROM tan8_music_old", null);
+            var total = dataSet.Rows.Count;
+            var copyTotal = 0;
+            var cur = 0;
+            foreach (DataRow dataRow in dataSet.Rows)
+            {
+                Console.WriteLine(dataRow["name"] + "   ----进度:" + ++cur + "/" + total + "");
+                if (Directory.Exists(Path.Combine(oldHomePath, dataRow["name"] as string)))
+                {
+                    var files = Directory.GetFiles(Path.Combine(oldHomePath, dataRow["name"] as string));
+                    var hasPlayFile = false;
+                    if (files.Length > 0)
+                    {
+                        foreach (var fileName in files)
+                        {
+                            if (fileName.EndsWith("ypdx") || fileName.EndsWith("ypa2"))
+                            {
+                                hasPlayFile = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (hasPlayFile)
+                    {
+                        if (!autoCopy) continue;
+
+                        var i = SQLite.ExecuteNonQuery("insert or ignore into tan8_music(ypid, `name`, star, yp_count, origin_data) VALUES (@ypid, @name, @star, @yp_count, @origin_data)",
+                        new List<SQLiteParameter>
+                        {
+                            new SQLiteParameter("@ypid", dataRow["ypid"]) ,
+                            new SQLiteParameter("@name", dataRow["name"]) ,
+                            new SQLiteParameter("@star", 0 as object) ,
+                            new SQLiteParameter("@yp_count", dataRow["yp_count"]) ,
+                            new SQLiteParameter("@origin_data", dataRow["origin_data"])
+                         });
+
+                        if (i > 0)
+                        {
+                            //复制文件
+                            if (!Directory.Exists(Path.Combine(ypHomePath, dataRow["name"] as string)))
+                            {
+                                FileUtil.CreateFolder(Path.Combine(ypHomePath, dataRow["name"] as string));
+                            }
+                            foreach (var file in files)
+                            {
+                                FileUtil.CopyFile(file, Path.Combine(ypHomePath, dataRow["name"] as string, Path.GetFileName(file)));
+                            }
+                            copyTotal++;
+                        }
+                    }
+                }
+            }
+            Console.WriteLine("共复制" + copyTotal + "个目录");
         }
 
         private static void InitDB(string dbPath)
