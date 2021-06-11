@@ -1,0 +1,31 @@
+﻿<Application x:Class="AcgnuX.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:AcgnuX"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--有现后顺序-->
+                <ResourceDictionary Source="/Resource/Color.xaml" />
+                <ResourceDictionary Source="/Resource/String/String_CN.xaml" />
+                <ResourceDictionary Source="/Resource/Geometries.xaml" />
+                
+                <ResourceDictionary Source="/Resource/Styles/DataGridStyle.xaml" />
+                <ResourceDictionary Source="/Resource/Styles/TextBoxStyle.xaml" />
+                <ResourceDictionary Source="/Resource/Styles/WindowStyle.xaml" />
+                <ResourceDictionary Source="/Resource/Styles/PageStyle.xaml" />
+                <ResourceDictionary Source="/Resource/Styles/BorderStyle.xaml" />
+                <ResourceDictionary Source="/Resource/Styles/ImageStyle.xaml" />
+                <ResourceDictionary Source="/Resource/Styles/ButtonStyle.xaml" />
+                <ResourceDictionary Source="/Resource/Styles/TextBlockStyle.xaml" />
+                <ResourceDictionary Source="/Resource/Styles/DockPanelStyle.xaml" />
+                <ResourceDictionary Source="/Resource/Styles/ProgressBarStyle.xaml" />
+                <ResourceDictionary Source="/Resource/Styles/ScrollBarStyle.xaml" />
+                <ResourceDictionary Source="/Resource/Styles/GeometriesStyle.xaml" />
+                <ResourceDictionary Source="/Resource/Styles/ListBoxStyle.xaml" />
+                <ResourceDictionary Source="/Resource/Styles/ListViewStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

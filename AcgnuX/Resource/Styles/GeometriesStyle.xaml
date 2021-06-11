@@ -1,0 +1,56 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--主窗口菜单指示器-->
+    <Style TargetType="Rectangle" x:Key="MenuButtonActiveIco">
+        <Style.Setters>
+            <Setter Property="Width" Value="5" />
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Fill" Value="{StaticResource ButtonMainColorBrush}" />
+            <Setter Property="Visibility" Value="Hidden"/>
+        </Style.Setters>
+    </Style>
+
+    <!--主状态栏图标按钮-->
+    <Style TargetType="Path" x:Key="MainStatusBarIcoPathStyle">
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="Fill" Value="White" />
+    </Style>
+    
+    <!-- 曲谱页默认播放按钮 -->
+    <Style TargetType="Path" x:Key="PianoScoreDefaultPlayButtonIcoPath" BasedOn="{StaticResource MainStatusBarIcoPathStyle}">
+        <Setter Property="Width" Value="12" />
+        <Setter Property="Height" Value="12" />
+        <Setter Property="Margin" Value="0 0 5 0" />
+    </Style>
+
+    <!--通用添加按钮样式-->
+    <Style TargetType="Path" x:Key="CommonAddButtonPathIcoStyle" BasedOn="{StaticResource MainStatusBarIcoPathStyle}">
+        <Setter Property="Width" Value="11" />
+        <Setter Property="Height" Value="11" />
+        <Setter Property="Data" Value="{StaticResource Icon_Add}" />
+    </Style>
+    
+    <!--主状态栏图标按钮-->
+    <Style TargetType="Path" x:Key="RefreshPathIcoStyle" BasedOn="{StaticResource MainStatusBarIcoPathStyle}">
+        <Setter Property="Width" Value="25" />
+        <Setter Property="Height" Value="25" />
+        <Setter Property="Data" Value="{StaticResource Icon_Refresh}" />
+    </Style>
+    
+    <!--主状态栏图标按钮-->
+    <Style TargetType="Path" x:Key="NavMenuPathIconStyle" BasedOn="{StaticResource MainStatusBarIcoPathStyle}">
+        <Setter Property="Width" Value="15" />
+        <Setter Property="Height" Value="15" />
+    </Style>
+    
+    <!--设置页打开文件夹按钮-->
+    <Style TargetType="Path" x:Key="SettingsOpenFolderPathIcoStyle">
+        <Setter Property="Stretch" Value="UniformToFill" />
+        <Setter Property="Fill" Value="#FFF7E074" />
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Data" Value="{StaticResource Icon_OpenFolder}" />
+    </Style>
+</ResourceDictionary>

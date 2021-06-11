@@ -1,0 +1,17 @@
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**
+!**/src/test/**
+
+/AcgnuX/.vs/
+/AcgnuX/bin/
+/AcgnuX/obj/
+/AcgnuX/packages/
+/AcgnuX/.editorconfig
+/AcgnuX/AcgnuX.csproj.user
+
+/FlashControlLibrary/.vs/
+/FlashControlLibrary/bin/
+/FlashControlLibrary/obj/

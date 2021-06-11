@@ -1,0 +1,49 @@
+﻿<local:BasePage x:Class="AcgnuX.Pages.PwdRepositroy"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:AcgnuX.Pages"
+      mc:Ignorable="d" 
+      Title="PwdRepositroy" Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
+
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <DockPanel VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="0">
+                <Button Style="{StaticResource AddButtonStyle}"  Click="OnBtnAddClick" DockPanel.Dock="Right">
+                    <WrapPanel>
+                        <Path Style="{StaticResource CommonAddButtonPathIcoStyle}"/>
+                        <TextBlock Text="{StaticResource Add}" Margin="5 0 0 0" />
+                    </WrapPanel>
+                </Button>
+                <TextBox Style="{StaticResource TextBoxBase}" KeyUp="OnFilterBoxKeyDown" />
+            </DockPanel>
+            <DataGrid Name="PasswordDataGrid" Style="{StaticResource commonDataGrid}" Margin="0,10,0,0" MouseDoubleClick="OnGridDoubleClick" Grid.Column="0" Grid.Row="1" ContextMenuOpening="OnContextMenuOpen" Template="{DynamicResource BaseDataGridControlTemplate}">
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="{StaticResource CopyAccount}" Click="OnClickContextMenuCopyAccount" />
+                        <MenuItem Header="{StaticResource CopyPassword}" Click="OnClickContextMenuCopyPassword" />
+                        <MenuItem Header="{StaticResource Delete}" Click="OnClickContextMenuDelete" />
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding Describe}" Header="{StaticResource Describe}" Width="*" />
+                    <DataGridTextColumn Binding="{Binding Site}" Header="{StaticResource Site}" Width="*" />
+                    <DataGridTextColumn Binding="{Binding Uname}" Header="{StaticResource Account}" Width="*" />
+                    <DataGridTextColumn Binding="{Binding Upass}" Header="{StaticResource Password}" Width="*" />
+                    <DataGridTextColumn Binding="{Binding Remark}" Header="{StaticResource Remark}" Width="*" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+        <Button Style="{StaticResource RefreshFloatButtonStyle}" Click="OnClickRefreshButton">
+            <Path Style="{StaticResource RefreshPathIcoStyle}"/>
+        </Button>
+    </Grid>
+</local:BasePage>

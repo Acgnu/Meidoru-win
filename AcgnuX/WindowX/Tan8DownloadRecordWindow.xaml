@@ -1,0 +1,79 @@
+﻿<Window x:Class="AcgnuX.WindowX.Tan8DownloadRecordWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AcgnuX.WindowX"
+        mc:Ignorable="d"
+        Title="下载记录" Height="500" Width="600" Style="{StaticResource CommonWindowStyle}" Loaded="OnWindowLoaded">
+
+    <Window.Icon>
+        <DrawingImage>
+            <DrawingImage.Drawing>
+                <DrawingGroup>
+                    <GeometryDrawing Brush="Gray" Geometry="{StaticResource Icon_ListWithRightMark}" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+    </Window.Icon>
+
+    <Window.Resources>
+        <Style TargetType="CheckBox" x:Key="PianoScoreConditionCbStyle">
+            <Setter Property="Margin" Value="0 0 5 5" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+
+        <Style TargetType="WrapPanel" x:Key="PianoScoreConditionStyle">
+            <Setter Property="Margin" Value="0 0 0 5" />
+        </Style>
+        
+        <ControlTemplate x:Key="FilterBoxCheckBoxControlTemplate" TargetType="{x:Type CheckBox}">
+            <Grid x:Name="templateRoot" Background="Transparent" SnapsToDevicePixels="True">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border x:Name="ContentBorder" BorderBrush="#CCC" BorderThickness=" 0 0 0 2" Padding="10 5" Background="{StaticResource ButtonSecondaryColorBrush}">
+                    <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="1" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                </Border>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" TargetName="ContentBorder" Value="{DynamicResource WhiteBgHoverColorBrush}" />
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="BorderBrush" TargetName="ContentBorder" Value="{DynamicResource ButtonMainColorBrush}" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </Window.Resources>
+
+    <DockPanel Margin="4 5 0 0" Grid.Column="1" >
+        <ItemsControl ItemsSource="{Binding FilterBoxList}" Name="FilterBoxItemsControl" DockPanel.Dock="Top">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <CheckBox Checked="OnDownloadRecordConditionCheckboxClick" Unchecked="OnDownloadRecordConditionCheckboxClick" Content="{Binding Title}" Tag="{Binding Value}" IsChecked="{Binding IsChecked}" Style="{StaticResource PianoScoreConditionCbStyle}" Template="{DynamicResource FilterBoxCheckBoxControlTemplate}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Style="{StaticResource PianoScoreConditionStyle}" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+        <DataGrid Name="DownloadRecordDataGrid" Style="{StaticResource commonDataGrid}" Template="{DynamicResource BaseDataGridControlTemplate}" ItemsSource="{Binding DownloadRecordList}" DockPanel.Dock="Bottom" 
+                              PreviewKeyDown="OnDownloadRecordGridKeyDown">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="{StaticResource Delete}" Click="OnDeleteContextMenuClick" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Ypid}" Header="乐谱ID" Width="0.5*" />
+                <DataGridTextColumn Binding="{Binding Name}" Header="名称" Width="1.5*" />
+                <DataGridTextColumn Binding="{Binding Create_time}" Header="下载时间" Width="*" />
+                <DataGridTextColumn Binding="{Binding Result}" Header="下载结果" Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>

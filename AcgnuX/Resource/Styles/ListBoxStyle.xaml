@@ -1,0 +1,190 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:Class="AcgnuX.Resource.Styles.ListBoxStyle"
+                    x:ClassModifier="public">
+
+    <!--ListBox基础-->
+    <Style TargetType="{x:Type ListBox}" x:Key="ListBoxBaseStyle">
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+    <!--主菜单按钮-->
+    <Style TargetType="{x:Type ListBox}" x:Key="NavMenuListBoxStyle" BasedOn="{StaticResource ListBoxBaseStyle}">
+        <Setter Property="Background" Value="{StaticResource NavMenuListBoxBackgroundColorBrush}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+
+  <!--主菜单ListBoxItem控制模板-->
+    <ControlTemplate TargetType="{x:Type ListBoxItem}" x:Key="NavMenuListBoxIControlTemplate">
+        <StackPanel Height="40" Orientation="Horizontal" Background="Transparent" x:Name="Container" Cursor="Hand">
+            <Rectangle Style="{StaticResource MenuButtonActiveIco}" x:Name="LeftSideRectangle"/>
+            <WrapPanel VerticalAlignment="Center" Margin="5 0 0 0">
+                <Path Data="{Binding icon}" Style="{StaticResource NavMenuPathIconStyle}" />
+                <Label Content="{Binding name}" Margin="5 0 0 0" Foreground="White"/>
+            </WrapPanel>
+        </StackPanel>
+        <ControlTemplate.Triggers>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver" Value="False" />
+                    <Condition Property="IsSelected" Value="False" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard FillBehavior="Stop">
+                            <ColorAnimation Duration="0:0:0.4" Storyboard.TargetName="Container" Storyboard.TargetProperty="Background.Color" From="{StaticResource NavMenuListBoxBackgroundColor}" To="Transparent" >
+                                <ColorAnimation.EasingFunction>
+                                    <CircleEase EasingMode="EaseOut"/>
+                                </ColorAnimation.EasingFunction>
+                            </ColorAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </MultiTrigger.EnterActions>
+            </MultiTrigger>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter Property="Visibility" Value="Visible" TargetName="LeftSideRectangle"/>
+                <Setter Property="Background" Value="{StaticResource NavMenuHoverColorBrush}" TargetName="Container"/>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="true">
+                <Setter Property="Visibility" Value="Visible" TargetName="LeftSideRectangle"/>
+                <Setter Property="Background" Value="{StaticResource NavMenuSelectedColorBrush}" TargetName="Container"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <!--主菜单ListBoxItem-->
+    <Style TargetType="{x:Type ListBoxItem}" x:Key="NavMenuListBoxItemStyle">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Template" Value="{StaticResource NavMenuListBoxIControlTemplate}" />
+    </Style>
+
+    <!--主菜单ListBox 模板-->
+    <ControlTemplate x:Key="NavMenuListBoxControlTemplate" TargetType="{x:Type ListBox}">
+        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+            <ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}">
+                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+            </ScrollViewer>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+            </Trigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsGrouping" Value="True"/>
+                    <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="False"/>
+                </MultiTrigger.Conditions>
+                <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
+            </MultiTrigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <!--琴谱列表容器模板-->
+    <ControlTemplate TargetType="{x:Type ListBox}" x:Key="PianoScoreListBoxTemplate">
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0 5 0 0" Template="{DynamicResource BaseScrollViewerControlTemplate}" CanContentScroll="False">
+            <ItemsPresenter >
+            </ItemsPresenter>
+        </ScrollViewer>
+    </ControlTemplate>
+
+    <!--琴谱列表交互模板-->
+    <Style TargetType="{x:Type ListBoxItem}" x:Key="PianoScoreListBoxItemContainerStyle">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="Padding" Value="0 3 0 3"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="BorderBrush" Value="#FFd9d9d9"/>
+        <Setter Property="BorderThickness" Value="0 0 0 1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                    <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="#55FFFFFF" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true" CornerRadius="2">
+                        <!--<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>-->
+                        <DockPanel LastChildFill="False">
+                            <Border DockPanel.Dock="Left" Style="{StaticResource PianoScorePreviewImageBorderStyle}">
+                                <Grid>
+                                    <Image Source="{Binding cover}" Panel.ZIndex="0" Style="{StaticResource ImageBaseStyle}"/>
+                                    <Button x:Name="PlayCoverBorder" Style="{StaticResource PianoScorePlayButtonStyle}" Click="OnTan8PlayButtonClick">
+                                        <Path Width="30" Height="30" Margin="8 0 0 0" Data="{DynamicResource Icon_Play}" Style="{StaticResource MainStatusBarIcoPathStyle}"/>
+                                    </Button>
+                                </Grid>
+                            </Border>
+                            <WrapPanel Orientation="Vertical" DockPanel.Dock="Left">
+                                <Label Content="{Binding NameAndView}" Margin="10 5 0 2" FontSize="14" FontWeight="Bold" Foreground="#FF252525"/>
+                                <Label Content="{Binding star}" Margin="10 0 0 0"/>
+                            </WrapPanel>
+                        </DockPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <!--鼠标移入改变播放按钮透明度-->
+                            <MultiTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0:0:0.3" Storyboard.TargetName="PlayCoverBorder" Storyboard.TargetProperty="Opacity" From="0" To="0.7">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CircleEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiTrigger.EnterActions>
+                            <!--鼠标移出改回播放按钮透明度-->
+                            <MultiTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetName="PlayCoverBorder" Storyboard.TargetProperty="Opacity" From="0.7" To="0">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CircleEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiTrigger.ExitActions>
+                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource WhiteBgHoverColorBrush}"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="False" />
+                                <Condition Property="IsSelected" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <!--鼠标移除非选中的ListBoxItem播放背景色动画-->
+                            <MultiTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Duration="0:0:0.4" Storyboard.TargetName="Bd" Storyboard.TargetProperty="Background.Color" From="{StaticResource WhiteBgHoverColor}" To="{StaticResource DataGridItemBackgroundColor}" >
+                                            <ColorAnimation.EasingFunction>
+                                                <CircleEase EasingMode="EaseOut"/>
+                                            </ColorAnimation.EasingFunction>
+                                        </ColorAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiTrigger.EnterActions>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                <Condition Property="IsSelected" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource DataGridItemSelectedBackgroundColorBrush}"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                <Condition Property="IsSelected" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource DataGridItemSelectedBackgroundColorBrush}"/>
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

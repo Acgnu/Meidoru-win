@@ -1,0 +1,38 @@
+﻿<Window x:Class="AcgnuX.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="AcgnuX" Height="720" Width="1000" Style="{StaticResource MainWindowStyle}" Loaded="OnWindowLoaded">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+        </Grid.RowDefinitions>
+        <!--主菜单-->
+        <ListBox x:Name="NavMenuListBox" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding navMenus}" ItemContainerStyle="{StaticResource NavMenuListBoxItemStyle}" Style="{StaticResource NavMenuListBoxStyle}" Template="{DynamicResource NavMenuListBoxControlTemplate}" />
+        <!--主内容Frame-->
+        <Frame Name="ContentFrame" Grid.Column="1" Grid.Row="0" Source="Pages/Index.xaml" NavigationUIVisibility="Hidden" />
+        <!--主状态栏进度条-->
+        <ProgressBar Name="MainProgressBar" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource ProgressBarBaseStyle}"/>
+        <!--状态栏上方叠加-->
+        <DockPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+            <!--叠加文字-->
+            <TextBlock x:Name="MainStatusBarText" DockPanel.Dock="Left" Text="{StaticResource StatusBarDefaultText}" Style="{StaticResource MainWindowStatusBarTextBlock}"/>
+            <!--叠加清除信息按钮-->
+            <Button x:Name="ClearStatusBarTextButton" DockPanel.Dock="Right" Click="OnClearMessageButtonClick" Style="{StaticResource MainWindowStatusBarTrushButtonStyle}">
+                <Path Width="11" Height="11" Data="{StaticResource Icon_Trash}" Style="{StaticResource MainStatusBarIcoPathStyle}"/>
+            </Button>
+            <!--叠加终止任务按钮-->
+            <Button Name="StopTaskButton" DockPanel.Dock="Right" Click ="OnStopTaskButtonClick" Style="{StaticResource MainWindowStatusBarTrushButtonStyle}">
+                <Path Width="10" Height="10" Data="{StaticResource Icon_Stop}" Style="{StaticResource MainStatusBarIcoPathStyle}"/>
+            </Button>
+        </DockPanel>
+    </Grid>
+</Window>
