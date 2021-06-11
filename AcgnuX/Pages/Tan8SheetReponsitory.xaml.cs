@@ -373,20 +373,6 @@ namespace AcgnuX.Pages
                 return InvokeSuccess(pianoScore);
             }
 
-            //判断任务是否已经中止
-            if (isTaskStop)
-            {
-                isAutoDownload = false;
-                Tan8PlayUtil.Exit();
-                //任务停止, 上报进度100%
-                OnTaskBarEvent?.Invoke(CalcProgress(new MainWindowStatusNotify()
-                {
-                    alertLevel = AlertLevel.INFO,
-                    animateProgress = true,
-                    nowProgress = 0
-                }, "任务中止", 100));
-                return InvokeSuccess(pianoScore);
-            }
             //如果开启了自动下载, 则无限循环
             Tan8PlayUtil.Restart(GetNextDownloadYpid(pianoScore.id.GetValueOrDefault()), 1, true);
             return InvokeSuccess(pianoScore);
