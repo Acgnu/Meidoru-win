@@ -54,20 +54,16 @@ namespace AcgnuX
                 }
             }
 
-            //检查数据库文件是否存在
-            if (!File.Exists(SQLite.dbPath + SQLite.dbfile))
-            {
-                SQLite.CreateDBFile(SQLite.dbfile);
-            }
-            //创建必须的表
-            var initSQL = FileUtil.GetApplicationResourceAsString(SQLite.dbPath + SQLite.initfile);
-            SQLite.ExecuteNonQuery(initSQL, null);
-
             //初始化设置
-            ConfigUtil.Instance.Load();
+            var dbfilePath = ConfigUtil.Instance.Load().DbFilePath;
 
-            //执行代理IP爬取任务
-            ProxyFactory.InitProxyFactoryTask();
+            //数据库设置成功时执行IP代理抓取任务
+            SQLite.OnDbFileSetEvent += ProxyFactory.InitProxyFactoryTask;
+
+            //检查数据库文件是否存在
+            if (!File.Exists(dbfilePath)) return;
+
+            SQLite.SetDbFilePath(dbfilePath);
         }
     }
 }

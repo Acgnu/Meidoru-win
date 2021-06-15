@@ -42,8 +42,8 @@
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
-        <Button Style="{StaticResource RefreshFloatButtonStyle}" Click="OnClickRefreshButton">
+        <!--<Button Style="{StaticResource RefreshFloatButtonStyle}" Click="OnClickRefreshButton">
             <Path Style="{StaticResource RefreshPathIcoStyle}"/>
-        </Button>
+        </Button>-->
     </Grid>
 </local:BasePage>

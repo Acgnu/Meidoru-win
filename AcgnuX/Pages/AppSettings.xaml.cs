@@ -1,4 +1,5 @@
 ﻿using AcgnuX.Source.Bussiness.Constants;
+using AcgnuX.Source.Model;
 using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
@@ -28,7 +29,6 @@ namespace AcgnuX.Pages
 
         private void OnPageLoaded(object sender, RoutedEventArgs e)
         {
-           
         }
 
         /// <summary>
@@ -43,6 +43,22 @@ namespace AcgnuX.Pages
             {
                 var settingsDataContext = DataContext as SettingsViewModel;
                 settingsDataContext.AccountJsonPathView = path;
+                ConfigUtil.Instance.Save(settingsDataContext);
+            }
+        }
+
+        /// <summary>
+        /// 选择数据库文件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnChooseDbFile(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var path = FileUtil.OpenFileDialogForPath("C:\\", "SQLite数据库文件|*.db");
+            if (!string.IsNullOrEmpty(path))
+            {
+                var settingsDataContext = DataContext as SettingsViewModel;
+                settingsDataContext.DbFilePathView = path;
                 ConfigUtil.Instance.Save(settingsDataContext);
             }
         }
@@ -88,6 +104,15 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnAddCrawlClick(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(ConfigUtil.Instance.DbFilePath))
+            {
+                mMainWindow.SetStatustProgess(new MainWindowStatusNotify()
+                {
+                    alertLevel = AlertLevel.ERROR,
+                    message = "答应我, 先去配置数据库"
+                });
+                return;
+            }
             //打开修改对话框
             var dialog = new EditCrawlDialog(null);
             var result = dialog.ShowDialog();

@@ -22,6 +22,7 @@ namespace AcgnuX.Pages
         {
             InitializeComponent();
             mMainWindow = mainWin;
+            PasswordDataGrid.ItemsSource = accountList;
         }
 
 
@@ -44,8 +45,14 @@ namespace AcgnuX.Pages
         private void LoadAllPassword()
         {
             var accountFilePath = ConfigUtil.Instance.AccountJsonPath;
-            accountList = FileUtil.DeserializeJsonFromFile<ObservableCollection<Account>>(accountFilePath);
-            PasswordDataGrid.ItemsSource = accountList;
+            var itemsInFile = FileUtil.DeserializeJsonFromFile<ObservableCollection<Account>>(accountFilePath);
+            if(null != itemsInFile && itemsInFile.Count > 0)
+            { 
+                foreach(var item in itemsInFile)
+                {
+                    accountList.Add(item);
+                }
+            }
         }
 
         private void OnFilterBoxKeyDown(object sender, KeyEventArgs e)
@@ -68,6 +75,15 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnBtnAddClick(object sender, RoutedEventArgs e)
         {
+            if(string.IsNullOrEmpty(ConfigUtil.Instance.AccountJsonPath))
+            {
+                mMainWindow.SetStatustProgess(new MainWindowStatusNotify()
+                {
+                    alertLevel = AlertLevel.ERROR,
+                    message = "未配置账号保存文件路径"
+                });
+                return;
+            }
             new EditAccountDialog(null, this).ShowDialog();
         }
 
@@ -76,10 +92,10 @@ namespace AcgnuX.Pages
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnClickRefreshButton(object sender, RoutedEventArgs e)
-        {
-            LoadAllPassword();
-        }
+        //private void OnClickRefreshButton(object sender, RoutedEventArgs e)
+        //{
+        //    LoadAllPassword();
+        //}
 
         /// <summary>
         /// 右键删除
@@ -143,6 +159,15 @@ namespace AcgnuX.Pages
         /// <returns>编辑的账户</returns>
         public InvokeResult<Account> SaveAccount(Account account)
         {
+            if(string.IsNullOrEmpty(account.Site) || string.IsNullOrEmpty(account.Uname) || string.IsNullOrEmpty(account.Upass))
+            {
+                mMainWindow.SetStatustProgess(new MainWindowStatusNotify()
+                {
+                    alertLevel = AlertLevel.ERROR,
+                    message = "啥都不填想啥呢"
+                });
+                return InvokeFail<Account>(account);
+            }
             if (null == account.Id)
             {
                 //新增操作, 查询列表里所有账号的ID, 得到最大ID作为新账号的ID
@@ -176,6 +201,8 @@ namespace AcgnuX.Pages
         private void OnContextMenuOpen(object sender, ContextMenuEventArgs e)
         {
             XamlUtil.SelectRow(PasswordDataGrid, e);
+            var selected = PasswordDataGrid.SelectedItem;
+            if(null == selected) e.Handled = true;
         }
     }
 }

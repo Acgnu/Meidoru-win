@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AcgnuX.Source.Bussiness.Common;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
@@ -11,39 +12,57 @@ namespace AcgnuX.Source.Utils
     /// </summary>
     public class SQLite
     {
-        public readonly static string dbPath = @"Assets/data/";
-        public readonly static string dbfile = "master.db";
         public readonly static string initfile = "init.sql";
+        private static string mDbFilePath = string.Empty;
+        public static event OnDatabaseFileSetHandler OnDbFileSetEvent;
+
+        /// <summary>
+        /// 设置数据库文件路径
+        /// </summary>
+        /// <param name="filePath"></param>
+        public static void SetDbFilePath(string filePath)
+        {
+            mDbFilePath = filePath;
+            try
+            {
+                //创建必须的表
+                var initSQL = FileUtil.GetApplicationResourceAsString(@"Assets\data\" + initfile);
+                ExecuteNonQuery(initSQL, null);
+                OnDbFileSetEvent?.Invoke();
+            }
+            catch (Exception) { }
+        }
 
         /// <summary>
         /// 创建数据库文件
         /// </summary>
         /// <param name="fileName">文件名</param>
-        public static void CreateDBFile(string fileName)
-        {
-            //string path = Environment.CurrentDirectory + dbPath;
-            if (!Directory.Exists(dbPath))
-            {
-                Directory.CreateDirectory(dbPath);
-            }
-            var databaseFileName = dbPath + fileName;
-            if (!File.Exists(databaseFileName))
-            {
-                SQLiteConnection.CreateFile(databaseFileName);
-            }
-        }
+        //public static void CreateDBFile(string fileName)
+        //{
+        //    //string path = Environment.CurrentDirectory + dbPath;
+        //    if (!Directory.Exists(mDbFilePath))
+        //    {
+        //        Directory.CreateDirectory(mDbFilePath);
+        //    }
+        //    var databaseFileName = mDbFilePath + fileName;
+        //    if (!File.Exists(databaseFileName))
+        //    {
+        //        SQLiteConnection.CreateFile(databaseFileName);
+        //    }
+        //}
+
         /// <summary>
         /// 删除数据库
         /// </summary>
         /// <param name="fileName">文件名</param>
-        public static void DeleteDBFile(string fileName)
-        {
-            var path = Environment.CurrentDirectory + dbPath;
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-        }
+        //public static void DeleteDBFile(string fileName)
+        //{
+        //    var path = Environment.CurrentDirectory + mDbFilePath;
+        //    if (File.Exists(path))
+        //    {
+        //        File.Delete(path);
+        //    }
+        //}
 
         /// <summary>
         /// 连接到数据库
@@ -51,9 +70,11 @@ namespace AcgnuX.Source.Utils
         /// <returns></returns>
         private static SQLiteConnection GetConnection()
         {
+            if(string.IsNullOrEmpty(mDbFilePath)) return null;
+
             var connectionString = new SQLiteConnectionStringBuilder
             {
-                DataSource = string.Format("{0}{1}", dbPath, dbfile)
+                DataSource = mDbFilePath
             };
             var connection = new SQLiteConnection(connectionString.ToString());
             connection.Open();
@@ -70,6 +91,7 @@ namespace AcgnuX.Source.Utils
             var connection = GetConnection();
             try
             {
+                if (null == connection) return false;
                 var command = new SQLiteCommand(sql, connection);
                 command.ExecuteNonQuery();
                 return true;
@@ -95,6 +117,7 @@ namespace AcgnuX.Source.Utils
             var connection = GetConnection();
             try
             {
+                if (null == connection) return false;
                 var cmd = new SQLiteCommand("DROP TABLE IF EXISTS " + tablename, connection);
                 cmd.ExecuteNonQuery();
                 return true;
@@ -122,6 +145,7 @@ namespace AcgnuX.Source.Utils
             var connection = GetConnection();
             try
             {
+                if (null == connection) return false;
                 var cmd = new SQLiteCommand("ALTER TABLE " + tablename + " ADD COLUMN " + columnname + " " + ctype, connection);
                 cmd.ExecuteNonQuery();
                 return true;
@@ -148,6 +172,7 @@ namespace AcgnuX.Source.Utils
             var connection = GetConnection();
             try
             {
+                if (null == connection) return 0;
                 var cmd = new SQLiteCommand(sql, connection);
                 if(null != sqlParams && sqlParams.Count > 0)
                 {
@@ -176,6 +201,7 @@ namespace AcgnuX.Source.Utils
             var connection = GetConnection();
             try
             {
+                if (null == connection) return new string[0];
                 var sqlcmd = new SQLiteCommand(sql, connection);//sql语句
                 var reader = sqlcmd.ExecuteReader();
                 if (!reader.Read())
@@ -212,6 +238,7 @@ namespace AcgnuX.Source.Utils
             var connection = GetConnection();
             try
             {
+                if (null == connection) return string.Empty;
                 var sqlcmd = new SQLiteCommand(sql, connection);//sql语句
                 if (null != sqlParams && sqlParams.Length > 0)
                 {
@@ -245,6 +272,8 @@ namespace AcgnuX.Source.Utils
             var connection = GetConnection();
             try
             {
+                if (null == connection) return new List<string>();
+
                 var columnList = new List<string>();
                 var sqlcmd = new SQLiteCommand(sql, connection);//sql语句
                 if(null != sqlArgs && sqlArgs.Count > 0)
@@ -280,6 +309,7 @@ namespace AcgnuX.Source.Utils
             var connection = GetConnection();
             try
             {
+                if (null == connection) return new DataTable();
                 var sqlcmd = new SQLiteCommand()
                 {
                     CommandText = sql,
@@ -315,7 +345,7 @@ namespace AcgnuX.Source.Utils
         {
             try
             {
-                if (connection.State == ConnectionState.Open || connection.State == ConnectionState.Broken)
+                if (null != connection && (connection.State == ConnectionState.Open || connection.State == ConnectionState.Broken))
                 {
                     connection.Close();
                 }

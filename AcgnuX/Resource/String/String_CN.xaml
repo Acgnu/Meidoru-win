@@ -39,6 +39,7 @@
     <system:String x:Key="Str_CrawlPages">抓取页数</system:String>
     <system:String x:Key="Str_PwdConfigFilePath">密码配置文件路径</system:String>
     <system:String x:Key="Str_Tan8SheetSavePath">Tan8曲谱保存路径</system:String>
+    <system:String x:Key="Str_DbFilePath">数据库文件路径</system:String>
     <system:String x:Key="Str_DownloadRecord">下载记录</system:String>
     <system:String x:Key="Str_DownloadFromCurId">从此ID开始下载</system:String>
     <!--<system:String x:Key="Str_ProxyCount">代理数量</system:String>-->

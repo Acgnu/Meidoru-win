@@ -15,6 +15,7 @@ namespace AcgnuX.Source.Utils
         /// <param name="e">事件</param>
         public static void SelectRow(DataGrid grid, RoutedEventArgs e)
         {
+            grid.SelectedItem = null;
             DependencyObject dep = (DependencyObject)e.OriginalSource;
             while ((dep != null) && !(dep is DataGridCell))
             {

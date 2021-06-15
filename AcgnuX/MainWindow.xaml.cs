@@ -17,6 +17,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace AcgnuX
 {
@@ -45,7 +46,11 @@ namespace AcgnuX
         /// <param name="e"></param>
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
-
+            //如果没有配置数据库, 提示错误
+            if(string.IsNullOrEmpty(ConfigUtil.Instance.DbFilePath))
+            {
+                SetStatusBarText(AlertLevel.WARN, "没有配置数据库文件路径, 部分功能将无法正常使用");
+            }
         }
         /// <summary>
         /// 清空消息
@@ -98,8 +103,12 @@ namespace AcgnuX
                 SetStatusBarText(notify.alertLevel, notify.message);
                 SetProgess(notify);
             });
+            //this.Dispatcher.BeginInvoke((Action)delegate ()
+            //{
+            //    SetStatusBarText(notify.alertLevel, notify.message);
+            //    SetProgess(notify);
+            //});
         }
-
         /// <summary>
         /// 根据事件变更状态栏信息
         /// </summary>

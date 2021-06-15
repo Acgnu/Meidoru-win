@@ -44,6 +44,16 @@ namespace AcgnuX.Source.ViewModel
                 OnPropertyChanged(nameof(PianoScorePath));
             }
         }
+        //数据库文件
+        public string DbFilePathView
+        {
+            get { return DbFilePath; }
+            set
+            {
+                DbFilePath = value;
+                OnPropertyChanged(nameof(DbFilePath));
+            }
+        }
         //IP代理数量
         public int ProxyCount { get; set; }
         //抓取规则
@@ -57,11 +67,13 @@ namespace AcgnuX.Source.ViewModel
         {
             AccountJsonPath = ConfigUtil.Instance.AccountJsonPath ?? "";
             PianoScorePath = ConfigUtil.Instance.PianoScorePath ?? "";
+            DbFilePath = ConfigUtil.Instance.DbFilePath ?? "";
             //代理池数量变更监听
             ProxyCount = ProxyFactory.GetProxyCount;
             ProxyFactory.mProxyPoolCountChangeHandler += OnProxyPoolCountChange;
             OnCrawlRuleCheckboxClick = new RelayCommand<object>((sender) => OnGridCheckBoxClick(sender));
             InitCrawlRules();
+            SQLite.OnDbFileSetEvent += InitCrawlRules;
         }
 
         /// <summary>

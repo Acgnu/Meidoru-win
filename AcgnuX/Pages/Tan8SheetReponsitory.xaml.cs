@@ -72,7 +72,7 @@ namespace AcgnuX.Pages
 
         private void OnPageLoaded(object sender, RoutedEventArgs e)
         {
-            LoadPianoScore();
+            OnDataReading();
             PianoScoreListBox.ItemsSource = mPianoScoreList;
             mMainWindow.OnClickStatusBarStop += ChangeTaskStatus;
             //工作任务
@@ -94,17 +94,13 @@ namespace AcgnuX.Pages
         /// <summary>
         /// 加载所有曲谱
         /// </summary>
-        private void LoadPianoScore()
+        /// <param name="kw">查询关键字</param>
+        private void OnDataReading()
         {
-            //var Loads = PianoScoreListBox.Dispatcher.BeginInvoke(new Action(() =>
-            //{
-
-            //mPianoScoreList.Clear();
-
             //查询关键字
             var keyword = SearchTextBox.Text;
             var sql = new StringBuilder(" FROM tan8_music WHERE 1 = 1");
-            List<SQLiteParameter> sqlArgs = new List<SQLiteParameter>();
+            var sqlArgs = new List<SQLiteParameter>();
             pager.MaxRow = 20;
             if (!string.IsNullOrEmpty(keyword))
             {
@@ -120,7 +116,7 @@ namespace AcgnuX.Pages
 
             //查询总数
             var sqlRowResult = SQLite.sqlone("SELECT COUNT(1) total " + sql.ToString(), sqlArgs.ToArray());
-            var totalRow = Convert.ToInt32(sqlRowResult);
+            var totalRow = string.IsNullOrEmpty(sqlRowResult) ? 0 : Convert.ToInt32(sqlRowResult);
             //没有查到内容
             if (totalRow == 0)
             {
@@ -176,8 +172,6 @@ namespace AcgnuX.Pages
             //读取完成后将翻页动作设为当前
             pager.Action = PageAction.CURRENT;
             SetListBoxVisibility(true);
-            //}));
-            //Loads.Completed += new EventHandler(Loads_Completed);
         }
 
         /// <summary>
@@ -188,7 +182,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnClickRefreshButton(object sender, RoutedEventArgs e)
         {
-            LoadPianoScore();
+            OnDataReading();
         }
 
         /// <summary>
@@ -209,6 +203,15 @@ namespace AcgnuX.Pages
         /// <returns></returns>
         private bool? OpenEditDialog(PianoScore pianoScore)
         {
+            if (string.IsNullOrEmpty(ConfigUtil.Instance.DbFilePath))
+            {
+                mMainWindow.SetStatustProgess(new MainWindowStatusNotify()
+                {
+                    alertLevel = AlertLevel.ERROR,
+                    message = "答应我, 先去配置数据库"
+                });
+                return false;
+            }
             var dialog = new AddSinglePianoScoreDialog(pianoScore);
             //绑定窗口点击事件
             if (null == pianoScore)
@@ -282,9 +285,9 @@ namespace AcgnuX.Pages
             FileUtil.RenameFolder(Path.Combine(ConfigUtil.Instance.PianoScorePath, dbName[0]), pianoScore.Name);
             //修改数据库名称
             SQLite.ExecuteNonQuery("UPDATE tan8_music SET name = @name WHERE ypid = @ypid", new List<SQLiteParameter>
-            { 
-                new SQLiteParameter("@name", pianoScore.Name), 
-                new SQLiteParameter("@ypid", pianoScore.id) 
+            {
+                new SQLiteParameter("@name", pianoScore.Name),
+                new SQLiteParameter("@ypid", pianoScore.id)
             });
             //更新列表显示
             mPianoScoreList[PianoScoreListBox.SelectedIndex].NameView = pianoScore.Name;
@@ -317,11 +320,11 @@ namespace AcgnuX.Pages
             }
 
             //检查曲谱是否存在于数据库
-            var sqlRowResult = SQLite.sqlone("SELECT COUNT(1) total FROM tan8_music where ypid = @ypid", 
+            var sqlRowResult = SQLite.sqlone("SELECT COUNT(1) total FROM tan8_music where ypid = @ypid",
                 new SQLiteParameter[] { new SQLiteParameter("@ypid", pianoScore.id.GetValueOrDefault()) });
             if (!string.IsNullOrEmpty(sqlRowResult) && Convert.ToInt32(sqlRowResult) > 0)
             {
-                if(isAutoDownload)
+                if (isAutoDownload)
                 {
                     Tan8PlayUtil.Restart(GetNextDownloadYpid(pianoScore.id.GetValueOrDefault()), 1, true);
                 }
@@ -391,7 +394,7 @@ namespace AcgnuX.Pages
             {
                 //如果有待重新下载的任务, 优先下载
                 var queueTaskIds = SQLite.sqlcolumn("SELECT ypid FROM tan8_music_down_task", null);
-                if(null == mTaskQueue)
+                if (null == mTaskQueue)
                 {
                     mTaskQueue = new Queue<int>();
                 }
@@ -402,7 +405,7 @@ namespace AcgnuX.Pages
                 {
                     mIsQueueTask = true;
                     lastYpid = mTaskQueue.Dequeue();
-                } 
+                }
                 else
                 {
                     var recordLastId = SQLite.sqlone("SELECT ypid FROM tan8_music_down_record WHERE code = @code1 or code = @code2 ORDER BY create_time DESC LIMIT 1",
@@ -410,7 +413,7 @@ namespace AcgnuX.Pages
                         new SQLiteParameter("@code1", Convert.ToInt32(Tan8SheetDownloadResult.SUCCESS)),
                         new SQLiteParameter("@code2", Convert.ToInt32(Tan8SheetDownloadResult.PIANO_SCORE_NOT_EXSITS))
                     });
-                    if(!string.IsNullOrEmpty(recordLastId))
+                    if (!string.IsNullOrEmpty(recordLastId))
                     {
                         lastYpid = Convert.ToInt32(recordLastId) + 1;
                     }
@@ -707,13 +710,13 @@ namespace AcgnuX.Pages
             var ypNameFolder = string.IsNullOrEmpty(pianoScore.Name) ? tan8Music.yp_title : pianoScore.Name;
             //替换非法字符
             ypNameFolder = FileUtil.ReplaceInvalidChar(ypNameFolder);
-            if(string.IsNullOrEmpty(ypNameFolder))
+            if (string.IsNullOrEmpty(ypNameFolder))
             {
                 ypNameFolder = "非法名称_" + pianoScore.id;
             }
             //校验保存路径是否重复
             var libFolder = ConfigUtil.Instance.PianoScorePath;
-            if(Directory.Exists(Path.Combine(libFolder, ypNameFolder)))
+            if (Directory.Exists(Path.Combine(libFolder, ypNameFolder)))
             {
                 ypNameFolder += "(" + pianoScore.id + ")";
             }
@@ -764,7 +767,7 @@ namespace AcgnuX.Pages
             {
                 //没有播放文件, 又没有谱页的, 清理数据
                 if (tan8Music.yp_page_count == 0)
-                {   
+                {
                     //清理下载文件
                     FileUtil.DeleteDirWithName(libFolder, ypNameFolder);
                 }
@@ -822,7 +825,7 @@ namespace AcgnuX.Pages
         /// <returns>数据库操作成功条数</returns>
         private int SaveMusicToDB(int ypid, string name, Tan8music tan8Music, string originstr)
         {
-            return SQLite.ExecuteNonQuery("insert or ignore into tan8_music(ypid, `name`, star, yp_count, origin_data) VALUES (@ypid, @name, @star, @yp_count, @origin_data)", 
+            return SQLite.ExecuteNonQuery("insert or ignore into tan8_music(ypid, `name`, star, yp_count, origin_data) VALUES (@ypid, @name, @star, @yp_count, @origin_data)",
                 new List<SQLiteParameter>
                 {
                     new SQLiteParameter("@ypid", ypid) ,
@@ -843,7 +846,7 @@ namespace AcgnuX.Pages
         private int SaveDownLoadRecord(int ypid, bool isAuto, InvokeResult<Object> invokeResult)
         {
             return SQLite.ExecuteNonQuery("INSERT INTO tan8_music_down_record(id, ypid, name, code, result, create_time, is_auto) VALUES((SELECT IFNULL(MAX(id),0)  + 1 FROM tan8_music_down_record), @ypid, @result, @code, @message, datetime('now', 'localtime'), @isAuto)",
-                new List<SQLiteParameter> 
+                new List<SQLiteParameter>
                 {
                     new SQLiteParameter("@ypid", ypid) ,
                     new SQLiteParameter("@result", Convert.ToString(invokeResult.data)) ,
@@ -895,13 +898,13 @@ namespace AcgnuX.Pages
                 mPianoScoreList.Remove(selected);
 
                 //删除文件夹
-                if(!string.IsNullOrEmpty(selected.Name))
+                if (!string.IsNullOrEmpty(selected.Name))
                 {
                     FileUtil.DeleteDirWithName(ConfigUtil.Instance.PianoScorePath, selected.Name);
                 }
 
                 //删除数据库数据
-                SQLite.ExecuteNonQuery("DELETE FROM tan8_music WHERE ypid = @ypid", new List<SQLiteParameter> { new SQLiteParameter("@ypid", selected.id)});
+                SQLite.ExecuteNonQuery("DELETE FROM tan8_music WHERE ypid = @ypid", new List<SQLiteParameter> { new SQLiteParameter("@ypid", selected.id) });
 
                 //如果没有曲谱了, 则展示默认按钮
                 if (mPianoScoreList.Count == 0) SetListBoxVisibility(false);
@@ -918,7 +921,7 @@ namespace AcgnuX.Pages
             var selected = PianoScoreListBox.SelectedItem as PianoScoreViewModel;
             if (null == selected) return;
             var fullPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, selected.Name);
-            if(Directory.Exists(fullPath))
+            if (Directory.Exists(fullPath))
             {
                 System.Diagnostics.Process.Start(fullPath);
             }
@@ -957,6 +960,15 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnDefaultPlayButtonClickV2(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(ConfigUtil.Instance.DbFilePath))
+            {
+                mMainWindow.SetStatustProgess(new MainWindowStatusNotify()
+                {
+                    alertLevel = AlertLevel.ERROR,
+                    message = "答应我, 先去配置数据库"
+                });
+                return;
+            }
             Tan8PlayUtil.ExePlayById(0, 1, false);
         }
 
@@ -992,7 +1004,7 @@ namespace AcgnuX.Pages
                 pager.Action = PageAction.NEXT;
                 //移除之前的
                 CheckAndRemoveItem();
-                LoadPianoScore();
+                OnDataReading();
             }
             if (scrollView.VerticalOffset == 0)
             {
@@ -1002,7 +1014,7 @@ namespace AcgnuX.Pages
                 pager.Action = PageAction.PREVIOUS;
                 //移除3页之后的
                 CheckAndRemoveItem();
-                LoadPianoScore();
+                OnDataReading();
             }
         }
 
@@ -1031,10 +1043,10 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnFilterBoxKeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Enter)
+            if (e.Key == Key.Enter)
             {
                 pager.CurrentPage = 1;
-                LoadPianoScore();
+                OnDataReading();
             }
         }
 

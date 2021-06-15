@@ -41,4 +41,9 @@ namespace AcgnuX.Source.Bussiness.Common
     /// </summary>
     /// <param name="pianoScore"></param>
     public delegate void Tan8SheetDownloadFinishHandler(PianoScore pianoScore);
+
+    /// <summary>
+    /// 指定了数据库文件事件
+    /// </summary>
+    public delegate void OnDatabaseFileSetHandler();
 }

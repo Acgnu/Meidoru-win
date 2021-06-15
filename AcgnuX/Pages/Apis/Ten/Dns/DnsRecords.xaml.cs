@@ -30,22 +30,13 @@ namespace AcgnuX.Pages.Apis.Ten.Dns
         //腾讯dns调用对象
         private TenCloudDns mTenCloudDns;
 
+        private event StatusBarNotifyHandler OnStatusBarEvent;
+
         public DnsRecords(MainWindow mainWin)
         {
             InitializeComponent();
             mMainWindow = mainWin;
-            var dbSecret = SQLite.SqlRow("SELECT secret_id, secret_key, priv_domain, priv_sub_domain, Platform FROM app_secret_keys WHERE platform = 'tencent'");
-            if (null != dbSecret && dbSecret.Length > 0)
-            {
-                mTenCloudDns = new TenCloudDns(new TenDnsApiSecret
-                {
-                    SecretId = dbSecret[0],
-                    SecretKey = dbSecret[1],
-                    PrivDomain = dbSecret[2],
-                    PrivSubDomain = dbSecret[3],
-                    Platform = dbSecret[4]
-                });
-            }
+            OnStatusBarEvent += mMainWindow.SetStatustProgess;
         }
 
         /// <summary>
@@ -55,6 +46,21 @@ namespace AcgnuX.Pages.Apis.Ten.Dns
         /// <param name="e"></param>
         private void OnPageLoaded(object sender, RoutedEventArgs e)
         {
+            if(null == mTenCloudDns)
+            {
+                var dbSecret = SQLite.SqlRow("SELECT secret_id, secret_key, priv_domain, priv_sub_domain, Platform FROM app_secret_keys WHERE platform = 'tencent'");
+                if (null != dbSecret && dbSecret.Length > 0)
+                {
+                    mTenCloudDns = new TenCloudDns(new TenDnsApiSecret
+                    {
+                        SecretId = dbSecret[0],
+                        SecretKey = dbSecret[1],
+                        PrivDomain = dbSecret[2],
+                        PrivSubDomain = dbSecret[3],
+                        Platform = dbSecret[4]
+                    });
+                }
+            }
             if (null == DnsRecordList)
             {
                 LoadDnsRecord();
@@ -109,6 +115,20 @@ namespace AcgnuX.Pages.Apis.Ten.Dns
         /// <param name="e"></param>
         private void OnBtnAddClick(object sender, RoutedEventArgs e)
         {
+            if(null == mTenCloudDns)
+            {
+                OnStatusBarEvent?.Invoke(new MainWindowStatusNotify()
+                {
+                    alertLevel = AlertLevel.ERROR,
+                    message = "未配置访问密钥"
+                });
+                //mMainWindow.SetStatustProgess(new MainWindowStatusNotify()
+                //{
+                //    alertLevel = AlertLevel.ERROR,
+                //    message = "未配置访问密钥"
+                //});
+                return;
+            }
             new EditDnsRecordDialog(null, this).ShowDialog();
         }
 
