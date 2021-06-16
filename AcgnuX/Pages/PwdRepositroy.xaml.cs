@@ -2,8 +2,11 @@
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using AcgnuX.WindowX.Dialog;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -31,28 +34,32 @@ namespace AcgnuX.Pages
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnPageLoaded(object sender, RoutedEventArgs e)
+        private async void OnPageLoaded(object sender, RoutedEventArgs e)
         {
             if(accountList.Count == 0)
             {
-                LoadAllPassword();
+                var itemsInFile = await LoadAllPasswordAsync();
+                if (null != itemsInFile && itemsInFile.Count > 0)
+                {
+                    foreach (var item in itemsInFile)
+                    {
+                        accountList.Add(item);
+                    }
+                }
             }
         }
 
         /// <summary>
         /// 重新加载数据
         /// </summary>
-        private void LoadAllPassword()
+        private async Task<List<Account>> LoadAllPasswordAsync()
         {
-            var accountFilePath = ConfigUtil.Instance.AccountJsonPath;
-            var itemsInFile = FileUtil.DeserializeJsonFromFile<ObservableCollection<Account>>(accountFilePath);
-            if(null != itemsInFile && itemsInFile.Count > 0)
-            { 
-                foreach(var item in itemsInFile)
-                {
-                    accountList.Add(item);
-                }
-            }
+            return await Task.Run(() =>
+            {
+                var accountFilePath = ConfigUtil.Instance.AccountJsonPath;
+                var itemsInFile = FileUtil.DeserializeJsonFromFile<List<Account>>(accountFilePath);
+                return itemsInFile;
+            });
         }
 
         private void OnFilterBoxKeyDown(object sender, KeyEventArgs e)

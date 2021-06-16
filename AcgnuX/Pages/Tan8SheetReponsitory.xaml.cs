@@ -16,9 +16,11 @@ using System.Data;
 using System.Data.SQLite;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
@@ -58,16 +60,15 @@ namespace AcgnuX.Pages
         //标记任务是否来自queue
         private bool mIsQueueTask = false;
         //需要下载的任务列表
-        private Queue<int> mTaskQueue;
+        private Queue<int> mTaskQueue; 
+        private object mCollectLock = new object();
 
         public Tan8SheetReponsitory(MainWindow mainWin)
         {
             InitializeComponent();
             mMainWindow = mainWin;
-            mDownloadRecordWindow = new Tan8DownloadRecordWindow();
-            mDownloadRecordWindow.editConfirmHnadler += DownLoadTan8MusicV2;
             OnTaskBarEvent += mainWin.SetStatustProgess;
-            OnDownloadFinish += mDownloadRecordWindow.OnTan8SheetDownloadFinish;
+            //BindingOperations.EnableCollectionSynchronization(mPianoScoreList, mCollectLock);
         }
 
         private void OnPageLoaded(object sender, RoutedEventArgs e)
@@ -92,86 +93,146 @@ namespace AcgnuX.Pages
         }
 
         /// <summary>
+        /// 异步加载数据
+        /// </summary>
+        /// <param name="keyword"></param>
+        /// <returns></returns>
+        private async Task<List<PianoScore>> LoadingAsync(string keyword)
+        {
+            return await Task.Run(() =>
+            {
+                //查询关键字
+                var sql = new StringBuilder(" FROM tan8_music WHERE 1 = 1");
+                var sqlArgs = new List<SQLiteParameter>();
+                pager.MaxRow = 20;
+                if (!string.IsNullOrEmpty(keyword))
+                {
+                    pager.MaxRow = int.MaxValue;
+                    sql.Append(" and name like @name");
+                    sqlArgs.Add(new SQLiteParameter("@name", "%" + keyword + "%"));
+                    if (DataUtil.IsNum(keyword))
+                    {
+                        sql.Append(" or ypid = @ypid");
+                        sqlArgs.Add(new SQLiteParameter("@ypid", keyword));
+                    }
+                }
+                //封装进对象
+                var dataList = new List<PianoScore>();
+
+                //查询总数
+                var sqlRowResult = SQLite.sqlone("SELECT COUNT(1) total " + sql.ToString(), sqlArgs.ToArray());
+                var totalRow = string.IsNullOrEmpty(sqlRowResult) ? 0 : Convert.ToInt32(sqlRowResult);
+                //没有查到内容
+                if (totalRow == 0)
+                {
+                    pager.TotalPage = 1;
+                    pager.CurrentPage = 1;
+                    mPianoScoreList.Clear();
+                    return dataList;
+                }
+                pager.TotalPage = (totalRow + pager.MaxRow - 1) / pager.MaxRow;
+                //查询记录
+                sql.Append(" order by star desc limit @maxRow OFFSET @maxRow * (@curPage - 1)");
+                sqlArgs.Add(new SQLiteParameter("@maxRow", pager.MaxRow));
+                sqlArgs.Add(new SQLiteParameter("@curPage", pager.CurrentPage));
+
+                var dataSet = SQLite.SqlTable("select ypid, name, star, yp_count, ver " + sql.ToString(), sqlArgs);
+
+                foreach (DataRow dataRow in dataSet.Rows)
+                {
+                    //拼接得到cover路径
+                    var imgDir = string.Format("{0}/{1}/{2}", ConfigUtil.Instance.PianoScorePath, dataRow["name"], DEFAULT_COVER_NAME);
+
+                    dataList.Add(new PianoScore()
+                    {
+                        id = Convert.ToInt32(dataRow["ypid"]),
+                        Name = Convert.ToString(dataRow["name"]),
+                        //star = Convert.ToByte(dataRow["star"]),
+                        YpCount = Convert.ToByte(dataRow["yp_count"]),
+                        Ver = Convert.ToByte(dataRow["ver"]),
+                    });
+                }
+                return dataList;
+            });
+        }
+
+        /// <summary>
         /// 加载所有曲谱
         /// </summary>
         /// <param name="kw">查询关键字</param>
-        private void OnDataReading()
+        private async void OnDataReading()
         {
-            //查询关键字
             var keyword = SearchTextBox.Text;
-            var sql = new StringBuilder(" FROM tan8_music WHERE 1 = 1");
-            var sqlArgs = new List<SQLiteParameter>();
-            pager.MaxRow = 20;
-            if (!string.IsNullOrEmpty(keyword))
-            {
-                pager.MaxRow = int.MaxValue;
-                sql.Append(" and name like @name");
-                sqlArgs.Add(new SQLiteParameter("@name", "%" + keyword + "%"));
-                if (DataUtil.IsNum(keyword))
-                {
-                    sql.Append(" or ypid = @ypid");
-                    sqlArgs.Add(new SQLiteParameter("@ypid", keyword));
-                }
-            }
+            var dataList = await LoadingAsync(keyword);
 
-            //查询总数
-            var sqlRowResult = SQLite.sqlone("SELECT COUNT(1) total " + sql.ToString(), sqlArgs.ToArray());
-            var totalRow = string.IsNullOrEmpty(sqlRowResult) ? 0 : Convert.ToInt32(sqlRowResult);
-            //没有查到内容
-            if (totalRow == 0)
-            {
-                pager.TotalPage = 1;
-                pager.CurrentPage = 1;
-                mPianoScoreList.Clear();
-                return;
-            }
-            pager.TotalPage = (totalRow + pager.MaxRow - 1) / pager.MaxRow;
-            //查询记录
-            sql.Append(" order by star desc limit @maxRow OFFSET @maxRow * (@curPage - 1)");
-            sqlArgs.Add(new SQLiteParameter("@maxRow", pager.MaxRow));
-            sqlArgs.Add(new SQLiteParameter("@curPage", pager.CurrentPage));
-
-            var dataSet = SQLite.SqlTable("select ypid, name, star, yp_count, ver " + sql.ToString(), sqlArgs);
-
-            //封装进对象
-            var dataList = new List<PianoScoreViewModel>();
-            foreach (DataRow dataRow in dataSet.Rows)
-            {
-                //拼接得到cover路径
-                var imgDir = string.Format("{0}/{1}/{2}", ConfigUtil.Instance.PianoScorePath, dataRow["name"], DEFAULT_COVER_NAME);
-
-                dataList.Add(new PianoScoreViewModel()
-                {
-                    id = Convert.ToInt32(dataRow["ypid"]),
-                    Name = Convert.ToString(dataRow["name"]),
-                    star = Convert.ToByte(dataRow["star"]),
-                    YpCount = Convert.ToByte(dataRow["yp_count"]),
-                    Ver = Convert.ToByte(dataRow["ver"]),
-                    //对于不存在cover的路径使用默认图片
-                    cover = File.Exists(imgDir) ? FileUtil.GetBitmapImage(imgDir) : new BitmapImage(new Uri("/Assets/Images/piano-cover-default.jpg", UriKind.Relative))
-                });
-            }
+            //await Task.CompletedTask.ContinueWith(async _ =>
+            //{
+            //    lock (mCollectLock)
+            //    {
+            //        switch (pager.Action)
+            //        {
+            //            case PageAction.PREVIOUS:
+            //                //如果是向上翻页, 则将数据反转后, 添加到0 位置
+            //                dataList.Reverse();
+            //                dataList.ForEach(e => mPianoScoreList.Insert(0, CreateViewInstance(e)));
+            //                break;
+            //            case PageAction.NEXT:
+            //                //向下翻页直接添加到末尾
+            //                dataList.ForEach(e => mPianoScoreList.Add(CreateViewInstance(e)));
+            //                break;
+            //            default:
+            //                //刷新则清空所有记录后重新添加
+            //                mPianoScoreList.Clear();
+            //                dataList.ForEach(e => mPianoScoreList.Add(CreateViewInstance(e)));
+            //                break;
+            //        }
+            //        //every time we want to change the collection we need to lock it
+            //        //foreach (var item in dataList)
+            //        //{
+            //        //    Rows.Add(new Row { FirstName = item.FirstName, LastName = item.LastName });
+            //        //}
+            //    }
+            //});
 
             switch (pager.Action)
             {
                 case PageAction.PREVIOUS:
                     //如果是向上翻页, 则将数据反转后, 添加到0 位置
                     dataList.Reverse();
-                    dataList.ForEach(e => mPianoScoreList.Insert(0, e));
+                    dataList.ForEach(e => mPianoScoreList.Insert(0, CreateViewInstance(e)));
                     break;
                 case PageAction.NEXT:
                     //向下翻页直接添加到末尾
-                    dataList.ForEach(e => mPianoScoreList.Add(e));
+                    dataList.ForEach(e => mPianoScoreList.Add(CreateViewInstance(e)));
                     break;
                 default:
                     //刷新则清空所有记录后重新添加
                     mPianoScoreList.Clear();
-                    dataList.ForEach(e => mPianoScoreList.Add(e));
+                    dataList.ForEach(e => mPianoScoreList.Add(CreateViewInstance(e)));
                     break;
             }
             //读取完成后将翻页动作设为当前
             pager.Action = PageAction.CURRENT;
             SetListBoxVisibility(true);
+        }
+
+        /// <summary>
+        /// 根据乐谱创建view实例
+        /// </summary>
+        /// <param name="pianoScore"></param>
+        /// <returns></returns>
+        private PianoScoreViewModel CreateViewInstance(PianoScore pianoScore)
+        {
+            var imgDir = Path.Combine(ConfigUtil.Instance.PianoScorePath, pianoScore.Name, DEFAULT_COVER_NAME);
+            return new PianoScoreViewModel()
+            { 
+                //对于不存在cover的路径使用默认图片
+                cover = File.Exists(imgDir) ? FileUtil.GetBitmapImage(imgDir) : new BitmapImage(new Uri("/Assets/Images/piano-cover-default.jpg", UriKind.Relative)),
+                Name = pianoScore.Name,
+                id = pianoScore.id,
+                Ver = pianoScore.Ver,
+                YpCount = pianoScore.YpCount
+            };
         }
 
         /// <summary>
@@ -193,6 +254,12 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnDownloadListButtonClick(object sender, RoutedEventArgs e)
         {
+            if(null == mDownloadRecordWindow)
+            {
+                mDownloadRecordWindow = new Tan8DownloadRecordWindow();
+                mDownloadRecordWindow.editConfirmHnadler += DownLoadTan8MusicV2;
+                OnDownloadFinish += mDownloadRecordWindow.OnTan8SheetDownloadFinish;
+            }
             mDownloadRecordWindow.Show();
         }
 
@@ -978,14 +1045,17 @@ namespace AcgnuX.Pages
         /// <param name="showListBox"></param>
         private void SetListBoxVisibility(bool showListBox)
         {
-            if (showListBox)
+            this.Dispatcher.Invoke(() => 
             {
-                PianoScoreListBox.Visibility = Visibility.Visible;
-                DefaultOpenPlayerButton.Visibility = Visibility.Collapsed;
-                return;
-            }
-            PianoScoreListBox.Visibility = Visibility.Collapsed;
-            DefaultOpenPlayerButton.Visibility = Visibility.Visible;
+                if (showListBox)
+                {
+                    PianoScoreListBox.Visibility = Visibility.Visible;
+                    DefaultOpenPlayerButton.Visibility = Visibility.Collapsed;
+                    return;
+                }
+                PianoScoreListBox.Visibility = Visibility.Collapsed;
+                DefaultOpenPlayerButton.Visibility = Visibility.Visible;
+            });
         }
 
         /// <summary>

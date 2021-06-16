@@ -361,9 +361,12 @@ namespace PatchTool
             if (string.IsNullOrEmpty(dbPath))
             {
                 //如果没有指定数据库文件, 则使用默认
-                dbPath = @"..\..\..\AcgnuX\bin\Debug\Assets\data\master.db";
+                dbPath = ConfigUtil.Instance.Load().DbFilePath;
             }
-            FileUtil.CopyFile(dbPath, Environment.CurrentDirectory + @"\Assets\data\master.db");
+            if (!SQLite.SetDbFilePath(dbPath))
+            {
+                Console.WriteLine("数据库没有正确配置");
+            }
         }
     }
 }

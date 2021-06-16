@@ -38,7 +38,7 @@ namespace AcgnuX
             base.OnStartup(e);
 
             //检测是否单例启动
-            mMutex = new Mutex(true, Process.GetCurrentProcess().ProcessName, out bool createdNew);
+            mMutex = new Mutex(true, System.Reflection.Assembly.GetEntryAssembly().GetName().Name, out bool createdNew);
             if (!createdNew)
             {
                 var psArr = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName);

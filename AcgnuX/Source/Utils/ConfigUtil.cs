@@ -42,7 +42,7 @@ namespace AcgnuX.Source.Utils
 
         public static ConfigUtil Instance { get; private set; } = new ConfigUtil();
         //AcgnuX.ini
-        private static readonly string mConfPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Process.GetCurrentProcess().ProcessName + ".ini");
+        private static readonly string mConfPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, System.Reflection.Assembly.GetEntryAssembly().GetName().Name + ".ini");
 
         public ConfigUtil Load()
         {

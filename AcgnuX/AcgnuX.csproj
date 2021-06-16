@@ -201,6 +201,7 @@
     <Compile Include="Resource\Styles\ListBoxStyle.xaml.cs">
       <DependentUpon>ListBoxStyle.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Source\Bussiness\Common\AsyncObservableCollection.cs" />
     <Compile Include="Source\Bussiness\Common\DelegateDefine.cs" />
     <Compile Include="Source\Bussiness\Constants\ApplicationConstant.cs" />
     <Compile Include="Source\Bussiness\Constants\PageAction.cs" />

@@ -20,7 +20,7 @@ namespace AcgnuX.Source.Utils
         /// 设置数据库文件路径
         /// </summary>
         /// <param name="filePath"></param>
-        public static void SetDbFilePath(string filePath)
+        public static bool SetDbFilePath(string filePath)
         {
             mDbFilePath = filePath;
             try
@@ -29,8 +29,10 @@ namespace AcgnuX.Source.Utils
                 var initSQL = FileUtil.GetApplicationResourceAsString(@"Assets\data\" + initfile);
                 ExecuteNonQuery(initSQL, null);
                 OnDbFileSetEvent?.Invoke();
+                return true;
             }
             catch (Exception) { }
+            return false;
         }
 
         /// <summary>
