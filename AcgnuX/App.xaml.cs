@@ -63,7 +63,7 @@ namespace AcgnuX
             //检查数据库文件是否存在
             if (!File.Exists(dbfilePath)) return;
 
-            SQLite.SetDbFilePath(dbfilePath);
+            await SQLite.SetDbFilePath(dbfilePath);
         }
     }
 }

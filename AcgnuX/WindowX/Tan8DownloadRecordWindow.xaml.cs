@@ -126,8 +126,9 @@ namespace AcgnuX.WindowX
         /// <param name="e"></param>
         private void OnCopyIncrIdContextMenuClick(object sender, RoutedEventArgs e)
         {
-            XamlUtil.SelectRow(DownloadRecordDataGrid, e);
+            //XamlUtil.SelectRow(DownloadRecordDataGrid, e);
             var record = DownloadRecordDataGrid.SelectedItem as Tan8SheetDownloadRecord;
+            if (null == record) return;
             var pianoScore = new PianoScore()
             {
                 autoDownload = true,

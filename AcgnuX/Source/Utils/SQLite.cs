@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace AcgnuX.Source.Utils
 {
@@ -20,19 +21,22 @@ namespace AcgnuX.Source.Utils
         /// 设置数据库文件路径
         /// </summary>
         /// <param name="filePath"></param>
-        public static bool SetDbFilePath(string filePath)
+        public static Task<bool> SetDbFilePath(string filePath)
         {
-            mDbFilePath = filePath;
-            try
+            return Task.Run(() =>
             {
-                //创建必须的表
-                var initSQL = FileUtil.GetApplicationResourceAsString(@"Assets\data\" + initfile);
-                ExecuteNonQuery(initSQL, null);
-                OnDbFileSetEvent?.Invoke();
-                return true;
-            }
-            catch (Exception) { }
-            return false;
+                mDbFilePath = filePath;
+                try
+                {
+                    //创建必须的表
+                    var initSQL = FileUtil.GetApplicationResourceAsString(@"Assets\data\" + initfile);
+                    ExecuteNonQuery(initSQL, null);
+                    OnDbFileSetEvent?.Invoke();
+                    return true;
+                }
+                catch (Exception) { }
+                return false;
+            });
         }
 
         /// <summary>

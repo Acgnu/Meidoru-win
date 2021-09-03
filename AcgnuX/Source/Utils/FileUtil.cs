@@ -1,7 +1,9 @@
 ﻿using Microsoft.VisualBasic.Devices;
 using Newtonsoft.Json;
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Forms;
@@ -19,6 +21,15 @@ namespace AcgnuX.Source.Utils
         /// windows系统保留文件夹名
         /// </summary>
         private static readonly string[] RESERVED_FOLDER_NAMES = { "CON", "PRN", "AUX", "CLOCK$", "NUL", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "LPT1"};
+
+        [DllImport("shell32.dll", ExactSpelling = true)]
+        private static extern void ILFree(IntPtr pidlList);
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
+        private static extern IntPtr ILCreateFromPathW(string pszPath);
+
+        [DllImport("shell32.dll", ExactSpelling = true)]
+        private static extern int SHOpenFolderAndSelectItems(IntPtr pidlList, uint cild, IntPtr children, uint dwFlags);
 
         /// <summary>
         /// 从文件反序列化JSON到目标实体
@@ -292,6 +303,34 @@ namespace AcgnuX.Source.Utils
             var uri = new Uri(path, UriKind.Relative);
             var info = System.Windows.Application.GetResourceStream(uri);
             return info;
+        }
+
+        /// <summary>
+        /// 打开路径并定位文件...对于@"h:\Bleacher Report - Hardaway with the safe call ??.mp4"这样的，explorer.exe /select,d:xxx不认，用API整它
+        /// </summary>
+        /// <param name="filePath">文件绝对路径</param>
+        public static void OpenAndChooseFile(string filePath)
+        {
+            if (!File.Exists(filePath) && !Directory.Exists(filePath))
+                return;
+
+            if (Directory.Exists(filePath))
+                Process.Start(@"explorer.exe", "/select,\"" + filePath + "\"");
+            else
+            {
+                IntPtr pidlList = ILCreateFromPathW(filePath);
+                if (pidlList != IntPtr.Zero)
+                {
+                    try
+                    {
+                        Marshal.ThrowExceptionForHR(SHOpenFolderAndSelectItems(pidlList, 0, IntPtr.Zero, 0));
+                    }
+                    finally
+                    {
+                        ILFree(pidlList);
+                    }
+                }
+            }
         }
 
         //public static JArray LoadJsonFile(string JsonFileFullPath)

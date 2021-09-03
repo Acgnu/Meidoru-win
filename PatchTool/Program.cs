@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
@@ -19,6 +23,7 @@ namespace PatchTool
         [DllImport("User32.dll")]
         public static extern int MessageBox(int h, string m, string c, int type);
 
+
         /// <summary>
         /// 建议的执行顺序
         /// 1.Clean0PageYuepu
@@ -30,12 +35,14 @@ namespace PatchTool
         /// <param name="args"></param>
         static void Main(string[] args)
         {
+            //TestConvertImg();
             var command = "?";
             var autoDel = false;
             var autoCopy = false;
             var savePath = string.Empty;
             var oldHomePath = string.Empty;
             var dbPath = string.Empty;
+            var threadCount = 5;
             var maxYpid = 0;
             if (args.Length > 0)
             {
@@ -66,6 +73,10 @@ namespace PatchTool
                     {
                         autoCopy = true;
                     }
+                    if(arg.StartsWith("-t"))
+                    {
+                        threadCount = Convert.ToInt32(arg.Substring(2));
+                    }
                 }
             }
             switch (command)
@@ -77,8 +88,9 @@ namespace PatchTool
                 case "ckold": RedownloadOldVer(dbPath, maxYpid); break;
                 case "ckdb": ShowNameNotExistsFolder(dbPath, savePath); break;
                 case "ckodh": CheckOldHome(dbPath, oldHomePath, autoCopy); break;
+                case "ckwb": CheckWhiteBlackPreview(dbPath, threadCount); break;
             }
-            Console.ReadKey();
+            //Console.ReadKey();
         }
 
         private static void ShowTips()
@@ -356,16 +368,151 @@ namespace PatchTool
             Console.WriteLine("共复制" + copyTotal + "个目录");
         }
 
-        private static void InitDB(string dbPath)
+        private async static void InitDB(string dbPath)
         {
             if (string.IsNullOrEmpty(dbPath))
             {
                 //如果没有指定数据库文件, 则使用默认
                 dbPath = ConfigUtil.Instance.Load().DbFilePath;
             }
-            if (!SQLite.SetDbFilePath(dbPath))
+            if (!await SQLite.SetDbFilePath(dbPath))
             {
                 Console.WriteLine("数据库没有正确配置");
+            }
+        }
+
+        /// <summary>
+        /// 检查并将数据库所有曲目生成去水印封面
+        /// </summary>
+        /// <param name="dbPath">数据库路径</param>
+        /// <param name="threadCount">最大线程数</param>
+        private static void CheckWhiteBlackPreview(string dbPath, int threadCount)
+        {
+            Console.WriteLine("执行水印任务, dbPath=" + dbPath + ", 线程数 = " + threadCount);
+            InitDB(dbPath);
+            var ypHomePath = ConfigUtil.Instance.Load().PianoScorePath;
+            if(string.IsNullOrEmpty(ypHomePath))
+            {
+                Console.WriteLine("无法获取乐谱路径, 先检查一下配置文件");
+                return;
+            }
+            ConcurrentQueue<PianoScore> sheetDirQueue = new ConcurrentQueue<PianoScore>();
+            var dataSet = SQLite.SqlTable("SELECT ypid, name, yp_count FROM tan8_music", null);
+            var total = dataSet.Rows.Count;
+            foreach (DataRow dataRow in dataSet.Rows)
+            {
+                if (Directory.Exists(Path.Combine(ypHomePath, dataRow["name"] as string)))
+                {
+                    Console.WriteLine(string.Format("正在添加 {0} 到任务队列...", dataRow["name"]));
+                    sheetDirQueue.Enqueue(new PianoScore() 
+                    {
+                        id = Convert.ToInt32(dataRow["ypid"]),
+                        Name = dataRow["name"].ToString(),
+                        YpCount = Convert.ToByte(dataRow["yp_count"])
+                    });
+                }
+            }
+
+            var convertPreviewFolder = ".nowatermark_previews";
+            if(!Directory.Exists(Path.Combine(ypHomePath, convertPreviewFolder)))
+            {
+                Directory.CreateDirectory(Path.Combine(ypHomePath, convertPreviewFolder));
+            }
+
+            for (int i = 0; i < threadCount; i++)
+            {
+                Task.Run(() =>
+                {
+                    while (true)
+                    {
+                        PianoScore pianoScore = new PianoScore();
+                        var isOk = sheetDirQueue.TryDequeue(out pianoScore);
+                        if (isOk)
+                        {
+                            var sheetDir = Path.Combine(ypHomePath, pianoScore.Name);
+                            var sheetFiles = Directory.GetFiles(sheetDir);
+                            foreach (var sheetFile in sheetFiles)
+                            {
+                                if (Path.GetFileName(sheetFile).Equals("page.0.png"))
+                                {
+                                    Console.WriteLine("剩余 : " + sheetDirQueue.Count + ", 当前 : " + Path.GetFileName(sheetDir));
+                                    var sufId = "(" + pianoScore.id.GetValueOrDefault() + ")";
+                                    var titleName = pianoScore.Name.EndsWith(sufId) ? pianoScore.Name.Substring(0, pianoScore.Name.Length - sufId.Length) : pianoScore.Name;
+                                    Bitmap rawImg = (Bitmap)Bitmap.FromFile(sheetFile);
+                                    Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, titleName, 1, pianoScore.YpCount);
+                                    bmp.Save(Path.Combine(ypHomePath, convertPreviewFolder, pianoScore.id.GetValueOrDefault() + ".png"), ImageFormat.Png);
+                                    bmp.Dispose();
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            while (sheetDirQueue.Count > 0)
+            {
+                Thread.Sleep(1000);
+            }
+            //转换完毕打开目标文件夹
+            System.Diagnostics.Process.Start(Path.Combine(ypHomePath, convertPreviewFolder));
+        }
+
+        private static void TestConvertImg()
+        {
+            var singleTestDirName = "1、Dreamer's Waltz - David Lanz（Sacred Road）大卫·兰兹【神圣之路】钢琴曲集";
+            try
+            {
+                if(string.IsNullOrEmpty(singleTestDirName))
+                {
+                    ConcurrentQueue<string> sheetDirQueue = new ConcurrentQueue<string>();
+                    var sheetHome = Directory.GetDirectories(@"E:\\曲谱");
+                    foreach (var sheetDir in sheetHome)
+                    {
+                        sheetDirQueue.Enqueue(sheetDir);
+                    }
+                    for (int i = 0; i < 8; i++)
+                    {
+                        Task.Run(() =>
+                        {
+                            while (true)
+                            {
+                                var sheetDir = string.Empty;
+                                var isOk = sheetDirQueue.TryDequeue(out sheetDir);
+                                if (isOk)
+                                {
+                                    var sheetFiles = Directory.GetFiles(sheetDir);
+                                    foreach (var sheetFile in sheetFiles)
+                                    {
+                                        if (Path.GetFileName(sheetFile).Equals("page.0.png"))
+                                        {
+                                            Console.WriteLine(Path.GetFileName(sheetDir));
+                                            Bitmap rawImg = (Bitmap)Bitmap.FromFile(sheetFile);
+                                            Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, Path.GetFileName(sheetDir), 1, 10);
+                                            bmp.Save(Path.Combine(@"C:\Users\Administrator\Desktop\去水印", Path.GetFileName(sheetDir) + ".png"), ImageFormat.Png);
+                                            bmp.Dispose();
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                        });
+                    }
+                    Console.ReadKey();
+                }
+                else
+                {
+                    string dirName = singleTestDirName;
+                    Bitmap rawImg = (Bitmap)Bitmap.FromFile(@"E:\曲谱\" + dirName + @"\page.0.png");
+                    Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, dirName, 1 , 10);
+                    bmp.Save(Path.Combine(@"C:\Users\Administrator\Desktop\去水印", dirName + ".png"), ImageFormat.Png);
+                    bmp.Dispose();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
     }

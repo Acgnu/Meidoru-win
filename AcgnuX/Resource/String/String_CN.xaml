@@ -15,6 +15,7 @@
     <system:String x:Key="Refresh">刷新</system:String>
     <system:String x:Key="Delete">删除</system:String>
     <system:String x:Key="OpenFolder">打开文件夹</system:String>
+    <system:String x:Key="ExportForShare">导出为分享包</system:String>
     <system:String x:Key="DeleteConfirm">确定要删除 [{0}] ?</system:String>
     <system:String x:Key="CopyAccount">复制账号</system:String>
     <system:String x:Key="CopyPassword">复制密码</system:String>

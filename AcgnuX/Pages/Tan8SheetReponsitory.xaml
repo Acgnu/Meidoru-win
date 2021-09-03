@@ -48,6 +48,7 @@
                 <ListBox.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="{StaticResource OpenFolder}" Click="OnOpenFolderClick"/>
+                        <MenuItem Header="{StaticResource ExportForShare}" Click="OnExportForShareClick"/>
                         <MenuItem Header="{StaticResource Delete}" Click="OnDeleteClick"/>
                     </ContextMenu>
                 </ListBox.ContextMenu>

@@ -14,6 +14,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -31,8 +33,6 @@ namespace AcgnuX.Pages
     /// </summary>
     public partial class Tan8SheetReponsitory : BasePage
     {
-        //默认的封面文件名
-        private readonly string DEFAULT_COVER_NAME = "cover.jpg";
         //列表数据对象
         private ObservableCollection<PianoScoreViewModel> mPianoScoreList = new ObservableCollection<PianoScoreViewModel>();
         //下载worker
@@ -62,26 +62,43 @@ namespace AcgnuX.Pages
         //需要下载的任务列表
         private Queue<int> mTaskQueue; 
         private object mCollectLock = new object();
+        //导出的Worker
+        private readonly BackgroundWorker mExportBgWorker = new BackgroundWorker()
+        {
+            WorkerReportsProgress = true,
+            WorkerSupportsCancellation = true
+        };
 
         public Tan8SheetReponsitory(MainWindow mainWin)
         {
             InitializeComponent();
             mMainWindow = mainWin;
             OnTaskBarEvent += mainWin.SetStatustProgess;
+            mMainWindow.OnClickStatusBarStop += ChangeTaskStatus;
+            PianoScoreListBox.ItemsSource = mPianoScoreList;
+            DataContext = this;
             //BindingOperations.EnableCollectionSynchronization(mPianoScoreList, mCollectLock);
         }
 
         private void OnPageLoaded(object sender, RoutedEventArgs e)
         {
-            OnDataReading();
-            PianoScoreListBox.ItemsSource = mPianoScoreList;
-            mMainWindow.OnClickStatusBarStop += ChangeTaskStatus;
+            if(mPianoScoreList.Count == 0)
+            {
+                OnDataReading();
+            }
             //工作任务
             //bgworker.DoWork += new DoWorkEventHandler(ReadyTask);
             //进度通知
             //bgworker.ProgressChanged += new ProgressChangedEventHandler(NotifyProgress);
             //下载完成事件
             //bgworker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(DownLoadComplate);
+
+            //工作任务
+            mExportBgWorker.DoWork += new DoWorkEventHandler(DoExportForShareTask);
+            //进度通知
+            mExportBgWorker.ProgressChanged += new ProgressChangedEventHandler(ReportExportForShareProgress);
+            //下载完成事件
+            mExportBgWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(ExportForShareComplate);
             //开启http监听
             if (null == mTan8WebListener)
             {
@@ -89,7 +106,6 @@ namespace AcgnuX.Pages
                 mTan8WebListener.editConfirmHnadler += new EditConfirmHandler<PianoScore>(DownLoadTan8MusicV2Task);
                 mTan8WebListener.StartListen();
             }
-            DataContext = this;
         }
 
         /// <summary>
@@ -140,9 +156,6 @@ namespace AcgnuX.Pages
 
                 foreach (DataRow dataRow in dataSet.Rows)
                 {
-                    //拼接得到cover路径
-                    var imgDir = string.Format("{0}/{1}/{2}", ConfigUtil.Instance.PianoScorePath, dataRow["name"], DEFAULT_COVER_NAME);
-
                     dataList.Add(new PianoScore()
                     {
                         id = Convert.ToInt32(dataRow["ypid"]),
@@ -223,7 +236,7 @@ namespace AcgnuX.Pages
         /// <returns></returns>
         private PianoScoreViewModel CreateViewInstance(PianoScore pianoScore)
         {
-            var imgDir = Path.Combine(ConfigUtil.Instance.PianoScorePath, pianoScore.Name, DEFAULT_COVER_NAME);
+            var imgDir = Path.Combine(ConfigUtil.Instance.PianoScorePath, pianoScore.Name, ApplicationConstant.DEFAULT_COVER_NAME);
             return new PianoScoreViewModel()
             { 
                 //对于不存在cover的路径使用默认图片
@@ -792,7 +805,7 @@ namespace AcgnuX.Pages
             FileUtil.CreateFolder(saveFullPath);
 
             //step.3 下载曲谱封面
-            var coverSavePath = Path.Combine(saveFullPath, DEFAULT_COVER_NAME);
+            var coverSavePath = Path.Combine(saveFullPath, ApplicationConstant.DEFAULT_COVER_NAME);
             OnTaskBarEvent?.Invoke(CalcProgress(winProgress, string.Format("下载 [{0}] 封面", ypNameFolder), 30));
             var coverUrl = tan8Music.ypad_url.Substring(0, tan8Music.ypad_url.IndexOf('_')) + "_prev.jpg";
             var downResult = new FileDownloader().DownloadFile(coverUrl, coverSavePath);
@@ -1000,6 +1013,10 @@ namespace AcgnuX.Pages
         private void ChangeTaskStatus()
         {
             isTaskStop = true;
+            if(mExportBgWorker.IsBusy)
+            {
+                mExportBgWorker.CancelAsync();
+            }
             //bgworker.CancelAsync();
         }
 
@@ -1142,5 +1159,179 @@ namespace AcgnuX.Pages
             }
             return curYpid + 1;
         }
+
+        #region 导出分享后台任务/进度/完成事件
+
+        /// <summary>
+        /// 导出为分享包
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnExportForShareClick(object sender, RoutedEventArgs e)
+        {
+            var selected = PianoScoreListBox.SelectedItem as PianoScoreViewModel;
+            if (null == selected) return;
+            //如果已经存在分享包, 直接打开目标文件夹
+            var fullPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, selected.Name);
+            if (Directory.Exists(fullPath))
+            {
+                if(File.Exists(Path.Combine(fullPath, ApplicationConstant.SHARE_ZIP_NAME)))
+                {
+                    FileUtil.OpenAndChooseFile(Path.Combine(fullPath, ApplicationConstant.SHARE_ZIP_NAME));
+                }
+                else
+                {
+                    //不存在则开始执行转换任务
+                    if(mExportBgWorker.IsBusy)
+                    {
+                        mMainWindow.SetStatustProgess(new MainWindowStatusNotify()
+                        {
+                            alertLevel = AlertLevel.ERROR,
+                            message = "有正在进行中的任务"
+                        });
+                        return;
+                    }
+                    mExportBgWorker.RunWorkerAsync(selected);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 执行导出分享任务
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DoExportForShareTask(object sender, DoWorkEventArgs e)
+        {
+            var winProgress = new MainWindowStatusNotify()
+            {
+                alertLevel = AlertLevel.RUN,
+                animateProgress = true,
+                progressDuration = 100,
+                nowProgress = 0
+            };
+            var pianoScoreVm = e.Argument as PianoScoreViewModel;
+            mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, "读取乐谱信息", 5));
+            //获取原始名称
+            var dbName = SQLite.sqlone("SELECT name FROM tan8_music WHERE ypid = @ypid",
+                new SQLiteParameter[] { new SQLiteParameter("@ypid", pianoScoreVm.id.GetValueOrDefault()) });
+            if (string.IsNullOrEmpty(dbName))
+            {
+                winProgress.alertLevel = AlertLevel.ERROR;
+                mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, "乐谱信息有误", 100));
+                return;
+            }
+
+            var fullPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, dbName);
+            if (!Directory.Exists(fullPath))
+            {
+                winProgress.alertLevel = AlertLevel.ERROR;
+                mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, "乐谱文件不存在", 100));
+                return;
+            }
+            mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, "统计乐谱文件", 10));
+
+            //遍历所有乐谱图片
+            var sheetFiles = Directory.GetFiles(fullPath);
+            //乐谱总数
+            var totalPage = 0;
+            foreach (var sheetFile in sheetFiles)
+            {
+                var subFileName = Path.GetFileName(sheetFile);
+                if (subFileName.StartsWith("page") && subFileName.EndsWith(ApplicationConstant.DEFAULT_SHEET_PAGE_FORMAT))
+                {
+                    totalPage++;
+                }
+            }
+
+            //如果标题名称有括号+ID, 需要去掉
+            var sufId = "(" + pianoScoreVm.id.GetValueOrDefault() + ")";
+            var titleName = dbName.EndsWith(sufId) ? dbName.Substring(0, dbName.Length - sufId.Length) : dbName;
+            //在当前目录下建立临时文件夹, 存储用于压缩的乐谱
+            Directory.CreateDirectory(Path.Combine(fullPath, ApplicationConstant.SHARE_TEMP_FOLDER_NAME));
+            for (int i = 0; i < totalPage; i++)
+            {
+                if(mExportBgWorker.CancellationPending)
+                {
+                    ClearExportFiles(winProgress, fullPath);
+                    return;
+                }
+                mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, string.Format("正在转换第{0}张乐谱, 共{1}张", i + 1, totalPage), 75 / totalPage + winProgress.nowProgress));
+                var pageFileName = string.Format("page.{0}.png", i);
+                Bitmap rawImg = (Bitmap)Bitmap.FromFile(Path.Combine(fullPath, pageFileName));
+                Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, titleName, i + 1, totalPage);
+                bmp.Save(Path.Combine(fullPath, ApplicationConstant.SHARE_TEMP_FOLDER_NAME, i + ApplicationConstant.DEFAULT_SHEET_PAGE_FORMAT), ImageFormat.Png);
+                bmp.Dispose();
+            }
+
+            //调用压缩工具进行打包
+            //可使用 -email 直接邮寄, bandzip帮助文档 https://www.bandisoft.com/bandizip/help/parameter/
+            mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, "正在压缩...", 85));
+            var zipProcess = System.Diagnostics.Process.Start("Bandizip.exe", string.Format("c -y \"{0}\" \"{1}\"", 
+                Path.Combine(fullPath, ApplicationConstant.SHARE_ZIP_NAME), 
+                Path.Combine(fullPath, ApplicationConstant.SHARE_TEMP_FOLDER_NAME)));
+
+            //等待压缩完成
+            zipProcess.WaitForExit();
+
+            if (mExportBgWorker.CancellationPending)
+            {
+                ClearExportFiles(winProgress, fullPath);
+                return;
+            }
+
+            //压缩后删除临时文件夹
+            mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, "正在清理临时文件...", 95));
+            FileUtil.DeleteDirWithName(fullPath, ApplicationConstant.SHARE_TEMP_FOLDER_NAME);
+
+            e.Result = Path.Combine(fullPath, ApplicationConstant.SHARE_ZIP_NAME);
+            winProgress.alertLevel = AlertLevel.INFO;
+            mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, "导出成功", 100));
+        }
+
+        /// <summary>
+        /// 清理中止任务产生的临时文件
+        /// </summary>
+        /// <param name="sheetDirPath"></param>
+        private void ClearExportFiles(MainWindowStatusNotify winProgress, string sheetDirPath)
+        {
+            mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, "正在清理文件...", 90));
+            if(Directory.Exists(Path.Combine(sheetDirPath, ApplicationConstant.SHARE_TEMP_FOLDER_NAME)))
+            {
+                FileUtil.DeleteDirWithName(sheetDirPath, ApplicationConstant.SHARE_TEMP_FOLDER_NAME);
+            }
+            if(File.Exists(Path.Combine(sheetDirPath, ApplicationConstant.SHARE_ZIP_NAME)))
+            {
+                File.Delete(Path.Combine(sheetDirPath, ApplicationConstant.SHARE_ZIP_NAME));
+            }
+            winProgress.alertLevel = AlertLevel.INFO;
+            mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, "任务中止", 100));
+        }
+
+        /// <summary>
+        /// 报告导出分享进度
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ReportExportForShareProgress(object sender, ProgressChangedEventArgs e)
+        {
+            OnTaskBarEvent?.Invoke(e.UserState as MainWindowStatusNotify);
+        }
+
+        /// <summary>
+        /// 导出分享完成事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ExportForShareComplate(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if(!string.IsNullOrEmpty((string) e.Result))
+            {
+                //完成后打开目标文件
+                FileUtil.OpenAndChooseFile(e.Result.ToString());
+            }
+        }
+
+        #endregion
     }
 }

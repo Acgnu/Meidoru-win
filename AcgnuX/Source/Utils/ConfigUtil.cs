@@ -53,7 +53,7 @@ namespace AcgnuX.Source.Utils
             return this;
         }
 
-        public void Save(Settings settings)
+        public async void Save(Settings settings)
         {
             AccountJsonPath = settings.AccountJsonPath;
             PianoScorePath = settings.PianoScorePath;
@@ -65,7 +65,7 @@ namespace AcgnuX.Source.Utils
 
             if (!string.IsNullOrEmpty(DbFilePath))
             {
-                SQLite.SetDbFilePath(DbFilePath);
+                await SQLite.SetDbFilePath(DbFilePath);
             }
         }
 
