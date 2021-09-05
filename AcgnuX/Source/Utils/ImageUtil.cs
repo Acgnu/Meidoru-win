@@ -46,6 +46,8 @@ namespace AcgnuX.Source.Utils
             Graphics gs = Graphics.FromImage(newBitmap);
             try
             {
+                var firstPixel = oldBitmap.GetPixel(0, 0);
+                var firstPixelGrayValue = GetPixelBlackWhiteValue(firstPixel.R, firstPixel.G, firstPixel.B, 2);
                 Color pixel;
                 for (int x = 0; x < Width; x++)
                 {
@@ -55,7 +57,7 @@ namespace AcgnuX.Source.Utils
                         //第一条五线谱以上/尾部所有像素转为白色
                         if (y <= 41 || y > (Height - 45))
                         {
-                            Result = 255;
+                            Result = firstPixelGrayValue;
                         }
                         else
                         {
@@ -108,6 +110,8 @@ namespace AcgnuX.Source.Utils
                 int splitWidth = Width / 5;
                 int ckLeftEnd = splitWidth * 2;
                 int ckRightStart = splitWidth * 3 ;
+                var firstPixel = oldBitmap.GetPixel(0, 0);
+                var firstPixelGrayValue = GetPixelBlackWhiteValue(firstPixel.R, firstPixel.G, firstPixel.B, 2);
 
                 //先找到第一条五线谱第一根线的y坐标
                 for (int y = 100; y < Height; y++)
@@ -171,7 +175,7 @@ namespace AcgnuX.Source.Utils
                         //第一条五线谱以上/尾部所有像素转为白色
                         if (y <= pixelFiveLineStart - pixelEachFilveLine || y > (Height - 45))
                         {
-                            Result = 255;
+                            Result = firstPixelGrayValue;
                         }
                         else if (y < pixelFiveLineStart - 12 && (x <= ckLeftEnd || x >= ckRightStart))
                         {
@@ -193,7 +197,7 @@ namespace AcgnuX.Source.Utils
                                         //如果发现存在黑色像素, 需要转换成白色
                                         if (ckResult == 0)
                                         {
-                                            Result = 255;
+                                            Result = firstPixelGrayValue;
                                             breakOut = true;
                                             break;
                                         }
