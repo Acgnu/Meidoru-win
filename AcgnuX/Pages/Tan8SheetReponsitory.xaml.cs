@@ -1259,7 +1259,7 @@ namespace AcgnuX.Pages
                 mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, string.Format("正在转换第{0}张乐谱, 共{1}张", i + 1, totalPage), 75 / totalPage + winProgress.nowProgress));
                 var pageFileName = string.Format("page.{0}.png", i);
                 Bitmap rawImg = (Bitmap)Bitmap.FromFile(Path.Combine(fullPath, pageFileName));
-                Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, titleName, i + 1, totalPage);
+                Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, titleName, i + 1, totalPage, false);
                 bmp.Save(Path.Combine(fullPath, ApplicationConstant.SHARE_TEMP_FOLDER_NAME, i + ApplicationConstant.DEFAULT_SHEET_PAGE_FORMAT), ImageFormat.Png);
                 bmp.Dispose();
             }

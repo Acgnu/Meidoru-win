@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace AcgnuX.Source.Utils
 {
@@ -18,11 +20,11 @@ namespace AcgnuX.Source.Utils
         /// </summary>
         /// <param name="bmp"></param>
         /// <returns></returns>
-        public static Bitmap CreateIegalTan8Sheet(Bitmap bmp, string title, int curPage, int totalPage)
+        public static Bitmap CreateIegalTan8Sheet(Bitmap bmp, string title, int curPage, int totalPage, bool addImgMark)
         {
             if(curPage == 1)
             {
-                return CreateIegalTan8SheetForPreviewPage(bmp, title, curPage, totalPage);
+                return CreateIegalTan8SheetForPreviewPage(bmp, title, curPage, totalPage, addImgMark);
             }
             else
             {
@@ -94,7 +96,7 @@ namespace AcgnuX.Source.Utils
         /// <param name="curPage"></param>
         /// <param name="totalPage"></param>
         /// <returns></returns>
-        private static Bitmap CreateIegalTan8SheetForPreviewPage(Bitmap bmp, string title, int curPage, int totalPage)
+        private static Bitmap CreateIegalTan8SheetForPreviewPage(Bitmap bmp, string title, int curPage, int totalPage, bool addImgMark)
         {
             int Height = bmp.Height;
             int Width = bmp.Width;
@@ -233,6 +235,15 @@ namespace AcgnuX.Source.Utils
                 Font pageFont = new Font("微软雅黑", 13);
                 SizeF pageSizeF = gs.MeasureString(pageText, pageFont);
                 gs.DrawString(pageText, pageFont, br, Width / 2 - pageSizeF.Width / 2, Height - 50);
+                if(addImgMark)
+                {
+                    //绘制喜羊羊遮挡
+                    BitmapImage resourceBmp = new BitmapImage(new Uri(
+                        string.Format("pack://application:,,,/{0};component/Assets/Images/happy_sheep.jpg", System.Reflection.Assembly.GetEntryAssembly().GetName().Name), 
+                        UriKind.RelativeOrAbsolute));
+                    Bitmap happySheep = BitmapImage2Bitmap(resourceBmp);
+                    gs.DrawImage(happySheep, Width / 2 - happySheep.Width / 2, Height / 2 - happySheep.Height / 2, happySheep.Width, happySheep.Height);
+                }
             }
             catch (Exception ex)
             {
@@ -265,6 +276,24 @@ namespace AcgnuX.Source.Utils
                     break;
             }
             return Result;
+        }
+
+        /// <summary>
+        /// 将bmpimg转换为 System.Drawing.Bitmap
+        /// </summary>
+        /// <param name="bitmapImage"></param>
+        /// <returns></returns>
+        public static Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
+        {
+            using (MemoryStream outStream = new MemoryStream())
+            {
+                BitmapEncoder enc = new BmpBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create(bitmapImage));
+                enc.Save(outStream);
+                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+
+                return new Bitmap(bitmap);
+            }
         }
     }
 }

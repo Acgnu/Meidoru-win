@@ -36,6 +36,10 @@ namespace PatchTool
         static void Main(string[] args)
         {
             //TestConvertImg();
+            //if(true)
+            //{
+            //    return;
+            //}
             var command = "?";
             var autoDel = false;
             var autoCopy = false;
@@ -44,6 +48,7 @@ namespace PatchTool
             var dbPath = string.Empty;
             var threadCount = 5;
             var maxYpid = 0;
+            var overwrite = false;
             if (args.Length > 0)
             {
                 command = args[0];
@@ -77,6 +82,10 @@ namespace PatchTool
                     {
                         threadCount = Convert.ToInt32(arg.Substring(2));
                     }
+                    if(arg.Equals("-o"))
+                    {
+                        overwrite = true;
+                    }
                 }
             }
             switch (command)
@@ -88,7 +97,7 @@ namespace PatchTool
                 case "ckold": RedownloadOldVer(dbPath, maxYpid); break;
                 case "ckdb": ShowNameNotExistsFolder(dbPath, savePath); break;
                 case "ckodh": CheckOldHome(dbPath, oldHomePath, autoCopy); break;
-                case "ckwb": CheckWhiteBlackPreview(dbPath, threadCount); break;
+                case "ckwb": CheckWhiteBlackPreview(dbPath, overwrite, threadCount); break;
             }
             //Console.ReadKey();
         }
@@ -386,7 +395,7 @@ namespace PatchTool
         /// </summary>
         /// <param name="dbPath">数据库路径</param>
         /// <param name="threadCount">最大线程数</param>
-        private static void CheckWhiteBlackPreview(string dbPath, int threadCount)
+        private static void CheckWhiteBlackPreview(string dbPath, bool overwrite, int threadCount)
         {
             Console.WriteLine("执行水印任务, dbPath=" + dbPath + ", 线程数 = " + threadCount);
             InitDB(dbPath);
@@ -429,6 +438,16 @@ namespace PatchTool
                         var isOk = sheetDirQueue.TryDequeue(out pianoScore);
                         if (isOk)
                         {
+                            bool doProcess = true;
+                            //检查目标文件夹是否已经存在已处理的图片
+                            if (File.Exists(Path.Combine(ypHomePath, convertPreviewFolder, pianoScore.id.GetValueOrDefault() + ".png")))
+                            {
+                                doProcess = overwrite ? true : false;
+                            }
+                            if(!doProcess)
+                            {
+                                continue;
+                            }
                             var sheetDir = Path.Combine(ypHomePath, pianoScore.Name);
                             var sheetFiles = Directory.GetFiles(sheetDir);
                             foreach (var sheetFile in sheetFiles)
@@ -439,7 +458,7 @@ namespace PatchTool
                                     var sufId = "(" + pianoScore.id.GetValueOrDefault() + ")";
                                     var titleName = pianoScore.Name.EndsWith(sufId) ? pianoScore.Name.Substring(0, pianoScore.Name.Length - sufId.Length) : pianoScore.Name;
                                     Bitmap rawImg = (Bitmap)Bitmap.FromFile(sheetFile);
-                                    Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, titleName, 1, pianoScore.YpCount);
+                                    Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, titleName, 1, pianoScore.YpCount, true);
                                     bmp.Save(Path.Combine(ypHomePath, convertPreviewFolder, pianoScore.id.GetValueOrDefault() + ".png"), ImageFormat.Png);
                                     bmp.Dispose();
                                 }
@@ -458,7 +477,7 @@ namespace PatchTool
 
         private static void TestConvertImg()
         {
-            var singleTestDirName = "1、Dreamer's Waltz - David Lanz（Sacred Road）大卫·兰兹【神圣之路】钢琴曲集";
+            var singleTestDirName = "";// 1、Dreamer's Waltz - David Lanz（Sacred Road）大卫·兰兹【神圣之路】钢琴曲集";
             try
             {
                 if(string.IsNullOrEmpty(singleTestDirName))
@@ -486,7 +505,7 @@ namespace PatchTool
                                         {
                                             Console.WriteLine(Path.GetFileName(sheetDir));
                                             Bitmap rawImg = (Bitmap)Bitmap.FromFile(sheetFile);
-                                            Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, Path.GetFileName(sheetDir), 1, 10);
+                                            Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, Path.GetFileName(sheetDir), 1, 10, true);
                                             bmp.Save(Path.Combine(@"C:\Users\Administrator\Desktop\去水印", Path.GetFileName(sheetDir) + ".png"), ImageFormat.Png);
                                             bmp.Dispose();
                                         }
@@ -505,7 +524,7 @@ namespace PatchTool
                 {
                     string dirName = singleTestDirName;
                     Bitmap rawImg = (Bitmap)Bitmap.FromFile(@"E:\曲谱\" + dirName + @"\page.0.png");
-                    Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, dirName, 1 , 10);
+                    Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, dirName, 1 , 10, true);
                     bmp.Save(Path.Combine(@"C:\Users\Administrator\Desktop\去水印", dirName + ".png"), ImageFormat.Png);
                     bmp.Dispose();
                 }
