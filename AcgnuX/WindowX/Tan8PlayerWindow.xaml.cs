@@ -1,6 +1,6 @@
 ﻿using AcgnuX.Source.Model;
 using AcgnuX.Source.ViewModel;
-using AxShockwaveFlashObjects;
+//using AxShockwaveFlashObjects;
 using System;
 using System.ComponentModel;
 using System.Windows;
@@ -13,7 +13,7 @@ namespace AcgnuX.WindowX
     /// </summary>
     public partial class Tan8PlayerWindow : Window
     {
-        private AxShockwaveFlash axShockwaveFlash;
+        //private AxShockwaveFlash axShockwaveFlash;
 
         public Tan8PlayerWindow()
         {
@@ -28,9 +28,9 @@ namespace AcgnuX.WindowX
         private void OnPageLoad(object sender, RoutedEventArgs e)
         {
             WindowsFormsHost formHost = new WindowsFormsHost();
-            axShockwaveFlash = new AxShockwaveFlash();
-            formHost.Child = axShockwaveFlash;
-            PlayerGrid.Children.Add(formHost);
+            //axShockwaveFlash = new AxShockwaveFlash();
+            //formHost.Child = axShockwaveFlash;
+            //PlayerGrid.Children.Add(formHost);
         }
 
         /// <summary>
@@ -40,9 +40,10 @@ namespace AcgnuX.WindowX
         /// <returns></returns>
         public string GetRealTan8URL(int ypid)
         {
-            var result = axShockwaveFlash.CallFunction(
-                string.Format("<invoke name=\"swfExtGetypURL\" returntype=\"xml\"><arguments><string>{0}</string></arguments></invoke>", ypid));
-            return result;
+            //var result = axShockwaveFlash.CallFunction(
+            //    string.Format("<invoke name=\"swfExtGetypURL\" returntype=\"xml\"><arguments><string>{0}</string></arguments></invoke>", ypid));
+            //return result;
+            return "";
         }
 
         /// <summary>
@@ -53,7 +54,7 @@ namespace AcgnuX.WindowX
         {
             string flashPath = Environment.CurrentDirectory;
             flashPath += @"\Assets\flash\fuckTan8\Main.swf?id=" + pianoScore.id;
-            axShockwaveFlash.Movie = flashPath;
+            //axShockwaveFlash.Movie = flashPath;
         }
 
         /// <summary>

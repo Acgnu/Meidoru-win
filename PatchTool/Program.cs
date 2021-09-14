@@ -422,12 +422,6 @@ namespace PatchTool
                 }
             }
 
-            var convertPreviewFolder = ".nowatermark_previews";
-            if(!Directory.Exists(Path.Combine(ypHomePath, convertPreviewFolder)))
-            {
-                Directory.CreateDirectory(Path.Combine(ypHomePath, convertPreviewFolder));
-            }
-
             for (int i = 0; i < threadCount; i++)
             {
                 Task.Run(() =>
@@ -438,17 +432,18 @@ namespace PatchTool
                         var isOk = sheetDirQueue.TryDequeue(out pianoScore);
                         if (isOk)
                         {
+                            var sheetDir = Path.Combine(ypHomePath, pianoScore.Name);
+                            var previewPicName = "public.png";
                             bool doProcess = true;
                             //检查目标文件夹是否已经存在已处理的图片
-                            if (File.Exists(Path.Combine(ypHomePath, convertPreviewFolder, pianoScore.id.GetValueOrDefault() + ".png")))
+                            if (File.Exists(Path.Combine(ypHomePath, sheetDir, previewPicName)))
                             {
                                 doProcess = overwrite ? true : false;
                             }
-                            if(!doProcess)
+                            if (!doProcess)
                             {
                                 continue;
                             }
-                            var sheetDir = Path.Combine(ypHomePath, pianoScore.Name);
                             var sheetFiles = Directory.GetFiles(sheetDir);
                             foreach (var sheetFile in sheetFiles)
                             {
@@ -459,7 +454,7 @@ namespace PatchTool
                                     var titleName = pianoScore.Name.EndsWith(sufId) ? pianoScore.Name.Substring(0, pianoScore.Name.Length - sufId.Length) : pianoScore.Name;
                                     Bitmap rawImg = (Bitmap)Bitmap.FromFile(sheetFile);
                                     Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, titleName, 1, pianoScore.YpCount, true);
-                                    bmp.Save(Path.Combine(ypHomePath, convertPreviewFolder, pianoScore.id.GetValueOrDefault() + ".png"), ImageFormat.Png);
+                                    bmp.Save(Path.Combine(ypHomePath, sheetDir, previewPicName), ImageFormat.Png);
                                     bmp.Dispose();
                                 }
                             }
@@ -472,7 +467,7 @@ namespace PatchTool
                 Thread.Sleep(1000);
             }
             //转换完毕打开目标文件夹
-            System.Diagnostics.Process.Start(Path.Combine(ypHomePath, convertPreviewFolder));
+            Console.WriteLine("水印图片生成完毕");
         }
 
         private static void TestConvertImg()
