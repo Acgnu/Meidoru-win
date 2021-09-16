@@ -65,6 +65,7 @@ CREATE TABLE IF NOT EXISTS "tan8_music_img" (
   "img_url" TEXT(160),
   "api" TEXT(20),
   "api_channel" TEXT(20),
+  "status" INTEGER(1),
   "create_time" TEXT(25),
   "update_time" text(25),
   PRIMARY KEY ("ypid")
