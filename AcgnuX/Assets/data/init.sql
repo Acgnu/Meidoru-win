@@ -47,4 +47,26 @@ CREATE TABLE IF NOT EXISTS "tan8_music_down_task" (
   "ypid" integer(11) NOT NULL,
   PRIMARY KEY ("ypid")
 );
+CREATE TABLE IF NOT EXISTS "search_kw_freq" (
+  "kw" TEXT(50) NOT NULL,
+  "freq" integer(20),
+  "last_time" text(25),
+  PRIMARY KEY ("kw")
+);
+CREATE TABLE IF NOT EXISTS "search_no_result_kw" (
+  "kw" TEXT(50) NOT NULL,
+  "freq" integer(20),
+  "create_time" TEXT(25),
+  PRIMARY KEY ("kw")
+);
+CREATE TABLE IF NOT EXISTS "tan8_music_img" (
+  "ypid" INTEGER(11) NOT NULL,
+  "yp_name" TEXT(100),
+  "img_url" TEXT(160),
+  "api" TEXT(20),
+  "api_channel" TEXT(20),
+  "create_time" TEXT(25),
+  "update_time" text(25),
+  PRIMARY KEY ("ypid")
+);
 CREATE INDEX IF NOT EXISTS 'INDEX_TAN8_NAME' ON 'tan8_music' ('name' ASC);
