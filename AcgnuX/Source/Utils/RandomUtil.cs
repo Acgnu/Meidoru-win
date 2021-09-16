@@ -3,7 +3,7 @@ using System.Text;
 
 namespace AcgnuX.Utils
 {
-    class RandomUtil
+    public class RandomUtil
     {
         public static string makeSring(bool b, int n)//b：是否有复杂字符，n：生成的字符串长度
         {
@@ -20,6 +20,18 @@ namespace AcgnuX.Utils
             }
             return sbuilder.ToString();
             //return "MNVUbM";
+        }
+        
+        /// <summary>
+        /// 获取指定范围内的随机整数
+        /// </summary>
+        /// <param name="start">开始范围</param>
+        /// <param name="end">结束范围</param>
+        /// <returns></returns>
+        public static int GetRangeRandomNum(int start , int end)
+        {
+            Random rand = new Random();
+            return rand.Next(start, end);
         }
     }
 }

@@ -5,8 +5,10 @@ using RestSharp;
 using RestSharp.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 
 namespace AcgnuX.Utils
@@ -289,6 +291,36 @@ namespace AcgnuX.Utils
         public static InvokeResult<string> CrawlContentFromWebsit(string url, string proxyAddress)
         {
             return CrawlContentFromWebsit(url, proxyAddress, 5000);
+        }
+
+        /// <summary>
+        /// HTTP上传文件
+        /// </summary>
+        /// <param name="url">上传地址</param>
+        /// <param name="fullFilePath">文件完整路径</param>
+        /// <param name="formFileName">form表单的文件key</param>
+        /// <param name="uploadFileName">form表单的文件名称</param>
+        /// <param name="args">其他参数</param>
+        /// <returns></returns>
+        public static string UploadFile(string url, string fullFilePath, string formFileName, string uploadFileName, Dictionary<string, object> args)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var content = new MultipartFormDataContent();
+                //添加字符串参数，参数名为
+                if(null != args)
+                {
+                    foreach (KeyValuePair<string, object> kvp in args)
+                    {
+                        content.Add(new StringContent(kvp.Value.ToString()), kvp.Key);
+                    }
+                }
+                //添加文件参数，参数名为formFileName，文件名
+                content.Add(new ByteArrayContent(System.IO.File.ReadAllBytes(fullFilePath)), formFileName, uploadFileName);
+
+                var result = client.PostAsync(url, content).Result.Content.ReadAsStringAsync().Result;
+                return result;
+            }
         }
     }
 }

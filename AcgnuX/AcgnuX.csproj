@@ -208,6 +208,13 @@
     <Compile Include="Source\Bussiness\Constants\PageAction.cs" />
     <Compile Include="Source\Bussiness\Constants\Tan8SheetDownloadResult.cs" />
     <Compile Include="Source\Bussiness\Constants\AlertLevel.cs" />
+    <Compile Include="Source\Bussiness\imgrespotroy\IImageRepo.cs" />
+    <Compile Include="Source\Bussiness\imgrespotroy\ImageRepoFactory.cs" />
+    <Compile Include="Source\Bussiness\imgrespotroy\ImageRepoUploadArg.cs" />
+    <Compile Include="Source\Bussiness\imgrespotroy\ImageRepoUploadResult.cs" />
+    <Compile Include="Source\Bussiness\imgrespotroy\PrntImageRepo.cs" />
+    <Compile Include="Source\Bussiness\imgrespotroy\OleouImageRepo.cs" />
+    <Compile Include="Source\Bussiness\imgrespotroy\MeetImageRepo.cs" />
     <Compile Include="Source\Bussiness\Ten\Dns\TenCloudDns.cs" />
     <Compile Include="Pages\Index.xaml.cs">
       <DependentUpon>Index.xaml</DependentUpon>

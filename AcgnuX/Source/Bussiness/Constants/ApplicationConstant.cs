@@ -21,8 +21,11 @@ namespace AcgnuX.Source.Bussiness.Constants
         public static readonly string DEFAULT_COVER_NAME = "cover.jpg";
         // 默认的乐谱图片格式
         public static readonly string DEFAULT_SHEET_PAGE_FORMAT = ".png";
-
-
-
+        //图床API
+        public static readonly string[] IMG_REPO_API = {
+            "meet",     //遇见图床APICODE
+            "oleou",     //多合一
+            "prnt"  //prnt
+        };
     }
 }

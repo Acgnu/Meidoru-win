@@ -11,9 +11,13 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using AcgnuX.Utils;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using AcgnuX.Source.Bussiness.imgrespotroy;
 
 namespace PatchTool
 {
@@ -98,6 +102,7 @@ namespace PatchTool
                 case "ckdb": ShowNameNotExistsFolder(dbPath, savePath); break;
                 case "ckodh": CheckOldHome(dbPath, oldHomePath, autoCopy); break;
                 case "ckwb": CheckWhiteBlackPreview(dbPath, overwrite, threadCount); break;
+                case "ckimg" : CheckSheetPreviewImg(dbPath, threadCount); break;
             }
             //Console.ReadKey();
         }
@@ -388,6 +393,102 @@ namespace PatchTool
             {
                 Console.WriteLine("数据库没有正确配置");
             }
+        }
+
+
+        /// <summary>
+        /// 检查并上传乐谱图片
+        /// </summary>
+        /// <param name="dbPath"></param>
+        /// <param name="threadCount"></param>
+        private static void CheckSheetPreviewImg(string dbPath, int threadCount)
+        {
+            Console.WriteLine("执行上传乐谱首页任务, dbPath=" + dbPath + ", 线程数 = " + threadCount);
+            InitDB(dbPath);
+            var ypHomePath = ConfigUtil.Instance.Load().PianoScorePath;
+            if (string.IsNullOrEmpty(ypHomePath))
+            {
+                Console.WriteLine("无法获取乐谱路径, 先检查一下配置文件");
+                return;
+            }
+            ConcurrentQueue<PianoScore> sheetDirQueue = new ConcurrentQueue<PianoScore>();
+            var dataSet = SQLite.SqlTable("SELECT ypid, name, yp_count FROM tan8_music", null);
+            var total = dataSet.Rows.Count;
+            foreach (DataRow dataRow in dataSet.Rows)
+            {
+                if (Directory.Exists(Path.Combine(ypHomePath, dataRow["name"] as string)))
+                {
+                    Console.WriteLine(string.Format("正在添加 {0} 到任务队列...", dataRow["name"]));
+                    sheetDirQueue.Enqueue(new PianoScore()
+                    {
+                        id = Convert.ToInt32(dataRow["ypid"]),
+                        Name = dataRow["name"].ToString(),
+                        YpCount = Convert.ToByte(dataRow["yp_count"])
+                    });
+                }
+            }
+
+            for (int i = 0; i < threadCount; i++)
+            {
+                Task.Run(() =>
+                {
+                    while (true)
+                    {
+                        PianoScore pianoScore = new PianoScore();
+                        var isOk = sheetDirQueue.TryDequeue(out pianoScore);
+                        if (isOk)
+                        {
+                            var sheetDir = Path.Combine(ypHomePath, pianoScore.Name);
+                            var previewPicName = "public.png";
+                            //检查目标文件夹是否已经存在已处理的图片
+                            if (File.Exists(Path.Combine(ypHomePath, sheetDir, previewPicName)))
+                            {
+                                //检查目标是否已经有上传数据
+                                var sqlRowResult = SQLite.sqlone("select count(1) from tan8_music_img where ypid = @ypid",
+                                    new SQLiteParameter[] { new SQLiteParameter("@ypid", pianoScore.id.GetValueOrDefault()) });
+                                var totalRow = string.IsNullOrEmpty(sqlRowResult) ? 0 : Convert.ToInt32(sqlRowResult);
+                                //没有查到内容
+                                if (totalRow > 0)
+                                {
+                                    Console.WriteLine(pianoScore.Name + " 已存在预览图, 跳过...");
+                                    continue;
+                                }
+                                IImageRepo imageAPI = ImageRepoFactory.GetRandomApi();
+                                //IImageRepo imageAPI = new PrntImageRepo();
+                                ImageRepoUploadArg uploadArg = new ImageRepoUploadArg()
+                                {
+                                    FullFilePath = Path.Combine(ypHomePath, sheetDir, previewPicName),
+                                    ExtraArgs = new JObject
+                                    {
+                                        { "uploadFileFormName", "sheet_" + pianoScore.id + ".png" }
+                                    }
+                                };
+                                InvokeResult<ImageRepoUploadResult> invokeResult = imageAPI.Upload(uploadArg);
+                                if(!invokeResult.success)
+                                {
+                                    Console.WriteLine(pianoScore.Name + "上传失败, API=" + imageAPI.GetApiCode() + ", msg=" + invokeResult.message);
+                                    continue;
+                                }
+                                SQLite.ExecuteNonQuery("INSERT INTO tan8_music_img(ypid, yp_name, img_url, api, api_channel, create_time) VALUES (@ypid, @ypName, @imgUrl, @api, @apiChannel, datetime('now', 'localtime'))",
+                                    new List<SQLiteParameter>()
+                                {
+                                    new SQLiteParameter("@ypid", pianoScore.id.GetValueOrDefault()),
+                                    new SQLiteParameter("@ypName", pianoScore.Name),
+                                    new SQLiteParameter("@imgUrl", invokeResult.data.ImgUrl),
+                                    new SQLiteParameter("@api", invokeResult.data.Api),
+                                    new SQLiteParameter("@apiChannel", invokeResult.data.ApiChannel)
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+            while (sheetDirQueue.Count > 0)
+            {
+                Thread.Sleep(5000);
+            }
+            Console.WriteLine("乐谱图片上传完毕");
+            Console.ReadKey();
         }
 
         /// <summary>
