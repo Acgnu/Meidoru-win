@@ -46,7 +46,7 @@ namespace AcgnuX.Source.Bussiness.imgrespotroy
         //"vxichina",//微聊
         //"renren",//人人
         //"taihe",//太河
-        "bkimg",//佰书
+        //"bkimg",//佰书
         "muke",//慕课
         //"bitauto",//易车
         //"vimcn",//微梦

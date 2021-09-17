@@ -412,13 +412,13 @@ namespace PatchTool
                 return;
             }
             ConcurrentQueue<PianoScore> sheetDirQueue = new ConcurrentQueue<PianoScore>();
-            var dataSet = SQLite.SqlTable("SELECT ypid, name, yp_count FROM tan8_music", null);
+            var dataSet = SQLite.SqlTable("SELECT ypid, name, yp_count FROM tan8_music WHERE ypid NOT IN (SELECT ypid FROM tan8_music_img)", null);
             var total = dataSet.Rows.Count;
+            Console.WriteLine("正在添加任务队列...");
             foreach (DataRow dataRow in dataSet.Rows)
             {
                 if (Directory.Exists(Path.Combine(ypHomePath, dataRow["name"] as string)))
                 {
-                    Console.WriteLine(string.Format("正在添加 {0} 到任务队列...", dataRow["name"]));
                     sheetDirQueue.Enqueue(new PianoScore()
                     {
                         id = Convert.ToInt32(dataRow["ypid"]),
@@ -427,12 +427,16 @@ namespace PatchTool
                     });
                 }
             }
+            Console.WriteLine("共添加" + total + "项任务");
 
+            List<ManualResetEvent> manualEvents = new List<ManualResetEvent>();
             for (int i = 0; i < threadCount; i++)
             {
-                Task.Run(() =>
+                ManualResetEvent mre = new ManualResetEvent(false);
+                manualEvents.Add(mre);
+                ThreadPool.QueueUserWorkItem((object obj) => 
                 {
-                    while (true)
+                    while (sheetDirQueue.Count > 0)
                     {
                         PianoScore pianoScore = new PianoScore();
                         var isOk = sheetDirQueue.TryDequeue(out pianoScore);
@@ -443,16 +447,6 @@ namespace PatchTool
                             //检查目标文件夹是否已经存在已处理的图片
                             if (File.Exists(Path.Combine(ypHomePath, sheetDir, previewPicName)))
                             {
-                                //检查目标是否已经有上传数据
-                                var sqlRowResult = SQLite.sqlone("select count(1) from tan8_music_img where ypid = @ypid",
-                                    new SQLiteParameter[] { new SQLiteParameter("@ypid", pianoScore.id.GetValueOrDefault()) });
-                                var totalRow = string.IsNullOrEmpty(sqlRowResult) ? 0 : Convert.ToInt32(sqlRowResult);
-                                //没有查到内容
-                                if (totalRow > 0)
-                                {
-                                    Console.WriteLine(pianoScore.Name + " 已存在预览图, 跳过...");
-                                    continue;
-                                }
                                 IImageRepo imageAPI = ImageRepoFactory.GetRandomApi();
                                 //IImageRepo imageAPI = new PrntImageRepo();
                                 ImageRepoUploadArg uploadArg = new ImageRepoUploadArg()
@@ -464,9 +458,9 @@ namespace PatchTool
                                     }
                                 };
                                 InvokeResult<ImageRepoUploadResult> invokeResult = imageAPI.Upload(uploadArg);
-                                if(!invokeResult.success)
+                                if (!invokeResult.success)
                                 {
-                                    Console.WriteLine(pianoScore.Name + "上传失败, API=" + imageAPI.GetApiCode() + ", msg=" + invokeResult.message);
+                                    Console.WriteLine(pianoScore.Name + "上传失败, msg=" + invokeResult.message);
                                     continue;
                                 }
                                 SQLite.ExecuteNonQuery("INSERT INTO tan8_music_img(ypid, yp_name, img_url, api, api_channel, create_time) VALUES (@ypid, @ypName, @imgUrl, @api, @apiChannel, datetime('now', 'localtime'))",
@@ -478,15 +472,15 @@ namespace PatchTool
                                     new SQLiteParameter("@api", invokeResult.data.Api),
                                     new SQLiteParameter("@apiChannel", invokeResult.data.ApiChannel)
                                 });
+                                Console.WriteLine("剩余 : " + sheetDirQueue.Count);
                             }
                         }
                     }
-                });
+                    ManualResetEvent localMre = (ManualResetEvent)obj;
+                    localMre.Set();
+                }, mre);
             }
-            while (sheetDirQueue.Count > 0)
-            {
-                Thread.Sleep(5000);
-            }
+            WaitHandle.WaitAll(manualEvents.ToArray());
             Console.WriteLine("乐谱图片上传完毕");
             Console.ReadKey();
         }

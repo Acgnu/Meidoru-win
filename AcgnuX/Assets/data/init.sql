@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS "search_no_result_kw" (
 );
 CREATE TABLE IF NOT EXISTS "tan8_music_img" (
   "ypid" INTEGER(11) NOT NULL,
-  "yp_name" TEXT(100),
+  "yp_name" TEXT(200),
   "img_url" TEXT(160),
   "api" TEXT(20),
   "api_channel" TEXT(20),
