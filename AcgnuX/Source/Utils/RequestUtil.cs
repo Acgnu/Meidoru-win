@@ -306,6 +306,7 @@ namespace AcgnuX.Utils
         {
             using (HttpClient client = new HttpClient())
             {
+                client.Timeout = TimeSpan.FromMinutes(3);
                 var content = new MultipartFormDataContent();
                 //添加字符串参数，参数名为
                 if(null != args)

@@ -51,7 +51,7 @@ namespace AcgnuX.Source.Bussiness.imgrespotroy
         //"bitauto",//易车
         //"vimcn",//微梦
         //"ali", //艾力
-        "smms" //末世
+        //"smms" //末世
         };
 
         public string GetApiCode()
