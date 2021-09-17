@@ -457,7 +457,16 @@ namespace PatchTool
                                         { "uploadFileFormName", "sheet_" + pianoScore.id + ".png" }
                                     }
                                 };
-                                InvokeResult<ImageRepoUploadResult> invokeResult = imageAPI.Upload(uploadArg);
+                                InvokeResult<ImageRepoUploadResult> invokeResult;
+                                try
+                                {
+                                    invokeResult = imageAPI.Upload(uploadArg);
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine("api {0}, 引发异常, {1}", imageAPI.GetApiCode(), e.Message);
+                                    continue;
+                                }
                                 if (!invokeResult.success)
                                 {
                                     Console.WriteLine(pianoScore.Name + "上传失败, msg=" + invokeResult.message);
