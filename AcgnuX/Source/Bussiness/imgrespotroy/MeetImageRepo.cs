@@ -38,7 +38,7 @@ namespace AcgnuX.Source.Bussiness.imgrespotroy
         //"ouliu",//蒲柳
         //"postimages", //贴图
         //"chaoxing",//超星
-        "ai58",//五八
+        //"ai58",//五八  58刚上传完没多久就被删了, 不用这个
         "imgbox",//图盒
         //"imageshack",//图盒
         "imgur",//图绘

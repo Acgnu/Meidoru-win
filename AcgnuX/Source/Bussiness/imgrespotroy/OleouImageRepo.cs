@@ -22,7 +22,7 @@ namespace AcgnuX.Source.Bussiness.imgrespotroy
             "tt",       //头条
             "sg",  //搜狗
             "jd",  //京东
-            "c58", //58
+            //"c58", //58  58刚上传完没多久就被删了, 不用这个
             "wy", //网易
             "sh", //搜狐
             "hl", //葫芦侠
