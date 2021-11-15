@@ -133,7 +133,7 @@ namespace AcgnuX.Source.Taskx
         /// </summary>
         /// <param name="proxyAddress"></param>
         /// <returns></returns>
-        private static bool IsProxyValid(string proxyAddress)
+        public static bool IsProxyValid(string proxyAddress)
         {
             var crawlResult = RequestUtil.CrawlContentFromWebsit(PROXY_TEST_URL, proxyAddress, 5000);
             return PROXY_TEST_RESPONSE.Equals(crawlResult.data) ? true : false;
@@ -195,7 +195,6 @@ namespace AcgnuX.Source.Taskx
             Task.Run(() =>
             {
                 Thread.Sleep(requeeTime);
-                //AddToPoolNotExsits(proxyAddress);
                 SaveProxyToDB(proxyAddress);
             });
         }
@@ -204,7 +203,7 @@ namespace AcgnuX.Source.Taskx
         /// 保存一条代理到数据库
         /// </summary>
         /// <param name="proxyAddress"></param>
-        private static void SaveProxyToDB(string proxyAddress)
+        public static void SaveProxyToDB(string proxyAddress)
         {
             if (SQLite.ExecuteNonQuery("INSERT OR IGNORE INTO proxy_address(address, addtime) VALUES (@address, datetime('now', 'localtime'))",
                 new List<SQLiteParameter> { new SQLiteParameter("@address", proxyAddress) }) > 0)
@@ -231,7 +230,7 @@ namespace AcgnuX.Source.Taskx
         /// 查询数据库中所有的代理
         /// </summary>
         /// <returns></returns>
-        private static List<ProxyAddress> GetAllProxyFromDB()
+        public static List<ProxyAddress> GetAllProxyFromDB()
         {
             var proxyList = new List<ProxyAddress>();
             var dataSet = SQLite.SqlTable("SELECT address, addtime FROM proxy_address ORDER BY addtime", null);

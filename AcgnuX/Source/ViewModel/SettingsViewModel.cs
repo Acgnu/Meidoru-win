@@ -69,8 +69,8 @@ namespace AcgnuX.Source.ViewModel
             PianoScorePath = ConfigUtil.Instance.PianoScorePath ?? "";
             DbFilePath = ConfigUtil.Instance.DbFilePath ?? "";
             //代理池数量变更监听
-            ProxyCount = ProxyFactory.GetProxyCount;
-            ProxyFactory.mProxyPoolCountChangeHandler += OnProxyPoolCountChange;
+            ProxyCount = ProxyFactoryV2.GetProxyCount;
+            ProxyFactoryV2.mProxyPoolCountChangeHandler += OnProxyPoolCountChange;
             OnCrawlRuleCheckboxClick = new RelayCommand<object>((sender) => OnGridCheckBoxClick(sender));
             InitCrawlRules();
             SQLite.OnDbFileSetEvent += InitCrawlRules;
@@ -130,7 +130,7 @@ namespace AcgnuX.Source.ViewModel
                 UpdateCrawlRulesEnable(Convert.ToInt32(checkBox.Tag), checkBox.IsChecked.GetValueOrDefault());
                 CheckIsCheckedAll(true);
             }
-            ProxyFactory.RestartCrawlIPTask();
+            ProxyFactoryV2.RestartCrawlIPTask();
         }
 
         /// <summary>

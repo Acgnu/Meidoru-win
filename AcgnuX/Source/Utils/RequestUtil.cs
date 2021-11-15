@@ -29,7 +29,7 @@ namespace AcgnuX.Utils
          */
         public static String ConcatQueryString(SortedDictionary<String, String> paramsMap)
         {
-            if (null == paramsMap || paramsMap.Count == 0)
+            if (DataUtil.IsEmptyCollection(paramsMap))
             {
                 return "";
             }

@@ -1,5 +1,6 @@
 ﻿using AcgnuX.Source.Model;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
@@ -55,6 +56,16 @@ namespace AcgnuX.Source.Utils
         public static bool IsNum(string value)
         {
             return Regex.IsMatch(value, @"^[+-]?\d*[.]?\d*$");
+        }
+
+        /// <summary>
+        /// 返回集合是否为空
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <returns>为空返回true</returns>
+        public static bool IsEmptyCollection(ICollection collection)
+        {
+            return null == collection || collection.Count == 0;
         }
 
         public static TOut Clone<TIn, TOut>(TIn source)

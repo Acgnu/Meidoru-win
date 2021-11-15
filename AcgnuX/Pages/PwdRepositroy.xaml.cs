@@ -36,7 +36,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private async void OnPageLoaded(object sender, RoutedEventArgs e)
         {
-            if(accountList.Count == 0)
+            if(DataUtil.IsEmptyCollection(accountList))
             {
                 var itemsInFile = await LoadAllPasswordAsync();
                 if (null != itemsInFile && itemsInFile.Count > 0)

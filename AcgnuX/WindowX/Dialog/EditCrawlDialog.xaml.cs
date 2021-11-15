@@ -105,7 +105,7 @@ namespace AcgnuX.WindowX.Dialog
             }
             if(crawlRule.Enable == Convert.ToByte(1))
             {
-                ProxyFactory.RestartCrawlIPTask();
+                ProxyFactoryV2.RestartCrawlIPTask();
             }
             return row;
         }
@@ -128,7 +128,7 @@ namespace AcgnuX.WindowX.Dialog
                 });
             if (crawlRule.Enable == Convert.ToByte(1))
             {
-                ProxyFactory.RestartCrawlIPTask();
+                ProxyFactoryV2.RestartCrawlIPTask();
             }
             return row;
         }

@@ -25,6 +25,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace AcgnuX.Pages
 {
@@ -82,7 +83,7 @@ namespace AcgnuX.Pages
 
         private void OnPageLoaded(object sender, RoutedEventArgs e)
         {
-            if(mPianoScoreList.Count == 0)
+            if(DataUtil.IsEmptyCollection(mPianoScoreList))
             {
                 OnDataReading();
             }
@@ -143,7 +144,6 @@ namespace AcgnuX.Pages
                 {
                     pager.TotalPage = 1;
                     pager.CurrentPage = 1;
-                    mPianoScoreList.Clear();
                     return dataList;
                 }
                 pager.TotalPage = (totalRow + pager.MaxRow - 1) / pager.MaxRow;
@@ -177,6 +177,10 @@ namespace AcgnuX.Pages
         {
             var keyword = SearchTextBox.Text;
             var dataList = await LoadingAsync(keyword);
+            if(DataUtil.IsEmptyCollection(dataList))
+            {
+                mPianoScoreList.Clear();
+            }
 
             //await Task.CompletedTask.ContinueWith(async _ =>
             //{
@@ -987,7 +991,7 @@ namespace AcgnuX.Pages
                 SQLite.ExecuteNonQuery("DELETE FROM tan8_music WHERE ypid = @ypid", new List<SQLiteParameter> { new SQLiteParameter("@ypid", selected.id) });
 
                 //如果没有曲谱了, 则展示默认按钮
-                if (mPianoScoreList.Count == 0) SetListBoxVisibility(false);
+                if (DataUtil.IsEmptyCollection(mPianoScoreList)) SetListBoxVisibility(false);
             }
         }
 
@@ -1150,7 +1154,7 @@ namespace AcgnuX.Pages
             {
                 //取下一个ID时, 删除上一个ID
                 SQLite.ExecuteNonQuery("DELETE FROM tan8_music_down_task WHERE ypid = @ypid", new List<SQLiteParameter> { new SQLiteParameter("@ypid", curYpid) });
-                if (mTaskQueue.Count == 0)
+                if (DataUtil.IsEmptyCollection(mTaskQueue))
                 {
                     isTaskStop = true;
                     return 0;
