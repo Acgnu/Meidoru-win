@@ -333,6 +333,20 @@ namespace AcgnuX.Source.Utils
             }
         }
 
+        /// <summary>
+        /// 追加内容到文件
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="content"></param>
+        public static void AppendLine(string filePath, string content)
+        {
+            using (FileStream stream = new FileStream(filePath, FileMode.Append))
+            using (StreamWriter writer = new StreamWriter(stream))
+            {
+                writer.WriteLine(content);
+            }
+        }
+
         //public static JArray LoadJsonFile(string JsonFileFullPath)
         //{
         //    using (System.IO.StreamReader file = System.IO.File.OpenText(JsonFileFullPath))

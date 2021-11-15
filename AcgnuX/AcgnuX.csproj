@@ -135,6 +135,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.112.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64">
       <HintPath>packages\System.Data.SQLite.x64.1.0.112.0\lib\net46\System.Data.SQLite.dll</HintPath>
@@ -146,7 +147,9 @@
       <HintPath>packages\System.Data.SQLite.Linq.1.0.112.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -239,9 +242,11 @@
     <Compile Include="Source\Model\Ten\Dns\TenApiSecret.cs" />
     <Compile Include="Source\Model\Ten\Dns\TenDnsApiSecret.cs" />
     <Compile Include="Source\Taskx\HttpWebServer.cs" />
+    <Compile Include="Source\Taskx\ProxyFactoryV2.cs" />
     <Compile Include="Source\Utils\Crypto\AlgorithmUtil.cs" />
     <Compile Include="Source\Utils\ConfigUtil.cs" />
     <Compile Include="Source\Utils\ImageUtil.cs" />
+    <Compile Include="Source\Utils\ServiceUtil.cs" />
     <Compile Include="Source\Utils\Tan8PlayUtil.cs" />
     <Compile Include="Source\Utils\DataUtil.cs" />
     <Compile Include="Source\Utils\EnumLoader.cs" />

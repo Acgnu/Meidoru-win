@@ -1,4 +1,5 @@
-﻿using AcgnuX.Source.Taskx;
+﻿using AcgnuX.Source.Bussiness.Constants;
+using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
 using System;
 using System.Collections.Generic;
@@ -57,13 +58,23 @@ namespace AcgnuX
             //初始化设置
             var dbfilePath = ConfigUtil.Instance.Load().DbFilePath;
 
-            //数据库设置成功时执行IP代理抓取任务
-            SQLite.OnDbFileSetEvent += ProxyFactory.InitProxyFactoryTask;
-
             //检查数据库文件是否存在
             if (!File.Exists(dbfilePath)) return;
 
+            //设置数据库
             await SQLite.SetDbFilePath(dbfilePath);
+
+            //检查IP抓取服务
+            var evnFolder = Environment.CurrentDirectory;
+            var svcFolder = evnFolder.Replace(System.Reflection.Assembly.GetEntryAssembly().GetName().Name, ApplicationConstant.CRAWL_IP_SERVICE_NAME);
+            var svcPath = Path.Combine(svcFolder, ApplicationConstant.CRAWL_IP_SERVICE_NAME + ".exe");
+            if (File.Exists(svcPath))
+            {
+                ServiceUtil.CheckAndStart(ApplicationConstant.CRAWL_IP_SERVICE_NAME, svcPath, new string[] { dbfilePath });
+            }
+
+            //启动IP池数量监测
+            ProxyFactoryV2.InitProxyFactoryV2Task();
         }
     }
 }

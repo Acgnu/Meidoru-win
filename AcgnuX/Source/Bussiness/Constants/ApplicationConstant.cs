@@ -27,5 +27,7 @@ namespace AcgnuX.Source.Bussiness.Constants
             "oleou",     //多合一
             "prnt"  //prnt
         };
+        //抓取IP服务名称
+        public static readonly string CRAWL_IP_SERVICE_NAME = "CrawlIPService";
     }
 }
