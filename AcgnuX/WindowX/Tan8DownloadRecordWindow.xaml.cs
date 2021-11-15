@@ -143,7 +143,7 @@ namespace AcgnuX.WindowX
         private void BatchDeleteDownloadRecord()
         {
             //没有选中的直接返回
-            if (DownloadRecordDataGrid.SelectedItems.Count == 0) return;
+            if (DataUtil.IsEmptyCollection(DownloadRecordDataGrid.SelectedItems)) return;
             //获取选中的ID, 一次性删除
             var ids = "";
             var context = DataContext as PianoScoreDownloadRecordViewModel;
