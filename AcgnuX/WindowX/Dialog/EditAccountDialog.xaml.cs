@@ -54,5 +54,18 @@ namespace AcgnuX.WindowX.Dialog
                 Remark = TextBlockRemark.Text,
             };
         }
+
+        /// <summary>
+        /// 键盘按下事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if(e.Key == System.Windows.Input.Key.Enter)
+            {
+                OnConfirmClick(ConfirmButton, null);
+            }
+        }
     }
 }

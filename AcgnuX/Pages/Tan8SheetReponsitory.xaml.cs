@@ -125,12 +125,43 @@ namespace AcgnuX.Pages
                 if (!string.IsNullOrEmpty(keyword))
                 {
                     pager.MaxRow = int.MaxValue;
-                    sql.Append(" and name like @name");
-                    sqlArgs.Add(new SQLiteParameter("@name", "%" + keyword + "%"));
-                    if (DataUtil.IsNum(keyword))
+                    var keywordGroup = keyword.Length > 2 ? keyword.Split(':') : new string[] { string.Empty };
+                    //高级搜索
+                    if (keywordGroup[0].Equals("f"))
                     {
-                        sql.Append(" or ypid = @ypid");
-                        sqlArgs.Add(new SQLiteParameter("@ypid", keyword));
+                        //完整名称搜索 | 完整ID搜索
+                        if (DataUtil.IsNum(keywordGroup[1]))
+                        {
+                            sql.Append(" and ypid = @ypid");
+                            sqlArgs.Add(new SQLiteParameter("@ypid", keywordGroup[1]));
+                        }
+                        else
+                        {
+                            sql.Append(" and name = @name");
+                            sqlArgs.Add(new SQLiteParameter("@name", keywordGroup[1]));
+                        }
+                    }
+                    else if(keywordGroup[0].Equals("s"))
+                    {
+                        //以 .. 开头
+                        sql.Append(" and name like @name");
+                        sqlArgs.Add(new SQLiteParameter("@name", keywordGroup[1] + "%"));
+                    }
+                    else if(keywordGroup[0].Equals("e"))
+                    {
+                        //以 .. 结尾
+                        sql.Append(" and name like @name");
+                        sqlArgs.Add(new SQLiteParameter("@name", "%" + keywordGroup[1]));
+                    } 
+                    else
+                    {
+                        sql.Append(" and name like @name");
+                        sqlArgs.Add(new SQLiteParameter("@name", "%" + keyword + "%"));
+                        if (DataUtil.IsNum(keyword))
+                        {
+                            sql.Append(" or ypid = @ypid");
+                            sqlArgs.Add(new SQLiteParameter("@ypid", keyword));
+                        }
                     }
                 }
                 //封装进对象

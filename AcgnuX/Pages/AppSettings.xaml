@@ -6,7 +6,7 @@
       mc:Ignorable="d" 
       xmlns:local="clr-namespace:AcgnuX.Pages"
       xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-      Title="{StaticResource Setting}" Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
+      Title="{StaticResource Setting}" Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded" Unloaded="OnPageUnloaded">
     <Page.DataContext>
         <Binding Path="SettingsMajor" Source="{StaticResource Locator}"></Binding>
     </Page.DataContext>

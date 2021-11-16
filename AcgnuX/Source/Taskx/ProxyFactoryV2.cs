@@ -1,6 +1,8 @@
 ﻿using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Utils;
+using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Timers;
 
 namespace AcgnuX.Source.Taskx
@@ -19,20 +21,41 @@ namespace AcgnuX.Source.Taskx
 
 
         /// <summary>
-        /// 初始化 IP代理任务
+        /// 开始 IP池查询任务
         /// </summary>
-        public static void InitProxyFactoryV2Task()
+        public static async Task StartTrack()
         {
-            mProxyCounter = new Timer();
-            mProxyCounter.Interval = 1000; // 1 seconds
-            mProxyCounter.Elapsed += new ElapsedEventHandler(OnTimer);
-            mProxyCounter.Start();
+            if (null == mProxyCounter)
+            {
+                await Task.Run(() =>
+                {
+                    OnTimer(null, null);
+                    mProxyCounter = new Timer
+                    {
+                        Interval = 1000 // 1 seconds
+                    };
+                    mProxyCounter.Elapsed += new ElapsedEventHandler(OnTimer);
+                    mProxyCounter.Start();
+                });
+            }
+            else
+            {
+                mProxyCounter.Start();
+            }
+        }
+
+        /// <summary>
+        /// 停止IP池查询任务
+        /// </summary>
+        public static void StopTrack()
+        {
+            mProxyCounter.Stop();
         }
 
         /// <summary>
         /// 重新执行IP代理抓取任务
         /// </summary>
-        public static void RestartCrawlIPTask()
+        public static void RestartCrawlIPService()
         {
             ServiceUtil.Restart(ApplicationConstant.CRAWL_IP_SERVICE_NAME, new string[] { ConfigUtil.Instance.DbFilePath });
         }

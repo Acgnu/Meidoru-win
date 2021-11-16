@@ -27,8 +27,14 @@ namespace AcgnuX.Pages
             mMainWindow = mainWin;
         }
 
-        private void OnPageLoaded(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// 进入页面触发
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void OnPageLoaded(object sender, RoutedEventArgs e)
         {
+            await ProxyFactoryV2.StartTrack();
         }
 
         /// <summary>
@@ -143,6 +149,16 @@ namespace AcgnuX.Pages
                 vm.CrawlRuls.Remove(selected);
                 vm.CheckIsCheckedAll(true);
             }
+        }
+
+        /// <summary>
+        /// 离开页面触发
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnPageUnloaded(object sender, RoutedEventArgs e)
+        {
+            ProxyFactoryV2.StopTrack();
         }
     }
 }

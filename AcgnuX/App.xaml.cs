@@ -72,9 +72,6 @@ namespace AcgnuX
             {
                 ServiceUtil.CheckAndStart(ApplicationConstant.CRAWL_IP_SERVICE_NAME, svcPath, new string[] { dbfilePath });
             }
-
-            //启动IP池数量监测
-            ProxyFactoryV2.InitProxyFactoryV2Task();
         }
     }
 }

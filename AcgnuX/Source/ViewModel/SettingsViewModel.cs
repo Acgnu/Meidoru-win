@@ -130,7 +130,7 @@ namespace AcgnuX.Source.ViewModel
                 UpdateCrawlRulesEnable(Convert.ToInt32(checkBox.Tag), checkBox.IsChecked.GetValueOrDefault());
                 CheckIsCheckedAll(true);
             }
-            ProxyFactoryV2.RestartCrawlIPTask();
+            ProxyFactoryV2.RestartCrawlIPService();
         }
 
         /// <summary>
