@@ -295,5 +295,57 @@ namespace AcgnuX.Source.Utils
                 return new Bitmap(bitmap);
             }
         }
+
+        /// <summary>
+        /// 返回不占用文件的 BitmapImage
+        /// </summary>
+        /// <param name="path">文件路径</param>
+        /// <returns>BitmapImage</returns>
+        public static BitmapImage GetBitmapImage(string path)
+        {
+            return GetBitmapImage(File.ReadAllBytes(path));
+        }
+
+        /// <summary>
+        /// 返回不占用文件的 BitmapImage
+        /// </summary>
+        /// <param name="bytes">字节数组</param>
+        /// <returns></returns>
+        public static BitmapImage GetBitmapImage(byte[] bytes)
+        {
+            BitmapImage bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.StreamSource = new MemoryStream(bytes);
+            bitmap.EndInit();
+            bitmap.Freeze();
+            return bitmap;
+        }
+
+        /// <summary>
+        /// 校验图片是否损坏
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns>true 文件有效</returns>
+        public static bool CheckImgIsValid(string path)
+        {
+            try
+            {
+                var bitmap = GetBitmapImage(path);
+                if (null == bitmap)
+                {
+                    GC.Collect();
+                    return false;
+                }
+                bitmap = null;
+                GC.Collect();
+                return true;
+            }
+            catch (Exception)
+            {
+                GC.Collect();
+            }
+            return false;
+        }
     }
 }

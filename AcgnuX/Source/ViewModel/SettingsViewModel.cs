@@ -58,10 +58,14 @@ namespace AcgnuX.Source.ViewModel
         public int ProxyCount { get; set; }
         //抓取规则
         public ObservableCollection<CrawlRuleViewModel> CrawlRuls { get; set; } = new ObservableCollection<CrawlRuleViewModel>();
+        //同步配置
+        public ObservableCollection<SyncConfigViewModel> SyncConfigs { get; set; } = new ObservableCollection<SyncConfigViewModel>();
         //是否全选
         public bool IsCheckedAll { get; set; }
+        public bool IsSyncConfigCheckedAll { get; set; }
         //checbox事件
         public ICommand OnCrawlRuleCheckboxClick { get; set; }
+        public ICommand OnSyncConfigCheckboxClick { get; set; }
 
         public SettingsViewModel()
         {
@@ -72,7 +76,9 @@ namespace AcgnuX.Source.ViewModel
             ProxyCount = ProxyFactoryV2.GetProxyCount;
             ProxyFactoryV2.mProxyPoolCountChangeHandler += OnProxyPoolCountChange;
             OnCrawlRuleCheckboxClick = new RelayCommand<object>((sender) => OnGridCheckBoxClick(sender));
+            OnSyncConfigCheckboxClick = new RelayCommand<object>((sender) => OnSyncConfigGridCheckBoxClick(sender));
             InitCrawlRules();
+            InitSyncConfig();
             SQLite.OnDbFileSetEvent += InitCrawlRules;
         }
 
@@ -98,6 +104,28 @@ namespace AcgnuX.Source.ViewModel
                 });
             }
             CheckIsCheckedAll(false);
+        }
+
+        /// <summary>
+        /// 初始同步配置
+        /// </summary>
+        private void InitSyncConfig()
+        {
+            //从数据库读取
+            var dataSet = SQLite.SqlTable("SELECT id, pc_path, mobile_path, enable FROM media_sync_config", null);
+            if (null == dataSet) return;
+            //封装进对象
+            foreach (DataRow dataRow in dataSet.Rows)
+            {
+                SyncConfigs.Add(new SyncConfigViewModel()
+                {
+                    Id = Convert.ToInt32(dataRow["id"]),
+                    PcPath = Convert.ToString(dataRow["pc_path"]),
+                    MobilePath = Convert.ToString(dataRow["mobile_path"]),
+                    Enable = Convert.ToByte(dataRow["enable"])
+                });
+            }
+            CheckSyncConfigIsCheckedAll(false);
         }
 
         /// <summary>
@@ -134,6 +162,30 @@ namespace AcgnuX.Source.ViewModel
         }
 
         /// <summary>
+        /// 同步配置表格checkbox点击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        private void OnSyncConfigGridCheckBoxClick(object sender)
+        {
+            CheckBox checkBox = sender as CheckBox;
+            if (checkBox.Tag.Equals("0"))
+            {
+                //全选
+                foreach (var syncConfig in SyncConfigs)
+                {
+                    syncConfig.EnableView = checkBox.IsChecked.GetValueOrDefault() ? Convert.ToByte(1) : Convert.ToByte(0);
+                }
+                UpdateSyncConfigEnable(null, checkBox.IsChecked.GetValueOrDefault());
+            }
+            else
+            {
+                //单选
+                UpdateSyncConfigEnable(Convert.ToInt32(checkBox.Tag), checkBox.IsChecked.GetValueOrDefault());
+                CheckSyncConfigIsCheckedAll(true);
+            }
+        }
+
+        /// <summary>
         /// IP代理池数量变化通知
         /// </summary>
         /// <param name="curNum"></param>
@@ -154,6 +206,18 @@ namespace AcgnuX.Source.ViewModel
                 enable ? 1 : 0,
                 null == id ? "" : " WHERE id = " + id), null);
         }
+
+        /// <summary>
+        /// 更新同步配置启用状态
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="enable"></param>
+        private void UpdateSyncConfigEnable(int? id, bool enable)
+        {
+            SQLite.ExecuteNonQuery(string.Format("UPDATE media_sync_config SET enable = {0} {1}",
+                enable ? 1 : 0,
+                null == id ? "" : " WHERE id = " + id), null);
+        }
         
         /// <summary>
         /// 检查是否全部选中
@@ -163,6 +227,16 @@ namespace AcgnuX.Source.ViewModel
         {
             IsCheckedAll = CrawlRuls.Where(item => item.Enable == 1).Count() == CrawlRuls.Count();
             if(doNotify) OnPropertyChanged(nameof(IsCheckedAll));
+        }
+
+        /// <summary>
+        /// 检查同步配置是否全部选中
+        /// </summary>
+        /// <param name="doNotify"></param>
+        public void CheckSyncConfigIsCheckedAll(bool doNotify)
+        {
+            IsSyncConfigCheckedAll = SyncConfigs.Where(item => item.Enable == 1).Count() == SyncConfigs.Count();
+            if(doNotify) OnPropertyChanged(nameof(IsSyncConfigCheckedAll));
         }
     }
 }

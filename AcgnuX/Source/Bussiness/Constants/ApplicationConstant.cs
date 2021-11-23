@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace AcgnuX.Source.Bussiness.Constants
 {
@@ -29,5 +30,74 @@ namespace AcgnuX.Source.Bussiness.Constants
         };
         //抓取IP服务名称
         public static readonly string CRAWL_IP_SERVICE_NAME = "CrawlIPService";
+
+        //默认的乐谱图标
+        private static BitmapImage mDefaultSheetCover = null;
+        public static BitmapImage GetDefaultSheetCover()
+        {
+            if(null == mDefaultSheetCover)
+            {
+                mDefaultSheetCover = new BitmapImage(new Uri(
+                    string.Format("pack://application:,,,/{0};component/Assets/Images/piano-cover-default.jpg", System.Reflection.Assembly.GetEntryAssembly().GetName().Name),
+                    UriKind.RelativeOrAbsolute));
+            }
+            return mDefaultSheetCover;
+        }
+
+
+        //默认文件图标
+        private static BitmapImage mDefaultFileIcon = null;
+        public static BitmapImage GetDefaultFileIcon()
+        {
+            if (null == mDefaultFileIcon)
+            {
+                mDefaultFileIcon = new BitmapImage(new Uri(
+                    string.Format("pack://application:,,,/{0};component/Assets/Images/icon_unknow_file.png", System.Reflection.Assembly.GetEntryAssembly().GetName().Name),
+                    UriKind.RelativeOrAbsolute));
+            }
+            return mDefaultFileIcon;
+        }
+
+
+        //默认的音频图标
+        private static BitmapImage mDefaultAudioIcon = null;
+        public static BitmapImage GetDefaultAudioIcon()
+        {
+            if (null == mDefaultAudioIcon)
+            {
+                mDefaultAudioIcon = new BitmapImage(new Uri(
+                    string.Format("pack://application:,,,/{0};component/Assets/Images/icon_audio_file.png", System.Reflection.Assembly.GetEntryAssembly().GetName().Name),
+                    UriKind.RelativeOrAbsolute));
+            }
+            return mDefaultAudioIcon;
+        }
+
+
+        //默认的图片图标
+        private static BitmapImage mDefaultImageIcon = null;
+        public static BitmapImage GetDefaultImageIcon()
+        {
+            if (null == mDefaultImageIcon)
+            {
+                mDefaultImageIcon = new BitmapImage(new Uri(
+                    string.Format("pack://application:,,,/{0};component/Assets/Images/icon_image_file.png", System.Reflection.Assembly.GetEntryAssembly().GetName().Name),
+                    UriKind.RelativeOrAbsolute));
+            }
+            return mDefaultImageIcon;
+        }
+
+
+        //默认的视频图标
+        private static BitmapImage mDefaultVideoIcon = null;
+        public static BitmapImage GetDefaultVideoIcon()
+        {
+            if (null == mDefaultVideoIcon)
+            {
+                mDefaultVideoIcon = new BitmapImage(new Uri(
+                    string.Format("pack://application:,,,/{0};component/Assets/Images/icon_video_file.png", System.Reflection.Assembly.GetEntryAssembly().GetName().Name),
+                    UriKind.RelativeOrAbsolute));
+            }
+            return mDefaultVideoIcon;
+        }
     }
 }

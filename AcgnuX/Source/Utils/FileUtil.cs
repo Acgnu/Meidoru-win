@@ -1,10 +1,12 @@
-﻿using Microsoft.VisualBasic.Devices;
+﻿using AcgnuX.Source.Bussiness.Constants;
+using Microsoft.VisualBasic.Devices;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
@@ -138,22 +140,6 @@ namespace AcgnuX.Source.Utils
         }
 
         /// <summary>
-        /// 返回不占用文件的 BitmapImage
-        /// </summary>
-        /// <param name="path">文件路径</param>
-        /// <returns>BitmapImage</returns>
-        public static BitmapImage GetBitmapImage(string path)
-        {
-            BitmapImage bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.CacheOption = BitmapCacheOption.OnLoad;
-            bitmap.StreamSource = new MemoryStream(File.ReadAllBytes(path));
-            bitmap.EndInit();
-            bitmap.Freeze();
-            return bitmap;
-        }
-
-        /// <summary>
         /// 复制文件
         /// </summary>
         /// <param name="source">源完整路径</param>
@@ -227,32 +213,6 @@ namespace AcgnuX.Source.Utils
         {
             Computer MyComputer = new Computer();
             MyComputer.FileSystem.RenameDirectory(originPath, newFolderName);
-        }
-
-        /// <summary>
-        /// 校验图片是否损坏
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns>true 文件有效</returns>
-        public static bool CheckImgIsValid(string path)
-        {
-            try
-            {
-                var bitmap = GetBitmapImage(path);
-                if(null == bitmap)
-                {
-                    GC.Collect();
-                    return false;
-                }
-                bitmap = null;
-                GC.Collect();
-                return true;
-            }
-            catch (Exception)
-            {
-                GC.Collect();
-            }
-            return false;
         }
 
         /// <summary>
@@ -347,6 +307,59 @@ namespace AcgnuX.Source.Utils
             }
         }
 
+        /// <summary>
+        /// 返回指定源的文件名
+        /// </summary>
+        /// <param name="fullPaths"></param>
+        /// <returns></returns>
+        public static string[] GetFileNameFromFullPath(string[] fullPaths)
+        {
+            var rData = new string[fullPaths.Length];
+            for (var i = 0; i < fullPaths.Length; i++)
+            {
+                rData[i] = Path.GetFileName(fullPaths[i]);
+            }
+            return rData;
+        }
+
+        /// <summary>
+        /// Stream转Byte数组
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public static byte[] Stream2Bytes(Stream stream)
+        {
+            byte[] bytes = new byte[stream.Length];
+            stream.Read(bytes, 0, bytes.Length);
+            // 设置当前流的位置为流的开始 
+            //stream.Seek(0, SeekOrigin.Begin);
+            return bytes;
+        }
+
+        /// <summary>
+        /// 根据后缀名判断是否为支持的媒体文件类型, 用于读取MTP缩略图
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public static SyncContentType GetMediaTypeByName(string fileName)
+        {
+            if (Regex.IsMatch(fileName, @"(.*?)\.(mp3|aac|flac|wma)$", RegexOptions.IgnoreCase))
+            {
+                return SyncContentType.AUDIO;
+            }
+            else if (Regex.IsMatch(fileName, @"(.*?)\.(mp4|3gp|wmv)$", RegexOptions.IgnoreCase))
+            {
+                return SyncContentType.VIDEO;
+            }
+            else if (Regex.IsMatch(fileName, @"(.*?)\.(jpg|jpeg|png|bmp|gif)$", RegexOptions.IgnoreCase))
+            {
+                return SyncContentType.IMAGE;
+            }
+            else
+            {
+                return SyncContentType.OTHER;
+            }
+        }
         //public static JArray LoadJsonFile(string JsonFileFullPath)
         //{
         //    using (System.IO.StreamReader file = System.IO.File.OpenText(JsonFileFullPath))

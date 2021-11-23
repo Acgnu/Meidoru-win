@@ -38,7 +38,7 @@
 
             <!--容器排列-->
             <DockPanel>
-                <TextBlock Text="{StaticResource DnsRecordType}" Style="{StaticResource FormFieldTextBlock}"/>
+                <TextBlock Text="{StaticResource Str_Type}" Style="{StaticResource FormFieldTextBlock}"/>
                 <ListBox Name="DnsTypeListBox" BorderBrush="{x:Null}" Background="Transparent">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>

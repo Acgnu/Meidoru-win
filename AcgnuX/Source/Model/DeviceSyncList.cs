@@ -1,9 +1,10 @@
 ﻿using AcgnuX.Source.Model;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace AcgnuX.Source.ViewModel
 {
-    class DeviceSyncListViewModel : BasePropertyChangeNotifyModel
+    class DeviceSyncList
     {
         /// <summary>
         /// PC文件夹路径
@@ -16,10 +17,10 @@ namespace AcgnuX.Source.ViewModel
         /// <summary>
         /// 仅存于PC的文件
         /// </summary>
-        public ObservableCollection<DeviceSyncItem> PcItemList { get; set; }
+        public List<DeviceSyncItem> PcItemList { get; set; }
         /// <summary>
         /// 仅存于移动端的文件
         /// </summary>
-        public ObservableCollection<DeviceSyncItem> MobileItemList { get; set; }
+        public List<DeviceSyncItem> MobileItemList { get; set; }
     }
 }

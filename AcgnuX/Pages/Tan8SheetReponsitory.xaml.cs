@@ -275,7 +275,7 @@ namespace AcgnuX.Pages
             return new PianoScoreViewModel()
             { 
                 //对于不存在cover的路径使用默认图片
-                cover = File.Exists(imgDir) ? FileUtil.GetBitmapImage(imgDir) : new BitmapImage(new Uri("/Assets/Images/piano-cover-default.jpg", UriKind.Relative)),
+                cover = File.Exists(imgDir) ? ImageUtil.GetBitmapImage(imgDir) : ApplicationConstant.GetDefaultSheetCover(),
                 Name = pianoScore.Name,
                 id = pianoScore.id,
                 Ver = pianoScore.Ver,
@@ -425,7 +425,7 @@ namespace AcgnuX.Pages
                 isAutoDownload = false;
                 Tan8PlayUtil.Exit();
                 //任务停止, 上报进度100%
-                OnTaskBarEvent?.Invoke(CalcProgress(new MainWindowStatusNotify()
+                OnTaskBarEvent?.Invoke(WindowUtil.CalcProgress(new MainWindowStatusNotify()
                 {
                     alertLevel = AlertLevel.INFO,
                     animateProgress = true,
@@ -455,7 +455,7 @@ namespace AcgnuX.Pages
                 //下载出错则给出提示, 并等待下次任务
                 if (!result.success)
                 {
-                    OnTaskBarEvent?.Invoke(CalcProgress(new MainWindowStatusNotify()
+                    OnTaskBarEvent?.Invoke(WindowUtil.CalcProgress(new MainWindowStatusNotify()
                     {
                         alertLevel = isAutoDownload ? AlertLevel.RUN : AlertLevel.ERROR,
                     },
@@ -618,7 +618,7 @@ namespace AcgnuX.Pages
                 //下载出错则给出提示, 并等待下次任务
                 if (!result.success)
                 {
-                    bgworker.ReportProgress(0, CalcProgress(new MainWindowStatusNotify()
+                    bgworker.ReportProgress(0, WindowUtil.CalcProgress(new MainWindowStatusNotify()
                     {
                         alertLevel = pianoScore.autoDownload ? AlertLevel.RUN : AlertLevel.ERROR,
                         //animateProgress = false,
@@ -643,7 +643,7 @@ namespace AcgnuX.Pages
                 if (bgworker.CancellationPending)
                 {
                     //任务停止, 上报进度100%
-                    bgworker.ReportProgress(0, CalcProgress(new MainWindowStatusNotify()
+                    bgworker.ReportProgress(0, WindowUtil.CalcProgress(new MainWindowStatusNotify()
                     {
                         alertLevel = AlertLevel.INFO,
                         animateProgress = true,
@@ -673,7 +673,7 @@ namespace AcgnuX.Pages
 
             //step.1 获取真实乐谱下载地址
             //var sample = "<string>http://www.77music.com/flash_get_yp_info.php?ypid=66138&amp;sccode=77c83a7bf44542486ff37815ab75c147&amp;r1=9185&amp;r2=6640&amp;input=123</string>";
-            bgworker.ReportProgress(0, CalcProgress(winProgress, string.Format("开始下载 [{0}], 解析下载地址", pianoScore.Name), 0));
+            bgworker.ReportProgress(0, WindowUtil.CalcProgress(winProgress, string.Format("开始下载 [{0}], 解析下载地址", pianoScore.Name), 0));
             //使用v1版本, 从flash播放器读取
             var sample = mTan8Player.GetRealTan8URL(pianoScore.id.GetValueOrDefault());
             //xml字符串去除转义
@@ -682,7 +682,7 @@ namespace AcgnuX.Pages
             var url = urlFromSwf.Replace("localhost:7777/yuepu/info", "www.77music.com/flash_get_yp_info.php");
 
             //step.2 请求乐谱地址, 得到乐谱信息
-            bgworker.ReportProgress(0, CalcProgress(winProgress, "下载地址解析成功, 开始加载乐谱信息", 10));
+            bgworker.ReportProgress(0, WindowUtil.CalcProgress(winProgress, "下载地址解析成功, 开始加载乐谱信息", 10));
             var proxyAddress = ProxyFactory.GetRandProxy();
             var ypinfostring = RequestUtil.CrawlContentFromWebsit(url, proxyAddress).data;
             //var ypinfostring = @"<html><body>yp_create_time=<yp_create_time>1573183398</yp_create_time><br/>yp_title=<yp_title>说好不哭（文武贝钢琴版）</yp_title><br/>yp_page_count=<yp_page_count>3</yp_page_count><br/>yp_page_width=<yp_page_width>1089</yp_page_width><br/>yp_page_height=<yp_page_height>1540</yp_page_height><br/>yp_is_dadiao=<yp_is_dadiao>1</yp_is_dadiao><br/>yp_key_note=<yp_key_note>10</yp_key_note><br/>yp_is_yanyin=<yp_is_yanyin>1</yp_is_yanyin><br/>ypad_url=<ypad_url>http://www.tan8.com//yuepuku/132/66138/66138_hegiahcc.ypad</ypad_url>ypad_url2=<ypad_url2>http://www.tan8.com//yuepuku/132/66138/66138_hegiahcc.ypa2</ypad_url2></body></html>";
@@ -703,7 +703,7 @@ namespace AcgnuX.Pages
             var tan8Music = DataUtil.ParseToModel(ypinfostring);
 
             //step.3 创建文件夹
-            bgworker.ReportProgress(0, CalcProgress(winProgress, "乐谱加载成功, 创建归档文件夹", 20));
+            bgworker.ReportProgress(0, WindowUtil.CalcProgress(winProgress, "乐谱加载成功, 创建归档文件夹", 20));
             var folder = string.IsNullOrEmpty(pianoScore.Name) ? tan8Music.yp_title : pianoScore.Name;
             //替换非法字符
             folder = FileUtil.ReplaceInvalidChar(folder);
@@ -713,7 +713,7 @@ namespace AcgnuX.Pages
             folderPath += Path.DirectorySeparatorChar;
 
             //step.3 下载曲谱封面
-            bgworker.ReportProgress(0, CalcProgress(winProgress, "下载乐谱封面", 30));
+            bgworker.ReportProgress(0, WindowUtil.CalcProgress(winProgress, "下载乐谱封面", 30));
             var coverUrl = tan8Music.ypad_url.Substring(0, tan8Music.ypad_url.IndexOf('_')) + "_prev.jpg";
             var downResult = new FileDownloader().DownloadFile(coverUrl, folderPath + DEFAULT_COVER_NAME);
             //封面下载失败不管
@@ -737,7 +737,7 @@ namespace AcgnuX.Pages
             for (var i = 0; i < tan8Music.yp_page_count; i++)
             {
                 var message = string.Format("下载乐谱 {0} / {1}", i + 1, tan8Music.yp_page_count);
-                bgworker.ReportProgress(0, CalcProgress(winProgress, message, 50 / tan8Music.yp_page_count + winProgress.nowProgress));
+                bgworker.ReportProgress(0, WindowUtil.CalcProgress(winProgress, message, 50 / tan8Music.yp_page_count + winProgress.nowProgress));
 
                 var downloadUrl = tan8Music.ypad_url + string.Format(".{0}.png", i);
                 int pageDownloadResult = new FileDownloader().DownloadFile(downloadUrl, folderPath + string.Format("page.{0}.png", i));
@@ -755,7 +755,7 @@ namespace AcgnuX.Pages
             }
 
             //step.5 下载播放文件 ( 弹8已移除旧版播放文件, 此代码无法正常工作, 现在使用v2 )
-            bgworker.ReportProgress(0, CalcProgress(winProgress, "下载播放文件", 80));
+            bgworker.ReportProgress(0, WindowUtil.CalcProgress(winProgress, "下载播放文件", 80));
             downResult = new FileDownloader().DownloadFile(tan8Music.ypad_url2, folderPath + "play.ypa2");
             if (downResult != 0)
             {
@@ -769,11 +769,11 @@ namespace AcgnuX.Pages
             }
 
             //step.6 保存到数据库
-            bgworker.ReportProgress(0, CalcProgress(winProgress, "保存数据库", 90));
+            bgworker.ReportProgress(0, WindowUtil.CalcProgress(winProgress, "保存数据库", 90));
             SaveMusicToDB(pianoScore.id.GetValueOrDefault(), folder, tan8Music, ypinfostring);
 
             winProgress.alertLevel = AlertLevel.INFO;
-            bgworker.ReportProgress(0, CalcProgress(winProgress, "下载完成", 100));
+            bgworker.ReportProgress(0, WindowUtil.CalcProgress(winProgress, "下载完成", 100));
             return new InvokeResult<object>()
             {
                 success = true,
@@ -800,7 +800,7 @@ namespace AcgnuX.Pages
 
             //直接使用v2版本的地址
             var url = pianoScore.SheetUrl;
-            OnTaskBarEvent?.Invoke(CalcProgress(winProgress, string.Format("乐谱ID: {0} 下载地址解析成功, 开始加载乐谱信息", pianoScore.id), 10));
+            OnTaskBarEvent?.Invoke(WindowUtil.CalcProgress(winProgress, string.Format("乐谱ID: {0} 下载地址解析成功, 开始加载乐谱信息", pianoScore.id), 10));
 
             //step.2 请求乐谱地址, 得到乐谱信息
             var proxyAddress = ProxyFactory.GetFirstProxy();
@@ -841,14 +841,14 @@ namespace AcgnuX.Pages
 
             //step.3 下载曲谱封面
             var coverSavePath = Path.Combine(saveFullPath, ApplicationConstant.DEFAULT_COVER_NAME);
-            OnTaskBarEvent?.Invoke(CalcProgress(winProgress, string.Format("下载 [{0}] 封面", ypNameFolder), 30));
+            OnTaskBarEvent?.Invoke(WindowUtil.CalcProgress(winProgress, string.Format("下载 [{0}] 封面", ypNameFolder), 30));
             var coverUrl = tan8Music.ypad_url.Substring(0, tan8Music.ypad_url.IndexOf('_')) + "_prev.jpg";
             var downResult = new FileDownloader().DownloadFile(coverUrl, coverSavePath);
             //封面下载失败不管
             if (downResult != 0) { }
 
             //封面下载完后校验图片是否有效
-            var isValidPreviewImg = FileUtil.CheckImgIsValid(coverSavePath);
+            var isValidPreviewImg = ImageUtil.CheckImgIsValid(coverSavePath);
             //如果文件损坏则删除
             if (!isValidPreviewImg) FileUtil.DeleteFile(coverSavePath);
 
@@ -856,7 +856,7 @@ namespace AcgnuX.Pages
             for (var i = 0; i < tan8Music.yp_page_count; i++)
             {
                 var message = string.Format("下载 [{0}] 乐谱 {1} / {2}", ypNameFolder, i + 1, tan8Music.yp_page_count);
-                OnTaskBarEvent?.Invoke(CalcProgress(winProgress, message, 50 / tan8Music.yp_page_count + winProgress.nowProgress));
+                OnTaskBarEvent?.Invoke(WindowUtil.CalcProgress(winProgress, message, 50 / tan8Music.yp_page_count + winProgress.nowProgress));
 
                 var downloadUrl = tan8Music.ypad_url + string.Format(".{0}.png", i);
                 int pageDownloadResult = new FileDownloader().DownloadFile(downloadUrl, Path.Combine(saveFullPath, string.Format("page.{0}.png", i)));
@@ -876,7 +876,7 @@ namespace AcgnuX.Pages
                 }
             }
             //下载v2版播放文件
-            OnTaskBarEvent?.Invoke(CalcProgress(winProgress, string.Format("下载 [{0}] 播放文件", ypNameFolder), 80));
+            OnTaskBarEvent?.Invoke(WindowUtil.CalcProgress(winProgress, string.Format("下载 [{0}] 播放文件", ypNameFolder), 80));
             downResult = new FileDownloader().DownloadFile(tan8Music.ypad_url2, Path.Combine(saveFullPath, "play.ypdx"));
             if (downResult != 0)
             {
@@ -896,11 +896,11 @@ namespace AcgnuX.Pages
             }
 
             //step.6 保存到数据库
-            OnTaskBarEvent?.Invoke(CalcProgress(winProgress, string.Format("[{0}] 保存数据库", ypNameFolder), 90));
+            OnTaskBarEvent?.Invoke(WindowUtil.CalcProgress(winProgress, string.Format("[{0}] 保存数据库", ypNameFolder), 90));
             SaveMusicToDB(pianoScore.id.GetValueOrDefault(), ypNameFolder, tan8Music, ypinfostring);
 
             winProgress.alertLevel = AlertLevel.INFO;
-            OnTaskBarEvent?.Invoke(CalcProgress(winProgress, string.Format("[{0}] 下载完成", ypNameFolder), 100));
+            OnTaskBarEvent?.Invoke(WindowUtil.CalcProgress(winProgress, string.Format("[{0}] 下载完成", ypNameFolder), 100));
             return new InvokeResult<object>()
             {
                 success = true,
@@ -979,21 +979,6 @@ namespace AcgnuX.Pages
         private void DownLoadComplate(object sender, RunWorkerCompletedEventArgs e)
         {
             //LoadPianoScore();
-        }
-
-        /// <summary>
-        /// 发送进度到主信息栏
-        /// </summary>
-        /// <param name="notify"></param>
-        /// <param name="message"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private MainWindowStatusNotify CalcProgress(MainWindowStatusNotify notify, string message, double value)
-        {
-            notify.message = message;
-            notify.oldProgress = notify.nowProgress;
-            notify.nowProgress = value;
-            return notify;
         }
 
         /// <summary>
@@ -1246,14 +1231,14 @@ namespace AcgnuX.Pages
                 nowProgress = 0
             };
             var pianoScoreVm = e.Argument as PianoScoreViewModel;
-            mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, "读取乐谱信息", 5));
+            mExportBgWorker.ReportProgress(0, WindowUtil.CalcProgress(winProgress, "读取乐谱信息", 5));
             //获取原始名称
             var dbName = SQLite.sqlone("SELECT name FROM tan8_music WHERE ypid = @ypid",
                 new SQLiteParameter[] { new SQLiteParameter("@ypid", pianoScoreVm.id.GetValueOrDefault()) });
             if (string.IsNullOrEmpty(dbName))
             {
                 winProgress.alertLevel = AlertLevel.ERROR;
-                mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, "乐谱信息有误", 100));
+                mExportBgWorker.ReportProgress(0, WindowUtil.CalcProgress(winProgress, "乐谱信息有误", 100));
                 return;
             }
 
@@ -1261,10 +1246,10 @@ namespace AcgnuX.Pages
             if (!Directory.Exists(fullPath))
             {
                 winProgress.alertLevel = AlertLevel.ERROR;
-                mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, "乐谱文件不存在", 100));
+                mExportBgWorker.ReportProgress(0, WindowUtil.CalcProgress(winProgress, "乐谱文件不存在", 100));
                 return;
             }
-            mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, "统计乐谱文件", 10));
+            mExportBgWorker.ReportProgress(0, WindowUtil.CalcProgress(winProgress, "统计乐谱文件", 10));
 
             //遍历所有乐谱图片
             var sheetFiles = Directory.GetFiles(fullPath);
@@ -1291,7 +1276,7 @@ namespace AcgnuX.Pages
                     ClearExportFiles(winProgress, fullPath);
                     return;
                 }
-                mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, string.Format("正在转换第{0}张乐谱, 共{1}张", i + 1, totalPage), 75 / totalPage + winProgress.nowProgress));
+                mExportBgWorker.ReportProgress(0, WindowUtil.CalcProgress(winProgress, string.Format("正在转换第{0}张乐谱, 共{1}张", i + 1, totalPage), 75 / totalPage + winProgress.nowProgress));
                 var pageFileName = string.Format("page.{0}.png", i);
                 Bitmap rawImg = (Bitmap)Bitmap.FromFile(Path.Combine(fullPath, pageFileName));
                 Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, titleName, i + 1, totalPage, false);
@@ -1301,7 +1286,7 @@ namespace AcgnuX.Pages
 
             //调用压缩工具进行打包
             //可使用 -email 直接邮寄, bandzip帮助文档 https://www.bandisoft.com/bandizip/help/parameter/
-            mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, "正在压缩...", 85));
+            mExportBgWorker.ReportProgress(0, WindowUtil.CalcProgress(winProgress, "正在压缩...", 85));
             var zipProcess = System.Diagnostics.Process.Start("Bandizip.exe", string.Format("c -y \"{0}\" \"{1}\"", 
                 Path.Combine(fullPath, ApplicationConstant.SHARE_ZIP_NAME), 
                 Path.Combine(fullPath, ApplicationConstant.SHARE_TEMP_FOLDER_NAME)));
@@ -1316,12 +1301,12 @@ namespace AcgnuX.Pages
             }
 
             //压缩后删除临时文件夹
-            mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, "正在清理临时文件...", 95));
+            mExportBgWorker.ReportProgress(0, WindowUtil.CalcProgress(winProgress, "正在清理临时文件...", 95));
             FileUtil.DeleteDirWithName(fullPath, ApplicationConstant.SHARE_TEMP_FOLDER_NAME);
 
             e.Result = Path.Combine(fullPath, ApplicationConstant.SHARE_ZIP_NAME);
             winProgress.alertLevel = AlertLevel.INFO;
-            mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, "导出成功", 100));
+            mExportBgWorker.ReportProgress(0, WindowUtil.CalcProgress(winProgress, "导出成功", 100));
         }
 
         /// <summary>
@@ -1330,7 +1315,7 @@ namespace AcgnuX.Pages
         /// <param name="sheetDirPath"></param>
         private void ClearExportFiles(MainWindowStatusNotify winProgress, string sheetDirPath)
         {
-            mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, "正在清理文件...", 90));
+            mExportBgWorker.ReportProgress(0, WindowUtil.CalcProgress(winProgress, "正在清理文件...", 90));
             if(Directory.Exists(Path.Combine(sheetDirPath, ApplicationConstant.SHARE_TEMP_FOLDER_NAME)))
             {
                 FileUtil.DeleteDirWithName(sheetDirPath, ApplicationConstant.SHARE_TEMP_FOLDER_NAME);
@@ -1340,7 +1325,7 @@ namespace AcgnuX.Pages
                 File.Delete(Path.Combine(sheetDirPath, ApplicationConstant.SHARE_ZIP_NAME));
             }
             winProgress.alertLevel = AlertLevel.INFO;
-            mExportBgWorker.ReportProgress(0, CalcProgress(winProgress, "任务中止", 100));
+            mExportBgWorker.ReportProgress(0, WindowUtil.CalcProgress(winProgress, "任务中止", 100));
         }
 
         /// <summary>

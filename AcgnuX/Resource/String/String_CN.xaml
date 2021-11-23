@@ -6,7 +6,7 @@
     <system:String x:Key="Str_EditPianoScore">编辑乐谱</system:String>
     <system:String x:Key="SubDomian">子域名</system:String>
     <system:String x:Key="DnsRecordValue">记录值</system:String>
-    <system:String x:Key="DnsRecordType">类型</system:String>
+    <system:String x:Key="Str_Type">类型</system:String>
     <system:String x:Key="Confirm">确定</system:String>
     <system:String x:Key="Cancel">容我再想想</system:String>
     <system:String x:Key="Add">新增</system:String>
@@ -38,10 +38,18 @@
     <system:String x:Key="Str_CrawlAddress">抓取地址</system:String>
     <system:String x:Key="Str_CrawlRule">抓取规则</system:String>
     <system:String x:Key="Str_CrawlPages">抓取页数</system:String>
+    <system:String x:Key="Str_EditCrawlRule">抓取页数</system:String>
     <system:String x:Key="Str_PwdConfigFilePath">密码配置文件路径</system:String>
     <system:String x:Key="Str_Tan8SheetSavePath">Tan8曲谱保存路径</system:String>
     <system:String x:Key="Str_DbFilePath">数据库文件路径</system:String>
     <system:String x:Key="Str_DownloadRecord">下载记录</system:String>
     <system:String x:Key="Str_DownloadFromCurId">从此ID开始下载</system:String>
+    <system:String x:Key="Str_PcPath">电脑端路径</system:String>
+    <system:String x:Key="Str_MobilePath">移动端路径</system:String>
+    <system:String x:Key="Str_SyncPathConfig">同步路径配置</system:String>
+    <system:String x:Key="Str_EditSyncConfig">编辑同步配置</system:String>
+    <system:String x:Key="Str_Sync">同步</system:String>
+    <system:String x:Key="Str_Enable">启用</system:String>
+    <system:String x:Key="Str_NoConnectedDevice">没有已连接的可移动设备</system:String>
     <!--<system:String x:Key="Str_ProxyCount">代理数量</system:String>-->
 </ResourceDictionary>

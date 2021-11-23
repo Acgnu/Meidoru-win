@@ -26,7 +26,7 @@
             <RowDefinition Height="2*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TextBlock Text="{Binding Message, FallbackValue='xxxx'}" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"/>
+        <TextBlock Text="{Binding Message, FallbackValue='看什么看'}" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"/>
         <Button Content="{StaticResource Confirm}" Style="{StaticResource MainButtonStyle}" Grid.Column="0" Grid.Row="1" Click="OnConfirmClick"/>
         <Button Content="{StaticResource Cancel}" Style = "{StaticResource SecondaryButtonStyle}" Margin="5 0 0 0" Grid.Column="1" Grid.Row="1" Click="OnCancelClick"/>
     </Grid>

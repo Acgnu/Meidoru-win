@@ -68,6 +68,34 @@ namespace AcgnuX.Source.Utils
             return null == collection || collection.Count == 0;
         }
 
+        /// <summary>
+        /// 返回 source2 中不存在于 source1 中的元素
+        /// </summary>
+        /// <param name="source1"></param>
+        /// <param name="source2"></param>
+        /// <returns></returns>
+        public static List<string> FindDiffEls(string[] source1, string[] source2)
+        {
+            List<string> diffEls = new List<string>();
+            for(var i = 0; i < source2.Length; i++)
+            {
+                var contains = false;
+                for(var j = 0; j < source1.Length; j++)
+                {
+                    if (source1[j].Equals(source2[i]))
+                    {
+                        contains = true;
+                        break;
+                    }
+                }
+                if(!contains)
+                {
+                    diffEls.Add(source2[i]);
+                }
+            }
+            return diffEls;
+        }
+
         public static TOut Clone<TIn, TOut>(TIn source)
         {
             ParameterExpression parameterExpression = Expression.Parameter(typeof(TIn), "p");

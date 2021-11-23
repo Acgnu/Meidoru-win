@@ -104,6 +104,24 @@ namespace AcgnuX.Pages
         }
 
         /// <summary>
+        /// 同步配置行双击选中事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnSyncConfigDataGridDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (null == SyncPathDataGrid.SelectedItem) return;
+            //打开修改对话框
+            var dialog = new EditSyncConfigDialog(SyncPathDataGrid.SelectedItem as SyncConfigViewModel);
+            var result = dialog.ShowDialog();
+            if (result.GetValueOrDefault() == true)
+            {
+                var vm = DataContext as SettingsViewModel;
+                vm.CheckSyncConfigIsCheckedAll(true);
+            }
+        }
+
+        /// <summary>
         /// 添加规则按钮点击事件
         /// </summary>
         /// <param name="sender"></param>
@@ -131,6 +149,33 @@ namespace AcgnuX.Pages
         }
 
         /// <summary>
+        /// 添加规则按钮点击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnAddSyncConfigClick(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(ConfigUtil.Instance.DbFilePath))
+            {
+                mMainWindow.SetStatustProgess(new MainWindowStatusNotify()
+                {
+                    alertLevel = AlertLevel.ERROR,
+                    message = "答应我, 先去配置数据库"
+                });
+                return;
+            }
+            //打开修改对话框
+            var dialog = new EditSyncConfigDialog(null);
+            var result = dialog.ShowDialog();
+            if (result.GetValueOrDefault() == true)
+            {
+                var vm = DataContext as SettingsViewModel;
+                vm.SyncConfigs.Add(dialog.SyncConfig);
+                vm.CheckSyncConfigIsCheckedAll(true);
+            }
+        }
+
+        /// <summary>
         /// 规则删除事件
         /// </summary>
         /// <param name="sender"></param>
@@ -148,6 +193,27 @@ namespace AcgnuX.Pages
                 var vm = DataContext as SettingsViewModel;
                 vm.CrawlRuls.Remove(selected);
                 vm.CheckIsCheckedAll(true);
+            }
+        }
+
+        /// <summary>
+        /// 同步规则删除事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnSyncConfigItemMouseRightClick(object sender, MouseButtonEventArgs e)
+        {
+            XamlUtil.SelectRow(SyncPathDataGrid, e);
+            var selected = SyncPathDataGrid.SelectedItem as SyncConfigViewModel;
+            if (null == selected) return;
+            //删除对话框
+            var result = new ConfirmDialog(AlertLevel.WARN, string.Format((string)Application.Current.FindResource("DeleteConfirm"), string.Format("{0}", selected.PcPath))).ShowDialog();
+            if (result.GetValueOrDefault())
+            {
+                SQLite.ExecuteNonQuery("DELETE FROM media_sync_config WHERE ID = @id", new List<SQLiteParameter> { new SQLiteParameter("@id", selected.Id) });
+                var vm = DataContext as SettingsViewModel;
+                vm.SyncConfigs.Remove(selected);
+                vm.CheckSyncConfigIsCheckedAll(true);
             }
         }
 

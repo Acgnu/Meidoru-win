@@ -31,7 +31,7 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding Name}" Header="{StaticResource Domain}" Width="*"/>
                     <DataGridTextColumn Binding="{Binding Value}" Header="{StaticResource DnsRecordValue}" Width="4*" />
-                    <DataGridTextColumn Binding="{Binding type}" Header="{StaticResource DnsRecordType}" Width="*" />
+                    <DataGridTextColumn Binding="{Binding type}" Header="{StaticResource Str_Type}" Width="*" />
                     <DataGridTextColumn Binding="{Binding line}" Header="{StaticResource Line}" Width="*" />
                     <DataGridTextColumn Binding="{Binding enabled}" Header="{StaticResource Status}" Width="*" />
                     <DataGridTextColumn Binding="{Binding ttl}" Header="{StaticResource TTL}" Width="*" />

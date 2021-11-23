@@ -18,6 +18,7 @@
                 <ResourceDictionary Source="/Resource/Styles/WindowStyle.xaml" />
                 <ResourceDictionary Source="/Resource/Styles/PageStyle.xaml" />
                 <ResourceDictionary Source="/Resource/Styles/BorderStyle.xaml" />
+                <ResourceDictionary Source="/Resource/Styles/ComboBoxStyle.xaml" />
                 <ResourceDictionary Source="/Resource/Styles/ImageStyle.xaml" />
                 <ResourceDictionary Source="/Resource/Styles/ButtonStyle.xaml" />
                 <ResourceDictionary Source="/Resource/Styles/TextBlockStyle.xaml" />

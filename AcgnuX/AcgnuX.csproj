@@ -126,10 +126,14 @@
     <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.4.1.0, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
       <HintPath>packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
     </Reference>
+    <Reference Include="MediaDevices, Version=1.9.1.0, Culture=neutral, PublicKeyToken=36ac35b4ea7a1f67, processorArchitecture=MSIL">
+      <HintPath>packages\MediaDevices.1.9.1\lib\net45\MediaDevices.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="RestSharp, Version=106.6.10.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
       <HintPath>packages\RestSharp.106.6.10\lib\net452\RestSharp.dll</HintPath>
     </Reference>
@@ -178,14 +182,8 @@
       <DependentUpon>DnsRecords.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\BasePage.cs" />
-    <Compile Include="Pages\MobileDevice\MobileDeviceControl.xaml.cs">
+    <Compile Include="Pages\MobileDeviceControl.xaml.cs">
       <DependentUpon>MobileDeviceControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\MobileDevice\SyncMusic.xaml.cs">
-      <DependentUpon>SyncMusic.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\MobileDevice\SyncPictures.xaml.cs">
-      <DependentUpon>SyncPictures.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Tan8SheetReponsitory.xaml.cs">
       <DependentUpon>Tan8SheetReponsitory.xaml</DependentUpon>
@@ -207,10 +205,14 @@
     </Compile>
     <Compile Include="Source\Bussiness\Common\AsyncObservableCollection.cs" />
     <Compile Include="Source\Bussiness\Common\DelegateDefine.cs" />
+    <Compile Include="Source\Bussiness\Constants\SyncTaskProgressType.cs" />
+    <Compile Include="Source\Bussiness\Constants\SyncContentType.cs" />
     <Compile Include="Source\Bussiness\Constants\ApplicationConstant.cs" />
     <Compile Include="Source\Bussiness\Constants\PageAction.cs" />
     <Compile Include="Source\Bussiness\Constants\Tan8SheetDownloadResult.cs" />
     <Compile Include="Source\Bussiness\Constants\AlertLevel.cs" />
+    <Compile Include="Source\Bussiness\Constants\WindowsMessage.cs" />
+    <Compile Include="Source\Bussiness\Constants\SyncDeviceType.cs" />
     <Compile Include="Source\Bussiness\imgrespotroy\IImageRepo.cs" />
     <Compile Include="Source\Bussiness\imgrespotroy\ImageRepoFactory.cs" />
     <Compile Include="Source\Bussiness\imgrespotroy\ImageRepoUploadArg.cs" />
@@ -222,6 +224,10 @@
     <Compile Include="Pages\Index.xaml.cs">
       <DependentUpon>Index.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Source\Model\DeviceSyncItem.cs" />
+    <Compile Include="Source\Model\DeviceSyncList.cs" />
+    <Compile Include="Source\Model\DeviceSyncTaskArgs.cs" />
+    <Compile Include="Source\Model\MediaSyncConfig.cs" />
     <Compile Include="Source\Model\Settings.cs" />
     <Compile Include="Source\Model\ProxyAddress.cs" />
     <Compile Include="Source\Model\Account.cs" />
@@ -259,10 +265,11 @@
     <Compile Include="Source\Utils\TimeUtil.cs" />
     <Compile Include="Source\Utils\WindowUtil.cs" />
     <Compile Include="Source\Utils\XamlUtil.cs" />
+    <Compile Include="Source\ViewModel\DeviceDriverViewModel.cs" />
     <Compile Include="Source\ViewModel\AccountViewModel.cs" />
     <Compile Include="Source\ViewModel\CommonWindowViewModel.cs" />
+    <Compile Include="Source\ViewModel\SyncConfigViewModel.cs" />
     <Compile Include="Source\ViewModel\CrawlRuleViewModel.cs" />
-    <Compile Include="Source\ViewModel\DeviceSyncListImgViewItem.cs" />
     <Compile Include="Source\ViewModel\DeviceSyncListViewModel.cs" />
     <Compile Include="Source\ViewModel\Tan8PlayerViewModel.cs" />
     <Compile Include="Source\ViewModel\PianoScoreViewModel.cs" />
@@ -280,6 +287,9 @@
     </Compile>
     <Compile Include="WindowX\Dialog\AddSinglePianoScoreDialog.xaml.cs">
       <DependentUpon>AddSinglePianoScoreDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WindowX\Dialog\EditSyncConfigDialog.xaml.cs">
+      <DependentUpon>EditSyncConfigDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="WindowX\Dialog\EditCrawlDialog.xaml.cs">
       <DependentUpon>EditCrawlDialog.xaml</DependentUpon>
@@ -308,15 +318,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\MobileDevice\MobileDeviceControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\MobileDevice\SyncMusic.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\MobileDevice\SyncPictures.xaml">
+    <Page Include="Pages\MobileDeviceControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -347,6 +349,10 @@
     <Page Include="Resource\String\String_CN.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resource\Styles\ComboBoxStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Resource\Styles\ImageStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -412,6 +418,9 @@
     <Page Include="WindowX\Dialog\AddSinglePianoScoreDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="WindowX\Dialog\EditSyncConfigDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="WindowX\Dialog\EditCrawlDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -443,6 +452,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="Assets\Images\icon_audio_file.png" />
+    <Resource Include="Assets\Images\icon_image_file.png" />
+    <Resource Include="Assets\Images\icon_unknow_file.png" />
+    <Resource Include="Assets\Images\icon_video_file.png" />
+    <Resource Include="MediaDevicesLicense.txt" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -455,6 +469,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="ClassDiagram1.cd" />
+    <None Include="MediaDevices.chm" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

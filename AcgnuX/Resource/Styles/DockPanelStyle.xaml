@@ -6,7 +6,7 @@
     </Style>
 
     <Style TargetType="DockPanel" x:Key="CrawlConfigContainerDock">
-        <Setter Property="Height" Value="400" />
+        <Setter Property="MaxHeight" Value="360" />
         <Setter Property="Margin" Value="0 10 0 0" />
     </Style>
 </ResourceDictionary>

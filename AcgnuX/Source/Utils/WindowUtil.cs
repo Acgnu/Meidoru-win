@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AcgnuX.Source.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,21 @@ namespace AcgnuX.Source.Utils
             //在父窗口中心打开
             //window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             return window;
+        }
+
+        /// <summary>
+        /// 发送进度到主信息栏
+        /// </summary>
+        /// <param name="notify"></param>
+        /// <param name="message"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static MainWindowStatusNotify CalcProgress(MainWindowStatusNotify notify, string message, double value)
+        {
+            notify.message = message;
+            notify.oldProgress = notify.nowProgress;
+            notify.nowProgress = value;
+            return notify;
         }
     }
 }

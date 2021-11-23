@@ -52,5 +52,21 @@ namespace AcgnuX.Source.Utils
 
             return viewH + scrollOffset == extH;
         }
+
+        public static ListView GetParentListView(RoutedEventArgs e)
+        {
+            ListView parentView = null;
+            DependencyObject dep = (DependencyObject)e.OriginalSource;
+            while ((dep != null) && !(dep is ListView))
+            {
+                dep = VisualTreeHelper.GetParent(dep);
+            }
+            if (dep != null)
+            {
+                //找到之后赋值给成员对象
+                parentView = dep as ListView;
+            }
+            return parentView;
+        }
     }
 }

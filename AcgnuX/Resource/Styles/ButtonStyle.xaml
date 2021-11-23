@@ -2,8 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD"/>
-    <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
-    <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+    <SolidColorBrush x:Key="Button.Disabled.Background" Color="#BB7C7C7C"/>
+    <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF747474"/>
     <!--不带样式的Button-->
     <Style x:Key="NoneStyleButtonStyle" TargetType="{x:Type Button}">
         <!-- <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/> -->

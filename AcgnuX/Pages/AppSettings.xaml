@@ -12,71 +12,106 @@
     </Page.DataContext>
 
     <Grid>
-        <StackPanel>
-            <DockPanel Style="{StaticResource FormDockBaseStyle}">
-                <Label Content="{StaticResource Str_PwdConfigFilePath}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-                <Grid>
-                    <TextBox x:Name="TextBoxPasswordConfigPath" Style="{StaticResource TextBoxBase}" Text="{Binding AccountJsonPath}"/>
-                    <Path MouseLeftButtonDown="OnChooseFIle" Style="{StaticResource SettingsOpenFolderPathIcoStyle}"/>
-                </Grid>
-            </DockPanel>
-
-            <DockPanel Style="{StaticResource FormDockBaseStyle}">
-                <Label Content="{StaticResource Str_Tan8SheetSavePath}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-                <Grid>
-                    <TextBox x:Name="TextBoxPianoScoreConfigPath" Style="{StaticResource TextBoxBase}" Text="{Binding PianoScorePath}"/>
-                    <Path MouseLeftButtonDown="OnChooseFolder"  Style="{StaticResource SettingsOpenFolderPathIcoStyle}"/>
-                </Grid>
-            </DockPanel>
-
-            <DockPanel Style="{StaticResource FormDockBaseStyle}">
-                <Label Content="{StaticResource Str_DbFilePath}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-                <Grid>
-                    <TextBox x:Name="TextBoxDbFilePath" Style="{StaticResource TextBoxBase}" Text="{Binding DbFilePath}"/>
-                    <Path MouseLeftButtonDown="OnChooseDbFile"  Style="{StaticResource SettingsOpenFolderPathIcoStyle}"/>
-                </Grid>
-            </DockPanel>
-
-            <DockPanel Style="{StaticResource CrawlConfigContainerDock}">
-                <DockPanel DockPanel.Dock="Top" Height="30" Margin="0 0 0 10">
-                    <TextBlock VerticalAlignment ="Center" Margin="8 0 0 0" Text="代理数量: " />
-                    <TextBlock VerticalAlignment="Center" x:Name="ProxyCountTextBlock" Text ="{Binding ProxyCount}"/>
-                    <Button x:Name="AddCrawlButton" Style="{StaticResource AddButtonStyle}" HorizontalAlignment="Right" Click="OnAddCrawlClick">
-                        <WrapPanel>
-                            <Path Style="{StaticResource CommonAddButtonPathIcoStyle}"/>
-                            <TextBlock Text="{StaticResource Add}" Margin="5 0 0 0" />
-                        </WrapPanel>
-                    </Button>
+        <ScrollViewer Template="{StaticResource BaseScrollViewerControlTemplate}">
+            <StackPanel Margin="0 0 5 0">
+                <DockPanel Style="{StaticResource FormDockBaseStyle}">
+                    <Label Content="{StaticResource Str_PwdConfigFilePath}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                    <Grid>
+                        <TextBox x:Name="TextBoxPasswordConfigPath" Style="{StaticResource TextBoxBase}" Text="{Binding AccountJsonPath}"/>
+                        <Path MouseLeftButtonDown="OnChooseFIle" Style="{StaticResource SettingsOpenFolderPathIcoStyle}"/>
+                    </Grid>
                 </DockPanel>
-                <DataGrid Name="CrawlConfigDataGrid" Style="{StaticResource commonDataGrid}" Template="{DynamicResource BaseDataGridControlTemplate}" DockPanel.Dock="Bottom"
-                          ItemsSource ="{Binding CrawlRuls}" MouseDoubleClick="OnCrawlRulsDataGridDoubleClick" MouseRightButtonDown="OnItemMouseRightClick"
-                          >
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding Name}" Header="{StaticResource Str_Name}" Width="*" />
-                        <DataGridTextColumn Binding="{Binding Url}" Header="{StaticResource Str_CrawlAddress}" Width="1.5*" />
-                        <DataGridTextColumn Binding="{Binding Partten}" Header="{StaticResource Str_CrawlRule}" Width="2*" />
-                        <DataGridTextColumn Binding="{Binding MaxPage}" Header="{StaticResource Str_CrawlPages}" Width="0.8*"/>
-                        <DataGridCheckBoxColumn Binding="{Binding Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="{StaticResource Status}" Width="0.4*">
-                            <DataGridCheckBoxColumn.HeaderTemplate >
-                                <DataTemplate>
-                                    <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" Tag="0" IsChecked="{Binding Path=DataContext.IsCheckedAll, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                            Command="{Binding Path=DataContext.OnCrawlRuleCheckboxClick, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}" />
-                                </DataTemplate>
-                            </DataGridCheckBoxColumn.HeaderTemplate>
-                            <!--为该列的CheckBox Tag属性绑定值-->
-                            <DataGridCheckBoxColumn.ElementStyle>
-                                <Style TargetType="CheckBox">
-                                    <Setter Property="Command" Value="{Binding Path=DataContext.OnCrawlRuleCheckboxClick, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
-                                    <Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}}"/>
-                                    <Setter Property="Tag" Value="{Binding Id}" />
-                                </Style>
-                            </DataGridCheckBoxColumn.ElementStyle>
-                        </DataGridCheckBoxColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </DockPanel>
-        </StackPanel>
 
+                <DockPanel Style="{StaticResource FormDockBaseStyle}">
+                    <Label Content="{StaticResource Str_Tan8SheetSavePath}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                    <Grid>
+                        <TextBox x:Name="TextBoxPianoScoreConfigPath" Style="{StaticResource TextBoxBase}" Text="{Binding PianoScorePath}"/>
+                        <Path MouseLeftButtonDown="OnChooseFolder"  Style="{StaticResource SettingsOpenFolderPathIcoStyle}"/>
+                    </Grid>
+                </DockPanel>
+
+                <DockPanel Style="{StaticResource FormDockBaseStyle}">
+                    <Label Content="{StaticResource Str_DbFilePath}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                    <Grid>
+                        <TextBox x:Name="TextBoxDbFilePath" Style="{StaticResource TextBoxBase}" Text="{Binding DbFilePath}"/>
+                        <Path MouseLeftButtonDown="OnChooseDbFile"  Style="{StaticResource SettingsOpenFolderPathIcoStyle}"/>
+                    </Grid>
+                </DockPanel>
+
+                <DockPanel Style="{StaticResource CrawlConfigContainerDock}">
+                    <DockPanel DockPanel.Dock="Top" Height="30" Margin="0 0 0 10">
+                        <TextBlock VerticalAlignment ="Center" Margin="8 0 0 0" Text="代理数量: " />
+                        <TextBlock VerticalAlignment="Center" x:Name="ProxyCountTextBlock" Text ="{Binding ProxyCount}"/>
+                        <Button x:Name="AddCrawlButton" Style="{StaticResource AddButtonStyle}" HorizontalAlignment="Right" Click="OnAddCrawlClick">
+                            <WrapPanel>
+                                <Path Style="{StaticResource CommonAddButtonPathIcoStyle}"/>
+                                <TextBlock Text="{StaticResource Add}" Margin="5 0 0 0" />
+                            </WrapPanel>
+                        </Button>
+                    </DockPanel>
+                    <DataGrid Name="CrawlConfigDataGrid" Style="{StaticResource commonDataGrid}" Template="{DynamicResource BaseDataGridControlTemplate}" DockPanel.Dock="Bottom"
+                          ItemsSource ="{Binding CrawlRuls}" MouseDoubleClick="OnCrawlRulsDataGridDoubleClick" MouseRightButtonDown="OnItemMouseRightClick">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding Name}" Header="{StaticResource Str_Name}" Width="*" />
+                            <DataGridTextColumn Binding="{Binding Url}" Header="{StaticResource Str_CrawlAddress}" Width="1.5*" />
+                            <DataGridTextColumn Binding="{Binding Partten}" Header="{StaticResource Str_CrawlRule}" Width="2*" />
+                            <DataGridTextColumn Binding="{Binding MaxPage}" Header="{StaticResource Str_CrawlPages}" Width="0.8*"/>
+                            <DataGridCheckBoxColumn Binding="{Binding Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="0.4*">
+                                <DataGridCheckBoxColumn.HeaderTemplate >
+                                    <DataTemplate>
+                                        <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" Tag="0" IsChecked="{Binding Path=DataContext.IsCheckedAll, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                            Command="{Binding Path=DataContext.OnCrawlRuleCheckboxClick, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}" />
+                                    </DataTemplate>
+                                </DataGridCheckBoxColumn.HeaderTemplate>
+                                <!--为该列的CheckBox Tag属性绑定值-->
+                                <DataGridCheckBoxColumn.ElementStyle>
+                                    <Style TargetType="CheckBox">
+                                        <Setter Property="Command" Value="{Binding Path=DataContext.OnCrawlRuleCheckboxClick, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                        <Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}}"/>
+                                        <Setter Property="Tag" Value="{Binding Id}" />
+                                    </Style>
+                                </DataGridCheckBoxColumn.ElementStyle>
+                            </DataGridCheckBoxColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+
+                <DockPanel Style="{StaticResource CrawlConfigContainerDock}">
+                    <DockPanel DockPanel.Dock="Top" Height="30" Margin="0 0 0 10">
+                        <TextBlock VerticalAlignment ="Center" Margin="8 0 0 0" Text="{StaticResource Str_SyncPathConfig}" />
+                        <Button x:Name="AddPathButton" Style="{StaticResource AddButtonStyle}" HorizontalAlignment="Right" Click="OnAddSyncConfigClick">
+                            <WrapPanel>
+                                <Path Style="{StaticResource CommonAddButtonPathIcoStyle}"/>
+                                <TextBlock Text="{StaticResource Add}" Margin="5 0 0 0" />
+                            </WrapPanel>
+                        </Button>
+                    </DockPanel>
+                    <DataGrid Name="SyncPathDataGrid" Style="{StaticResource commonDataGrid}" Template="{DynamicResource BaseDataGridControlTemplate}" DockPanel.Dock="Bottom"
+                          ItemsSource ="{Binding SyncConfigs}" MouseDoubleClick="OnSyncConfigDataGridDoubleClick" MouseRightButtonDown="OnSyncConfigItemMouseRightClick">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding PcPath}" Header="{StaticResource Str_PcPath}" Width="6*" />
+                            <DataGridTextColumn Binding="{Binding MobilePath}" Header="{StaticResource Str_MobilePath}" Width="6*" />
+                            <DataGridCheckBoxColumn Binding="{Binding Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="1*">
+                                <DataGridCheckBoxColumn.HeaderTemplate >
+                                    <DataTemplate>
+                                        <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" Tag="0" IsChecked="{Binding Path=DataContext.IsSyncConfigCheckedAll, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                            Command="{Binding Path=DataContext.OnSyncConfigCheckboxClick, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}" />
+                                    </DataTemplate>
+                                </DataGridCheckBoxColumn.HeaderTemplate>
+                                <!--为该列的CheckBox Tag属性绑定值-->
+                                <DataGridCheckBoxColumn.ElementStyle>
+                                    <Style TargetType="CheckBox">
+                                        <Setter Property="Command" Value="{Binding Path=DataContext.OnSyncConfigCheckboxClick, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                        <Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}}"/>
+                                        <Setter Property="Tag" Value="{Binding Id}" />
+                                    </Style>
+                                </DataGridCheckBoxColumn.ElementStyle>
+                            </DataGridCheckBoxColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </StackPanel>
+        </ScrollViewer>
         <!--<Button Style="{StaticResource RefreshFloatButtonStyle}" Command="{Binding SaveSettingCommand}">
             <Path Width="20" Height="20" Data="{StaticResource Icon_SaveFile}" Style="{StaticResource MainStatusBarIcoPathStyle}"/>
         </Button>-->
