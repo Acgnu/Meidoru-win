@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -320,6 +321,58 @@ namespace AcgnuX.Source.Utils
             bitmap.EndInit();
             bitmap.Freeze();
             return bitmap;
+        }
+
+        /// <summary>
+        /// 创建图片缩略图
+        /// </summary>
+        /// <param name="filePath">文件路径</param>
+        /// <param name="h">高度px</param>
+        /// <param name="w">宽度px</param>
+        /// <returns></returns>
+        public static Image CreateThumbnail(string filePath, int h, int w)
+        {
+            Bitmap myBitmap = new Bitmap(filePath);
+            Image thumbnail = myBitmap.GetThumbnailImage(w, h, new Image.GetThumbnailImageAbort(() => false), IntPtr.Zero);
+            return thumbnail;
+        }
+
+        /// <summary>
+        /// byte 转 Image
+        /// </summary>
+        /// <param name="iamgebytes"></param>
+        /// <returns></returns>
+        public static Image ByteArrayToImage(byte[] iamgebytes)
+        {
+            MemoryStream ms = new MemoryStream(iamgebytes);
+            Image image = Image.FromStream(ms);
+            return image;
+        }
+
+        /// <summary>
+        /// Image 转 byte
+        /// </summary>
+        /// <param name="image"></param>
+        /// <returns></returns>
+        public static byte[] ImageToByteArray(Image image)
+        {
+            MemoryStream ms = new MemoryStream();
+            image.Save(ms, GetImageFormat(image.RawFormat));
+            return ms.ToArray();
+        }
+
+        /// <summary>
+        /// 返回文件格式
+        /// </summary>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        private static ImageFormat GetImageFormat(ImageFormat format)
+        {
+            if (format.Equals(ImageFormat.Jpeg)) return ImageFormat.Jpeg;
+            else if (format.Equals(ImageFormat.Bmp)) return ImageFormat.Bmp;
+            else if (format.Equals(ImageFormat.Gif)) return ImageFormat.Gif;
+            else if (format.Equals(ImageFormat.Icon)) return ImageFormat.Icon;
+            else return ImageFormat.Png;
         }
 
         /// <summary>

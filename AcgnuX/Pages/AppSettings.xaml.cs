@@ -170,6 +170,17 @@ namespace AcgnuX.Pages
             if (result.GetValueOrDefault() == true)
             {
                 var vm = DataContext as SettingsViewModel;
+                //由于添加重复策略是替换, 因此新增成功之后需要检查当前vm中重复的项
+                for(var i = 0;  i < vm.SyncConfigs.Count; i++)
+                {
+                    //如果存在PcPath重复或者MobilePath重复, 都需要删除 (Replace 策略会将任意一个重复的都删除 )
+                    var item = vm.SyncConfigs[i];
+                    if(item.PcPath.Equals(dialog.SyncConfig.PcPath) || item.MobilePath.Equals(dialog.SyncConfig.MobilePath))
+                    {
+                        vm.SyncConfigs.Remove(item);
+                        i--;
+                    }
+                }
                 vm.SyncConfigs.Add(dialog.SyncConfig);
                 vm.CheckSyncConfigIsCheckedAll(true);
             }

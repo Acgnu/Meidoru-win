@@ -83,7 +83,7 @@ namespace AcgnuX.WindowX.Dialog
         {
             if(string.IsNullOrEmpty(syncConfig.PcPath) || string.IsNullOrEmpty(syncConfig.MobilePath)) return 0;
 
-            var row = SQLite.ExecuteNonQuery("INSERT INTO media_sync_config(ID, PC_PATH, MOBILE_PATH, ENABLE) VALUES ((SELECT MAX(ID)+1 FROM media_sync_config), @PcPath, @MobilePath, @Enable)",
+            var row = SQLite.ExecuteNonQuery("INSERT INTO media_sync_config(ID, PC_PATH, MOBILE_PATH, ENABLE) VALUES ((SELECT IFNULL(MAX(ID), 0)+1 FROM media_sync_config), @PcPath, @MobilePath, @Enable)",
                 new List<SQLiteParameter> {
                     new SQLiteParameter("@PcPath", syncConfig.PcPath) ,
                     new SQLiteParameter("@MobilePath", syncConfig.MobilePath) ,

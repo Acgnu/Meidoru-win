@@ -70,4 +70,13 @@ CREATE TABLE IF NOT EXISTS "tan8_music_img" (
   "update_time" text(25),
   PRIMARY KEY ("ypid")
 );
+CREATE TABLE IF NOT EXISTS "media_sync_config" (
+  "id" INTEGER(11) NOT NULL ON CONFLICT IGNORE,
+  "pc_path" TEXT(200) NOT NULL,
+  "mobile_path" TEXT(200) NOT NULL,
+  "enable" integer(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY ("id"),
+  CONSTRAINT "uk_pc_path" UNIQUE ("pc_path" ASC) ON CONFLICT REPLACE,
+  CONSTRAINT "uk_mobile_path" UNIQUE ("mobile_path" ASC) ON CONFLICT REPLACE
+);
 CREATE INDEX IF NOT EXISTS 'INDEX_TAN8_NAME' ON 'tan8_music' ('name' ASC);

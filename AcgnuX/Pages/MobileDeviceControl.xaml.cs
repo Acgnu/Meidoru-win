@@ -5,6 +5,7 @@ using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
+using AcgnuX.Utils;
 using AcgnuX.ViewModel;
 using AcgnuX.WindowX.Dialog;
 using MediaDevices;
@@ -51,6 +52,12 @@ namespace AcgnuX.Pages
             WorkerReportsProgress = true,
             WorkerSupportsCancellation = true
         };
+        //读取文件的Worker
+        private readonly BackgroundWorker mReadDeviceFileWorker = new BackgroundWorker()
+        {
+            WorkerReportsProgress = true,
+            WorkerSupportsCancellation = true
+        };
 
         public MobileDeviceControl(MainWindow mainWin)
         {
@@ -62,12 +69,20 @@ namespace AcgnuX.Pages
             mCheckDeviceBgWorker.DoWork += new DoWorkEventHandler(DoCheckDeviceTask);
             //完成事件
             mCheckDeviceBgWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(CheckDeviceTaskComplate);
+
             //同步文件工作任务
             mSyncFileBgWorker.DoWork += new DoWorkEventHandler(DoSyncFileTask);
             //进度变更事件
             mSyncFileBgWorker.ProgressChanged += new ProgressChangedEventHandler(OnSyncFileProgress);
             //同步文件完成事件
             mSyncFileBgWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(SyncFileTaskComplate);
+
+            //读取文件的工作任务
+            mReadDeviceFileWorker.DoWork += new DoWorkEventHandler(DoReadDeviceFileTask);
+            //进度变更事件
+            mReadDeviceFileWorker.ProgressChanged += new ProgressChangedEventHandler(OnReadDeviceFileProgress);
+            //文件读取完成事件
+            mReadDeviceFileWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(OnReadDeviceFileTaskComplate);
             CheckDevice(false);
             DeviceSyncListView.ItemsSource = mSyncDataList;
         }
@@ -95,6 +110,8 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void DoCheckDeviceTask(object sender, DoWorkEventArgs e)
         {
+            var returnList = new List<MediaDevice>();
+            e.Result = returnList;
             //是否需要等待的参数
             var delay = e.Argument == null ? false : (bool) e.Argument;
             for(var i = 0; i < 25; i++)
@@ -113,6 +130,99 @@ namespace AcgnuX.Pages
                     Thread.Sleep(50);
                 else
                     return;
+            }
+        }
+
+        /// <summary>
+        /// 读取文件工作任务
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DoReadDeviceFileTask(object sender, DoWorkEventArgs workArgs)
+        {
+            var args = (DeviceSyncReadArgs) workArgs.Argument;
+            workArgs.Result = true;
+            //多设备且未手动选择设备
+            if (null == args.Device) return;
+            //多盘符且未手动选择盘符
+            if (null == args.MediaDrive) return;
+
+            //从数据库读取
+            var dataSet = SQLite.SqlTable("SELECT pc_path, mobile_path FROM media_sync_config where enable = 1", null);
+            if (null == dataSet) return;
+            //封装进对象
+            var syncPathList = new List<MediaSyncConfig>();
+            foreach (DataRow dataRow in dataSet.Rows)
+            {
+                syncPathList.Add(new SyncConfigViewModel()
+                {
+                    PcPath = Convert.ToString(dataRow["pc_path"]),
+                    MobilePath = Convert.ToString(dataRow["mobile_path"]),
+                });
+            }
+            //筛选WPD设备
+            using (args.Device)
+            {
+                args.Device.Connect();
+                syncPathList.ForEach((e) =>
+                {
+                    if (!Directory.Exists(e.PcPath) || !args.Device.DirectoryExists(Path.Combine(args.MediaDrive.NameView, e.MobilePath)))
+                    {
+                        //跳过不存在的文件夹
+                        return;
+                    }
+                    //读取PC目录下的文件列表
+                    var pcFiles = FileUtil.GetFileNameFromFullPath(Directory.GetFiles(e.PcPath));
+                    //读取移动设备下的文件列表
+                    var mobileFiles = FileUtil.GetFileNameFromFullPath(args.Device.GetFiles(Path.Combine(args.MediaDrive.NameView, e.MobilePath)));
+                    //找出差异文件
+                    var filesOnlyInMobile = DataUtil.FindDiffEls(pcFiles, mobileFiles);
+                    var filesOnlyInPc = DataUtil.FindDiffEls(mobileFiles, pcFiles);
+                    //不存在差异则直接跳过当前文件夹
+                    if (DataUtil.IsEmptyCollection(filesOnlyInMobile) && DataUtil.IsEmptyCollection(filesOnlyInPc))
+                    {
+                        return;
+                    }
+                    if (!DataUtil.IsEmptyCollection(filesOnlyInPc))
+                    {
+                        foreach(var fileName in filesOnlyInPc)
+                        {
+                            if(mReadDeviceFileWorker.CancellationPending)
+                            {
+                                workArgs.Result = false;
+                                return;
+                            }
+                            var item = CreateSyncItem(fileName, e.PcPath, SyncDeviceType.PC, args.Device, args.MediaDrive.NameView);
+                            mReadDeviceFileWorker.ReportProgress(0, new DeviceSyncReadProgressItem
+                            {
+                                PcFolderNameView = e.PcPath,
+                                MobileFolderNameView = e.MobilePath,
+                                FileItem = item,
+                                FileSource = SyncDeviceType.PC
+                            });
+                        }
+                    }
+                    if (!DataUtil.IsEmptyCollection(filesOnlyInMobile))
+                    {
+                        foreach(var fileName in filesOnlyInMobile)
+                        {
+                            if (mReadDeviceFileWorker.CancellationPending)
+                            {
+                                workArgs.Result = false;
+                                return;
+                            }
+                            var item = CreateSyncItem(fileName, e.MobilePath, SyncDeviceType.PHONE, args.Device, args.MediaDrive.NameView);
+                            mReadDeviceFileWorker.ReportProgress(0, new DeviceSyncReadProgressItem
+                            {
+                                PcFolderNameView = e.PcPath,
+                                MobileFolderNameView = e.MobilePath,
+                                FileItem = item,
+                                FileSource = SyncDeviceType.PHONE
+                            });
+                        }
+                    }
+                });
+                args.Device.Disconnect();
             }
         }
 
@@ -182,23 +292,15 @@ namespace AcgnuX.Pages
                         {
                             //电脑端, 需要复制到移动端
                             var targetFolder = Path.Combine(arg.DevicePath, arg.Item.MobileFolderNameView);
-                            if (!device.DirectoryExists(targetFolder))
-                            {
-                                device.CreateDirectory(targetFolder);
-                            }
                             using (FileStream stream = File.OpenRead(Path.Combine(arg.Item.PcFolderNameView, syncFile.NameView)))
                             {
-                                Thread.Sleep(1000);
-                                //device.UploadFile(stream, Path.Combine(targetFolder, syncFile.NameView));
+                                device.UploadFile(stream, Path.Combine(targetFolder, syncFile.NameView));
                             }
                         }
                         else
                         {
-                            //移动端, 需要复制到电脑端
-                            FileUtil.CreateFolder(arg.Item.PcFolderNameView);
                             MediaFileInfo fileInfo = device.GetFileInfo(Path.Combine(arg.DevicePath, arg.Item.MobileFolderNameView, syncFile.NameView));
-                            Thread.Sleep(1000);
-                            //fileInfo.CopyTo(Path.Combine(arg.Item.PcFolderNameView, syncFile.NameView));
+                            fileInfo.CopyTo(Path.Combine(arg.Item.PcFolderNameView, syncFile.NameView));
                         }
                         fileProgress = eachFileProgress * fileCounter;
                         WindowUtil.CalcProgress(winProgress,
@@ -253,6 +355,60 @@ namespace AcgnuX.Pages
         }
 
         /// <summary>
+        /// 读取文件进度变更
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnReadDeviceFileProgress(object sender, ProgressChangedEventArgs e)
+        {
+            var newItem = (DeviceSyncReadProgressItem) e.UserState;
+            //找到已添加的父列表
+            var listItem = mSyncDataList.Where((el) => el.PcFolderNameView.Equals(newItem.PcFolderNameView)).FirstOrDefault();
+            if(null == listItem)
+            {
+                //没有则新建一个项
+                var listItemPcFileList = new ObservableCollection<DeviceSyncItem>();
+                var listItemMoblieFileList = new ObservableCollection<DeviceSyncItem>();
+                AddFolderListFileItem(listItemPcFileList, listItemMoblieFileList, newItem);
+                mSyncDataList.Add(new DeviceSyncListViewModel
+                {
+                    PcFolderNameView = newItem.PcFolderNameView,
+                    MobileFolderNameView = newItem.MobileFolderNameView,
+                    PcItemList = listItemPcFileList,
+                    MobileItemList = listItemMoblieFileList
+                });
+            }
+            else
+            {
+                //有则直接添加
+                AddFolderListFileItem(listItem.PcItemList, listItem.MobileItemList, newItem);
+            }
+            //发送状态栏提示信息
+            OnTaskBarEvent?.Invoke(new MainWindowStatusNotify
+            {
+                nowProgress = 99,
+                alertLevel = AlertLevel.RUN,
+                message = string.Format("正在收集差异文件  [{0}]", Path.Combine(newItem.FileItem.FolderView, newItem.FileItem.NameView)),
+            }); ;
+        }
+
+        /// <summary>
+        /// 区分添加子项目
+        /// </summary>
+        /// <param name="pcCollect"></param>
+        /// <param name="mobileCollect"></param>
+        /// <param name="newItem"></param>
+        private void AddFolderListFileItem(ObservableCollection<DeviceSyncItem> pcCollect,
+            ObservableCollection<DeviceSyncItem> mobileCollect,
+            DeviceSyncReadProgressItem newItem)
+        {
+            if (newItem.FileSource == SyncDeviceType.PC)
+                pcCollect.Add(CreateSyncItemViewModel(newItem.FileItem));
+            else
+                mobileCollect.Add(CreateSyncItemViewModel(newItem.FileItem));
+        }
+
+        /// <summary>
         /// 连接设备检查执行结果
         /// </summary>
         /// <param name="sender"></param>
@@ -260,22 +416,43 @@ namespace AcgnuX.Pages
         private void CheckDeviceTaskComplate(object sender, RunWorkerCompletedEventArgs e)
         {
             var mediaDevices = e.Result as List<MediaDevice>;
-            if(null  != mediaDevices && mediaDevices.Count > 0)
-            {
-                DefaultHintText.Visibility = Visibility.Collapsed;
-                DeviceChoosePanel.Visibility = Visibility.Visible;
-                DeviceListCombobox.ItemsSource = mediaDevices;
-                DeviceListCombobox.SelectedIndex = 0;
-                DriverListCombobox.SelectedIndex = 0;
-            }
-            else
+            //如果没有设备了
+            if(mediaDevices.Count == 0)
             {
                 DefaultHintText.Visibility = Visibility.Visible;
                 DeviceChoosePanel.Visibility = Visibility.Collapsed;
                 DeviceSyncListView.Visibility = Visibility.Collapsed;
                 DriverListCombobox.ItemsSource = null;
                 DeviceListCombobox.ItemsSource = null;
+                return;
             }
+            //如果有设备, 检查此前选择的设备是否还存在
+            var selectedDevice = (MediaDevice) DeviceListCombobox.SelectedItem;
+            if(null != selectedDevice)
+            {
+                var nowDevice = mediaDevices.Find((el) => el.DeviceId.Equals(selectedDevice.DeviceId));
+                if (nowDevice != null)
+                {
+                    //如果选择的设备还存在, 不做变化
+                    return;
+                }
+            }
+
+            //如果选择的设备已经不存在了, 需要重新选择
+            DeviceListCombobox.ItemsSource = mediaDevices;
+
+            //如果只有一个设备
+            if(mediaDevices.Count == 1)
+            {
+                DefaultHintText.Visibility = Visibility.Collapsed;
+                DeviceListCombobox.SelectedIndex = 0;
+                DriverListCombobox.SelectedIndex = 0;
+                return;
+            }
+            //如果有多个设备
+            DefaultHintText.Visibility = Visibility.Collapsed;
+            DeviceChoosePanel.Visibility = Visibility.Visible;
+            DeviceSyncListView.Visibility = Visibility.Collapsed;
         }
 
         /// <summary>
@@ -286,7 +463,18 @@ namespace AcgnuX.Pages
         private void SyncFileTaskComplate(object sender, RunWorkerCompletedEventArgs e)
         {
             var rb = (bool) e.Result;
-            OnTaskBarEvent?.Invoke(WindowUtil.CalcProgress(new MainWindowStatusNotify(), rb ? "同步完成" : "任务中止", 100)); ;
+            OnTaskBarEvent?.Invoke(WindowUtil.CalcProgress(new MainWindowStatusNotify(), rb ? "同步完成" : "任务中止", 100));
+        }
+
+        /// <summary>
+        /// 读取设备文件任务完成
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnReadDeviceFileTaskComplate(object sender, RunWorkerCompletedEventArgs e)
+        {
+            var isFinish = (bool) e.Result;
+            OnTaskBarEvent?.Invoke(WindowUtil.CalcProgress(new MainWindowStatusNotify(), isFinish ? "设备文件读取完成" : "已停止", 100)); ;
         }
 
         /// <summary>
@@ -296,9 +484,16 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnRefreshButtonClick(object sender, System.Windows.RoutedEventArgs eventArgs)
         {
-            DriverListCombobox.ItemsSource = null;
-            DeviceListCombobox.ItemsSource = null;
-            CheckDevice(true);
+            if(DriverListCombobox.SelectedItem != null)
+            {
+                //如果有选中的驱动, 则直接刷新文件
+                ComboBoxDriverSelectionChanged(null, null);
+            }
+            else
+            {
+                //没有则重新读取设备
+                CheckDevice(true);
+            }
         }
         
         /// <summary>
@@ -318,7 +513,6 @@ namespace AcgnuX.Pages
                 {
                     case WindowsMessage.DBT_DEVICEARRIVAL://设备插入  
                         CheckDevice(true);
-                        //OnPageLoaded();
                         break;
                     case WindowsMessage.DBT_DEVICEREMOVECOMPLETE: //设备卸载
                         CheckDevice(false);
@@ -341,75 +535,6 @@ namespace AcgnuX.Pages
                 return;
             }
             mCheckDeviceBgWorker.RunWorkerAsync(delay);
-        }
-
-        /// <summary>
-        /// 重新读取两端文件
-        /// </summary>
-        private async Task<List<DeviceSyncList>> LoadFilesAsync()
-        {
-            var selectedDevice = (MediaDevice) DeviceListCombobox.SelectedItem;
-            var selectedDriver = (DeviceDriverViewModel) DriverListCombobox.SelectedItem;
-            return await Task.Run(() => {
-                var returnData = new List<DeviceSyncList>();
-                //多设备且未手动选择设备
-                if (null == selectedDevice) return returnData;
-                //多盘符且未手动选择盘符
-                if (null == selectedDriver) return returnData;
-
-                //从数据库读取
-                var dataSet = SQLite.SqlTable("SELECT pc_path, mobile_path FROM media_sync_config where enable = 1", null);
-                if (null == dataSet) return returnData;
-                //封装进对象
-                var syncPathList = new List<MediaSyncConfig>();
-                foreach (DataRow dataRow in dataSet.Rows)
-                {
-                    syncPathList.Add(new SyncConfigViewModel()
-                    {
-                        PcPath = Convert.ToString(dataRow["pc_path"]),
-                        MobilePath = Convert.ToString(dataRow["mobile_path"]),
-                    });
-                }
-                //筛选WPD设备
-                using (selectedDevice)
-                {
-                    selectedDevice.Connect();
-                    syncPathList.ForEach((e) =>
-                    {
-                        //读取PC目录下的文件列表
-                        var pcFiles = FileUtil.GetFileNameFromFullPath(Directory.GetFiles(e.PcPath));
-                        //读取移动设备下的文件列表
-                        var mobileFiles = FileUtil.GetFileNameFromFullPath(selectedDevice.GetFiles(Path.Combine(selectedDriver.NameView, e.MobilePath)));
-                        //找出差异文件
-                        var filesOnlyInMobile = DataUtil.FindDiffEls(pcFiles, mobileFiles);
-                        var filesOnlyInPc = DataUtil.FindDiffEls(mobileFiles, pcFiles);
-                        //不存在差异则直接跳过当前文件夹
-                        if (DataUtil.IsEmptyCollection(filesOnlyInMobile) && DataUtil.IsEmptyCollection(filesOnlyInPc))
-                        {
-                            return;
-                        }
-                        var pcItemList = new List<DeviceSyncItem>();
-                        var mobileItemList = new List<DeviceSyncItem>();
-                        if (!DataUtil.IsEmptyCollection(filesOnlyInPc))
-                        {
-                            filesOnlyInPc.ForEach((fileName) => pcItemList.Add(CreateSyncItem(fileName, e.PcPath, SyncDeviceType.PC, selectedDevice, selectedDriver.NameView)));
-                        }
-                        if (!DataUtil.IsEmptyCollection(filesOnlyInMobile))
-                        {
-                            filesOnlyInMobile.ForEach((fileName) => mobileItemList.Add(CreateSyncItem(fileName, e.MobilePath, SyncDeviceType.PHONE, selectedDevice, selectedDriver.NameView)));
-                        }
-                        returnData.Add(new DeviceSyncList
-                        {
-                            PcFolderNameView = e.PcPath,
-                            MobileFolderNameView = e.MobilePath,
-                            PcItemList = pcItemList,
-                            MobileItemList = mobileItemList
-                        });
-                    });
-                    selectedDevice.Disconnect();
-                }
-                return returnData;
-            });
         }
 
         private void OnPageLoaded(object sender, System.Windows.RoutedEventArgs eventArgs)
@@ -455,8 +580,8 @@ namespace AcgnuX.Pages
                 }
                 else
                 {
-                    var imgByte = File.ReadAllBytes(Path.Combine(folderPath, fileName));
-                    item.ImgByte = imgByte;
+                    var imgByte = ImageUtil.CreateThumbnail(Path.Combine(folderPath, fileName), 100, 100);
+                    item.ImgByte = ImageUtil.ImageToByteArray(imgByte);
                 }
             }
             return item;
@@ -491,10 +616,8 @@ namespace AcgnuX.Pages
         private void ComboBoxDeviceSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             var device = (MediaDevice) DeviceListCombobox.SelectedItem;
-            if (null == device)
-            {
-                return;
-            }
+            if (null == device) return;
+
             device.Connect();
             var deviceDrivers = device.GetDrives();
             if(null == deviceDrivers)
@@ -520,65 +643,59 @@ namespace AcgnuX.Pages
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void ComboBoxDriverSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void ComboBoxDriverSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             DeviceSyncListView.Visibility = Visibility.Visible;
             DeviceChoosePanel.Visibility = Visibility.Collapsed;
-            var data = await LoadFilesAsync();
-            AddViewModelFromSyncData(data);
-        }
-
-        /// <summary>
-        /// 填充视图模型数据
-        /// </summary>
-        /// <param name="syncData"></param>
-        private void AddViewModelFromSyncData(List<DeviceSyncList> syncData)
-        {
+            if(mReadDeviceFileWorker.IsBusy)
+            {
+                mReadDeviceFileWorker.CancelAsync();
+                return;
+            }
+            //清空当前列表
             mSyncDataList.Clear();
-            syncData.ForEach((el) => mSyncDataList.Add(new DeviceSyncListViewModel {
-                PcFolderNameView = el.PcFolderNameView,
-                MobileFolderNameView = el.MobileFolderNameView,
-                PcItemList = CreateSyncItemViewModel(el.PcItemList),
-                MobileItemList = CreateSyncItemViewModel(el.MobileItemList)
-            }));
+            //任务参数
+            var taskArg = new DeviceSyncReadArgs
+            {
+                //选中的设备
+                Device = (MediaDevice)DeviceListCombobox.SelectedItem,
+                //选中的设备盘
+                MediaDrive = (DeviceDriverViewModel)DriverListCombobox.SelectedItem
+            };
+            mReadDeviceFileWorker.RunWorkerAsync(taskArg);
         }
 
         /// <summary>
         /// 创建视图模型项
         /// </summary>
-        /// <param name="items"></param>
+        /// <param name="item"></param>
         /// <returns></returns>
-        private ObservableCollection<DeviceSyncItem> CreateSyncItemViewModel(List<DeviceSyncItem> items)
+        private DeviceSyncItem CreateSyncItemViewModel(DeviceSyncItem item)
         {
-            var rData = new ObservableCollection<DeviceSyncItem>();
-            items.ForEach(e =>
+            var viewItem = new DeviceSyncItem
             {
-                var viewItem = new DeviceSyncItem
+                NameView = item.NameView,
+                FolderView = item.FolderView,
+                SourceView = item.SourceView
+            };
+            if (null != item.ImgByte)
+            {
+                //有真实预览图则显示预览图
+                viewItem.BitImg = ImageUtil.GetBitmapImage(item.ImgByte);
+                item.ImgByte = null;
+            }
+            else
+            {
+                //没有预览图则根据文件类型显示默认图标
+                switch (item.ContentType)
                 {
-                    NameView = e.NameView,
-                    FolderView = e.FolderView,
-                    SourceView = e.SourceView
-                };
-                if (null != e.ImgByte)
-                {
-                    //有真实预览图则显示预览图
-                    viewItem.BitImg = ImageUtil.GetBitmapImage(e.ImgByte);
-                    e.ImgByte = null;
+                    case SyncContentType.AUDIO: viewItem.BitImg = ApplicationConstant.GetDefaultAudioIcon(); break;
+                    case SyncContentType.IMAGE: viewItem.BitImg = ApplicationConstant.GetDefaultImageIcon(); break;
+                    case SyncContentType.VIDEO: viewItem.BitImg = ApplicationConstant.GetDefaultVideoIcon(); break;
+                    case SyncContentType.OTHER: viewItem.BitImg = ApplicationConstant.GetDefaultFileIcon(); break;
                 }
-                else
-                {
-                    //没有预览图则根据文件类型显示默认图标
-                    switch (e.ContentType)
-                    {
-                        case SyncContentType.AUDIO: viewItem.BitImg = ApplicationConstant.GetDefaultAudioIcon(); break;
-                        case SyncContentType.IMAGE: viewItem.BitImg = ApplicationConstant.GetDefaultImageIcon(); break;
-                        case SyncContentType.VIDEO: viewItem.BitImg = ApplicationConstant.GetDefaultVideoIcon(); break;
-                        case SyncContentType.OTHER: viewItem.BitImg = ApplicationConstant.GetDefaultFileIcon(); break;
-                    }
-                }
-                rData.Add(viewItem);
-            });
-            return rData;
+            }
+            return viewItem;
         }
 
         /// <summary>
@@ -598,6 +715,27 @@ namespace AcgnuX.Pages
             var selected = ((ListViewItem)subListView.ContainerFromElement(sender as StackPanel)).Content;
             var ImgItemList = (ObservableCollection<DeviceSyncItem>)subListView.ItemsSource;
             ImgItemList.Remove(selected as DeviceSyncItem);
+        }
+
+        /// <summary>
+        /// 项目双击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ImgItemLeftClick(object sender, MouseButtonEventArgs e)
+        {
+            var subListView = XamlUtil.GetParentListView(e);
+            //根据触发按钮获取点击的行
+            var selected = (DeviceSyncItem)((ListViewItem)subListView.ContainerFromElement(sender as StackPanel)).Content;
+            var curTimeMill = TimeUtil.CurrentMillis();
+            var lastClick = selected.LastLeftMouseClickTime;
+            selected.LastLeftMouseClickTime = curTimeMill;
+            //双击才执行操作
+            if (curTimeMill - lastClick < 200 && selected.SourceView == SyncDeviceType.PC)
+            {
+                //如果文件存在于PC, 则打开文件
+                System.Diagnostics.Process.Start(Path.Combine(selected.FolderView, selected.NameView));
+            }
         }
 
         /// <summary>
@@ -671,6 +809,17 @@ namespace AcgnuX.Pages
                     subListViewItemSource.Remove(selected);
                 }
             }
+        }
+
+        /// <summary>
+        /// 打开文件夹图标点击
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnOpenFolderClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var selected = (DeviceSyncListViewModel)((ListViewItem)DeviceSyncListView.ContainerFromElement((DependencyObject) sender)).Content;
+            System.Diagnostics.Process.Start(selected.PcFolderNameView);
         }
 
         private void PreviewMouseWheel(object sender, MouseWheelEventArgs e)

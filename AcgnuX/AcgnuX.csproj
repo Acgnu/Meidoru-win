@@ -225,7 +225,8 @@
       <DependentUpon>Index.xaml</DependentUpon>
     </Compile>
     <Compile Include="Source\Model\DeviceSyncItem.cs" />
-    <Compile Include="Source\Model\DeviceSyncList.cs" />
+    <Compile Include="Source\Model\DeviceSyncReadProgressItem.cs" />
+    <Compile Include="Source\Model\DeviceSyncReadArgs.cs" />
     <Compile Include="Source\Model\DeviceSyncTaskArgs.cs" />
     <Compile Include="Source\Model\MediaSyncConfig.cs" />
     <Compile Include="Source\Model\Settings.cs" />

@@ -25,11 +25,12 @@
                         <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="Transparent" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true" CornerRadius="1">
                             <!--<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>-->
                             <StackPanel 
-                            Orientation="Vertical"  
-                            Height="120" 
-                            Width="100" 
-                            MouseRightButtonDown="ImgItemRightClick"
-                            KeyDown="SubItemOnKeyDown">
+                                Orientation="Vertical"  
+                                Height="120" 
+                                Width="100" 
+                                MouseRightButtonDown="ImgItemRightClick"
+                                MouseLeftButtonUp="ImgItemLeftClick"
+                                KeyDown="SubItemOnKeyDown">
                                 <Grid>
                                     <Border CornerRadius="3" Width="100" Height="100">
                                         <Border.Background>
@@ -114,11 +115,12 @@
                         <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="Transparent" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true" CornerRadius="1">
                             <!--<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>-->
                             <StackPanel 
-                            Orientation="Vertical"  
-                            Height="120" 
-                            Width="100" 
-                            MouseRightButtonDown="ImgItemRightClick"
-                            KeyDown="SubItemOnKeyDown">
+                                Orientation="Vertical"  
+                                Height="120" 
+                                Width="100" 
+                                MouseRightButtonDown="ImgItemRightClick"
+                                MouseLeftButtonUp="ImgItemLeftClick"
+                                KeyDown="SubItemOnKeyDown">
                                 <Grid>
                                     <Border CornerRadius="3" Width="100" Height="100">
                                         <Border.Background>
@@ -202,7 +204,8 @@
                         <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="Transparent" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true" CornerRadius="2">
                             <StackPanel Orientation="Vertical">
                                 <DockPanel LastChildFill="False">
-                                    <Label DockPanel.Dock="Left" Content="{Binding PcFolderNameView}" Margin="10 5 0 2" FontSize="15" FontWeight="Bold" Foreground="#FF252525"/>
+                                    <Path MouseLeftButtonDown="OnOpenFolderClick"  Style="{StaticResource DeviceSyncOpenFolderIcoStyle}" DockPanel.Dock="Left" Margin="10 5 0 2"/>
+                                    <Label DockPanel.Dock="Left" Content="{Binding PcFolderNameView}" FontSize="15" FontWeight="Bold" Foreground="#FF252525" Margin="5 5 0 2"/>
                                     <Button DockPanel.Dock="Right" Margin="0 0 5 0" Style="{StaticResource AddButtonStyle}" Click="OnSyncButtonClick" Height="30" Width="80">
                                         <WrapPanel>
                                             <Path Style="{StaticResource RefreshPathIcoStyle}" Width="11" Height="11"/>

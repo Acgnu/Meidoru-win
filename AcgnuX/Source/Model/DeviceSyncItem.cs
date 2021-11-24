@@ -42,5 +42,9 @@ namespace AcgnuX.Source.ViewModel
         /// 图片byte数组
         /// </summary>
         public byte[] ImgByte { get; set; }
+        /// <summary>
+        /// 记录鼠标最后点击时间, 用于模拟双击
+        /// </summary>
+        public long LastLeftMouseClickTime { get; set; } = 0;
     }
 }

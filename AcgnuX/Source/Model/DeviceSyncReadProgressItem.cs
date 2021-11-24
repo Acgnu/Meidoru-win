@@ -1,10 +1,14 @@
-﻿using AcgnuX.Source.Model;
+﻿using AcgnuX.Source.Bussiness;
+using AcgnuX.Source.Model;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace AcgnuX.Source.ViewModel
 {
-    class DeviceSyncList
+    /// <summary>
+    /// 设备同步读取文件列表进度参数
+    /// </summary>
+    class DeviceSyncReadProgressItem
     {
         /// <summary>
         /// PC文件夹路径
@@ -15,12 +19,12 @@ namespace AcgnuX.Source.ViewModel
         /// </summary>
         public string MobileFolderNameView { get; set; }
         /// <summary>
-        /// 仅存于PC的文件
+        /// 文件项
         /// </summary>
-        public List<DeviceSyncItem> PcItemList { get; set; }
+        public DeviceSyncItem FileItem { get; set; }
         /// <summary>
-        /// 仅存于移动端的文件
+        /// 文件源
         /// </summary>
-        public List<DeviceSyncItem> MobileItemList { get; set; }
+        public SyncDeviceType FileSource { get; set; }
     }
 }
