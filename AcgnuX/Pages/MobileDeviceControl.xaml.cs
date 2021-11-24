@@ -446,7 +446,6 @@ namespace AcgnuX.Pages
             {
                 DefaultHintText.Visibility = Visibility.Collapsed;
                 DeviceListCombobox.SelectedIndex = 0;
-                DriverListCombobox.SelectedIndex = 0;
                 return;
             }
             //如果有多个设备
@@ -636,6 +635,10 @@ namespace AcgnuX.Pages
             }
             device.Disconnect();
             DriverListCombobox.ItemsSource = deviceDriverViews;
+            if(deviceDriverViews.Count == 1)
+            {
+                DriverListCombobox.SelectedIndex = 0;
+            }
         }
 
         /// <summary>
