@@ -177,5 +177,17 @@ namespace AcgnuX
         {
             OnClickStatusBarStop?.Invoke();
         }
+
+        /// <summary>
+        /// 状态栏右键事件, 复制状态栏文本
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnStatusBarTextRightClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var barText = MainStatusBarText.Text;
+            if (string.IsNullOrEmpty(barText)) return;
+            Clipboard.SetDataObject(barText);
+        }
     }
 }

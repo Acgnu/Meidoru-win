@@ -7,22 +7,22 @@
       xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Class="AcgnuX.Pages.MobileDeviceControl"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-                Loaded="OnPageLoaded"
+                Loaded="OnPageLoaded"  Style="{StaticResource DataGridPageBaseStyle}"
       Title="MobileDeviceControl">
 
     <Page.Resources>
         <!--图片同步列表交互模板(PC端)-->
         <Style TargetType="{x:Type ListViewItem}" x:Key="DeviceSyncListViewItemControlStyle">
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="Margin" Value="5 0 0 0"/>
+            <Setter Property="Margin" Value="0 0 5 5"/>
             <Setter Property="Padding" Value="0 0 0 0"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0 0 0 0"/>
+            <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ListViewItem}">
-                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="Transparent" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true" CornerRadius="1">
+                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="Transparent" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true" Margin="{TemplateBinding Margin}">
                             <!--<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>-->
                             <StackPanel 
                                 Orientation="Vertical"  
@@ -104,7 +104,7 @@
         <!--图片同步列表交互模板(移动端)-->
         <Style TargetType="{x:Type ListViewItem}" x:Key="DeviceSyncListMobileViewItemControlStyle">
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="Margin" Value="5 0 0 0"/>
+            <Setter Property="Margin" Value="0 0 5 5"/>
             <Setter Property="Padding" Value="0 0 0 0"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
@@ -194,19 +194,21 @@
         <!--移动端设备同步交互模板-->
         <Style TargetType="{x:Type ListViewItem}" x:Key="DeviceSyncListViewItemContainerStyle">
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="Padding" Value="0 3 0 3"/>
+            <Setter Property="Margin" Value="0 0 0 5" />
+            <Setter Property="Padding" Value="0 0 0 0"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="BorderBrush" Value="#FFd9d9d9"/>
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="#BBd9d9d9"/>
             <Setter Property="BorderThickness" Value="0 0 0 1"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ListViewItem}">
-                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="Transparent" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true" CornerRadius="2">
+                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
                             <StackPanel Orientation="Vertical">
-                                <DockPanel LastChildFill="False">
-                                    <Path MouseLeftButtonDown="OnOpenFolderClick"  Style="{StaticResource DeviceSyncOpenFolderIcoStyle}" DockPanel.Dock="Left" Margin="10 5 0 2"/>
-                                    <Label DockPanel.Dock="Left" Content="{Binding PcFolderNameView}" FontSize="15" FontWeight="Bold" Foreground="#FF252525" Margin="5 5 0 2"/>
-                                    <Button DockPanel.Dock="Right" Margin="0 0 5 0" Style="{StaticResource AddButtonStyle}" Click="OnSyncButtonClick" Height="30" Width="80">
+                                <DockPanel LastChildFill="False" Margin="0 0 0 5">
+                                    <Path MouseLeftButtonDown="OnOpenFolderClick"  Style="{StaticResource DeviceSyncOpenFolderIcoStyle}" DockPanel.Dock="Left" Margin="0 0 0 0"/>
+                                    <Label DockPanel.Dock="Left" Content="{Binding PcFolderNameView}" FontSize="15" FontWeight="Bold" Foreground="#FF252525" Margin="0 0 0 0"/>
+                                    <Button DockPanel.Dock="Right" Style="{StaticResource AddButtonStyle}" Click="OnSyncButtonClick" Height="30" Width="80">
                                         <WrapPanel>
                                             <Path Style="{StaticResource RefreshPathIcoStyle}" Width="11" Height="11"/>
                                             <TextBlock Text="{StaticResource Str_Sync}" Margin="5 0 0 0" />
@@ -214,34 +216,11 @@
                                     </Button>
                                 </DockPanel>
                                 <ListView 
-                                Style="{DynamicResource DeviceSyncInnerListView}" 
-                                ItemsSource="{Binding PcItemList}" 
-                                PreviewMouseWheel="PreviewMouseWheel" 
-                                ItemContainerStyle="{StaticResource DeviceSyncListViewItemControlStyle}"
-                                KeyDown="SubItemOnKeyDown">
-                                    <!--.<ListViewGroupStyle>
-                                    <GroupStyle>
-                                        <GroupStyle.Panel>
-                                            <ItemsPanelTemplate>
-                                                <StackPanel Orientation="Horizontal" />
-                                            </ItemsPanelTemplate>
-                                        </GroupStyle.Panel>
-                                        <GroupStyle.ContainerStyle>
-                                            <Style TargetType="{x:Type GroupItem}">
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="GroupItem">
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <ContentPresenter/>
-                                                                <ItemsPresenter/>
-                                                            </StackPanel>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </Style>
-                                        </GroupStyle.ContainerStyle>
-                                    </GroupStyle>
-                                </ListView.GroupStyle>-->
+                                    Style="{StaticResource DeviceSyncInnerListView}"
+                                    ItemsSource="{Binding PcItemList}" 
+                                    PreviewMouseWheel="PreviewMouseWheel" 
+                                    ItemContainerStyle="{StaticResource DeviceSyncListViewItemControlStyle}"
+                                    KeyDown="SubItemOnKeyDown">
                                     <ListView.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <WrapPanel Orientation="Horizontal"></WrapPanel>

@@ -1,4 +1,5 @@
 ﻿using AcgnuX.Source.Bussiness;
+using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,5 +27,13 @@ namespace AcgnuX.Source.ViewModel
         /// 文件源
         /// </summary>
         public SyncDeviceType FileSource { get; set; }
+        /// <summary>
+        /// 进度通知类型 1 文本提示, 2 文件读取
+        /// </summary>
+        public byte ProgressType { get; set; }
+        /// <summary>
+        /// 通知对象
+        /// </summary>
+        public MainWindowStatusNotify Notify { get; set; }
     }
 }

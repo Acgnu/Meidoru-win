@@ -46,5 +46,9 @@ namespace AcgnuX.Source.ViewModel
         /// 记录鼠标最后点击时间, 用于模拟双击
         /// </summary>
         public long LastLeftMouseClickTime { get; set; } = 0;
+        /// <summary>
+        /// 表示文件是否正在复制, 防止重复点击
+        /// </summary>
+        public bool IsCopying = false;
     }
 }
