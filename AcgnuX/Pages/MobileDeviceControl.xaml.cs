@@ -913,6 +913,12 @@ namespace AcgnuX.Pages
                 {
                     return;
                 }
+                var selectedDevice = (MediaDevice)DeviceListCombobox.SelectedItem;
+                var selectedDriver = (DeviceDriverViewModel) DriverListCombobox.SelectedItem;
+                if (selected.SourceView == SyncDeviceType.PHONE && (null == selectedDevice || null == selectedDriver))
+                {
+                    return;
+                }
                 var confirmDialog = new ConfirmDialog(AlertLevel.WARN, string.Format((string)Application.Current.FindResource("DeleteConfirm"), selected.NameView));
                 //确认删除
                 if (confirmDialog.ShowDialog().GetValueOrDefault())
@@ -925,13 +931,15 @@ namespace AcgnuX.Pages
                     else
                     {
                         //从手机删除
-                        List<MediaDevice> MediaDeviceList = MediaDevice.GetDevices() as List<MediaDevice>;
-                        using (var device = MediaDeviceList.First())
+                        using (selectedDevice)
                         {
-                            device.Connect();
-                            var drivers = device.GetDrives();
-                            device.DeleteFile(Path.Combine(drivers[0].Name, selected.FolderView, selected.NameView));
-                            device.Disconnect();
+                            selectedDevice.Connect();
+                            var targetFile = Path.Combine(selectedDriver.ValueView, selected.FolderView, selected.NameView);
+                            if (selectedDevice.FileExists(targetFile))
+                            {
+                                selectedDevice.DeleteFile(targetFile);
+                            }
+                            selectedDevice.Disconnect();
                         }
                     }
                     //从vm中移除对象
