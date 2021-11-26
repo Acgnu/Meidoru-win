@@ -9,6 +9,7 @@ using AcgnuX.Utils;
 using AcgnuX.ViewModel;
 using AcgnuX.WindowX.Dialog;
 using MediaDevices;
+using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -24,6 +25,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
+using TagLib;
+using Windows.Storage;
 
 namespace AcgnuX.Pages
 {
@@ -132,15 +135,22 @@ namespace AcgnuX.Pages
         /// </summary>
         private void ChangeTaskStatus()
         {
-            if (mSyncFileBgWorker.IsBusy)
+            //发送提示文本
+            OnTaskBarEvent?.Invoke(new MainWindowStatusNotify
             {
+                alertLevel = AlertLevel.RUN,
+                nowProgress = 99,
+                message = "正在停止.."
+            });
+            if (mSyncFileBgWorker.IsBusy)
                 mSyncFileBgWorker.CancelAsync();
-            }
             while (mSyncTaskQueue.Count > 0)
             {
                 var item = new DeviceSyncTaskArgs();
                 _ = mSyncTaskQueue.TryDequeue(out item);
             }
+            if (mReadDeviceFileWorker.IsBusy)
+                mReadDeviceFileWorker.CancelAsync();
         }
 
         #region 检查设备连接后台任务
@@ -307,7 +317,7 @@ namespace AcgnuX.Pages
                         {
                             //电脑端, 需要复制到移动端
                             var targetFolder = Path.Combine(arg.DevicePath, arg.Item.MobileFolderNameView);
-                            using (FileStream stream = File.OpenRead(Path.Combine(arg.Item.PcFolderNameView, syncFile.NameView)))
+                            using (FileStream stream = System.IO.File.OpenRead(Path.Combine(arg.Item.PcFolderNameView, syncFile.NameView)))
                             {
                                 device.UploadFile(stream, Path.Combine(targetFolder, syncFile.NameView));
                             }
@@ -413,7 +423,7 @@ namespace AcgnuX.Pages
             //进度通知
             var progressEvent = new DeviceSyncReadProgressItem
             {
-                ProgressType = 1,
+                ProgressType = ReadSyncFileTaskProgressType.TEXT_ONLY,
                 Notify = new MainWindowStatusNotify
                 {
                     message = "正在读取路径配置...",
@@ -460,10 +470,55 @@ namespace AcgnuX.Pages
                     //读取PC目录下的文件列表
                     var pcFiles = isPcPathExists ? FileUtil.GetFileNameFromFullPath(Directory.GetFiles(e.PcPath)) : new string[0];
                     //读取移动设备下的文件列表
-                    var mobileFiles = isMobilePathExists ? FileUtil.GetFileNameFromFullPath(args.Device.GetFiles(Path.Combine(args.MediaDrive.NameView, e.MobilePath))) : new string[0];
+                    //var xxx = args.Device.GetFileSystemEntries(Path.Combine(args.MediaDrive.NameView, e.MobilePath));
+                    //isMobilePathExists ? FileUtil.GetFileNameFromFullPath(args.Device.GetFiles(Path.Combine(args.MediaDrive.NameView, e.MobilePath))) : 
+                    var mobileFileList = new List<string>();
+                    if(isMobilePathExists)
+                    {
+                        var fullMobileFolderPath = Path.Combine(args.MediaDrive.NameView, e.MobilePath);
+                        var fullNames = args.Device.EnumerateFiles(fullMobileFolderPath);
+                        foreach (var fullName in fullNames)
+                        {
+                            //使用Win函数读取文件名
+                            var winSupportName = Path.GetFileName(fullName);
+                            //通过路径裁剪方式获得文件名
+                            var substringName = fullName.Replace(fullMobileFolderPath + Path.DirectorySeparatorChar, string.Empty);
+                            //如果两种方式取得的文件名不一致, 说明这个文件名在windows上是不合法的
+                            if (!winSupportName.Equals(substringName))
+                            {
+                                //如果路径包含windows路径符, 记录错误并跳过
+                                if(substringName.Contains(Path.DirectorySeparatorChar))
+                                {
+                                    //发送win10通知, 提醒人工处理此文件
+                                    //通知官方文档  https://docs.microsoft.com/en-us/windows/uwp/design/shell/tiles-and-notifications/send-local-toast-desktop
+                                    new ToastContentBuilder()
+                                        .AddText("文件收集失败")
+                                        .AddText("不支持的文件名")
+                                        .AddText(fullName)
+                                        .Show();
+                                    continue;
+                                }
+                                //取得后缀名
+                                var extendName = Path.GetExtension(substringName);
+                                //重命名移动设备上的文件名, 使用随机文件名
+                                var newName = string.Format("{0}{1}{2}{3}", DateTime.Now.ToString("yyyyMMddHHmmss"), "_auto_rename_", RandomUtil.MakeSring(false, 6), extendName);
+                                args.Device.Rename(fullName, newName);
+                                mobileFileList.Add(newName);
+                                //发送win10通知, 提醒文件已改名
+                                new ToastContentBuilder()
+                                     .AddText("文件重命名提醒")
+                                     .AddText(fullMobileFolderPath)
+                                     .AddText(substringName + " -> " + newName)
+                                     .Show();
+                                continue;
+                            }
+                            mobileFileList.Add(winSupportName);
+                        }
+                    }
+                    var mobileFilesArr = mobileFileList.ToArray();
                     //找出差异文件
-                    var filesOnlyInMobile = DataUtil.FindDiffEls(pcFiles, mobileFiles);
-                    var filesOnlyInPc = DataUtil.FindDiffEls(mobileFiles, pcFiles);
+                    var filesOnlyInMobile = DataUtil.FindDiffEls(pcFiles, mobileFilesArr);
+                    var filesOnlyInPc = DataUtil.FindDiffEls(mobileFilesArr, pcFiles);
                     //不存在差异则直接跳过当前文件夹
                     if (DataUtil.IsEmptyCollection(filesOnlyInMobile) && DataUtil.IsEmptyCollection(filesOnlyInPc))
                     {
@@ -511,22 +566,27 @@ namespace AcgnuX.Pages
                 {
                     return false;
                 }
-                var item = CreateSyncItem(fileName,
-                    deviceType == SyncDeviceType.PC ? e.PcPath : e.MobilePath, deviceType, args.Device, args.MediaDrive.NameView);
-                //汇报进度
+                var targetFolderPath = deviceType == SyncDeviceType.PC ? e.PcPath : e.MobilePath;
+                //汇报文本进度
                 mReadDeviceFileWorker.ReportProgress(0, new DeviceSyncReadProgressItem
                 {
-                    ProgressType = 2,
-                    PcFolderNameView = e.PcPath, 
-                    MobileFolderNameView = e.MobilePath,
-                    FileItem = item,
-                    FileSource = deviceType, 
+                    ProgressType = ReadSyncFileTaskProgressType.TEXT_ONLY,
                     Notify = new MainWindowStatusNotify
                     {
                         alertLevel = AlertLevel.RUN,
-                        message = string.Format("正在收集差异文件  [{0}]", Path.Combine(item.FolderView, item.NameView)),
+                        message = string.Format("正在收集差异文件  [{0}]", Path.Combine(targetFolderPath, fileName)),
                         nowProgress = 99
                     }
+                });
+                var item = CreateSyncItem(fileName, targetFolderPath, deviceType, args.Device, args.MediaDrive.NameView);
+                //汇报文件进度
+                mReadDeviceFileWorker.ReportProgress(0, new DeviceSyncReadProgressItem
+                {
+                    ProgressType = ReadSyncFileTaskProgressType.FILE_READED,
+                    PcFolderNameView = e.PcPath, 
+                    MobileFolderNameView = e.MobilePath,
+                    FileItem = item,
+                    FileSource = deviceType
                 });
             }
             return true;
@@ -543,6 +603,7 @@ namespace AcgnuX.Pages
         /// <returns></returns>
         private DeviceSyncItem CreateSyncItem(string fileName, string folderPath, SyncDeviceType source, MediaDevice device, string driverName)
         {
+            //判断文件是否存在于设备
             var item = new DeviceSyncItem()
             {
                 NameView = fileName,
@@ -554,7 +615,7 @@ namespace AcgnuX.Pages
             if (mediaType == SyncContentType.IMAGE || mediaType == SyncContentType.VIDEO)
             {
                 if (source == SyncDeviceType.PHONE)
-                {
+                { 
                     var fileInfo = device.GetFileInfo(Path.Combine(driverName, folderPath, fileName));
                     var imgByte = GetMediaFileThumbnail(fileInfo);
                     if (null != imgByte)
@@ -565,6 +626,14 @@ namespace AcgnuX.Pages
                     var imgByte = ImageUtil.CreateThumbnail(Path.Combine(folderPath, fileName), 100, 100);
                     item.ImgByte = ImageUtil.ImageToByteArray(imgByte);
                 }
+            }
+            if (mediaType == SyncContentType.AUDIO && source == SyncDeviceType.PC)
+            {
+                //var tagFile = TagLib.File.Create(new StreamFileAbstraction(fileName,
+                // System.IO.File.OpenRead(Path.Combine(folderPath, fileName)), 
+                // System.IO.File.OpenWrite(Path.Combine(folderPath, fileName))));
+                //var tags = tagFile.GetTag(TagTypes.Id3v2);
+                //var pic = tags.Pictures;
             }
             return item;
         }
@@ -596,7 +665,7 @@ namespace AcgnuX.Pages
         private void OnReadDeviceFileProgress(object sender, ProgressChangedEventArgs e)
         {
             var newItem = (DeviceSyncReadProgressItem) e.UserState;
-            if(newItem.ProgressType == 1)
+            if(newItem.ProgressType == ReadSyncFileTaskProgressType.TEXT_ONLY)
             {
                 //发送状态栏提示信息
                 OnTaskBarEvent?.Invoke(newItem.Notify);
@@ -623,8 +692,6 @@ namespace AcgnuX.Pages
                 //有则直接添加
                 AddFolderListFileItem(listItem.PcItemList, listItem.MobileItemList, newItem);
             }
-            //发送状态栏提示信息
-            OnTaskBarEvent?.Invoke(newItem.Notify);
         }
 
         /// <summary>
@@ -827,7 +894,7 @@ namespace AcgnuX.Pages
                     }
                     var targetFullPath = Path.Combine(winTempFolder, selected.NameView);
                     //如果已经存在于临时文件夹, 则直接打开
-                    if (File.Exists(targetFullPath))
+                    if (System.IO.File.Exists(targetFullPath))
                     {
                         System.Diagnostics.Process.Start(targetFullPath);
                         return;

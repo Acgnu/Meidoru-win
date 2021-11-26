@@ -3,6 +3,7 @@ using AcgnuX.Pages.Apis.Ten.Dns;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using GalaSoft.MvvmLight.CommandWpf;
+using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -34,7 +35,11 @@ namespace AcgnuX.Source.ViewModel
             InitializeMenus();
             //主窗口退出则强制退出所有
             CloseCommand = new RelayCommand<Window>((win) => Task.Run(() => {
+                //清空所有通知
+                ToastNotificationManagerCompat.Uninstall();
+                //退出Tan8播放器
                 Tan8PlayUtil.Exit();
+                //退出程序
                 Environment.Exit(0);
             }));
         }

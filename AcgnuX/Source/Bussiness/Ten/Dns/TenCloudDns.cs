@@ -81,7 +81,7 @@ namespace AcgnuX.Bussiness.Ten.Dns
             {
                 urlArgs = new SortedDictionary<string, string>(StringComparer.Ordinal);
             }
-            var nonce = RandomUtil.makeSring(false, 6);
+            var nonce = RandomUtil.MakeSring(false, 6);
             PutUrlArg(urlArgs, "Action", action);
             PutUrlArg(urlArgs, "Timestamp", TimeUtil.CurrentMillis() / 1000 + "");
             PutUrlArg(urlArgs, "Nonce", nonce);

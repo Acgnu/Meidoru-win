@@ -30,7 +30,7 @@ namespace AcgnuX.Source.ViewModel
         /// <summary>
         /// 进度通知类型 1 文本提示, 2 文件读取
         /// </summary>
-        public byte ProgressType { get; set; }
+        public ReadSyncFileTaskProgressType ProgressType { get; set; }
         /// <summary>
         /// 通知对象
         /// </summary>

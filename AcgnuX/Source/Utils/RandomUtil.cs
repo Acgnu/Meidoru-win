@@ -5,7 +5,13 @@ namespace AcgnuX.Utils
 {
     public class RandomUtil
     {
-        public static string makeSring(bool b, int n)//b：是否有复杂字符，n：生成的字符串长度
+        /// <summary>
+        /// b：是否有复杂字符，n：生成的字符串长度
+        /// </summary>
+        /// <param name="b"></param>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        public static string MakeSring(bool b, int n)
         {
             string str = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
             if (b)
