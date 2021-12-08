@@ -627,13 +627,34 @@ namespace AcgnuX.Pages
                     item.ImgByte = ImageUtil.ImageToByteArray(imgByte);
                 }
             }
-            if (mediaType == SyncContentType.AUDIO && source == SyncDeviceType.PC)
+            if (mediaType == SyncContentType.AUDIO)
             {
-                //var tagFile = TagLib.File.Create(new StreamFileAbstraction(fileName,
-                // System.IO.File.OpenRead(Path.Combine(folderPath, fileName)), 
-                // System.IO.File.OpenWrite(Path.Combine(folderPath, fileName))));
-                //var tags = tagFile.GetTag(TagTypes.Id3v2);
-                //var pic = tags.Pictures;
+                //PC文件直接读取
+                if(source == SyncDeviceType.PC)
+                {
+                    item.ImgByte = FileUtil.GetAudioFileAlbum(Path.Combine(folderPath, fileName));
+                }
+                else
+                {
+                    //手机文件, 先复制到临时文件夹, 再读取
+                    var winTempFolder = Path.GetTempPath();
+                    if(!string.IsNullOrEmpty(winTempFolder))
+                    {
+                        var tempFullPath = Path.Combine(winTempFolder, fileName);
+                        if(System.IO.File.Exists(tempFullPath))
+                        {
+                            //已存在则直接读取
+                            item.ImgByte = FileUtil.GetAudioFileAlbum(tempFullPath);
+                        }
+                        else
+                        {
+                            //不存在则复制
+                            var fileInfo = device.GetFileInfo(Path.Combine(driverName, folderPath, fileName));
+                            fileInfo.CopyTo(tempFullPath);
+                            item.ImgByte = FileUtil.GetAudioFileAlbum(tempFullPath);
+                        }
+                    }
+                }
             }
             return item;
         }
@@ -736,20 +757,22 @@ namespace AcgnuX.Pages
             };
             if (null != item.ImgByte)
             {
-                //有真实预览图则显示预览图
-                viewItem.BitImg = ImageUtil.GetBitmapImage(item.ImgByte);
-                item.ImgByte = null;
-            }
-            else
-            {
-                //没有预览图则根据文件类型显示默认图标
-                switch (item.ContentType)
+                try
                 {
-                    case SyncContentType.AUDIO: viewItem.BitImg = ApplicationConstant.GetDefaultAudioIcon(); break;
-                    case SyncContentType.IMAGE: viewItem.BitImg = ApplicationConstant.GetDefaultImageIcon(); break;
-                    case SyncContentType.VIDEO: viewItem.BitImg = ApplicationConstant.GetDefaultVideoIcon(); break;
-                    case SyncContentType.OTHER: viewItem.BitImg = ApplicationConstant.GetDefaultFileIcon(); break;
+                    //有真实预览图则显示预览图
+                    viewItem.BitImg = ImageUtil.GetBitmapImage(item.ImgByte);
+                    item.ImgByte = null;
+                    return viewItem;
                 }
+                catch(Exception) { }
+            }
+            //没有预览图/获取失败则根据文件类型显示默认图标
+            switch (item.ContentType)
+            {
+                case SyncContentType.AUDIO: viewItem.BitImg = ApplicationConstant.GetDefaultAudioIcon(); break;
+                case SyncContentType.IMAGE: viewItem.BitImg = ApplicationConstant.GetDefaultImageIcon(); break;
+                case SyncContentType.VIDEO: viewItem.BitImg = ApplicationConstant.GetDefaultVideoIcon(); break;
+                case SyncContentType.OTHER: viewItem.BitImg = ApplicationConstant.GetDefaultFileIcon(); break;
             }
             return viewItem;
         }

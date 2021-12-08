@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -359,6 +360,28 @@ namespace AcgnuX.Source.Utils
             {
                 return SyncContentType.OTHER;
             }
+        }
+
+        /// <summary>
+        /// 读取音频文件的专辑图片
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns>byte数组</returns>
+        public static byte[] GetAudioFileAlbum(string filePath)
+        {
+            try
+            {
+                TagLib.File file = TagLib.File.Create(filePath);
+                var firstPicture = file.Tag.Pictures.FirstOrDefault();
+                if (firstPicture != null)
+                {
+                    return firstPicture.Data.Data;
+                }
+            }
+            catch (Exception)
+            { 
+            }
+            return null;
         }
 
         //public static JArray LoadJsonFile(string JsonFileFullPath)

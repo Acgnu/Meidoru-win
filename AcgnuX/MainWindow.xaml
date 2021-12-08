@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="AcgnuX" Height="720" Width="1000" Style="{StaticResource MainWindowStyle}" Loaded="OnWindowLoaded">
+        Title="AcgnuX" Height="720" Width="1013" Style="{StaticResource MainWindowStyle}" Loaded="OnWindowLoaded">
 
     <Window.DataContext>
         <Binding Path="Main" Source="{StaticResource Locator}"></Binding>
