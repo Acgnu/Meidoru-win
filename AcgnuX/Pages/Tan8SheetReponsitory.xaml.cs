@@ -271,7 +271,7 @@ namespace AcgnuX.Pages
         /// <returns></returns>
         private PianoScoreViewModel CreateViewInstance(PianoScore pianoScore)
         {
-            var imgDir = Path.Combine(ConfigUtil.Instance.PianoScorePath, pianoScore.Name, ApplicationConstant.DEFAULT_COVER_NAME);
+            var imgDir = Path.Combine(ConfigUtil.Instance.PianoScorePath, pianoScore.id.GetValueOrDefault().ToString(), ApplicationConstant.DEFAULT_COVER_NAME);
             return new PianoScoreViewModel()
             { 
                 //对于不存在cover的路径使用默认图片
@@ -397,7 +397,7 @@ namespace AcgnuX.Pages
             }
 
             //修改文件夹名称
-            FileUtil.RenameFolder(Path.Combine(ConfigUtil.Instance.PianoScorePath, dbName[0]), pianoScore.Name);
+            //FileUtil.RenameFolder(Path.Combine(ConfigUtil.Instance.PianoScorePath, dbName[0]), pianoScore.Name);
             //修改数据库名称
             SQLite.ExecuteNonQuery("UPDATE tan8_music SET name = @name WHERE ypid = @ypid", new List<SQLiteParameter>
             {
@@ -831,11 +831,8 @@ namespace AcgnuX.Pages
             }
             //校验保存路径是否重复
             var libFolder = ConfigUtil.Instance.PianoScorePath;
-            if (Directory.Exists(Path.Combine(libFolder, ypNameFolder)))
-            {
-                ypNameFolder += "(" + pianoScore.id + ")";
-            }
-            var saveFullPath = Path.Combine(libFolder, ypNameFolder);
+
+            var saveFullPath = Path.Combine(libFolder, pianoScore.id.GetValueOrDefault().ToString());
             //step.3 创建文件夹
             FileUtil.CreateFolder(saveFullPath);
 
@@ -864,7 +861,7 @@ namespace AcgnuX.Pages
                 if (pageDownloadResult != 0)
                 {
                     //清理下载文件
-                    FileUtil.DeleteDirWithName(libFolder, ypNameFolder);
+                    FileUtil.DeleteDirWithName(libFolder, pianoScore.id.GetValueOrDefault().ToString());
 
                     return new InvokeResult<object>()
                     {
@@ -884,7 +881,7 @@ namespace AcgnuX.Pages
                 if (tan8Music.yp_page_count == 0)
                 {
                     //清理下载文件
-                    FileUtil.DeleteDirWithName(libFolder, ypNameFolder);
+                    FileUtil.DeleteDirWithName(libFolder, pianoScore.id.GetValueOrDefault().ToString());
                 }
                 return new InvokeResult<object>()
                 {
@@ -1000,7 +997,7 @@ namespace AcgnuX.Pages
                 //删除文件夹
                 if (!string.IsNullOrEmpty(selected.Name))
                 {
-                    FileUtil.DeleteDirWithName(ConfigUtil.Instance.PianoScorePath, selected.Name);
+                    FileUtil.DeleteDirWithName(ConfigUtil.Instance.PianoScorePath, selected.id.GetValueOrDefault().ToString());
                 }
 
                 //删除数据库数据
@@ -1020,7 +1017,7 @@ namespace AcgnuX.Pages
         {
             var selected = PianoScoreListBox.SelectedItem as PianoScoreViewModel;
             if (null == selected) return;
-            var fullPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, selected.Name);
+            var fullPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, selected.id.GetValueOrDefault().ToString());
             if (Directory.Exists(fullPath))
             {
                 System.Diagnostics.Process.Start(fullPath);
@@ -1192,7 +1189,7 @@ namespace AcgnuX.Pages
             var selected = PianoScoreListBox.SelectedItem as PianoScoreViewModel;
             if (null == selected) return;
             //如果已经存在分享包, 直接打开目标文件夹
-            var fullPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, selected.Name);
+            var fullPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, selected.id.GetValueOrDefault().ToString());
             if (Directory.Exists(fullPath))
             {
                 if(File.Exists(Path.Combine(fullPath, ApplicationConstant.SHARE_ZIP_NAME)))
@@ -1242,7 +1239,7 @@ namespace AcgnuX.Pages
                 return;
             }
 
-            var fullPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, dbName);
+            var fullPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, pianoScoreVm.id.GetValueOrDefault().ToString());
             if (!Directory.Exists(fullPath))
             {
                 winProgress.alertLevel = AlertLevel.ERROR;
@@ -1264,9 +1261,6 @@ namespace AcgnuX.Pages
                 }
             }
 
-            //如果标题名称有括号+ID, 需要去掉
-            var sufId = "(" + pianoScoreVm.id.GetValueOrDefault() + ")";
-            var titleName = dbName.EndsWith(sufId) ? dbName.Substring(0, dbName.Length - sufId.Length) : dbName;
             //在当前目录下建立临时文件夹, 存储用于压缩的乐谱
             Directory.CreateDirectory(Path.Combine(fullPath, ApplicationConstant.SHARE_TEMP_FOLDER_NAME));
             for (int i = 0; i < totalPage; i++)
@@ -1279,7 +1273,7 @@ namespace AcgnuX.Pages
                 mExportBgWorker.ReportProgress(0, WindowUtil.CalcProgress(winProgress, string.Format("正在转换第{0}张乐谱, 共{1}张", i + 1, totalPage), 75 / totalPage + winProgress.nowProgress));
                 var pageFileName = string.Format("page.{0}.png", i);
                 Bitmap rawImg = (Bitmap)Bitmap.FromFile(Path.Combine(fullPath, pageFileName));
-                Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, titleName, i + 1, totalPage, false);
+                Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, dbName, i + 1, totalPage, false);
                 bmp.Save(Path.Combine(fullPath, ApplicationConstant.SHARE_TEMP_FOLDER_NAME, i + ApplicationConstant.DEFAULT_SHEET_PAGE_FORMAT), ImageFormat.Png);
                 bmp.Dispose();
             }

@@ -121,13 +121,9 @@ namespace AcgnuX.Source.Taskx.Http
             //ypid=666.1.png
             var ypidQuery = httpListenerContext.Request.QueryString["ypid"];
             var ypidSplit = ypidQuery.Split('.');
-            var folderName = GetDbFileName(ypidSplit[0]);
-            if(!string.IsNullOrEmpty(folderName))
-            {
-                //返回指定页
-                var previewImgPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, folderName, "page." + ypidSplit[1] + ".png");
-                WriteFile(previewImgPath, httpListenerContext);
-            }
+            //返回指定页
+            var previewImgPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, ypidSplit[0], "page." + ypidSplit[1] + ".png");
+            WriteFile(previewImgPath, httpListenerContext);
         }
 
         /// <summary>
@@ -139,8 +135,7 @@ namespace AcgnuX.Source.Taskx.Http
             //ypid=666
             var ypid = httpListenerContext.Request.QueryString["ypid"];
             var v = httpListenerContext.Request.QueryString["v"];
-            var folderName = GetDbFileName(ypid);
-            if (!string.IsNullOrEmpty(folderName))
+            if (!string.IsNullOrEmpty(ypid))
             {
                 var playFileSuf = ".ypa2";
                 if("2".Equals(v))
@@ -148,7 +143,7 @@ namespace AcgnuX.Source.Taskx.Http
                     playFileSuf = ".ypdx";
                 }
                 //返回指定页
-                var previewImgPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, folderName, "play" + playFileSuf);
+                var previewImgPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, ypid, "play" + playFileSuf);
                 WriteFile(previewImgPath, httpListenerContext);
             }
         }
@@ -228,11 +223,10 @@ namespace AcgnuX.Source.Taskx.Http
         {
             var ypid = httpListenerContext.Request.QueryString["ypid"];
             //根据乐谱ID得到数据中乐谱名称
-            var folderName = GetDbFileName(ypid);
-            if (!string.IsNullOrEmpty(folderName))
+            if (!string.IsNullOrEmpty(ypid))
             {
                 //根据名称返回文件夹中的乐谱第一页
-                var previewImgPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, folderName, "page.0.png");
+                var previewImgPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, ypid, "page.0.png");
                 WriteFile(previewImgPath, httpListenerContext);
             }
             else
@@ -333,9 +327,9 @@ namespace AcgnuX.Source.Taskx.Http
         /// </summary>
         /// <param name="ypid"></param>
         /// <returns></returns>
-        private string GetDbFileName(string ypid)
-        {
-            return SQLite.sqlone("SELECT name FROM tan8_music WHERE ypid = @ypid", new SQLiteParameter[] { new SQLiteParameter("@ypid", ypid) });
-        }
+        //private string GetDbFileName(string ypid)
+        //{
+        //    return SQLite.sqlone("SELECT name FROM tan8_music WHERE ypid = @ypid", new SQLiteParameter[] { new SQLiteParameter("@ypid", ypid) });
+        //}
     }
 }

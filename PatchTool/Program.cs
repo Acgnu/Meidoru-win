@@ -103,6 +103,7 @@ namespace PatchTool
                 case "ckodh": CheckOldHome(dbPath, oldHomePath, autoCopy); break;
                 case "ckwb": CheckWhiteBlackPreview(dbPath, overwrite, threadCount); break;
                 case "ckimg" : CheckSheetPreviewImg(dbPath, threadCount); break;
+                case "ckdirnm": CheckDirName(dbPath); break;
             }
             //Console.ReadKey();
         }
@@ -131,7 +132,7 @@ namespace PatchTool
             foreach (DataRow dataRow in dataSet.Rows)
             {
                 cur++;
-                if (!Directory.Exists(Path.Combine(ypHomePath, dataRow["name"] as string)))
+                if (!Directory.Exists(Path.Combine(ypHomePath, dataRow["ypid"] as string)))
                 {
                     totalNe++;
                     Console.WriteLine(dataRow["name"] + "   ----进度:" + cur + "/" + total + "");
@@ -166,15 +167,15 @@ namespace PatchTool
             var total = 0;
             foreach (var d in dir)
             {
-                var name = Path.GetFileName(d);
-                var num = SQLite.sqlone("select count(1) num from tan8_music where name = @name", new SQLiteParameter[] { new SQLiteParameter("@name", name) });
+                var ypid = Path.GetFileName(d);
+                var num = SQLite.sqlone("select count(1) num from tan8_music where ypid = @ypid", new SQLiteParameter[] { new SQLiteParameter("@ypid", ypid) });
                 var num32 = Convert.ToInt32(num);
                 if(num32 == 0)
                 {
                     total++;
-                    allFolderNames.Append(name).Append("\r\n");
-                    Console.WriteLine(name);
-                    if (autoDel) FileUtil.DeleteDirWithName(ypHomePath, name);
+                    allFolderNames.Append(ypid).Append("\r\n");
+                    Console.WriteLine(ypid);
+                    if (autoDel) FileUtil.DeleteDirWithName(ypHomePath, ypid);
                 }
             }
             if(allFolderNames.Length > 0)
@@ -218,7 +219,9 @@ namespace PatchTool
                 //指定了ID保存路径, 自动删除才有效
                 if(autoDel && !string.IsNullOrEmpty(savePath))
                 {
-                    FileUtil.DeleteDirWithName(ypHomePath, dataRow["name"] as string);
+                    repeatNameIds.ForEach(e => {
+                        FileUtil.DeleteDirWithName(ypHomePath, e);
+                    });
                 }
             }
             if(total == 0)
@@ -261,11 +264,11 @@ namespace PatchTool
             var fixNum = 0;
             foreach (DataRow dataRow in dataSet.Rows)
             {
-                if (!File.Exists(Path.Combine(ypHomePath, Convert.ToString(dataRow["name"]), "play.ypdx")))
+                if (!File.Exists(Path.Combine(ypHomePath, Convert.ToString(dataRow["ypid"]), "play.ypdx")))
                 {
                     fixNum++;
                     var tan8Music = DataUtil.ParseToModel(Convert.ToString(dataRow["origin_data"]));
-                    var downResult = new FileDownloader().DownloadFile(tan8Music.ypad_url2, Path.Combine(ypHomePath, Convert.ToString(dataRow["name"]), "play.ypdx"));
+                    var downResult = new FileDownloader().DownloadFile(tan8Music.ypad_url2, Path.Combine(ypHomePath, Convert.ToString(dataRow["ypid"]), "play.ypdx"));
                     Console.WriteLine(Convert.ToInt32(dataRow["ypid"]) + " - " + Convert.ToString(dataRow["name"]) + "   播放文件下载" + (downResult == 0 ? "成功" : "失败"));
                 }
             }
@@ -282,10 +285,10 @@ namespace PatchTool
             InitDB(dbPath);
             var total = 0;
             var ypHomePath = ConfigUtil.Instance.Load().PianoScorePath;
-            var yp0Names = SQLite.sqlcolumn("SELECT name FROM tan8_music WHERE yp_count = 0", null);
-            foreach(var name in yp0Names)
+            var yp0Ypids = SQLite.sqlcolumn("SELECT ypid FROM tan8_music WHERE yp_count = 0", null);
+            foreach(var ypid in yp0Ypids)
             {
-                var files = Directory.GetFiles(Path.Combine(ypHomePath, name));
+                var files = Directory.GetFiles(Path.Combine(ypHomePath, ypid));
                 var hasPlayFile = false;
                 if(files.Length > 0)
                 {
@@ -301,10 +304,10 @@ namespace PatchTool
                 if (!hasPlayFile)
                 {
                     total++;
-                    Console.WriteLine(name);
+                    Console.WriteLine(ypid);
                     if (autoDel)
                     {
-                        FileUtil.DeleteDirWithName(ypHomePath, name);
+                        FileUtil.DeleteDirWithName(ypHomePath, ypid);
                     }
                 }
             }
@@ -366,13 +369,13 @@ namespace PatchTool
                         if (i > 0)
                         {
                             //复制文件
-                            if (!Directory.Exists(Path.Combine(ypHomePath, dataRow["name"] as string)))
+                            if (!Directory.Exists(Path.Combine(ypHomePath, dataRow["ypid"] as string)))
                             {
-                                FileUtil.CreateFolder(Path.Combine(ypHomePath, dataRow["name"] as string));
+                                FileUtil.CreateFolder(Path.Combine(ypHomePath, dataRow["ypid"] as string));
                             }
                             foreach (var file in files)
                             {
-                                FileUtil.CopyFile(file, Path.Combine(ypHomePath, dataRow["name"] as string, Path.GetFileName(file)));
+                                FileUtil.CopyFile(file, Path.Combine(ypHomePath, dataRow["ypid"] as string, Path.GetFileName(file)));
                             }
                             copyTotal++;
                         }
@@ -417,7 +420,7 @@ namespace PatchTool
             Console.WriteLine("正在添加任务队列...");
             foreach (DataRow dataRow in dataSet.Rows)
             {
-                if (Directory.Exists(Path.Combine(ypHomePath, dataRow["name"] as string)))
+                if (Directory.Exists(Path.Combine(ypHomePath, dataRow["ypid"] as string)))
                 {
                     sheetDirQueue.Enqueue(new PianoScore()
                     {
@@ -442,7 +445,7 @@ namespace PatchTool
                         var isOk = sheetDirQueue.TryDequeue(out pianoScore);
                         if (isOk)
                         {
-                            var sheetDir = Path.Combine(ypHomePath, pianoScore.Name);
+                            var sheetDir = Path.Combine(ypHomePath, pianoScore.id.GetValueOrDefault().ToString());
                             var previewPicName = "public.png";
                             //检查目标文件夹是否已经存在已处理的图片
                             if (File.Exists(Path.Combine(ypHomePath, sheetDir, previewPicName)))
@@ -514,7 +517,7 @@ namespace PatchTool
             var total = dataSet.Rows.Count;
             foreach (DataRow dataRow in dataSet.Rows)
             {
-                if (Directory.Exists(Path.Combine(ypHomePath, dataRow["name"] as string)))
+                if (Directory.Exists(Path.Combine(ypHomePath, dataRow["ypid"] as string)))
                 {
                     Console.WriteLine(string.Format("正在添加 {0} 到任务队列...", dataRow["name"]));
                     sheetDirQueue.Enqueue(new PianoScore() 
@@ -536,7 +539,7 @@ namespace PatchTool
                         var isOk = sheetDirQueue.TryDequeue(out pianoScore);
                         if (isOk)
                         {
-                            var sheetDir = Path.Combine(ypHomePath, pianoScore.Name);
+                            var sheetDir = Path.Combine(ypHomePath, pianoScore.id.GetValueOrDefault().ToString());
                             var previewPicName = "public.png";
                             bool doProcess = true;
                             //检查目标文件夹是否已经存在已处理的图片
@@ -632,6 +635,31 @@ namespace PatchTool
             {
                 Console.WriteLine(e);
             }
+        }
+
+        private static void CheckDirName(string dbPath)
+        {
+            Console.WriteLine("重命名乐谱文件夹名称");
+            InitDB(dbPath);
+            var ypHomePath = ConfigUtil.Instance.Load().PianoScorePath;
+            if (string.IsNullOrEmpty(ypHomePath))
+            {
+                Console.WriteLine("无法获取乐谱路径, 先检查一下配置文件");
+                return;
+            }
+            var dir = Directory.GetDirectories(ypHomePath);
+            foreach (var d in dir)
+            {
+                var folderName = Path.GetFileName(d);
+                var ypid = SQLite.sqlone("SELECT ypid FROM tan8_music where name = @name", new SQLiteParameter[] { new SQLiteParameter("@name", folderName) });
+                if(!string.IsNullOrEmpty(ypid))
+                {
+                    FileUtil.RenameFolder(Path.Combine(ypHomePath, folderName), ypid);
+                    Console.WriteLine("{0} -> {1}", d, ypid);
+                }
+            }
+            Console.WriteLine("重命名完成");
+            Console.ReadKey();
         }
     }
 }
