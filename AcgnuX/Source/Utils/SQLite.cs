@@ -32,10 +32,9 @@ namespace AcgnuX.Source.Utils
                     var initSQL = FileUtil.GetApplicationResourceAsString(@"Assets\data\" + initfile);
                     ExecuteNonQuery(initSQL, null);
                     OnDbFileSetEvent?.Invoke();
-                    return true;
                 }
                 catch (Exception) { }
-                return false;
+                return true;
             });
         }
 

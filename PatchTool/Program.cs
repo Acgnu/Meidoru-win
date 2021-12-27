@@ -53,65 +53,110 @@ namespace PatchTool
             var threadCount = 5;
             var maxYpid = 0;
             var overwrite = false;
-            if (args.Length > 0)
+            //switch (command)
+            //{
+            //    case "?": ShowTips(); break;
+            //    case "ckdir": ShowFolderNotExistsDB(dbPath, savePath, autoDel); break;
+            //    case "cknon": Clean0PageYuepu(dbPath, autoDel); break;
+            //    case "ckrpt": CheckRepeat(dbPath, savePath, autoDel); break;
+            //    case "ckold": RedownloadOldVer(dbPath, maxYpid); break;
+            //    case "ckdb": ShowNameNotExistsFolder(dbPath, savePath); break;
+            //    case "ckodh": CheckOldHome(dbPath, oldHomePath, autoCopy); break;
+            //    case "ckwb": CheckWhiteBlackPreview(dbPath, overwrite, threadCount); break;
+            //    case "ckimg" : CheckSheetPreviewImg(dbPath, threadCount); break;
+            //    case "ckdirnm": CheckDirName(dbPath); break;
+            //}
+
+            Console.WriteLine("1 [-d] [-f] [-r]\t显示不存在数据库的文件夹");
+            Console.WriteLine("2 [-d] [-r]\t\t查找并删除没有有效乐谱页的乐谱");
+            Console.WriteLine("3 [-d] [-f] [-r]\t重新下载重名的乐谱");
+            Console.WriteLine("4 [-d] [-i]\t\t重新下载旧版本的乐谱");
+            Console.WriteLine("5 [-d] [-f]\t\t显示数据库中有但是文件夹里没有的乐谱");
+            Console.WriteLine("6 [-d] [-h] [-c]\t从旧乐谱库直接复制到新乐谱库");
+            Console.WriteLine("7 [-d] [-o] [-t]\t检查并将数据库所有曲目生成去水印封面");
+            Console.WriteLine("8 [-d] [-t]\t\t检查并上传乐谱图片");
+            Console.WriteLine("9 [-d]\t\t\t以乐谱ID重命名文件夹");
+            Console.WriteLine("e \t\t\t退出\n");
+
+            Console.WriteLine("命令编号 [可选参数1] [可选参数n...] 例:1 -dD:\\master.db -fD:\\autosave -r");
+            Console.WriteLine("-r 自动删除");
+            Console.WriteLine("-c 自动复制");
+            Console.WriteLine("-f 保存路径 例: -fC:\\Desktop\a.txt");
+            Console.WriteLine("-h 旧乐谱路径 例: -hC:\\Desktop");
+            Console.WriteLine("-d 数据库路径 例: -dC:\\master.db");
+            Console.WriteLine("-t 线程数量 默认5 例: -t10");
+            Console.WriteLine("-i 最大乐谱ID 默认0 例: -i666");
+            Console.WriteLine("-o 是否覆盖");
+            
+            while(true)
             {
-                command = args[0];
-                foreach (var arg in args)
+                var inputLine = Console.ReadLine();
+                if(inputLine.Equals("e"))
                 {
-                    if (arg.StartsWith("-f"))
+                    return;
+                }
+                var commandArgs = inputLine.Split(' ');
+
+                if (commandArgs.Length > 0)
+                {
+                    command = commandArgs[0];
+                    foreach (var arg in commandArgs)
                     {
-                        savePath = arg.Substring(2);
-                    }
-                    if (arg.StartsWith("-d"))
-                    {
-                        dbPath = arg.Substring(2);
-                    }
-                    if (arg.Equals("-r"))
-                    {
-                        autoDel = true;
-                    }
-                    if (arg.StartsWith("-i"))
-                    {
-                        maxYpid = Convert.ToInt32(arg.Substring(2));
-                    }
-                    if(arg.StartsWith("-h"))
-                    {
-                        oldHomePath = arg.Substring(2);
-                    }
-                    if (arg.Equals("-c"))
-                    {
-                        autoCopy = true;
-                    }
-                    if(arg.StartsWith("-t"))
-                    {
-                        threadCount = Convert.ToInt32(arg.Substring(2));
-                    }
-                    if(arg.Equals("-o"))
-                    {
-                        overwrite = true;
+                        if (arg.StartsWith("-f"))
+                        {
+                            savePath = arg.Substring(2);
+                        }
+                        if (arg.StartsWith("-d"))
+                        {
+                            dbPath = arg.Substring(2);
+                        }
+                        if (arg.Equals("-r"))
+                        {
+                            autoDel = true;
+                        }
+                        if (arg.StartsWith("-i"))
+                        {
+                            maxYpid = Convert.ToInt32(arg.Substring(2));
+                        }
+                        if (arg.StartsWith("-h"))
+                        {
+                            oldHomePath = arg.Substring(2);
+                        }
+                        if (arg.Equals("-c"))
+                        {
+                            autoCopy = true;
+                        }
+                        if (arg.StartsWith("-t"))
+                        {
+                            threadCount = Convert.ToInt32(arg.Substring(2));
+                        }
+                        if (arg.Equals("-o"))
+                        {
+                            overwrite = true;
+                        }
                     }
                 }
+
+                switch (command)
+                {
+                    case "1": ShowFolderNotExistsDB(dbPath, savePath, autoDel); break;
+                    case "2": Clean0PageYuepu(dbPath, autoDel); break;
+                    case "3": CheckRepeat(dbPath, savePath, autoDel); break;
+                    case "4": RedownloadOldVer(dbPath, maxYpid); break;
+                    case "5": ShowNameNotExistsFolder(dbPath, savePath); break;
+                    case "6": CheckOldHome(dbPath, oldHomePath, autoCopy); break;
+                    case "7": CheckWhiteBlackPreview(dbPath, overwrite, threadCount); break;
+                    case "8": CheckSheetPreviewImg(dbPath, threadCount); break;
+                    case "9": CheckDirName(dbPath); break;
+                    default: Console.WriteLine("命令不正确"); break;
+                }
             }
-            switch (command)
-            {
-                case "?": ShowTips(); break;
-                case "ckdir": ShowFolderNotExistsDB(dbPath, savePath, autoDel); break;
-                case "cknon": Clean0PageYuepu(dbPath, autoDel); break;
-                case "ckrpt": CheckRepeat(dbPath, savePath, autoDel); break;
-                case "ckold": RedownloadOldVer(dbPath, maxYpid); break;
-                case "ckdb": ShowNameNotExistsFolder(dbPath, savePath); break;
-                case "ckodh": CheckOldHome(dbPath, oldHomePath, autoCopy); break;
-                case "ckwb": CheckWhiteBlackPreview(dbPath, overwrite, threadCount); break;
-                case "ckimg" : CheckSheetPreviewImg(dbPath, threadCount); break;
-                case "ckdirnm": CheckDirName(dbPath); break;
-            }
-            //Console.ReadKey();
         }
 
-        private static void ShowTips()
-        {
-            Console.WriteLine("太麻烦了懒得写, 去看源码");
-        }
+        //private static void ShowTips()
+        //{
+        //    Console.WriteLine("太麻烦了懒得写, 去看源码");
+        //}
 
         /// <summary>
         /// 显示数据库中有但是文件夹里没有的
@@ -132,7 +177,7 @@ namespace PatchTool
             foreach (DataRow dataRow in dataSet.Rows)
             {
                 cur++;
-                if (!Directory.Exists(Path.Combine(ypHomePath, dataRow["ypid"] as string)))
+                if (!Directory.Exists(Path.Combine(ypHomePath, Convert.ToString(dataRow["ypid"]))))
                 {
                     totalNe++;
                     Console.WriteLine(dataRow["name"] + "   ----进度:" + cur + "/" + total + "");
@@ -369,13 +414,13 @@ namespace PatchTool
                         if (i > 0)
                         {
                             //复制文件
-                            if (!Directory.Exists(Path.Combine(ypHomePath, dataRow["ypid"] as string)))
+                            if (!Directory.Exists(Path.Combine(ypHomePath, Convert.ToString(dataRow["ypid"]))))
                             {
-                                FileUtil.CreateFolder(Path.Combine(ypHomePath, dataRow["ypid"] as string));
+                                FileUtil.CreateFolder(Path.Combine(ypHomePath, Convert.ToString(dataRow["ypid"])));
                             }
                             foreach (var file in files)
                             {
-                                FileUtil.CopyFile(file, Path.Combine(ypHomePath, dataRow["ypid"] as string, Path.GetFileName(file)));
+                                FileUtil.CopyFile(file, Path.Combine(ypHomePath, Convert.ToString(dataRow["ypid"]), Path.GetFileName(file)));
                             }
                             copyTotal++;
                         }
@@ -389,8 +434,11 @@ namespace PatchTool
         {
             if (string.IsNullOrEmpty(dbPath))
             {
+                var evnFolder = Environment.CurrentDirectory;
+                var svcFolder = evnFolder.Replace(System.Reflection.Assembly.GetEntryAssembly().GetName().Name, "AcgnuX");
+                var configPath = Path.Combine(svcFolder, "AcgnuX.ini");
                 //如果没有指定数据库文件, 则使用默认
-                dbPath = ConfigUtil.Instance.Load().DbFilePath;
+                dbPath = ConfigUtil.Instance.Load(configPath).DbFilePath;
             }
             if (!await SQLite.SetDbFilePath(dbPath))
             {
@@ -420,7 +468,7 @@ namespace PatchTool
             Console.WriteLine("正在添加任务队列...");
             foreach (DataRow dataRow in dataSet.Rows)
             {
-                if (Directory.Exists(Path.Combine(ypHomePath, dataRow["ypid"] as string)))
+                if (Directory.Exists(Path.Combine(ypHomePath, Convert.ToString(dataRow["ypid"]))))
                 {
                     sheetDirQueue.Enqueue(new PianoScore()
                     {
@@ -494,7 +542,6 @@ namespace PatchTool
             }
             WaitHandle.WaitAll(manualEvents.ToArray());
             Console.WriteLine("乐谱图片上传完毕");
-            Console.ReadKey();
         }
 
         /// <summary>
@@ -517,7 +564,7 @@ namespace PatchTool
             var total = dataSet.Rows.Count;
             foreach (DataRow dataRow in dataSet.Rows)
             {
-                if (Directory.Exists(Path.Combine(ypHomePath, dataRow["ypid"] as string)))
+                if (Directory.Exists(Path.Combine(ypHomePath, Convert.ToString(dataRow["ypid"]))))
                 {
                     Console.WriteLine(string.Format("正在添加 {0} 到任务队列...", dataRow["name"]));
                     sheetDirQueue.Enqueue(new PianoScore() 
@@ -620,7 +667,6 @@ namespace PatchTool
                             }
                         });
                     }
-                    Console.ReadKey();
                 }
                 else
                 {
@@ -659,7 +705,6 @@ namespace PatchTool
                 }
             }
             Console.WriteLine("重命名完成");
-            Console.ReadKey();
         }
     }
 }

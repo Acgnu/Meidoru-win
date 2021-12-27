@@ -42,7 +42,7 @@ namespace AcgnuX.Source.Utils
 
         public static ConfigUtil Instance { get; private set; } = new ConfigUtil();
         //AcgnuX.ini
-        private static readonly string mConfPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, System.Reflection.Assembly.GetEntryAssembly().GetName().Name + ".ini");
+        private static string mConfPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, System.Reflection.Assembly.GetEntryAssembly().GetName().Name + ".ini");
 
         public ConfigUtil Load()
         {
@@ -51,6 +51,12 @@ namespace AcgnuX.Source.Utils
             AccountJsonPath = Read("Path", "AccountFile", "", mConfPath);
             DbFilePath = Read("Path", "DbFile", "", mConfPath);
             return this;
+        }
+
+        public ConfigUtil Load(string configPath)
+        {
+            mConfPath = configPath;
+            return Load();
         }
 
         public async void Save(Settings settings)
