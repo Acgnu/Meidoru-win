@@ -61,7 +61,7 @@ namespace AcgnuX.Source.Utils
                 var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                 if (!File.Exists(appDataPath + mFlashSecurityPath + mFlashTrustFileName))
                 {
-                    FileUtil.SaveStringToFile(Environment.CurrentDirectory + @"\Assets\flash", appDataPath + mFlashSecurityPath, mFlashTrustFileName);
+                    WriteTrustFile();
                 }
                 mPlayerProcess = Process.Start(new ProcessStartInfo()
                 {
@@ -112,6 +112,16 @@ namespace AcgnuX.Source.Utils
         {
             Exit();
             ExePlayById(ypid.GetValueOrDefault(), ver, isHide);
+        }
+
+        /// <summary>
+        /// 检查信任文件存在, 不存在则创建
+        /// </summary>
+        public static void WriteTrustFile()
+        {
+            //检查信任文件是否存在
+            var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            FileUtil.SaveStringToFile(Environment.CurrentDirectory + @"\Assets\flash", appDataPath + mFlashSecurityPath, mFlashTrustFileName);
         }
     }
 }

@@ -58,6 +58,9 @@ namespace AcgnuX
             //初始化设置
             var dbfilePath = ConfigUtil.Instance.Load().DbFilePath;
 
+            //检查Flash信任文件
+            Tan8PlayUtil.WriteTrustFile();
+
             //检查数据库文件是否存在
             if (!File.Exists(dbfilePath)) return;
 
