@@ -1023,13 +1023,16 @@ namespace AcgnuX.Pages
                         //从手机删除
                         using (selectedDevice)
                         {
-                            selectedDevice.Connect();
+                            if(!selectedDevice.IsConnected)
+                            {
+                                selectedDevice.Connect();
+                            }
                             var targetFile = Path.Combine(selectedDriver.ValueView, selected.FolderView, selected.NameView);
                             if (selectedDevice.FileExists(targetFile))
                             {
                                 selectedDevice.DeleteFile(targetFile);
                             }
-                            selectedDevice.Disconnect();
+                            //selectedDevice.Disconnect();
                         }
                     }
                     //从vm中移除对象
