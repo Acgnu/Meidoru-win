@@ -101,20 +101,16 @@ namespace CrawIPService
             //SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 
             //读取数据库
-            var dbFilePath = ConfigUtil.Instance.Load().DbFilePath;
+            var dbFilePath = (null == args || args.Length == 0) ? ConfigUtil.Instance.Load().DbFilePath : args[0];
             if(string.IsNullOrEmpty(dbFilePath))
             {
-                if(null == args || args.Length == 0)
-                {
-                    OnStop();
-                    return;
-                }
-                dbFilePath = args[0];
-                ConfigUtil.Instance.Save(new Settings()
-                {
-                    DbFilePath = dbFilePath
-                });
+                OnStop();
+                return;
             }
+            ConfigUtil.Instance.Save(new Settings()
+            {
+                DbFilePath = dbFilePath
+            });
             SQLite.SetDbFilePath(dbFilePath);
             //抓取IP定时任务
             mCrawlIPTask = new System.Threading.Timer(new System.Threading.TimerCallback(StartCrawlIP), null, 0, mCrawlIPPeriod);

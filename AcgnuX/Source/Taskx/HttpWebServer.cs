@@ -43,6 +43,15 @@ namespace AcgnuX.Source.Taskx.Http
                     try
                     {
                         HttpListenerContext httpListenerContext = httpListener.GetContext();
+
+                        //httpListenerContext.Response.Headers.Add("Content-type", "text/html;charset=UTF-8");
+                        //httpListenerContext.Response.ContentEncoding = Encoding.UTF8;
+                        //httpListenerContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");//后台跨域请求，通常设置为配置文件
+                        //httpListenerContext.Response.AppendHeader("Access-Control-Allow-Credentials", "true"); //后台跨域请求
+                        //httpListenerContext.Response.AppendHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-Requested-With");
+                        //httpListenerContext.Response.AppendHeader("Access-Control-Max-Age", "86400");
+                        //httpListenerContext.Response.AppendHeader("Server", "MyIIS");//后台跨域请求，通常设置为配置文件
+
                         httpListenerContext.Response.StatusCode = 200;
                         using (StreamWriter writer = new StreamWriter(httpListenerContext.Response.OutputStream))
                         {
@@ -75,6 +84,7 @@ namespace AcgnuX.Source.Taskx.Http
         /// <param name="httpListenerContext"></param>
         private void DispacherRequest(HttpListenerContext httpListenerContext)
         {
+            Console.WriteLine("handle url: {0}", httpListenerContext.Request.Url.LocalPath);
             //下载封面
             if (httpListenerContext.Request.Url.LocalPath.Equals("/yuepu/preview"))
             {

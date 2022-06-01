@@ -1314,10 +1314,7 @@ namespace AcgnuX.Pages
             {
                 FileUtil.DeleteDirWithName(sheetDirPath, ApplicationConstant.SHARE_TEMP_FOLDER_NAME);
             }
-            if(File.Exists(Path.Combine(sheetDirPath, ApplicationConstant.SHARE_ZIP_NAME)))
-            {
-                File.Delete(Path.Combine(sheetDirPath, ApplicationConstant.SHARE_ZIP_NAME));
-            }
+            FileUtil.DeleteFile(Path.Combine(sheetDirPath, ApplicationConstant.SHARE_ZIP_NAME));
             winProgress.alertLevel = AlertLevel.INFO;
             mExportBgWorker.ReportProgress(0, WindowUtil.CalcProgress(winProgress, "任务中止", 100));
         }

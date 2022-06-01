@@ -50,7 +50,7 @@ namespace AcgnuX.Utils
                     if (startPosition > remoteFileLength)
                     {
                         writeStream.Close();
-                        File.Delete(localfileWithSuffix);
+                        Source.Utils.FileUtil.DeleteFile(localfileWithSuffix);
                         writeStream = new FileStream(localfileWithSuffix, FileMode.Create);
                     }
                     else if (startPosition == remoteFileLength)
