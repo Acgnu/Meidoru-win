@@ -157,12 +157,6 @@
     <Compile Include="Pages\WebServer.xaml.cs">
       <DependentUpon>WebServer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Resource\Styles\ListViewStyle.xaml.cs">
-      <DependentUpon>ListViewStyle.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Resource\Styles\ListBoxStyle.xaml.cs">
-      <DependentUpon>ListBoxStyle.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="Source\Bussiness\Common\AsyncObservableCollection.cs" />
     <Compile Include="Source\Bussiness\Common\DelegateDefine.cs" />
