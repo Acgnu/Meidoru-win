@@ -238,13 +238,14 @@ namespace AcgnuX.Source.Taskx.Http
             {
                 //根据名称返回文件夹中的乐谱第一页
                 var previewImgPath = Path.Combine(Settings.Default.Tan8HomeDir, ypid, "page.0.png");
-                WriteFile(previewImgPath, httpListenerContext);
+                if(File.Exists(previewImgPath))
+                {
+                    WriteFile(previewImgPath, httpListenerContext);
+                    return;
+                }
             }
-            else
-            {
-                //没有则返回默认图 (避免flash播放器报错, 无法用程序退出)
-                WriteStream(FileUtil.GetApplicationResourceAsStream(@"/Assets/Images/tan8_sheet_preview_default.png"), httpListenerContext);
-            }
+            //没有则返回默认图 (避免flash播放器报错, 无法用程序退出)
+            WriteStream(FileUtil.GetApplicationResourceAsStream(@"/Assets/Images/tan8_sheet_preview_default.png"), httpListenerContext);
         }
 
         /// <summary>

@@ -799,6 +799,18 @@ namespace AcgnuX.Pages
                 nowProgress = 0
             };
 
+            //快速预检乐谱是否存在
+            var contentResult = RequestUtil.CrawlContentFromWebsit(string.Format("http://www.tan8.com/yuepu-{0}.html", pianoScore.id), null);
+            if (contentResult.success && contentResult.data.Contains("404.jpg"))
+            {
+                return new InvokeResult<object>()
+                {
+                    success = false,
+                    code = (byte) Tan8SheetDownloadResult.PIANO_SCORE_NOT_EXSITS,
+                    message = EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.PIANO_SCORE_NOT_EXSITS.ToString()),
+                };
+            }
+
             //直接使用v2版本的地址
             var url = pianoScore.SheetUrl;
             OnTaskBarEvent?.Invoke(WindowUtil.CalcProgress(winProgress, string.Format("乐谱ID: {0} 下载地址解析成功, 开始加载乐谱信息", pianoScore.id), 10));
