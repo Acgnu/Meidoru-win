@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace AcgnuX.Source.Utils
@@ -399,6 +400,20 @@ namespace AcgnuX.Source.Utils
                 GC.Collect();
             }
             return false;
+        }
+
+        /// <summary>
+        /// bitmap转imagesource, 例如可将Resources中的Image转换成XAML可用的图片源
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
+        public static ImageSource ConvertBitmapToImageSource(Bitmap bitmap)
+        {
+            MemoryStream memory = new MemoryStream();
+            bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
+            ImageSourceConverter converter = new ImageSourceConverter();
+            ImageSource source = (ImageSource)converter.ConvertFrom(memory);
+            return source;
         }
     }
 }
