@@ -11,7 +11,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <!--有现后顺序-->
                 <ResourceDictionary Source="/Resource/Color.xaml" />
-                <ResourceDictionary Source="/Resource/String/String_CN.xaml" />
                 <ResourceDictionary Source="/Resource/Geometries.xaml" />
                 <ResourceDictionary Source="/Resource/Styles/DataGridStyle.xaml" />
                 <ResourceDictionary Source="/Resource/Styles/TextBoxStyle.xaml" />

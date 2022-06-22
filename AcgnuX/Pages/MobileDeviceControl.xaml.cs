@@ -1009,7 +1009,7 @@ namespace AcgnuX.Pages
                 {
                     return;
                 }
-                var confirmDialog = new ConfirmDialog(AlertLevel.WARN, string.Format((string)Application.Current.FindResource("DeleteConfirm"), selected.NameView));
+                var confirmDialog = new ConfirmDialog(AlertLevel.WARN, string.Format(Properties.Resources.S_DeleteConfirm, selected.NameView));
                 //确认删除
                 if (confirmDialog.ShowDialog().GetValueOrDefault())
                 {
@@ -1021,19 +1021,27 @@ namespace AcgnuX.Pages
                     else
                     {
                         //从手机删除
-                        using (selectedDevice)
+                        try
                         {
-                            if(!selectedDevice.IsConnected)
+                            using (selectedDevice)
                             {
-                                selectedDevice.Connect();
+                                if (!selectedDevice.IsConnected)
+                                {
+                                    selectedDevice.Connect();
+                                }
+                                var targetFile = Path.Combine(selectedDriver.ValueView, selected.FolderView, selected.NameView);
+                                if (selectedDevice.FileExists(targetFile))
+                                {
+                                    selectedDevice.DeleteFile(targetFile);
+                                }
+                                //selectedDevice.Disconnect();
                             }
-                            var targetFile = Path.Combine(selectedDriver.ValueView, selected.FolderView, selected.NameView);
-                            if (selectedDevice.FileExists(targetFile))
-                            {
-                                selectedDevice.DeleteFile(targetFile);
-                            }
-                            //selectedDevice.Disconnect();
+                        } 
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex);
                         }
+                
                     }
                     //从vm中移除对象
                     var subListViewItemSource = (ObservableCollection<DeviceSyncItem>)subListView.ItemsSource;

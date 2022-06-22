@@ -4,8 +4,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:AcgnuX.WindowX.Dialog"
+        xmlns:res="clr-namespace:AcgnuX.Properties"
         mc:Ignorable="d"
-        Title="{StaticResource Str_EditCrawlRule}" Height="240" Width="400" Style="{StaticResource DialogWindowBaseStyle}" Loaded="OnDialogLoaded">
+        Title="{x:Static res:Resources.S_EditCrawlRule}" Height="240" Width="400" Style="{StaticResource DialogWindowBaseStyle}" Loaded="OnDialogLoaded">
     
     <Window.Icon>
         <DrawingImage>
@@ -21,12 +22,12 @@
         <StackPanel DockPanel.Dock="Top">
             <!--名称-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
-                <TextBlock Text="{StaticResource Str_Name}" Style="{StaticResource FormFieldTextBlock}" />
+                <TextBlock Text="{x:Static res:Resources.S_Name}" Style="{StaticResource FormFieldTextBlock}" />
                 <TextBox Name="TextBlockName" Style="{StaticResource TextBoxBase}" Text="{Binding Path=McrawlRule.NameView, UpdateSourceTrigger=Explicit}"/>
             </DockPanel>
             <!--地址-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
-                <TextBlock Text="{StaticResource Site}" Style="{StaticResource FormFieldTextBlock}" />
+                <TextBlock Text="{x:Static res:Resources.S_Site}" Style="{StaticResource FormFieldTextBlock}" />
                 <TextBox Name="TextBlockSite" Style="{StaticResource TextBoxBase}" Text="{Binding Path=McrawlRule.UrlView, UpdateSourceTrigger=Explicit}"/>
             </DockPanel>
             <!--规则-->
@@ -43,6 +44,6 @@
                 </Grid>
              </DockPanel>
         </StackPanel>
-        <Button x:Name="ConfirmButton" Content="{StaticResource Confirm}" Click="OnConfirmClick" Grid.Column="0" Style="{DynamicResource FormConfirmButtonStyle}" />
+        <Button x:Name="ConfirmButton" Content="{x:Static res:Resources.S_Confirm}" Click="OnConfirmClick" Grid.Column="0" Style="{DynamicResource FormConfirmButtonStyle}" />
     </DockPanel>
 </local:BaseDialog>

@@ -163,6 +163,7 @@
     <Compile Include="Resource\Styles\ListBoxStyle.xaml.cs">
       <DependentUpon>ListBoxStyle.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="Source\Bussiness\Common\AsyncObservableCollection.cs" />
     <Compile Include="Source\Bussiness\Common\DelegateDefine.cs" />
     <Compile Include="Source\Bussiness\Constants\ReadSyncFileTaskProgressType.cs" />
@@ -190,7 +191,6 @@
     <Compile Include="Source\Model\DeviceSyncReadArgs.cs" />
     <Compile Include="Source\Model\DeviceSyncTaskArgs.cs" />
     <Compile Include="Source\Model\MediaSyncConfig.cs" />
-    <Compile Include="Source\Model\Settings.cs" />
     <Compile Include="Source\Model\ProxyAddress.cs" />
     <Compile Include="Source\Model\Account.cs" />
     <Compile Include="Source\Model\BasePropertyChangeNotifyModel.cs" />
@@ -308,10 +308,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resource\String\String_CN.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Resource\Styles\ComboBoxStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -414,12 +410,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Resources\Image1.bmp" />
     <Resource Include="Assets\Images\icon_audio_file.png" />
     <Resource Include="Assets\Images\icon_image_file.png" />
     <Resource Include="Assets\Images\icon_unknow_file.png" />
     <Resource Include="Assets\Images\icon_video_file.png" />
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include=".editorconfig" />

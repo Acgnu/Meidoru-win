@@ -1,4 +1,5 @@
-﻿using AcgnuX.Source.Bussiness.Common;
+﻿using AcgnuX.Properties;
+using AcgnuX.Source.Bussiness.Common;
 using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Taskx;
@@ -271,7 +272,7 @@ namespace AcgnuX.Pages
         /// <returns></returns>
         private PianoScoreViewModel CreateViewInstance(PianoScore pianoScore)
         {
-            var imgDir = Path.Combine(ConfigUtil.Instance.PianoScorePath, pianoScore.id.GetValueOrDefault().ToString(), ApplicationConstant.DEFAULT_COVER_NAME);
+            var imgDir = Path.Combine(Settings.Default.Tan8HomeDir, pianoScore.id.GetValueOrDefault().ToString(), ApplicationConstant.DEFAULT_COVER_NAME);
             return new PianoScoreViewModel()
             { 
                 //对于不存在cover的路径使用默认图片
@@ -318,7 +319,7 @@ namespace AcgnuX.Pages
         /// <returns></returns>
         private bool? OpenEditDialog(PianoScore pianoScore)
         {
-            if (string.IsNullOrEmpty(ConfigUtil.Instance.DbFilePath))
+            if (string.IsNullOrEmpty(Settings.Default.DBFilePath))
             {
                 mMainWindow.SetStatustProgess(new MainWindowStatusNotify()
                 {
@@ -830,7 +831,7 @@ namespace AcgnuX.Pages
                 ypNameFolder = "非法名称_" + pianoScore.id;
             }
             //校验保存路径是否重复
-            var libFolder = ConfigUtil.Instance.PianoScorePath;
+            var libFolder = Settings.Default.Tan8HomeDir;
 
             var saveFullPath = Path.Combine(libFolder, pianoScore.id.GetValueOrDefault().ToString());
             //step.3 创建文件夹
@@ -987,7 +988,7 @@ namespace AcgnuX.Pages
         {
             var selected = PianoScoreListBox.SelectedItem as PianoScoreViewModel;
             if (null == selected) return;
-            var confirmDialog = new ConfirmDialog(AlertLevel.WARN, string.Format((string)Application.Current.FindResource("DeleteConfirm"), selected.Name));
+            var confirmDialog = new ConfirmDialog(AlertLevel.WARN, string.Format(Properties.Resources.S_DeleteConfirm, selected.Name));
             if (confirmDialog.ShowDialog().GetValueOrDefault())
             {
                 //释放文件资源
@@ -997,7 +998,7 @@ namespace AcgnuX.Pages
                 //删除文件夹
                 if (!string.IsNullOrEmpty(selected.Name))
                 {
-                    FileUtil.DeleteDirWithName(ConfigUtil.Instance.PianoScorePath, selected.id.GetValueOrDefault().ToString());
+                    FileUtil.DeleteDirWithName(Settings.Default.Tan8HomeDir, selected.id.GetValueOrDefault().ToString());
                 }
 
                 //删除数据库数据
@@ -1017,7 +1018,7 @@ namespace AcgnuX.Pages
         {
             var selected = PianoScoreListBox.SelectedItem as PianoScoreViewModel;
             if (null == selected) return;
-            var fullPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, selected.id.GetValueOrDefault().ToString());
+            var fullPath = Path.Combine(Settings.Default.Tan8HomeDir, selected.id.GetValueOrDefault().ToString());
             if (Directory.Exists(fullPath))
             {
                 System.Diagnostics.Process.Start(fullPath);
@@ -1061,7 +1062,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnDefaultPlayButtonClickV2(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(ConfigUtil.Instance.DbFilePath))
+            if (string.IsNullOrEmpty(Settings.Default.DBFilePath))
             {
                 mMainWindow.SetStatustProgess(new MainWindowStatusNotify()
                 {
@@ -1189,7 +1190,7 @@ namespace AcgnuX.Pages
             var selected = PianoScoreListBox.SelectedItem as PianoScoreViewModel;
             if (null == selected) return;
             //如果已经存在分享包, 直接打开目标文件夹
-            var fullPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, selected.id.GetValueOrDefault().ToString());
+            var fullPath = Path.Combine(Settings.Default.Tan8HomeDir, selected.id.GetValueOrDefault().ToString());
             if (Directory.Exists(fullPath))
             {
                 if(File.Exists(Path.Combine(fullPath, ApplicationConstant.SHARE_ZIP_NAME)))
@@ -1239,7 +1240,7 @@ namespace AcgnuX.Pages
                 return;
             }
 
-            var fullPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, pianoScoreVm.id.GetValueOrDefault().ToString());
+            var fullPath = Path.Combine(Settings.Default.Tan8HomeDir, pianoScoreVm.id.GetValueOrDefault().ToString());
             if (!Directory.Exists(fullPath))
             {
                 winProgress.alertLevel = AlertLevel.ERROR;

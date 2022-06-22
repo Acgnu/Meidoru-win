@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:AcgnuX.Pages"
+      xmlns:res="clr-namespace:AcgnuX.Properties"
       mc:Ignorable="d" 
       Title="PwdRepositroy" Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
 
@@ -20,7 +21,7 @@
                 <Button Style="{StaticResource AddButtonStyle}"  Click="OnBtnAddClick" DockPanel.Dock="Right">
                     <WrapPanel>
                         <Path Style="{StaticResource CommonAddButtonPathIcoStyle}"/>
-                        <TextBlock Text="{StaticResource Add}" Margin="5 0 0 0" />
+                        <TextBlock Text="{x:Static res:Resources.S_Add}" Margin="5 0 0 0" />
                     </WrapPanel>
                 </Button>
                 <TextBox Style="{StaticResource TextBoxBase}" KeyUp="OnFilterBoxKeyDown" />
@@ -28,17 +29,17 @@
             <DataGrid Name="PasswordDataGrid" Style="{StaticResource commonDataGrid}" Margin="0,10,0,0" MouseDoubleClick="OnGridDoubleClick" Grid.Column="0" Grid.Row="1" ContextMenuOpening="OnContextMenuOpen" Template="{DynamicResource BaseDataGridControlTemplate}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="{StaticResource CopyAccount}" Click="OnClickContextMenuCopyAccount" />
-                        <MenuItem Header="{StaticResource CopyPassword}" Click="OnClickContextMenuCopyPassword" />
-                        <MenuItem Header="{StaticResource Delete}" Click="OnClickContextMenuDelete" />
+                        <MenuItem Header="{x:Static res:Resources.S_CopyAccount}" Click="OnClickContextMenuCopyAccount" />
+                        <MenuItem Header="{x:Static res:Resources.S_CopyPassword}" Click="OnClickContextMenuCopyPassword" />
+                        <MenuItem Header="{x:Static res:Resources.S_Delete}" Click="OnClickContextMenuDelete" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Describe}" Header="{StaticResource Describe}" Width="*" />
-                    <DataGridTextColumn Binding="{Binding Site}" Header="{StaticResource Site}" Width="*" />
-                    <DataGridTextColumn Binding="{Binding Uname}" Header="{StaticResource Account}" Width="*" />
-                    <DataGridTextColumn Binding="{Binding Upass}" Header="{StaticResource Password}" Width="*" />
-                    <DataGridTextColumn Binding="{Binding Remark}" Header="{StaticResource Remark}" Width="*" />
+                    <DataGridTextColumn Binding="{Binding Describe}" Header="{x:Static res:Resources.S_Describe}" Width="*" />
+                    <DataGridTextColumn Binding="{Binding Site}" Header="{x:Static res:Resources.S_Site}" Width="*" />
+                    <DataGridTextColumn Binding="{Binding Uname}" Header="{x:Static res:Resources.S_Account}" Width="*" />
+                    <DataGridTextColumn Binding="{Binding Upass}" Header="{x:Static res:Resources.S_Password}" Width="*" />
+                    <DataGridTextColumn Binding="{Binding Remark}" Header="{x:Static res:Resources.S_Remark}" Width="*" />
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

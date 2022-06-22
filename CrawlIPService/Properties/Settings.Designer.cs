@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AcgnuX.Properties {
+namespace CrawlIPService.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -20,30 +20,6 @@ namespace AcgnuX.Properties {
         public static Settings Default {
             get {
                 return defaultInstance;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string AccountFilePath {
-            get {
-                return ((string)(this["AccountFilePath"]));
-            }
-            set {
-                this["AccountFilePath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("E:\\曲谱")]
-        public string Tan8HomeDir {
-            get {
-                return ((string)(this["Tan8HomeDir"]));
-            }
-            set {
-                this["Tan8HomeDir"] = value;
             }
         }
         

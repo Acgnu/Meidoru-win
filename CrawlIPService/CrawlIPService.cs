@@ -1,6 +1,7 @@
 ﻿using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using AcgnuX.Utils;
+using CrawlIPService.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -101,16 +102,13 @@ namespace CrawIPService
             //SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 
             //读取数据库
-            var dbFilePath = (null == args || args.Length == 0) ? ConfigUtil.Instance.Load().DbFilePath : args[0];
+            var dbFilePath = (null == args || args.Length == 0) ? Settings.Default.DBFilePath : args[0];
             if(string.IsNullOrEmpty(dbFilePath))
             {
                 OnStop();
                 return;
             }
-            ConfigUtil.Instance.Save(new Settings()
-            {
-                DbFilePath = dbFilePath
-            });
+            Settings.Default.Save();
             SQLite.SetDbFilePath(dbFilePath);
             //抓取IP定时任务
             mCrawlIPTask = new System.Threading.Timer(new System.Threading.TimerCallback(StartCrawlIP), null, 0, mCrawlIPPeriod);

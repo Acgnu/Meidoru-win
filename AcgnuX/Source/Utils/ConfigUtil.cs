@@ -14,7 +14,7 @@ namespace AcgnuX.Source.Utils
     /// <summary>
     /// 一般的数据处理工具类
     /// </summary>
-    public class ConfigUtil : Settings
+    public class ConfigUtil
     {
         /// <summary>
         /// 为INI文件中指定的节点取得字符串
@@ -44,36 +44,36 @@ namespace AcgnuX.Source.Utils
         //AcgnuX.ini
         private static string mConfPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, System.Reflection.Assembly.GetEntryAssembly().GetName().Name + ".ini");
 
-        public ConfigUtil Load()
-        {
-            //读取数据库的配置文件
-            PianoScorePath = Read("Path", "YpHome", "", mConfPath);
-            AccountJsonPath = Read("Path", "AccountFile", "", mConfPath);
-            DbFilePath = Read("Path", "DbFile", "", mConfPath);
-            return this;
-        }
+        //public ConfigUtil Load()
+        //{
+        //    //读取数据库的配置文件
+        //    PianoScorePath = Read("Path", "YpHome", "", mConfPath);
+        //    AccountJsonPath = Read("Path", "AccountFile", "", mConfPath);
+        //    DbFilePath = Read("Path", "DbFile", "", mConfPath);
+        //    return this;
+        //}
 
-        public ConfigUtil Load(string configPath)
-        {
-            mConfPath = configPath;
-            return Load();
-        }
+        //public ConfigUtil Load(string configPath)
+        //{
+        //    mConfPath = configPath;
+        //    return Load();
+        //}
 
-        public async void Save(Settings settings)
-        {
-            AccountJsonPath = settings.AccountJsonPath;
-            PianoScorePath = settings.PianoScorePath;
-            DbFilePath = settings.DbFilePath;
+        //public async void Save(Settings settings)
+        //{
+        //    AccountJsonPath = settings.AccountJsonPath;
+        //    PianoScorePath = settings.PianoScorePath;
+        //    DbFilePath = settings.DbFilePath;
 
-            Write("Path", "YpHome", PianoScorePath, mConfPath);
-            Write("Path", "AccountFile", AccountJsonPath, mConfPath);
-            Write("Path", "DbFile", DbFilePath, mConfPath);
+        //    Write("Path", "YpHome", PianoScorePath, mConfPath);
+        //    Write("Path", "AccountFile", AccountJsonPath, mConfPath);
+        //    Write("Path", "DbFile", DbFilePath, mConfPath);
 
-            if (!string.IsNullOrEmpty(DbFilePath))
-            {
-                await SQLite.SetDbFilePath(DbFilePath);
-            }
-        }
+        //    if (!string.IsNullOrEmpty(DbFilePath))
+        //    {
+        //        await SQLite.SetDbFilePath(DbFilePath);
+        //    }
+        //}
 
         /// <summary>
         /// 读取INI文件值

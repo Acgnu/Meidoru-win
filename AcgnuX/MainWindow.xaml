@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:res="clr-namespace:AcgnuX.Properties"
         mc:Ignorable="d"
         Title="AcgnuX" Height="720" Width="1013" Style="{StaticResource MainWindowStyle}" Loaded="OnWindowLoaded">
 
@@ -28,7 +29,7 @@
         <!--状态栏上方叠加-->
         <DockPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
             <!--叠加文字-->
-            <TextBlock x:Name="MainStatusBarText" DockPanel.Dock="Left" Text="{StaticResource StatusBarDefaultText}" Style="{StaticResource MainWindowStatusBarTextBlock}" MouseRightButtonDown="OnStatusBarTextRightClick"/>
+            <TextBlock x:Name="MainStatusBarText" DockPanel.Dock="Left" Text="{x:Static res:Resources.S_StatusBarDefaultText}" Style="{StaticResource MainWindowStatusBarTextBlock}" MouseRightButtonDown="OnStatusBarTextRightClick"/>
             <!--叠加清除信息按钮-->
             <Button x:Name="ClearStatusBarTextButton" DockPanel.Dock="Right" Click="OnClearMessageButtonClick" Style="{StaticResource MainWindowStatusBarTrushButtonStyle}">
                 <Path Width="11" Height="11" Data="{StaticResource Icon_Trash}" Style="{StaticResource MainStatusBarIcoPathStyle}"/>

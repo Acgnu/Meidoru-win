@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:AcgnuX.WindowX.Dialog"
+        xmlns:res="clr-namespace:AcgnuX.Properties"
         mc:Ignorable="d"
         Title="{Binding DialogTitle}" Height="150" Width="300" Style="{StaticResource DialogWindowBaseStyle}">
 
@@ -27,7 +28,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <TextBlock Text="{Binding Message, FallbackValue='看什么看'}" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"/>
-        <Button Content="{StaticResource Confirm}" Style="{StaticResource MainButtonStyle}" Grid.Column="0" Grid.Row="1" Click="OnConfirmClick"/>
-        <Button Content="{StaticResource Cancel}" Style = "{StaticResource SecondaryButtonStyle}" Margin="5 0 0 0" Grid.Column="1" Grid.Row="1" Click="OnCancelClick"/>
+        <Button Content="{x:Static res:Resources.S_Confirm}" Style="{StaticResource MainButtonStyle}" Grid.Column="0" Grid.Row="1" Click="OnConfirmClick"/>
+        <Button Content="{x:Static res:Resources.S_Cancel}" Style = "{StaticResource SecondaryButtonStyle}" Margin="5 0 0 0" Grid.Column="1" Grid.Row="1" Click="OnCancelClick"/>
     </Grid>
 </local:BaseDialog>

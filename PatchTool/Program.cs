@@ -18,6 +18,7 @@ using AcgnuX.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using AcgnuX.Source.Bussiness.imgrespotroy;
+using PatchTool.Properties;
 
 namespace PatchTool
 {
@@ -171,7 +172,8 @@ namespace PatchTool
             var cur = 0;
             var delSQL = new StringBuilder("DELETE FROM tan8_music WHERE ypid in (");
             //找出文件夹存在, 而数据库中不存在的
-            var ypHomePath = ConfigUtil.Instance.Load().PianoScorePath;
+            
+            var ypHomePath = Settings.Default.Tan8HomeDir;
             var dataSet = SQLite.SqlTable("SELECT ypid, name FROM tan8_music", null);
             var total = dataSet.Rows.Count;
             foreach (DataRow dataRow in dataSet.Rows)
@@ -206,7 +208,7 @@ namespace PatchTool
             Console.WriteLine("检查不存在于数据的文件夹");
             InitDB(dbPath);
             //找出文件夹存在, 而数据库中不存在的
-            var ypHomePath = ConfigUtil.Instance.Load().PianoScorePath;
+            var ypHomePath = Settings.Default.Tan8HomeDir;
             var dir = Directory.GetDirectories(ypHomePath);
             var allFolderNames = new StringBuilder();
             var total = 0;
@@ -246,7 +248,7 @@ namespace PatchTool
         {
             Console.WriteLine("检查并重新下载重名的乐谱");
             InitDB(dbPath);
-            var ypHomePath = ConfigUtil.Instance.Load().PianoScorePath;
+            var ypHomePath = Settings.Default.Tan8HomeDir;
             var dataSet = SQLite.SqlTable("SELECT count(1) num, name FROM tan8_music GROUP BY name HAVING num > 1 ORDER BY num DESC", null);
             var reDownBuilder = new StringBuilder("INSERT INTO tan8_music_down_task values");
             var delSQLBuilder = new StringBuilder("DELETE FROM tan8_music WHERE ypid in (");
@@ -305,7 +307,7 @@ namespace PatchTool
             {
                 new SQLiteParameter("ypid", maxYpid)
             });
-            var ypHomePath = ConfigUtil.Instance.Load().PianoScorePath;
+            var ypHomePath = Settings.Default.Tan8HomeDir;
             var fixNum = 0;
             foreach (DataRow dataRow in dataSet.Rows)
             {
@@ -329,7 +331,7 @@ namespace PatchTool
         {
             InitDB(dbPath);
             var total = 0;
-            var ypHomePath = ConfigUtil.Instance.Load().PianoScorePath;
+            var ypHomePath = Settings.Default.Tan8HomeDir;
             var yp0Ypids = SQLite.sqlcolumn("SELECT ypid FROM tan8_music WHERE yp_count = 0", null);
             foreach(var ypid in yp0Ypids)
             {
@@ -374,7 +376,7 @@ namespace PatchTool
                 return;
             }
             InitDB(dbPath);
-            var ypHomePath = ConfigUtil.Instance.Load().PianoScorePath;
+            var ypHomePath = Settings.Default.Tan8HomeDir;
             var dataSet = SQLite.SqlTable("SELECT * FROM tan8_music_old", null);
             var total = dataSet.Rows.Count;
             var copyTotal = 0;
@@ -434,11 +436,11 @@ namespace PatchTool
         {
             if (string.IsNullOrEmpty(dbPath))
             {
-                var evnFolder = Environment.CurrentDirectory;
-                var svcFolder = evnFolder.Replace(System.Reflection.Assembly.GetEntryAssembly().GetName().Name, "AcgnuX");
-                var configPath = Path.Combine(svcFolder, "AcgnuX.ini");
+                //var evnFolder = Environment.CurrentDirectory;
+                //var svcFolder = evnFolder.Replace(System.Reflection.Assembly.GetEntryAssembly().GetName().Name, "AcgnuX");
+                //var configPath = Path.Combine(svcFolder, "AcgnuX.ini");
                 //如果没有指定数据库文件, 则使用默认
-                dbPath = ConfigUtil.Instance.Load(configPath).DbFilePath;
+                dbPath = Settings.Default.DBFilePath;
             }
             if (!await SQLite.SetDbFilePath(dbPath))
             {
@@ -456,7 +458,7 @@ namespace PatchTool
         {
             Console.WriteLine("执行上传乐谱首页任务, dbPath=" + dbPath + ", 线程数 = " + threadCount);
             InitDB(dbPath);
-            var ypHomePath = ConfigUtil.Instance.Load().PianoScorePath;
+            var ypHomePath = Settings.Default.Tan8HomeDir;
             if (string.IsNullOrEmpty(ypHomePath))
             {
                 Console.WriteLine("无法获取乐谱路径, 先检查一下配置文件");
@@ -553,7 +555,7 @@ namespace PatchTool
         {
             Console.WriteLine("执行水印任务, dbPath=" + dbPath + ", 线程数 = " + threadCount);
             InitDB(dbPath);
-            var ypHomePath = ConfigUtil.Instance.Load().PianoScorePath;
+            var ypHomePath = Settings.Default.Tan8HomeDir;
             if(string.IsNullOrEmpty(ypHomePath))
             {
                 Console.WriteLine("无法获取乐谱路径, 先检查一下配置文件");
@@ -687,7 +689,7 @@ namespace PatchTool
         {
             Console.WriteLine("重命名乐谱文件夹名称");
             InitDB(dbPath);
-            var ypHomePath = ConfigUtil.Instance.Load().PianoScorePath;
+            var ypHomePath = Settings.Default.Tan8HomeDir;
             if (string.IsNullOrEmpty(ypHomePath))
             {
                 Console.WriteLine("无法获取乐谱路径, 先检查一下配置文件");

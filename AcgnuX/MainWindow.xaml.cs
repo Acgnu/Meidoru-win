@@ -7,6 +7,7 @@ using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
 using AcgnuX.ViewModel;
+using AcgnuX.Properties;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -47,7 +48,7 @@ namespace AcgnuX
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
             //如果没有配置数据库, 提示错误
-            if(string.IsNullOrEmpty(ConfigUtil.Instance.DbFilePath))
+            if(string.IsNullOrEmpty(Settings.Default.DBFilePath))
             {
                 SetStatusBarText(AlertLevel.WARN, "没有配置数据库文件路径, 部分功能将无法正常使用");
             }

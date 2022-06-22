@@ -117,4 +117,157 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="S_Account" xml:space="preserve">
+    <value>账号</value>
+  </data>
+  <data name="S_Add" xml:space="preserve">
+    <value>新增</value>
+  </data>
+  <data name="S_AutoDownload" xml:space="preserve">
+    <value>自动下载</value>
+  </data>
+  <data name="S_Cancel" xml:space="preserve">
+    <value>容我再想想</value>
+  </data>
+  <data name="S_Confirm" xml:space="preserve">
+    <value>确定</value>
+  </data>
+  <data name="S_CopyAccount" xml:space="preserve">
+    <value>复制账号</value>
+  </data>
+  <data name="S_CopyPassword" xml:space="preserve">
+    <value>复制密码</value>
+  </data>
+  <data name="S_CrawlAddress" xml:space="preserve">
+    <value>抓取地址</value>
+  </data>
+  <data name="S_CrawlPages" xml:space="preserve">
+    <value>抓取页数</value>
+  </data>
+  <data name="S_CrawlRule" xml:space="preserve">
+    <value>抓取规则</value>
+  </data>
+  <data name="S_DbFilePath" xml:space="preserve">
+    <value>数据库文件路径</value>
+  </data>
+  <data name="S_Delete" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="S_DeleteConfirm" xml:space="preserve">
+    <value>确定要删除 [{0}] ?</value>
+  </data>
+  <data name="S_Describe" xml:space="preserve">
+    <value>描述</value>
+  </data>
+  <data name="S_DnsRecordValue" xml:space="preserve">
+    <value>记录值</value>
+  </data>
+  <data name="S_Domain" xml:space="preserve">
+    <value>域名</value>
+  </data>
+  <data name="S_DownloadFromCurId" xml:space="preserve">
+    <value>从此ID开始下载</value>
+  </data>
+  <data name="S_DownloadRecord" xml:space="preserve">
+    <value>下载记录</value>
+  </data>
+  <data name="S_EditAccount" xml:space="preserve">
+    <value>编辑账号</value>
+  </data>
+  <data name="S_EditCrawlRule" xml:space="preserve">
+    <value>编辑抓取规则</value>
+  </data>
+  <data name="S_EditDnsRecord" xml:space="preserve">
+    <value>编辑解析记录</value>
+  </data>
+  <data name="S_EditPianoScore" xml:space="preserve">
+    <value>编辑乐谱</value>
+  </data>
+  <data name="S_EditSyncConfig" xml:space="preserve">
+    <value>编辑同步配置</value>
+  </data>
+  <data name="S_Enable" xml:space="preserve">
+    <value>启用</value>
+  </data>
+  <data name="S_ExportForShare" xml:space="preserve">
+    <value>导出为分享包</value>
+  </data>
+  <data name="S_Line" xml:space="preserve">
+    <value>线路</value>
+  </data>
+  <data name="S_MobilePath" xml:space="preserve">
+    <value>移动端路径</value>
+  </data>
+  <data name="S_Modify" xml:space="preserve">
+    <value>修改</value>
+  </data>
+  <data name="S_MusicId" xml:space="preserve">
+    <value>乐谱ID</value>
+  </data>
+  <data name="S_Name" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="S_NoConnectedDevice" xml:space="preserve">
+    <value>没有已连接的可移动设备</value>
+  </data>
+  <data name="S_OpenFolder" xml:space="preserve">
+    <value>打开文件夹</value>
+  </data>
+  <data name="S_OpenPlayer" xml:space="preserve">
+    <value>打开播放器</value>
+  </data>
+  <data name="S_Password" xml:space="preserve">
+    <value>密码</value>
+  </data>
+  <data name="S_PcPath" xml:space="preserve">
+    <value>电脑端路径</value>
+  </data>
+  <data name="S_ProxyCount" xml:space="preserve">
+    <value>代理数量</value>
+  </data>
+  <data name="S_PwdConfigFilePath" xml:space="preserve">
+    <value>密码配置文件路径</value>
+  </data>
+  <data name="S_Refresh" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="S_Remark" xml:space="preserve">
+    <value>备注</value>
+  </data>
+  <data name="S_SaveChanged" xml:space="preserve">
+    <value>保存更改</value>
+  </data>
+  <data name="S_Setting" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="S_Site" xml:space="preserve">
+    <value>站点</value>
+  </data>
+  <data name="S_Status" xml:space="preserve">
+    <value>状态</value>
+  </data>
+  <data name="S_StatusBarDefaultText" xml:space="preserve">
+    <value>就绪</value>
+  </data>
+  <data name="S_SubDomian" xml:space="preserve">
+    <value>子域名</value>
+  </data>
+  <data name="S_Sync" xml:space="preserve">
+    <value>同步</value>
+  </data>
+  <data name="S_SyncPathConfig" xml:space="preserve">
+    <value>同步路径配置</value>
+  </data>
+  <data name="S_Tan8SheetSavePath" xml:space="preserve">
+    <value>Tan8曲谱保存路径</value>
+  </data>
+  <data name="S_TTL" xml:space="preserve">
+    <value>TTL</value>
+  </data>
+  <data name="S_Type" xml:space="preserve">
+    <value>类型</value>
+  </data>
+  <data name="S_UpdateTime" xml:space="preserve">
+    <value>更新时间</value>
+  </data>
 </root>

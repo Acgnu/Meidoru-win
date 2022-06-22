@@ -2,6 +2,7 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:local="clr-namespace:AcgnuX.Pages"
+      xmlns:res="clr-namespace:AcgnuX.Properties"
       Title="DnsRecords" Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
 
     <Grid>
@@ -17,7 +18,7 @@
                 <Button Style="{StaticResource AddButtonStyle}"  Click="OnBtnAddClick" DockPanel.Dock="Right">
                     <WrapPanel>
                         <Path Style="{StaticResource CommonAddButtonPathIcoStyle}"/>
-                        <TextBlock Text="{StaticResource Add}" Margin="5 0 0 0" />
+                        <TextBlock Text="{x:Static res:Resources.S_Add}" Margin="5 0 0 0" />
                     </WrapPanel>
                 </Button>
                 <TextBox Style="{StaticResource TextBoxBase}" KeyUp="OnFilterBoxKeyDown" />
@@ -25,17 +26,17 @@
             <DataGrid Name="DnsRecordDataGrid" Style="{StaticResource commonDataGrid}" Template="{DynamicResource BaseDataGridControlTemplate}" Margin="0,10,0,0" MouseDoubleClick="OnGridDoubleClick" Grid.Column="0" Grid.Row="1" ContextMenuOpening="OnContextMenuOpen" MouseRightButtonDown="OnClickContextMenuDelete">
                 <!--<DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="{StaticResource Delete}" Name="delete" Click="OnClickContextMenuDelete" />
+                        <MenuItem Header="{x:Static res:Resources.S_Delete}" Name="delete" Click="OnClickContextMenuDelete" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>-->
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Name}" Header="{StaticResource Domain}" Width="*"/>
-                    <DataGridTextColumn Binding="{Binding Value}" Header="{StaticResource DnsRecordValue}" Width="4*" />
-                    <DataGridTextColumn Binding="{Binding type}" Header="{StaticResource Str_Type}" Width="*" />
-                    <DataGridTextColumn Binding="{Binding line}" Header="{StaticResource Line}" Width="*" />
-                    <DataGridTextColumn Binding="{Binding enabled}" Header="{StaticResource Status}" Width="*" />
-                    <DataGridTextColumn Binding="{Binding ttl}" Header="{StaticResource TTL}" Width="*" />
-                    <DataGridTextColumn Binding="{Binding updated_on}" Header="{StaticResource UpdateTime}" Width="2*" />
+                    <DataGridTextColumn Binding="{Binding Name}" Header="{x:Static res:Resources.S_Domain}" Width="*"/>
+                    <DataGridTextColumn Binding="{Binding Value}" Header="{x:Static res:Resources.S_DnsRecordValue}" Width="4*" />
+                    <DataGridTextColumn Binding="{Binding type}" Header="{x:Static res:Resources.S_Type}" Width="*" />
+                    <DataGridTextColumn Binding="{Binding line}" Header="{x:Static res:Resources.S_Line}" Width="*" />
+                    <DataGridTextColumn Binding="{Binding enabled}" Header="{x:Static res:Resources.S_Status}" Width="*" />
+                    <DataGridTextColumn Binding="{Binding ttl}" Header="{x:Static res:Resources.S_TTL}" Width="*" />
+                    <DataGridTextColumn Binding="{Binding updated_on}" Header="{x:Static res:Resources.S_UpdateTime}" Width="2*" />
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

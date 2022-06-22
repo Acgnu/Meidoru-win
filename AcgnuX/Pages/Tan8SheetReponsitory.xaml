@@ -3,6 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:local="clr-namespace:AcgnuX.Pages"
+      xmlns:res="clr-namespace:AcgnuX.Properties"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
       Title="Tan8SheetReponsitory" Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
@@ -31,7 +32,7 @@
                 <Button Style="{StaticResource AddButtonStyle}"  Click="OnBtnAddClick" DockPanel.Dock="Right">
                     <WrapPanel>
                         <Path Style="{StaticResource CommonAddButtonPathIcoStyle}"/>
-                        <TextBlock Text="{StaticResource Add}" Margin="5 0 0 0" />
+                        <TextBlock Text="{x:Static res:Resources.S_Add}" Margin="5 0 0 0" />
                     </WrapPanel>
                 </Button>
                 <TextBox Style="{StaticResource TextBoxBase}" KeyUp="OnFilterBoxKeyDown" Name="SearchTextBox"/>
@@ -40,16 +41,16 @@
             <Button x:Name="DefaultOpenPlayerButton" Style="{StaticResource PianoScoreDefaultPlayButton}"  Grid.Row="1" Click="OnDefaultPlayButtonClickV2">
                 <WrapPanel>
                     <Path Style="{StaticResource PianoScoreDefaultPlayButtonIcoPath}" Data="{StaticResource Icon_Play}"/>
-                    <TextBlock Text="{StaticResource Str_OpenPlayer}" />
+                    <TextBlock Text="{x:Static res:Resources.S_OpenPlayer}" />
                 </WrapPanel>
             </Button>
             <!--ListBox-->
             <ListBox Name="PianoScoreListBox" Grid.Row="1" MouseDoubleClick="OnListBoxDoubleClick" ContextMenuOpening="OnContextMenuOpen" ItemContainerStyle="{StaticResource PianoScoreListBoxItemContainerStyle}" Template="{StaticResource PianoScoreListBoxTemplate}" Visibility="Collapsed" ScrollViewer.ScrollChanged="OnPianoScoreListBoxScroll">
                 <ListBox.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="{StaticResource OpenFolder}" Click="OnOpenFolderClick"/>
-                        <MenuItem Header="{StaticResource ExportForShare}" Click="OnExportForShareClick"/>
-                        <MenuItem Header="{StaticResource Delete}" Click="OnDeleteClick"/>
+                        <MenuItem Header="{x:Static res:Resources.S_OpenFolder}" Click="OnOpenFolderClick"/>
+                        <MenuItem Header="{x:Static res:Resources.S_ExportForShare}" Click="OnExportForShareClick"/>
+                        <MenuItem Header="{x:Static res:Resources.S_Delete}" Click="OnDeleteClick"/>
                     </ContextMenu>
                 </ListBox.ContextMenu>
             </ListBox>
