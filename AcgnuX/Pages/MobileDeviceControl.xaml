@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:AcgnuX.Pages"
+      xmlns:res="clr-namespace:AcgnuX.Properties"
       xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Class="AcgnuX.Pages.MobileDeviceControl"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
@@ -211,7 +212,7 @@
                                     <Button DockPanel.Dock="Right" Style="{StaticResource AddButtonStyle}" Click="OnSyncButtonClick" Height="30" Width="80">
                                         <WrapPanel>
                                             <Path Style="{StaticResource RefreshPathIcoStyle}" Width="11" Height="11"/>
-                                            <TextBlock Text="{StaticResource Str_Sync}" Margin="5 0 0 0" />
+                                            <TextBlock Text="{x:Static res:Resources.S_Sync}" Margin="5 0 0 0" />
                                         </WrapPanel>
                                     </Button>
                                 </DockPanel>
@@ -263,7 +264,7 @@
                 ItemContainerStyle="{StaticResource DeviceSyncListViewItemContainerStyle}" 
                 Template="{StaticResource DeviceSyncListViewTemplate}" 
                 Background="Transparent"/>
-            <TextBlock Text="{StaticResource Str_NoConnectedDevice}" VerticalAlignment="Center" HorizontalAlignment="Center" Name="DefaultHintText" FontSize="16" Foreground="#FF363636" Visibility="Collapsed"/>
+            <TextBlock Text="{x:Static res:Resources.S_NoConnectedDevice}" VerticalAlignment="Center" HorizontalAlignment="Center" Name="DefaultHintText" FontSize="16" Foreground="#FF363636" Visibility="Collapsed"/>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="DeviceChoosePanel" Visibility="Collapsed">
                 <ComboBox Width="140" 
                           x:Name="DeviceListCombobox"

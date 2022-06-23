@@ -3,6 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:local="clr-namespace:AcgnuX.Pages"
+      xmlns:res="clr-namespace:AcgnuX.Properties"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
       Title="Tan8SheetReponsitory" Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
@@ -31,7 +32,7 @@
                 <Button Style="{StaticResource AddButtonStyle}"  Click="OnBtnAddClick" DockPanel.Dock="Right">
                     <WrapPanel>
                         <Path Style="{StaticResource CommonAddButtonPathIcoStyle}"/>
-                        <TextBlock Text="{StaticResource Add}" Margin="5 0 0 0" />
+                        <TextBlock Text="{x:Static res:Resources.S_Add}" Margin="5 0 0 0" />
                     </WrapPanel>
                 </Button>
                 <TextBox Style="{StaticResource TextBoxBase}" KeyUp="OnFilterBoxKeyDown" Name="SearchTextBox"/>
@@ -40,16 +41,76 @@
             <Button x:Name="DefaultOpenPlayerButton" Style="{StaticResource PianoScoreDefaultPlayButton}"  Grid.Row="1" Click="OnDefaultPlayButtonClickV2">
                 <WrapPanel>
                     <Path Style="{StaticResource PianoScoreDefaultPlayButtonIcoPath}" Data="{StaticResource Icon_Play}"/>
-                    <TextBlock Text="{StaticResource Str_OpenPlayer}" />
+                    <TextBlock Text="{x:Static res:Resources.S_OpenPlayer}" />
                 </WrapPanel>
             </Button>
             <!--ListBox-->
-            <ListBox Name="PianoScoreListBox" Grid.Row="1" MouseDoubleClick="OnListBoxDoubleClick" ContextMenuOpening="OnContextMenuOpen" ItemContainerStyle="{StaticResource PianoScoreListBoxItemContainerStyle}" Template="{StaticResource PianoScoreListBoxTemplate}" Visibility="Collapsed" ScrollViewer.ScrollChanged="OnPianoScoreListBoxScroll">
+            <ListBox Name="PianoScoreListBox" 
+                     Grid.Row="1" 
+                     MouseDoubleClick="OnListBoxDoubleClick" 
+                     ContextMenuOpening="OnContextMenuOpen" 
+                     Template="{StaticResource PianoScoreListBoxTemplate}" 
+                     Visibility="Collapsed" 
+                     ScrollViewer.ScrollChanged="OnPianoScoreListBoxScroll"
+                     ItemContainerStyle="{StaticResource PianoScoreListBoxItemContainerStyle}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel LastChildFill="False" Background="Transparent">
+                            <Border DockPanel.Dock="Left" Style="{StaticResource PianoScorePreviewImageBorderStyle}">
+                                <Grid>
+                                    <Image Source="{Binding cover}" Panel.ZIndex="0" Style="{StaticResource ImageBaseStyle}"/>
+                                    <Button x:Name="PlayCoverBorder" Style="{StaticResource PianoScorePlayButtonStyle}" Click="OnTan8PlayButtonClickV2">
+                                        <Path Width="30" Height="30" Margin="8 0 0 0" Data="{DynamicResource Icon_Play}" Style="{StaticResource MainStatusBarIcoPathStyle}"/>
+                                    </Button>
+                                </Grid>
+                            </Border>
+                            <WrapPanel Orientation="Vertical" DockPanel.Dock="Left">
+                                <Label Content="{Binding NameView}" Margin="10 5 0 2" FontSize="14" FontWeight="Bold" Foreground="#FF252525"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="{Binding IdView}" Margin="10 0 0 0"/>
+                                    <Label Content="{Binding YpCountView}" Margin="10 0 0 0"/>
+                                    <Label Content="{Binding VerView}" Margin="10 0 0 0"/>
+                                </StackPanel>
+                            </WrapPanel>
+                        </DockPanel>
+                        <DataTemplate.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <!--鼠标移入改变播放按钮透明度-->
+                            <MultiTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0:0:0.3" Storyboard.TargetName="PlayCoverBorder" Storyboard.TargetProperty="Opacity" From="0" To="0.7">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CircleEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiTrigger.EnterActions>
+                            <!--鼠标移出改回播放按钮透明度-->
+                                <MultiTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetName="PlayCoverBorder" Storyboard.TargetProperty="Opacity" From="0.7" To="0">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CircleEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </MultiTrigger.ExitActions>
+                            </MultiTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
                 <ListBox.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="{StaticResource OpenFolder}" Click="OnOpenFolderClick"/>
-                        <MenuItem Header="{StaticResource ExportForShare}" Click="OnExportForShareClick"/>
-                        <MenuItem Header="{StaticResource Delete}" Click="OnDeleteClick"/>
+                        <MenuItem Header="{x:Static res:Resources.S_OpenFolder}" Click="OnOpenFolderClick"/>
+                        <MenuItem Header="{x:Static res:Resources.S_ExportForShare}" Click="OnExportForShareClick"/>
+                        <MenuItem Header="{x:Static res:Resources.S_Delete}" Click="OnDeleteClick"/>
                     </ContextMenu>
                 </ListBox.ContextMenu>
             </ListBox>

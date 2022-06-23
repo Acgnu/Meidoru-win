@@ -1,4 +1,5 @@
-﻿using AcgnuX.Source.Bussiness.Constants;
+﻿using AcgnuX.Properties;
+using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using AcgnuX.WindowX.Dialog;
@@ -56,7 +57,7 @@ namespace AcgnuX.Pages
         {
             return await Task.Run(() =>
             {
-                var accountFilePath = ConfigUtil.Instance.AccountJsonPath;
+                var accountFilePath = Settings.Default.AccountFilePath;
                 var itemsInFile = FileUtil.DeserializeJsonFromFile<List<Account>>(accountFilePath);
                 return itemsInFile;
             });
@@ -82,7 +83,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnBtnAddClick(object sender, RoutedEventArgs e)
         {
-            if(string.IsNullOrEmpty(ConfigUtil.Instance.AccountJsonPath))
+            if(string.IsNullOrEmpty(Settings.Default.AccountFilePath))
             {
                 mMainWindow.SetStatustProgess(new MainWindowStatusNotify()
                 {
@@ -115,11 +116,11 @@ namespace AcgnuX.Pages
             if (null == selected) return;
 
             //删除对话框
-            var result = new ConfirmDialog(AlertLevel.WARN, string.Format((string)Application.Current.FindResource("DeleteConfirm"), string.Format("{0} -> {1}", selected.Site, selected.Uname))).ShowDialog();
+            var result = new ConfirmDialog(AlertLevel.WARN, string.Format(Properties.Resources.S_DeleteConfirm, string.Format("{0} -> {1}", selected.Site, selected.Uname))).ShowDialog();
             if (result.GetValueOrDefault())
             {
                 accountList.Remove(selected);
-                FileUtil.SaveJsonToFile(accountList, ConfigUtil.Instance.AccountJsonPath);
+                FileUtil.SaveJsonToFile(accountList, Settings.Default.AccountFilePath);
             }
         }
 
@@ -195,7 +196,7 @@ namespace AcgnuX.Pages
                 accountList[PasswordDataGrid.SelectedIndex] = account;
             }
             //保存到文件
-            FileUtil.SaveJsonToFile(accountList, ConfigUtil.Instance.AccountJsonPath);
+            FileUtil.SaveJsonToFile(accountList, Settings.Default.AccountFilePath);
 
             return InvokeSuccess(account);
         }

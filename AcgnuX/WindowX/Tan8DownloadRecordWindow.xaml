@@ -4,8 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AcgnuX.WindowX.Dialog"
+        xmlns:res="clr-namespace:AcgnuX.Properties"
         mc:Ignorable="d"
-        Title="{StaticResource Str_DownloadRecord}" Height="500" Width="600" Style="{StaticResource CommonWindowStyle}" Loaded="OnWindowLoaded">
+        Title="{x:Static res:Resources.S_DownloadRecord}" Height="500" Width="600" Style="{StaticResource CommonWindowStyle}" Loaded="OnWindowLoaded">
 
     <Window.DataContext>
         <Binding Path="Tan8DownloadRecord" Source="{StaticResource Locator}"></Binding>
@@ -69,13 +70,13 @@
                               PreviewKeyDown="OnDownloadRecordGridKeyDown">
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="{StaticResource Str_DownloadFromCurId}" Click="OnCopyIncrIdContextMenuClick" />
-                    <MenuItem Header="{StaticResource Delete}" Click="OnDeleteContextMenuClick" />
+                    <MenuItem Header="{x:Static res:Resources.S_DownloadFromCurId}" Click="OnCopyIncrIdContextMenuClick" />
+                    <MenuItem Header="{x:Static res:Resources.S_Delete}" Click="OnDeleteContextMenuClick" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Ypid}" Header="{StaticResource Str_MusicId}" Width="0.5*" />
-                <DataGridTextColumn Binding="{Binding Name}" Header="{StaticResource Str_Name}" Width="1.5*" />
+                <DataGridTextColumn Binding="{Binding Ypid}" Header="{x:Static res:Resources.S_MusicId}" Width="0.5*" />
+                <DataGridTextColumn Binding="{Binding Name}" Header="{x:Static res:Resources.S_Name}" Width="1.5*" />
                 <DataGridTextColumn Binding="{Binding Create_time}" Header="下载时间" Width="*" />
                 <DataGridTextColumn Binding="{Binding Result}" Header="下载结果" Width="*" />
             </DataGrid.Columns>

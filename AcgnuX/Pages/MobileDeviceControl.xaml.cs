@@ -26,6 +26,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using TagLib;
+using UsbMonitor;
 using Windows.Storage;
 
 namespace AcgnuX.Pages
@@ -38,11 +39,13 @@ namespace AcgnuX.Pages
         //列表数据对象
         private ObservableCollection<DeviceSyncListViewModel> mSyncDataList = new ObservableCollection<DeviceSyncListViewModel>();
         //标识是否已经监听了串口
-        private bool mIsHookedUsb = false;
+        // private bool mIsHookedUsb = false;
         //同步进度变更事件
         public event StatusBarNotifyHandler OnTaskBarEvent;
         //待同步的任务列表
         private static ConcurrentQueue<DeviceSyncTaskArgs> mSyncTaskQueue = new ConcurrentQueue<DeviceSyncTaskArgs>();
+        //监听USB
+        private UsbMonitorManager mUsbMonitor;
         //检查设备连接的Worker
         private readonly BackgroundWorker mCheckDeviceBgWorker = new BackgroundWorker()
         {
@@ -79,10 +82,37 @@ namespace AcgnuX.Pages
             mReadDeviceFileWorker.DoWork += new DoWorkEventHandler(DoReadDeviceFileTask);
             mReadDeviceFileWorker.ProgressChanged += new ProgressChangedEventHandler(OnReadDeviceFileProgress);
             mReadDeviceFileWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(OnReadDeviceFileTaskComplate);
-            
+
+            this.mUsbMonitor = new UsbMonitorManager(mainWin);
+            //this.mUsbMonitor.UsbPort += OnUsb;
+            this.mUsbMonitor.UsbDeviceInterface += OnUsb;
+            //this.mUsbMonitor.UsbChanged += OnUsb;
+
             CheckDevice(false);
             DeviceSyncListView.ItemsSource = mSyncDataList;
         }
+
+        /// <summary>
+        /// 使用 UsbMonitor 监听USB
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnUsb(object sender, UsbEventArgs e)
+        {
+            var deviceInterface = e.ToString().Split(' ')[3].Split('=')[1];
+            //只关注WPD ( 移动设备MTP连接 )
+            if (!deviceInterface.Equals("WPD")) return;
+            CheckDevice(false);
+            //if (e.Action == UsbDeviceChangeEvent.Arrival)
+            //{
+            //    CheckDevice(true);
+            //}
+            //if (e.Action == UsbDeviceChangeEvent.RemoveComplete)
+            //{
+            //    CheckDevice(false);
+            //}
+        }
+
 
         /// <summary>
         /// 页面加载事件
@@ -91,6 +121,7 @@ namespace AcgnuX.Pages
         /// <param name="eventArgs"></param>
         private void OnPageLoaded(object sender, System.Windows.RoutedEventArgs eventArgs)
         {
+            /**
             if (!mIsHookedUsb)
             {
                 //用于监听Windows消息 
@@ -100,6 +131,7 @@ namespace AcgnuX.Pages
                     hwndSource.AddHook(new HwndSourceHook(DeveiceChanged));  //挂钩
                 mIsHookedUsb = true;
             }
+            **/
         }
 
         /// <summary>
@@ -174,6 +206,10 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void DoCheckDeviceTask(object sender, DoWorkEventArgs e)
         {
+            var mediaDevices = MediaDevice.GetDevices() as List<MediaDevice>;
+            e.Result = mediaDevices;
+            //Console.WriteLine("当前WPD数量: " + mediaDevices.Count());
+            /**
             var returnList = new List<MediaDevice>();
             e.Result = returnList;
             //是否需要等待的参数
@@ -184,7 +220,7 @@ namespace AcgnuX.Pages
                 if(mCheckDeviceBgWorker.CancellationPending) return;
 
                 var mediaDevices = MediaDevice.GetDevices() as List<MediaDevice>;
-                if(mediaDevices.Count >0)
+                if (mediaDevices.Count >0)
                 {
                     e.Result = mediaDevices;
                     return;
@@ -195,6 +231,7 @@ namespace AcgnuX.Pages
                 else
                     return;
             }
+            **/
         }
 
         /// <summary>
@@ -1009,7 +1046,7 @@ namespace AcgnuX.Pages
                 {
                     return;
                 }
-                var confirmDialog = new ConfirmDialog(AlertLevel.WARN, string.Format((string)Application.Current.FindResource("DeleteConfirm"), selected.NameView));
+                var confirmDialog = new ConfirmDialog(AlertLevel.WARN, string.Format(Properties.Resources.S_DeleteConfirm, selected.NameView));
                 //确认删除
                 if (confirmDialog.ShowDialog().GetValueOrDefault())
                 {
@@ -1021,16 +1058,30 @@ namespace AcgnuX.Pages
                     else
                     {
                         //从手机删除
-                        using (selectedDevice)
+                        try
                         {
-                            selectedDevice.Connect();
-                            var targetFile = Path.Combine(selectedDriver.ValueView, selected.FolderView, selected.NameView);
-                            if (selectedDevice.FileExists(targetFile))
+                            using (selectedDevice)
                             {
-                                selectedDevice.DeleteFile(targetFile);
+                                if (!selectedDevice.IsConnected)
+                                {
+                                    selectedDevice.Connect();
+                                }
+                                var targetFile = Path.Combine(selectedDriver.ValueView, selected.FolderView, selected.NameView);
+                                if (selectedDevice.FileExists(targetFile))
+                                {
+                                    selectedDevice.DeleteFile(targetFile);
+                                }
+                                if (selectedDevice.IsConnected)
+                                {
+                                    selectedDevice.Disconnect();
+                                }
                             }
-                            selectedDevice.Disconnect();
+                        } 
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex);
                         }
+                
                     }
                     //从vm中移除对象
                     var subListViewItemSource = (ObservableCollection<DeviceSyncItem>)subListView.ItemsSource;

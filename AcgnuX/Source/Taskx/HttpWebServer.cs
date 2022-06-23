@@ -1,4 +1,5 @@
-﻿using AcgnuX.Source.Bussiness.Common;
+﻿using AcgnuX.Properties;
+using AcgnuX.Source.Bussiness.Common;
 using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
@@ -132,7 +133,7 @@ namespace AcgnuX.Source.Taskx.Http
             var ypidQuery = httpListenerContext.Request.QueryString["ypid"];
             var ypidSplit = ypidQuery.Split('.');
             //返回指定页
-            var previewImgPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, ypidSplit[0], "page." + ypidSplit[1] + ".png");
+            var previewImgPath = Path.Combine(Properties.Settings.Default.Tan8HomeDir, ypidSplit[0], "page." + ypidSplit[1] + ".png");
             WriteFile(previewImgPath, httpListenerContext);
         }
 
@@ -153,7 +154,7 @@ namespace AcgnuX.Source.Taskx.Http
                     playFileSuf = ".ypdx";
                 }
                 //返回指定页
-                var previewImgPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, ypid, "play" + playFileSuf);
+                var previewImgPath = Path.Combine(Settings.Default.Tan8HomeDir, ypid, "play" + playFileSuf);
                 WriteFile(previewImgPath, httpListenerContext);
             }
         }
@@ -236,14 +237,15 @@ namespace AcgnuX.Source.Taskx.Http
             if (!string.IsNullOrEmpty(ypid))
             {
                 //根据名称返回文件夹中的乐谱第一页
-                var previewImgPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, ypid, "page.0.png");
-                WriteFile(previewImgPath, httpListenerContext);
+                var previewImgPath = Path.Combine(Settings.Default.Tan8HomeDir, ypid, "page.0.png");
+                if(File.Exists(previewImgPath))
+                {
+                    WriteFile(previewImgPath, httpListenerContext);
+                    return;
+                }
             }
-            else
-            {
-                //没有则返回默认图 (避免flash播放器报错, 无法用程序退出)
-                WriteStream(FileUtil.GetApplicationResourceAsStream(@"/Assets/Images/tan8_sheet_preview_default.png"), httpListenerContext);
-            }
+            //没有则返回默认图 (避免flash播放器报错, 无法用程序退出)
+            WriteStream(FileUtil.GetApplicationResourceAsStream(@"/Assets/Images/tan8_sheet_preview_default.png"), httpListenerContext);
         }
 
         /// <summary>

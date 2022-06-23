@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AcgnuX.Properties {
+namespace PatchTool.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -26,12 +26,12 @@ namespace AcgnuX.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string AccountFilePath {
+        public string DBFilePath {
             get {
-                return ((string)(this["AccountFilePath"]));
+                return ((string)(this["DBFilePath"]));
             }
             set {
-                this["AccountFilePath"] = value;
+                this["DBFilePath"] = value;
             }
         }
         
@@ -44,18 +44,6 @@ namespace AcgnuX.Properties {
             }
             set {
                 this["Tan8HomeDir"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string DBFilePath {
-            get {
-                return ((string)(this["DBFilePath"]));
-            }
-            set {
-                this["DBFilePath"] = value;
             }
         }
     }

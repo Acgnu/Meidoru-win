@@ -1,4 +1,5 @@
-﻿using AcgnuX.Source.Bussiness.Constants;
+﻿using AcgnuX.Properties;
+using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
@@ -20,8 +21,12 @@ namespace AcgnuX.Source.ViewModel
     /// <summary>
     /// 设置的视图模型
     /// </summary>
-    public class SettingsViewModel : Settings
+    public class SettingsViewModel : BasePropertyChangeNotifyModel
     {
+        public string AccountJsonPath { get; set; }
+        public string PianoScorePath { get; set; }
+        public string DbFilePath { get; set; }
+
         /// <summary>
         /// 账号密码文件存储的json完整路径
         /// </summary>
@@ -69,9 +74,9 @@ namespace AcgnuX.Source.ViewModel
 
         public SettingsViewModel()
         {
-            AccountJsonPath = ConfigUtil.Instance.AccountJsonPath ?? "";
-            PianoScorePath = ConfigUtil.Instance.PianoScorePath ?? "";
-            DbFilePath = ConfigUtil.Instance.DbFilePath ?? "";
+            AccountJsonPath = Settings.Default.AccountFilePath ?? "";
+            PianoScorePath = Settings.Default.Tan8HomeDir ?? "";
+            DbFilePath = Settings.Default.DBFilePath ?? "";
             //代理池数量变更监听
             ProxyCount = ProxyFactoryV2.GetProxyCount;
             ProxyFactoryV2.mProxyPoolCountChangeHandler += OnProxyPoolCountChange;

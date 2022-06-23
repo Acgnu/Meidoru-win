@@ -1,4 +1,5 @@
-﻿using AcgnuX.Source.Bussiness.Common;
+﻿using AcgnuX.Properties;
+using AcgnuX.Source.Bussiness.Common;
 using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Taskx;
@@ -43,7 +44,7 @@ namespace AcgnuX.Pages
         //    WorkerSupportsCancellation = true
         //};
         //弹吧播放器
-        //private Tan8PlayerWindow mTan8Player;
+        private Tan8PlayerWindow mTan8Player;
         //分页
         private Pager pager = new Pager(1, 20);
         //tan8服务
@@ -271,7 +272,7 @@ namespace AcgnuX.Pages
         /// <returns></returns>
         private PianoScoreViewModel CreateViewInstance(PianoScore pianoScore)
         {
-            var imgDir = Path.Combine(ConfigUtil.Instance.PianoScorePath, pianoScore.id.GetValueOrDefault().ToString(), ApplicationConstant.DEFAULT_COVER_NAME);
+            var imgDir = Path.Combine(Settings.Default.Tan8HomeDir, pianoScore.id.GetValueOrDefault().ToString(), ApplicationConstant.DEFAULT_COVER_NAME);
             return new PianoScoreViewModel()
             { 
                 //对于不存在cover的路径使用默认图片
@@ -318,7 +319,7 @@ namespace AcgnuX.Pages
         /// <returns></returns>
         private bool? OpenEditDialog(PianoScore pianoScore)
         {
-            if (string.IsNullOrEmpty(ConfigUtil.Instance.DbFilePath))
+            if (string.IsNullOrEmpty(Settings.Default.DBFilePath))
             {
                 mMainWindow.SetStatustProgess(new MainWindowStatusNotify()
                 {
@@ -798,6 +799,18 @@ namespace AcgnuX.Pages
                 nowProgress = 0
             };
 
+            //快速预检乐谱是否存在
+            var contentResult = RequestUtil.CrawlContentFromWebsit(string.Format("http://www.tan8.com/yuepu-{0}.html", pianoScore.id), null);
+            if (contentResult.success && contentResult.data.Contains("404.jpg"))
+            {
+                return new InvokeResult<object>()
+                {
+                    success = false,
+                    code = (byte) Tan8SheetDownloadResult.PIANO_SCORE_NOT_EXSITS,
+                    message = EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.PIANO_SCORE_NOT_EXSITS.ToString()),
+                };
+            }
+
             //直接使用v2版本的地址
             var url = pianoScore.SheetUrl;
             OnTaskBarEvent?.Invoke(WindowUtil.CalcProgress(winProgress, string.Format("乐谱ID: {0} 下载地址解析成功, 开始加载乐谱信息", pianoScore.id), 10));
@@ -830,7 +843,7 @@ namespace AcgnuX.Pages
                 ypNameFolder = "非法名称_" + pianoScore.id;
             }
             //校验保存路径是否重复
-            var libFolder = ConfigUtil.Instance.PianoScorePath;
+            var libFolder = Settings.Default.Tan8HomeDir;
 
             var saveFullPath = Path.Combine(libFolder, pianoScore.id.GetValueOrDefault().ToString());
             //step.3 创建文件夹
@@ -987,7 +1000,7 @@ namespace AcgnuX.Pages
         {
             var selected = PianoScoreListBox.SelectedItem as PianoScoreViewModel;
             if (null == selected) return;
-            var confirmDialog = new ConfirmDialog(AlertLevel.WARN, string.Format((string)Application.Current.FindResource("DeleteConfirm"), selected.Name));
+            var confirmDialog = new ConfirmDialog(AlertLevel.WARN, string.Format(Properties.Resources.S_DeleteConfirm, selected.Name));
             if (confirmDialog.ShowDialog().GetValueOrDefault())
             {
                 //释放文件资源
@@ -997,7 +1010,7 @@ namespace AcgnuX.Pages
                 //删除文件夹
                 if (!string.IsNullOrEmpty(selected.Name))
                 {
-                    FileUtil.DeleteDirWithName(ConfigUtil.Instance.PianoScorePath, selected.id.GetValueOrDefault().ToString());
+                    FileUtil.DeleteDirWithName(Settings.Default.Tan8HomeDir, selected.id.GetValueOrDefault().ToString());
                 }
 
                 //删除数据库数据
@@ -1017,7 +1030,7 @@ namespace AcgnuX.Pages
         {
             var selected = PianoScoreListBox.SelectedItem as PianoScoreViewModel;
             if (null == selected) return;
-            var fullPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, selected.id.GetValueOrDefault().ToString());
+            var fullPath = Path.Combine(Settings.Default.Tan8HomeDir, selected.id.GetValueOrDefault().ToString());
             if (Directory.Exists(fullPath))
             {
                 System.Diagnostics.Process.Start(fullPath);
@@ -1061,7 +1074,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnDefaultPlayButtonClickV2(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(ConfigUtil.Instance.DbFilePath))
+            if (string.IsNullOrEmpty(Settings.Default.DBFilePath))
             {
                 mMainWindow.SetStatustProgess(new MainWindowStatusNotify()
                 {
@@ -1189,7 +1202,7 @@ namespace AcgnuX.Pages
             var selected = PianoScoreListBox.SelectedItem as PianoScoreViewModel;
             if (null == selected) return;
             //如果已经存在分享包, 直接打开目标文件夹
-            var fullPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, selected.id.GetValueOrDefault().ToString());
+            var fullPath = Path.Combine(Settings.Default.Tan8HomeDir, selected.id.GetValueOrDefault().ToString());
             if (Directory.Exists(fullPath))
             {
                 if(File.Exists(Path.Combine(fullPath, ApplicationConstant.SHARE_ZIP_NAME)))
@@ -1239,7 +1252,7 @@ namespace AcgnuX.Pages
                 return;
             }
 
-            var fullPath = Path.Combine(ConfigUtil.Instance.PianoScorePath, pianoScoreVm.id.GetValueOrDefault().ToString());
+            var fullPath = Path.Combine(Settings.Default.Tan8HomeDir, pianoScoreVm.id.GetValueOrDefault().ToString());
             if (!Directory.Exists(fullPath))
             {
                 winProgress.alertLevel = AlertLevel.ERROR;
@@ -1344,5 +1357,64 @@ namespace AcgnuX.Pages
         }
 
         #endregion
+
+        /// <summary>
+        /// 琴谱页播放按钮点击事件
+        /// 打开弹琴吧播放器并播放选中的曲谱
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void OnTan8PlayButtonClick(Object sender, RoutedEventArgs e)
+        {
+            //事件按钮对象
+            var eventButton = (Button)sender;
+
+            //根据触发按钮获取点击的行
+            var selected = ((ListBoxItem) PianoScoreListBox.ContainerFromElement(eventButton)).Content;
+            //手动选中行
+            PianoScoreListBox.SelectedItem = selected;
+
+            //播放器未打开, 则创建一个新的播放器
+            if (null == mTan8Player)
+            {
+                mTan8Player = new Tan8PlayerWindow();
+                //打开后将对象赋值给ListBox的TAG, 方便主窗口获取
+                PianoScoreListBox.Tag = mTan8Player;
+            }
+            //播放所选曲谱
+            mTan8Player.Show();
+            mTan8Player.PlaySelected(selected as PianoScore);
+        }
+
+        public void OnTan8PlayButtonClickV2(Object sender, RoutedEventArgs e)
+        {
+            //事件按钮对象
+            var eventButton = (Button)sender;
+
+            //根据触发按钮获取点击的行
+            var selected = ((ListBoxItem) PianoScoreListBox.ContainerFromElement(eventButton)).Content;
+
+            //检查曲谱可否播放
+            var tan8Music = SQLite.SqlRow(string.Format("SELECT name, ver FROM tan8_music WHERE ypid = {0}", (selected as PianoScore).id.GetValueOrDefault()));
+            var folderName = tan8Music[0];
+            var ver = Convert.ToInt32(tan8Music[1]);
+            var playFileName = ver == 1 ? "play.ypa2" : "play.ypdx";
+            var playFilePath = Path.Combine(Settings.Default.Tan8HomeDir, (selected as PianoScore).id.GetValueOrDefault().ToString(), playFileName);
+            //手动选中行
+            PianoScoreListBox.SelectedItem = selected;
+            if (!File.Exists(playFilePath))
+            {
+                //无法播放的曲谱打开所在文件夹
+                var fullPath = Path.Combine(Settings.Default.Tan8HomeDir, (selected as PianoScore).id.GetValueOrDefault().ToString());
+                if (Directory.Exists(fullPath))
+                {
+                    System.Diagnostics.Process.Start(fullPath);
+                }
+                return;
+            }
+            //播放所选曲谱
+            Tan8PlayUtil.Exit();
+            Tan8PlayUtil.ExePlayById((selected as PianoScore).id.GetValueOrDefault(), ver, false);
+        }
     }
 }

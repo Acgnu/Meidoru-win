@@ -7,7 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Brush = System.Drawing.Brush;
+using Color = System.Drawing.Color;
 
 namespace AcgnuX.Source.Utils
 {
@@ -51,7 +54,7 @@ namespace AcgnuX.Source.Utils
             {
                 var firstPixel = oldBitmap.GetPixel(0, 0);
                 var firstPixelGrayValue = GetPixelBlackWhiteValue(firstPixel.R, firstPixel.G, firstPixel.B, 2);
-                Color pixel;
+                System.Drawing.Color pixel;
                 for (int x = 0; x < Width; x++)
                 {
                     for (int y = 0; y < Height; y++)
@@ -399,6 +402,20 @@ namespace AcgnuX.Source.Utils
                 GC.Collect();
             }
             return false;
+        }
+
+        /// <summary>
+        /// bitmap转imagesource, 例如可将Resources中的Image转换成XAML可用的图片源
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
+        public static ImageSource ConvertBitmapToImageSource(Bitmap bitmap)
+        {
+            MemoryStream memory = new MemoryStream();
+            bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
+            ImageSourceConverter converter = new ImageSourceConverter();
+            ImageSource source = (ImageSource)converter.ConvertFrom(memory);
+            return source;
         }
     }
 }

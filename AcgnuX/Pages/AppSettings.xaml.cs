@@ -1,4 +1,5 @@
-﻿using AcgnuX.Source.Bussiness.Constants;
+﻿using AcgnuX.Properties;
+using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
@@ -49,7 +50,8 @@ namespace AcgnuX.Pages
             {
                 var settingsDataContext = DataContext as SettingsViewModel;
                 settingsDataContext.AccountJsonPathView = path;
-                ConfigUtil.Instance.Save(settingsDataContext);
+                Settings.Default.AccountFilePath = path;
+                Settings.Default.Save();
             }
         }
 
@@ -58,14 +60,16 @@ namespace AcgnuX.Pages
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnChooseDbFile(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private async void OnChooseDbFile(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             var path = FileUtil.OpenFileDialogForPath("C:\\", "SQLite数据库文件|*.db");
             if (!string.IsNullOrEmpty(path))
             {
                 var settingsDataContext = DataContext as SettingsViewModel;
                 settingsDataContext.DbFilePathView = path;
-                ConfigUtil.Instance.Save(settingsDataContext);
+                Settings.Default.DBFilePath = path;
+                Settings.Default.Save();
+                await SQLite.SetDbFilePath(path);
             }
         }
 
@@ -81,7 +85,8 @@ namespace AcgnuX.Pages
             {
                 var settingsDataContext = DataContext as SettingsViewModel;
                 settingsDataContext.PianoScorePathView = path;
-                ConfigUtil.Instance.Save(settingsDataContext);
+                Settings.Default.Tan8HomeDir = path;
+                Settings.Default.Save();
             }
         }
 
@@ -128,7 +133,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnAddCrawlClick(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(ConfigUtil.Instance.DbFilePath))
+            if (string.IsNullOrEmpty(Settings.Default.DBFilePath))
             {
                 mMainWindow.SetStatustProgess(new MainWindowStatusNotify()
                 {
@@ -155,7 +160,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnAddSyncConfigClick(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(ConfigUtil.Instance.DbFilePath))
+            if (string.IsNullOrEmpty(Settings.Default.DBFilePath))
             {
                 mMainWindow.SetStatustProgess(new MainWindowStatusNotify()
                 {
@@ -197,7 +202,7 @@ namespace AcgnuX.Pages
             var selected = CrawlConfigDataGrid.SelectedItem as CrawlRuleViewModel;
             if (null == selected) return;
             //删除对话框
-            var result = new ConfirmDialog(AlertLevel.WARN, string.Format((string)Application.Current.FindResource("DeleteConfirm"), string.Format("{0}", selected.Name))).ShowDialog();
+            var result = new ConfirmDialog(AlertLevel.WARN, string.Format(Properties.Resources.S_DeleteConfirm, string.Format("{0}", selected.Name))).ShowDialog();
             if (result.GetValueOrDefault())
             {
                 SQLite.ExecuteNonQuery("DELETE FROM crawl_rules WHERE ID = @id", new List<SQLiteParameter> { new SQLiteParameter("@id", selected.Id) });
@@ -218,7 +223,7 @@ namespace AcgnuX.Pages
             var selected = SyncPathDataGrid.SelectedItem as SyncConfigViewModel;
             if (null == selected) return;
             //删除对话框
-            var result = new ConfirmDialog(AlertLevel.WARN, string.Format((string)Application.Current.FindResource("DeleteConfirm"), string.Format("{0}", selected.PcPath))).ShowDialog();
+            var result = new ConfirmDialog(AlertLevel.WARN, string.Format(Properties.Resources.S_DeleteConfirm, string.Format("{0}", selected.PcPath))).ShowDialog();
             if (result.GetValueOrDefault())
             {
                 SQLite.ExecuteNonQuery("DELETE FROM media_sync_config WHERE ID = @id", new List<SQLiteParameter> { new SQLiteParameter("@id", selected.Id) });

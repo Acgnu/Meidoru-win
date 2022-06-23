@@ -7,10 +7,6 @@ CREATE TABLE IF NOT EXISTS "crawl_rules" (
   "enable" integer(1) NOT NULL,
   PRIMARY KEY ("id")
 );
-CREATE TABLE IF NOT EXISTS "pref" (
-  "account_file_dir" TEXT(120),
-  "tan8_home_dir" TEXT(120)
-);
 CREATE TABLE IF NOT EXISTS "proxy_address" (
   "address" TEXT(40) NOT NULL,
   "addtime" TEXT(25) NOT NULL,

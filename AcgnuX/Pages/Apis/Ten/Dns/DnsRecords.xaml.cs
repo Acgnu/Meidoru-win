@@ -152,7 +152,8 @@ namespace AcgnuX.Pages.Apis.Ten.Dns
             XamlUtil.SelectRow(DnsRecordDataGrid, e);
             var selected = DnsRecordDataGrid.SelectedItem as DnsRecord;
             if (null == selected) return;
-            var result = new ConfirmDialog(AlertLevel.WARN, string.Format((string)Application.Current.FindResource("DeleteConfirm"), selected.Name)).ShowDialog();
+            //var result = new ConfirmDialog(AlertLevel.WARN, string.Format((string)Application.Current.FindResource("DeleteConfirm"), selected.Name)).ShowDialog();
+            var result = new ConfirmDialog(AlertLevel.WARN, string.Format(Properties.Resources.S_DeleteConfirm, selected.Name)).ShowDialog();
             if (result.GetValueOrDefault())
             {
                 mTenCloudDns.DelDNSRecord(Convert.ToString(selected.id), response =>

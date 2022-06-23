@@ -157,12 +157,7 @@
     <Compile Include="Pages\WebServer.xaml.cs">
       <DependentUpon>WebServer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Resource\Styles\ListViewStyle.xaml.cs">
-      <DependentUpon>ListViewStyle.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Resource\Styles\ListBoxStyle.xaml.cs">
-      <DependentUpon>ListBoxStyle.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="Source\Bussiness\Common\AsyncObservableCollection.cs" />
     <Compile Include="Source\Bussiness\Common\DelegateDefine.cs" />
     <Compile Include="Source\Bussiness\Constants\ReadSyncFileTaskProgressType.cs" />
@@ -190,7 +185,6 @@
     <Compile Include="Source\Model\DeviceSyncReadArgs.cs" />
     <Compile Include="Source\Model\DeviceSyncTaskArgs.cs" />
     <Compile Include="Source\Model\MediaSyncConfig.cs" />
-    <Compile Include="Source\Model\Settings.cs" />
     <Compile Include="Source\Model\ProxyAddress.cs" />
     <Compile Include="Source\Model\Account.cs" />
     <Compile Include="Source\Model\BasePropertyChangeNotifyModel.cs" />
@@ -300,75 +294,71 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resource\Geometries.xaml">
+    <Page Include="Styles\Geometries.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Resource\Color.xaml">
+    <Page Include="Styles\Color.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resource\String\String_CN.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resource\Styles\ComboBoxStyle.xaml">
+    <Page Include="Styles\ComboBoxStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Resource\Styles\ImageStyle.xaml">
+    <Page Include="Styles\ImageStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Resource\Styles\BorderStyle.xaml">
+    <Page Include="Styles\BorderStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Resource\Styles\DockPanelStyle.xaml">
+    <Page Include="Styles\DockPanelStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Resource\Styles\ButtonStyle.xaml">
+    <Page Include="Styles\ButtonStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resource\Styles\DataGridStyle.xaml">
+    <Page Include="Styles\DataGridStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resource\Styles\ListViewStyle.xaml">
+    <Page Include="Styles\ListViewStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Resource\Styles\PageStyle.xaml">
+    <Page Include="Styles\PageStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resource\Styles\ScrollBarStyle.xaml">
+    <Page Include="Styles\ScrollBarStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Resource\Styles\ListBoxStyle.xaml">
+    <Page Include="Styles\ListBoxStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Resource\Styles\TextBlockStyle.xaml">
+    <Page Include="Styles\TextBlockStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resource\Styles\GeometriesStyle.xaml">
+    <Page Include="Styles\GeometriesStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Resource\Styles\TextBoxStyle.xaml">
+    <Page Include="Styles\TextBoxStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resource\Styles\ProgressBarStyle.xaml">
+    <Page Include="Styles\ProgressBarStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Resource\Styles\WindowStyle.xaml">
+    <Page Include="Styles\WindowStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -414,12 +404,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Resources\Image1.bmp" />
     <Resource Include="Assets\Images\icon_audio_file.png" />
     <Resource Include="Assets\Images\icon_image_file.png" />
     <Resource Include="Assets\Images\icon_unknow_file.png" />
     <Resource Include="Assets\Images\icon_video_file.png" />
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include=".editorconfig" />
@@ -549,6 +540,9 @@
     </PackageReference>
     <PackageReference Include="taglib-sharp-netstandard2.0">
       <Version>2.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="WpfUsbMonitor">
+      <Version>3.0.0</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

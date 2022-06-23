@@ -1,4 +1,5 @@
-﻿using AcgnuX.Source.Bussiness.Constants;
+﻿using AcgnuX.Properties;
+using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Utils;
 using System;
 using System.Linq;
@@ -57,7 +58,7 @@ namespace AcgnuX.Source.Taskx
         /// </summary>
         public static void RestartCrawlIPService()
         {
-            ServiceUtil.Restart(ApplicationConstant.CRAWL_IP_SERVICE_NAME, new string[] { ConfigUtil.Instance.DbFilePath });
+            ServiceUtil.Restart(ApplicationConstant.CRAWL_IP_SERVICE_NAME, new string[] { Settings.Default.DBFilePath });
         }
 
         /// <summary>

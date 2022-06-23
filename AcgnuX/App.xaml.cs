@@ -1,4 +1,5 @@
-﻿using AcgnuX.Source.Bussiness.Constants;
+﻿using AcgnuX.Properties;
+using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
 using System;
@@ -56,7 +57,7 @@ namespace AcgnuX
             }
 
             //初始化设置
-            var dbfilePath = ConfigUtil.Instance.Load().DbFilePath;
+            var dbfilePath = Settings.Default.DBFilePath;   //ConfigUtil.Instance.Load().DbFilePath;
 
             //检查Flash信任文件
             Tan8PlayUtil.WriteTrustFile();
