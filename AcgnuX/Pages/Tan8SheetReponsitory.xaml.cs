@@ -808,6 +808,7 @@ namespace AcgnuX.Pages
                     success = false,
                     code = (byte) Tan8SheetDownloadResult.PIANO_SCORE_NOT_EXSITS,
                     message = EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.PIANO_SCORE_NOT_EXSITS.ToString()),
+                    data = "未知"
                 };
             }
 
