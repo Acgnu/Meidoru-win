@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Brush = System.Drawing.Brush;
+using Color = System.Drawing.Color;
 
 namespace AcgnuX.Source.Utils
 {
@@ -52,7 +54,7 @@ namespace AcgnuX.Source.Utils
             {
                 var firstPixel = oldBitmap.GetPixel(0, 0);
                 var firstPixelGrayValue = GetPixelBlackWhiteValue(firstPixel.R, firstPixel.G, firstPixel.B, 2);
-                Color pixel;
+                System.Drawing.Color pixel;
                 for (int x = 0; x < Width; x++)
                 {
                     for (int y = 0; y < Height; y++)

@@ -10,23 +10,23 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!--有现后顺序-->
-                <ResourceDictionary Source="/Resource/Color.xaml" />
-                <ResourceDictionary Source="/Resource/Geometries.xaml" />
-                <ResourceDictionary Source="/Resource/Styles/DataGridStyle.xaml" />
-                <ResourceDictionary Source="/Resource/Styles/TextBoxStyle.xaml" />
-                <ResourceDictionary Source="/Resource/Styles/WindowStyle.xaml" />
-                <ResourceDictionary Source="/Resource/Styles/PageStyle.xaml" />
-                <ResourceDictionary Source="/Resource/Styles/BorderStyle.xaml" />
-                <ResourceDictionary Source="/Resource/Styles/ComboBoxStyle.xaml" />
-                <ResourceDictionary Source="/Resource/Styles/ImageStyle.xaml" />
-                <ResourceDictionary Source="/Resource/Styles/ButtonStyle.xaml" />
-                <ResourceDictionary Source="/Resource/Styles/TextBlockStyle.xaml" />
-                <ResourceDictionary Source="/Resource/Styles/DockPanelStyle.xaml" />
-                <ResourceDictionary Source="/Resource/Styles/ProgressBarStyle.xaml" />
-                <ResourceDictionary Source="/Resource/Styles/ScrollBarStyle.xaml" />
-                <ResourceDictionary Source="/Resource/Styles/GeometriesStyle.xaml" />
-                <ResourceDictionary Source="/Resource/Styles/ListBoxStyle.xaml" />
-                <ResourceDictionary Source="/Resource/Styles/ListViewStyle.xaml" />
+                <ResourceDictionary Source="/Styles/Color.xaml" />
+                <ResourceDictionary Source="/Styles/Geometries.xaml" />
+                <ResourceDictionary Source="/Styles/DataGridStyle.xaml" />
+                <ResourceDictionary Source="/Styles/TextBoxStyle.xaml" />
+                <ResourceDictionary Source="/Styles/WindowStyle.xaml" />
+                <ResourceDictionary Source="/Styles/PageStyle.xaml" />
+                <ResourceDictionary Source="/Styles/BorderStyle.xaml" />
+                <ResourceDictionary Source="/Styles/ComboBoxStyle.xaml" />
+                <ResourceDictionary Source="/Styles/ImageStyle.xaml" />
+                <ResourceDictionary Source="/Styles/ButtonStyle.xaml" />
+                <ResourceDictionary Source="/Styles/TextBlockStyle.xaml" />
+                <ResourceDictionary Source="/Styles/DockPanelStyle.xaml" />
+                <ResourceDictionary Source="/Styles/ProgressBarStyle.xaml" />
+                <ResourceDictionary Source="/Styles/ScrollBarStyle.xaml" />
+                <ResourceDictionary Source="/Styles/GeometriesStyle.xaml" />
+                <ResourceDictionary Source="/Styles/ListBoxStyle.xaml" />
+                <ResourceDictionary Source="/Styles/ListViewStyle.xaml" />
                 <ResourceDictionary>
                     <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" xmlns:vm="clr-namespace:AcgnuX.Source.ViewModel" />
                 </ResourceDictionary>
