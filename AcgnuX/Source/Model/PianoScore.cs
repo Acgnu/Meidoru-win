@@ -16,7 +16,8 @@ namespace AcgnuX.Source.Model
         //封面图
         public ImageSource cover { get; set; }
         //是否自动下载 (下载需要)
-        public bool autoDownload { get; set; }
+        public bool AutoDownload { get; set; }
+        public bool UseProxy { get; set; } = true;
         //曲谱下载地址 (适用于 v2 )
         public string SheetUrl { get; set; }
         public byte YpCount { get; set; }

@@ -30,6 +30,8 @@ namespace AcgnuX.WindowX
     {
         //标识条件复选框是否初始化完成
         private bool IsCheckBoxInited = false;
+        //控件数据源
+        private PianoScoreDownloadRecordViewModel mControlContext = new PianoScoreDownloadRecordViewModel();
         /// <summary>
         /// 启动下载事件
         /// </summary>
@@ -38,6 +40,8 @@ namespace AcgnuX.WindowX
         public Tan8DownloadRecordWindow()
         {
             InitializeComponent();
+            FilterBoxItemsControl.ItemsSource = mControlContext.FilterBoxList;
+            DownloadRecordDataGrid.ItemsSource = mControlContext.DownloadRecordList;
             IsCheckBoxInited = true;
         }
 
@@ -52,9 +56,8 @@ namespace AcgnuX.WindowX
         {
             //查询条件
             var condition = new StringBuilder();
-            var context = DataContext as PianoScoreDownloadRecordViewModel;
-            var downloadList = context.DownloadRecordList;
-            var filterBox = context.FilterBoxList;
+            var downloadList = mControlContext.DownloadRecordList;
+            var filterBox = mControlContext.FilterBoxList;
             //循环容器获取选中的项
             var checkedBox = filterBox.Where(box => box.IsChecked);
             foreach (var item in checkedBox)
@@ -131,7 +134,7 @@ namespace AcgnuX.WindowX
             if (null == record) return;
             var pianoScore = new PianoScore()
             {
-                autoDownload = true,
+                AutoDownload = true,
                 id = record.Ypid + 1
             };
             editConfirmHnadler?.Invoke(pianoScore);
@@ -146,8 +149,7 @@ namespace AcgnuX.WindowX
             if (DataUtil.IsEmptyCollection(DownloadRecordDataGrid.SelectedItems)) return;
             //获取选中的ID, 一次性删除
             var ids = "";
-            var context = DataContext as PianoScoreDownloadRecordViewModel;
-            var downloadList = context.DownloadRecordList;
+            var downloadList = mControlContext.DownloadRecordList;
             while (DownloadRecordDataGrid.SelectedItems.Count > 0)
             {
                 //拼接ID
@@ -170,8 +172,7 @@ namespace AcgnuX.WindowX
             Dispatcher.Invoke(() =>
             {
                 var dataRow = SQLite.SqlRow(string.Format("SELECT id, ypid, name, strftime('%Y-%m-%d %H:%M:%S', create_time) create_time, result  FROM tan8_music_down_record WHERE ypid = {0} ORDER BY create_time DESC LIMIT 1", pianoScore.id));
-                var context = DataContext as PianoScoreDownloadRecordViewModel;
-                var downloadList = context.DownloadRecordList;
+                var downloadList = mControlContext.DownloadRecordList;
                 downloadList.Insert(0, new Tan8SheetDownloadRecord()
                 {
                     Id = Convert.ToInt32(dataRow[0]),
@@ -187,10 +188,12 @@ namespace AcgnuX.WindowX
         /// 重写窗口关闭事件
         /// </summary>
         /// <param name="e"></param>
+        /**
         protected override void OnClosing(CancelEventArgs e)
         {
             e.Cancel = true;  //标识取消close
-            this.Hide();      // 隐藏, 方便再次调用show()
+            Hide();      // 隐藏, 方便再次调用show()
         }
+        **/
     }
 }

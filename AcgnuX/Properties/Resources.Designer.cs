@@ -233,6 +233,24 @@ namespace AcgnuX.Properties {
         }
         
         /// <summary>
+        ///   查找类似 下载结果 的本地化字符串。
+        /// </summary>
+        public static string S_DownloadResult {
+            get {
+                return ResourceManager.GetString("S_DownloadResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 下载时间 的本地化字符串。
+        /// </summary>
+        public static string S_DownloadTime {
+            get {
+                return ResourceManager.GetString("S_DownloadTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 编辑账号 的本地化字符串。
         /// </summary>
         public static string S_EditAccount {
@@ -526,6 +544,15 @@ namespace AcgnuX.Properties {
         public static string S_UpdateTime {
             get {
                 return ResourceManager.GetString("S_UpdateTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 使用代理 的本地化字符串。
+        /// </summary>
+        public static string S_UseProxy {
+            get {
+                return ResourceManager.GetString("S_UseProxy", resourceCulture);
             }
         }
     }

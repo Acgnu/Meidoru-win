@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:AcgnuX.WindowX.Dialog"
         xmlns:res="clr-namespace:AcgnuX.Properties"
         mc:Ignorable="d"
-        Title="{x:Static res:Resources.S_EditSyncConfig}" Height="170" Width="400" Style="{StaticResource DialogWindowBaseStyle}" Loaded="OnDialogLoaded">
+        Title="{x:Static res:Resources.S_EditSyncConfig}" Height="190" Width="420" Style="{StaticResource DialogWindowBaseStyle}" Loaded="OnDialogLoaded">
     
     <Window.Icon>
         <DrawingImage>

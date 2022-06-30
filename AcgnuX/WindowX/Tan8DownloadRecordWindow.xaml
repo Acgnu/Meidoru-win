@@ -6,11 +6,11 @@
         xmlns:local="clr-namespace:AcgnuX.WindowX.Dialog"
         xmlns:res="clr-namespace:AcgnuX.Properties"
         mc:Ignorable="d"
-        Title="{x:Static res:Resources.S_DownloadRecord}" Height="500" Width="600" Style="{StaticResource CommonWindowStyle}" Loaded="OnWindowLoaded">
+        Title="{x:Static res:Resources.S_DownloadRecord}" Height="500" Width="600" Style="{StaticResource DialogWindowBaseStyle}" Loaded="OnWindowLoaded">
 
-    <Window.DataContext>
+    <!--<Window.DataContext>
         <Binding Path="Tan8DownloadRecord" Source="{StaticResource Locator}"></Binding>
-    </Window.DataContext>
+    </Window.DataContext>-->
     
     <Window.Icon>
         <DrawingImage>
@@ -54,7 +54,7 @@
     </Window.Resources>
 
     <DockPanel Margin="4 5 0 0" Grid.Column="1" >
-        <ItemsControl ItemsSource="{Binding FilterBoxList}" Name="FilterBoxItemsControl" DockPanel.Dock="Top">
+        <ItemsControl Name="FilterBoxItemsControl" DockPanel.Dock="Top">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <CheckBox Checked="OnDownloadRecordConditionCheckboxClick" Unchecked="OnDownloadRecordConditionCheckboxClick" Content="{Binding Title}" Tag="{Binding Value}" IsChecked="{Binding IsChecked}" Style="{StaticResource PianoScoreConditionCbStyle}" Template="{DynamicResource FilterBoxCheckBoxControlTemplate}"/>
@@ -66,7 +66,7 @@
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
-        <DataGrid Name="DownloadRecordDataGrid" Style="{StaticResource commonDataGrid}" Template="{DynamicResource BaseDataGridControlTemplate}" ItemsSource="{Binding DownloadRecordList}" DockPanel.Dock="Bottom" 
+        <DataGrid Name="DownloadRecordDataGrid" Style="{StaticResource commonDataGrid}" Template="{DynamicResource BaseDataGridControlTemplate}" DockPanel.Dock="Bottom" 
                               PreviewKeyDown="OnDownloadRecordGridKeyDown">
             <DataGrid.ContextMenu>
                 <ContextMenu>
@@ -77,8 +77,8 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Ypid}" Header="{x:Static res:Resources.S_MusicId}" Width="0.5*" />
                 <DataGridTextColumn Binding="{Binding Name}" Header="{x:Static res:Resources.S_Name}" Width="1.5*" />
-                <DataGridTextColumn Binding="{Binding Create_time}" Header="下载时间" Width="*" />
-                <DataGridTextColumn Binding="{Binding Result}" Header="下载结果" Width="*" />
+                <DataGridTextColumn Binding="{Binding Create_time}" Header="{x:Static res:Resources.S_DownloadTime}" Width="*" />
+                <DataGridTextColumn Binding="{Binding Result}" Header="{x:Static res:Resources.S_DownloadResult}" Width="*" />
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

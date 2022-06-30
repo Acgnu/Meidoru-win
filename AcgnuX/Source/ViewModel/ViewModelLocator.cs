@@ -49,7 +49,7 @@ namespace AcgnuX.Source.ViewModel
 
         public MainWindowViewModel Main { get { return ServiceLocator.Current.GetInstance<MainWindowViewModel>(); } }
 
-        public PianoScoreDownloadRecordViewModel Tan8DownloadRecord { get { return ServiceLocator.Current.GetInstance<PianoScoreDownloadRecordViewModel>(); } }
+        //public PianoScoreDownloadRecordViewModel Tan8DownloadRecord { get { return ServiceLocator.Current.GetInstance<PianoScoreDownloadRecordViewModel>(); } }
 
         public Tan8PlayerViewModel Tan8Player { get { return ServiceLocator.Current.GetInstance<Tan8PlayerViewModel>(); } }
 

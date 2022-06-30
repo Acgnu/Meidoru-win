@@ -6,9 +6,9 @@
         <Setter Property="FontSize" Value="13" />
         <Setter Property="Foreground" Value="#FF333333" />
         <!--不允许透明-->
-        <Setter Property="AllowsTransparency" Value="False" />
+        <Setter Property="AllowsTransparency" Value="True" />
         <!--单边框样式-->
-        <Setter Property="WindowStyle" Value="SingleBorderWindow" />
+        <Setter Property="WindowStyle" Value="None" />
         <!--边框样式-->
         <Setter Property="WindowChrome.WindowChrome">
             <Setter.Value>
@@ -18,18 +18,32 @@
                       GlassFrameThickness="0"/>
             </Setter.Value>
         </Setter>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <RotateTransform/>
+                </TransformGroup>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="RenderTransformOrigin" Value="0.5, 0.5" />
     </Style>
 
     <!--对话框window基本样式-->
     <Style x:Key="DialogWindowBaseStyle" TargetType="Window" BasedOn="{StaticResource WindowBaseStyle}">
-        <Setter Property="ResizeMode" Value="NoResize" />
-        <Setter Property="ShowInTaskbar" Value="False" />
+        <Setter Property="ResizeMode" Value="{Binding DialogResizeMode, FallbackValue=NoResize}" />
+        <Setter Property="ShowInTaskbar" Value="{Binding ShowInTaskBar, FallbackValue=False}" />
         <!--内容模板-->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Window}">
-                    <Border Background ="{StaticResource PopupWindowBackgroundImg}" BorderBrush="LightGray" BorderThickness="1" SnapsToDevicePixels="True">
-                        <Grid Background="Transparent" SnapsToDevicePixels="True">
+                    <Border Padding="10">
+                        <Grid Background="{DynamicResource MainWindowBackgroundColorBrush}" SnapsToDevicePixels="True">
+                            <Border Background ="{StaticResource PopupWindowBackgroundImg}" BorderBrush="LightGray" BorderThickness="1" SnapsToDevicePixels="True">
+                                <Border.Effect>
+                                    <DropShadowEffect ShadowDepth="0" Opacity="0.6" BlurRadius="10"/>
+                                </Border.Effect>
+                            </Border>
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <!--定义标题栏高度-->
@@ -53,13 +67,33 @@
                                             </Viewbox>
                                         </StackPanel>
                                     </Border>
-                                    <!--对话框关闭按钮-->
-                                    <Button Grid.Column="1"  WindowChrome.IsHitTestVisibleInChrome="True"   
-                                        Command="{Binding CloseCommand}" 
-                                        Padding="15,1" Content="✕"
-                                        Style="{DynamicResource NoneStyleButtonStyle}" 
-                                        Template="{DynamicResource WindowCloseButtonTemplate}">
-                                    </Button>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" 
+                                                Command="{Binding MinimizeCommand}" 
+                                                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
+                                                Content="_" 
+                                                Padding="15,1" 
+                                                Style="{DynamicResource NoneStyleButtonStyle}" 
+                                                Template="{DynamicResource CommonNoStyleButtonTemplate}"
+                                                Visibility="{Binding CanMinimize, FallbackValue=False}"/>
+                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" 
+                                                Command="{Binding MaximizeCommand}" 
+                                                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
+                                                Content="☐" 
+                                                Padding="15,1" 
+                                                Style="{DynamicResource NoneStyleButtonStyle}" 
+                                                Template="{DynamicResource CommonNoStyleButtonTemplate}"
+                                                Visibility="{Binding CanMaxmize, FallbackValue=False}"/>
+                                        <!--对话框关闭按钮-->
+                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" 
+                                                Name="CloseDialogButton"
+                                                Command="{Binding CloseCommand}" 
+                                                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
+                                                Content="✕" 
+                                                Padding="15,1" 
+                                                Style="{DynamicResource NoneStyleButtonStyle}" 
+                                                Template="{DynamicResource WindowCloseButtonTemplate}"/>
+                                    </StackPanel>
                                 </Grid>
                                 <!--主内容-->
                                 <Border Grid.Row="1" Padding="5" SnapsToDevicePixels="True">
@@ -68,6 +102,42 @@
                             </Grid>
                         </Grid>
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation 
+                                            Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" 
+                                            From="0.97" To="1" Duration="0:0:0.15" AccelerationRatio="0.2" />
+                                        <DoubleAnimation 
+                                            Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" 
+                                            From="0.97" To="1" Duration="0:0:0.15" AccelerationRatio="0.2" />
+                                        <DoubleAnimation 
+                                             Storyboard.TargetProperty="Opacity" 
+                                            From="0" To="1" Duration="0:0:0.15" AccelerationRatio="0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                        <EventTrigger SourceName="CloseDialogButton" RoutedEvent="Button.Click">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation 
+                                            Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" 
+                                            From="1" To="0.97" Duration="0:0:0.15" DecelerationRatio="0.2"/>
+                                        <DoubleAnimation 
+                                            Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" 
+                                            From="1" To="0.97" Duration="0:0:0.15" DecelerationRatio="0.2" />
+                                        <DoubleAnimation 
+                                            Storyboard.TargetProperty="Opacity" 
+                                            From="1" To="0"  Duration="0:0:0.15" DecelerationRatio="0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -80,14 +150,14 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Window}">
-                    <Border Background="{DynamicResource MainWindowBackgroundColorBrush}" >
-                        <Grid Background="{DynamicResource MainWindowBackgroundImg}">
+                    <Border Padding="10">
+                        <Grid Background="{DynamicResource MainWindowBackgroundColorBrush}">
                             <!--<Border x:Name="Container" Background="{x:Null}"/>-->
-                            <!--<Border Background="{x:Null}" >
-                            <Border.Effect>
-                                <DropShadowEffect ShadowDepth="0" Opacity="0.5" />
-                            </Border.Effect>
-                        </Border>-->
+                            <Border Background="{DynamicResource MainWindowBackgroundImg}">
+                                <Border.Effect>
+                                    <DropShadowEffect ShadowDepth="0" Opacity="0.6" BlurRadius="10"/>
+                                </Border.Effect>
+                            </Border>
                             <Grid>
                                 <!--<Grid.OpacityMask>
                                 <VisualBrush Visual="{Binding ElementName=Container}" />
@@ -108,59 +178,6 @@
                                         <StackPanel Orientation="Horizontal">
                                             <!--图标样式-->
                                             <Image Source="..\..\Assets\Ico\favicon.ico" />
-                                            <!--标题文字-->
-                                            <Viewbox Grid.Column="1" Margin="5 0 0 0">
-                                                <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" />
-                                            </Viewbox>
-                                        </StackPanel>
-                                    </Border>
-
-                                    <!--主窗口操作按钮-->
-                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MinimizeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="_" Padding="15 6 15 6" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource CommonNoStyleButtonTemplate}"/>
-                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MaximizeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="☐" Padding="15 6 15 2" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource CommonNoStyleButtonTemplate}"/>
-                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding CloseCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="✕" Padding="15 6 15 4" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource WindowCloseButtonTemplate}"/>
-                                    </StackPanel>
-                                </Grid>
-
-                                <!--主内容-->
-                                <Border Grid.Row="1">
-                                    <ContentPresenter Content="{TemplateBinding Content}" />
-                                </Border>
-                            </Grid>
-                        </Grid>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <!--一般口样式-->
-    <Style TargetType="Window" x:Key="CommonWindowStyle" BasedOn="{StaticResource WindowBaseStyle}">
-        <Setter Property="UseLayoutRounding" Value="True" />
-        <!--内容模板-->
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type Window}">
-                    <Border Background ="{StaticResource PopupWindowBackgroundImg}" BorderBrush="LightGray" BorderThickness="1" SnapsToDevicePixels="True">
-                        <Grid>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <!--定义标题栏高度-->
-                                    <RowDefinition Height="{Binding TitleHeightGridLength, FallbackValue=30}" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-                                <!--标题栏背景色-->
-                                <Grid Grid.Column="0" Panel.ZIndex="1">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <!--图标, 标题容器-->
-                                    <Border Padding="5" Grid.Column="0">
-                                        <StackPanel Orientation="Horizontal">
-                                            <!--图标样式-->
-                                            <Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Icon}" />
                                             <!--标题文字-->
                                             <Viewbox Grid.Column="1" Margin="5 0 0 0">
                                                 <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" />

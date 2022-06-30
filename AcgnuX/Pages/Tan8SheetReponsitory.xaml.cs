@@ -51,6 +51,8 @@ namespace AcgnuX.Pages
         private HttpWebServer mTan8WebListener;
         //标识是否自动下载
         private bool isAutoDownload = false;
+        //标识是否使用代理下载
+        private bool IsUseProxyDownload = true;
         //标识是否中止任务
         private bool isTaskStop = false;
         //下载进度变更事件
@@ -58,7 +60,7 @@ namespace AcgnuX.Pages
         //曲谱下载完成事件
         public event Tan8SheetDownloadFinishHandler OnDownloadFinish;
         //下载记录窗口
-        private Tan8DownloadRecordWindow mDownloadRecordWindow;
+        //private Tan8DownloadRecordWindow mDownloadRecordWindow;
         //标记任务是否来自queue
         private bool mIsQueueTask = false;
         //需要下载的任务列表
@@ -303,9 +305,11 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnDownloadListButtonClick(object sender, RoutedEventArgs e)
         {
-            if(null == mDownloadRecordWindow)
+            Tan8DownloadRecordWindow mDownloadRecordWindow = null;
+            if (null == mDownloadRecordWindow)
             {
                 mDownloadRecordWindow = new Tan8DownloadRecordWindow();
+                mDownloadRecordWindow.ShowInTaskbar = true;
                 mDownloadRecordWindow.editConfirmHnadler += DownLoadTan8MusicV2;
                 OnDownloadFinish += mDownloadRecordWindow.OnTan8SheetDownloadFinish;
             }
@@ -424,6 +428,7 @@ namespace AcgnuX.Pages
             {
                 mIsQueueTask = false;
                 isAutoDownload = false;
+                IsUseProxyDownload = true;
                 Tan8PlayUtil.Exit();
                 //任务停止, 上报进度100%
                 OnTaskBarEvent?.Invoke(WindowUtil.CalcProgress(new MainWindowStatusNotify()
@@ -537,11 +542,12 @@ namespace AcgnuX.Pages
                 pianoScore = new PianoScore
                 {
                     id = lastYpid,
-                    autoDownload = true
+                    AutoDownload = true
                 };
             }
             isTaskStop = false;
-            isAutoDownload = pianoScore.autoDownload;
+            isAutoDownload = pianoScore.AutoDownload;
+            IsUseProxyDownload = pianoScore.UseProxy;
             //打开播放器, 触发主动下载
             Tan8PlayUtil.Exit();
             Tan8PlayUtil.ExePlayById(pianoScore.id.GetValueOrDefault(), 1, true);
@@ -817,12 +823,20 @@ namespace AcgnuX.Pages
             OnTaskBarEvent?.Invoke(WindowUtil.CalcProgress(winProgress, string.Format("乐谱ID: {0} 下载地址解析成功, 开始加载乐谱信息", pianoScore.id), 10));
 
             //step.2 请求乐谱地址, 得到乐谱信息
-            var proxyAddress = ProxyFactory.GetFirstProxy();
+            string proxyAddress = null;
+            if (IsUseProxyDownload)
+            {
+                proxyAddress = ProxyFactory.GetFirstProxy();
+            }
             var ypinfostring = RequestUtil.CrawlContentFromWebsit(url, proxyAddress).data;
             //var ypinfostring = @"<html><body>yp_create_time=<yp_create_time>1573183398</yp_create_time><br/>yp_title=<yp_title>说好不哭（文武贝钢琴版）</yp_title><br/>yp_page_count=<yp_page_count>3</yp_page_count><br/>yp_page_width=<yp_page_width>1089</yp_page_width><br/>yp_page_height=<yp_page_height>1540</yp_page_height><br/>yp_is_dadiao=<yp_is_dadiao>1</yp_is_dadiao><br/>yp_key_note=<yp_key_note>10</yp_key_note><br/>yp_is_yanyin=<yp_is_yanyin>1</yp_is_yanyin><br/>ypad_url=<ypad_url>http://www.tan8.com//yuepuku/132/66138/66138_hegiahcc.ypad</ypad_url>ypad_url2=<ypad_url2>http://www.tan8.com//yuepuku/132/66138/66138_hegiahcc.ypa2</ypad_url2></body></html>";
             //校验返回的乐谱信息
             var checkResult = CheckYuepuInfo(ypinfostring);
-            ProxyFactory.RemoveProxy(proxyAddress, checkResult == Tan8SheetDownloadResult.VISTI_REACH_LIMIT ? 0 : 15 * 1000);
+            if (IsUseProxyDownload)
+            {
+                ProxyFactory.RemoveProxy(proxyAddress, checkResult == Tan8SheetDownloadResult.VISTI_REACH_LIMIT ? 0 : 15 * 1000);
+            }
+            
             if (checkResult != Tan8SheetDownloadResult.SUCCESS)
             {
                 return new InvokeResult<object>()

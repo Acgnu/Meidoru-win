@@ -175,6 +175,12 @@
   <data name="S_DownloadRecord" xml:space="preserve">
     <value>下载记录</value>
   </data>
+  <data name="S_DownloadResult" xml:space="preserve">
+    <value>下载结果</value>
+  </data>
+  <data name="S_DownloadTime" xml:space="preserve">
+    <value>下载时间</value>
+  </data>
   <data name="S_EditAccount" xml:space="preserve">
     <value>编辑账号</value>
   </data>
@@ -273,5 +279,8 @@
   </data>
   <data name="S_UpdateTime" xml:space="preserve">
     <value>更新时间</value>
+  </data>
+  <data name="S_UseProxy" xml:space="preserve">
+    <value>使用代理</value>
   </data>
 </root>

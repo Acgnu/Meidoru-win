@@ -68,7 +68,8 @@ namespace AcgnuX.WindowX.Dialog
             {
                 id = Convert.ToInt32(ypid),
                 Name = TextBoxName.Text,
-                autoDownload = AutoDownloadCheckBox.IsChecked.GetValueOrDefault()
+                AutoDownload = AutoDownloadCheckBox.IsChecked.GetValueOrDefault(),
+                UseProxy = UseProxyCheckBox.IsChecked.GetValueOrDefault()
             };
         }
 
@@ -79,8 +80,18 @@ namespace AcgnuX.WindowX.Dialog
         /// <param name="e"></param>
         private void OnCheckboxChange(object sender, RoutedEventArgs e)
         {
-            //更改名称输入框禁用状态
-            TextBoxName.IsEnabled = !AutoDownloadCheckBox.IsChecked.GetValueOrDefault();
+            var ckBox = sender as CheckBox;
+            //自动下载切换
+            if(ckBox.Name == AutoDownloadCheckBox.Name)
+            {
+                //更改名称输入框禁用状态
+                TextBoxName.IsEnabled = !ckBox.IsChecked.GetValueOrDefault();
+            }
+            //启用代理切换
+            if(ckBox.Name == UseProxyCheckBox.Name)
+            {
+                //Do Nothing
+            }
         }
     }
 }

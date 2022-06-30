@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:AcgnuX.WindowX.Dialog"
         xmlns:res="clr-namespace:AcgnuX.Properties"
         mc:Ignorable="d"
-        Title="{Binding DialogTitle}" Height="150" Width="300" Style="{StaticResource DialogWindowBaseStyle}">
+        Title="{Binding DialogTitle}" Height="170" Width="320" Style="{StaticResource DialogWindowBaseStyle}">
 
     <Window.Icon>
         <DrawingImage>

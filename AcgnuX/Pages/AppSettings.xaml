@@ -46,7 +46,7 @@
                         <Button x:Name="AddCrawlButton" Style="{StaticResource AddButtonStyle}" HorizontalAlignment="Right" Click="OnAddCrawlClick">
                             <WrapPanel>
                                 <Path Style="{StaticResource CommonAddButtonPathIcoStyle}"/>
-                                <TextBlock Text="{x:Static res:Resources.S_Confirm}" Margin="5 0 0 0" />
+                                <TextBlock Text="{x:Static res:Resources.S_Add}" Margin="5 0 0 0" />
                             </WrapPanel>
                         </Button>
                     </DockPanel>
