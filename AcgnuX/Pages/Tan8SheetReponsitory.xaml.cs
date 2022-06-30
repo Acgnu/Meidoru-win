@@ -309,7 +309,7 @@ namespace AcgnuX.Pages
             if (null == mDownloadRecordWindow)
             {
                 mDownloadRecordWindow = new Tan8DownloadRecordWindow();
-                mDownloadRecordWindow.ShowInTaskbar = true;
+                //mDownloadRecordWindow.ShowInTaskbar = true;
                 mDownloadRecordWindow.editConfirmHnadler += DownLoadTan8MusicV2;
                 OnDownloadFinish += mDownloadRecordWindow.OnTan8SheetDownloadFinish;
             }
