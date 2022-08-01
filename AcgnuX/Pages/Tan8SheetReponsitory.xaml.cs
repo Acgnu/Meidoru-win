@@ -194,7 +194,7 @@ namespace AcgnuX.Pages
                     {
                         id = Convert.ToInt32(dataRow["ypid"]),
                         Name = Convert.ToString(dataRow["name"]),
-                        //star = Convert.ToByte(dataRow["star"]),
+                        Star = Convert.ToByte(dataRow["star"]),
                         YpCount = Convert.ToByte(dataRow["yp_count"]),
                         Ver = Convert.ToByte(dataRow["ver"]),
                     });
@@ -282,6 +282,7 @@ namespace AcgnuX.Pages
                 Name = pianoScore.Name,
                 id = pianoScore.id,
                 Ver = pianoScore.Ver,
+                Star = pianoScore.Star,
                 YpCount = pianoScore.YpCount
             };
         }
@@ -409,8 +410,12 @@ namespace AcgnuX.Pages
                 new SQLiteParameter("@name", pianoScore.Name),
                 new SQLiteParameter("@ypid", pianoScore.id)
             });
-            //更新列表显示
-            mPianoScoreList[PianoScoreListBox.SelectedIndex].NameView = pianoScore.Name;
+            //更新显示信息
+            var selectedVm = mPianoScoreList[PianoScoreListBox.SelectedIndex];
+            var curIdx = PianoScoreListBox.SelectedIndex;
+            mPianoScoreList.RemoveAt(curIdx);
+            selectedVm.Name = pianoScore.Name;
+            mPianoScoreList.Insert(curIdx, CreateViewInstance(selectedVm));
             return new InvokeResult<PianoScore>()
             {
                 success = true
@@ -1411,7 +1416,7 @@ namespace AcgnuX.Pages
 
             //检查曲谱可否播放
             var tan8Music = SQLite.SqlRow(string.Format("SELECT name, ver FROM tan8_music WHERE ypid = {0}", (selected as PianoScore).id.GetValueOrDefault()));
-            var folderName = tan8Music[0];
+            //var folderName = tan8Music[0];
             var ver = Convert.ToInt32(tan8Music[1]);
             var playFileName = ver == 1 ? "play.ypa2" : "play.ypdx";
             var playFilePath = Path.Combine(Settings.Default.Tan8HomeDir, (selected as PianoScore).id.GetValueOrDefault().ToString(), playFileName);
@@ -1430,6 +1435,45 @@ namespace AcgnuX.Pages
             //播放所选曲谱
             Tan8PlayUtil.Exit();
             Tan8PlayUtil.ExePlayById((selected as PianoScore).id.GetValueOrDefault(), ver, false);
+        }
+
+        /// <summary>
+        /// 收藏按钮点击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnCollectIconClick(object sender, MouseButtonEventArgs e)
+        {
+            //事件按钮对象
+            var eventLabel = (Label) sender;
+
+            //根据触发按钮获取点击的行
+            var selected = ((ListBoxItem)PianoScoreListBox.ContainerFromElement(eventLabel)).Content;
+
+            //更新乐谱收藏信息
+            var targetVm = selected as PianoScoreViewModel;
+            var dbStar = SQLite.sqlone("SELECT star FROM tan8_music WHERE ypid = @ypid", 
+                new SQLiteParameter[] { new SQLiteParameter("@ypid", targetVm.id.GetValueOrDefault())});
+            var nStarVal = 0;
+            if (Convert.ToInt32(dbStar) == 0)
+            {
+                nStarVal = 1;
+            }
+            SQLite.ExecuteNonQuery("UPDATE tan8_music SET star = @star WHERE ypid = @ypid",
+                new List<SQLiteParameter> {
+                    new SQLiteParameter("@star", nStarVal), new SQLiteParameter("@ypid", targetVm.id.GetValueOrDefault())
+                });
+            //更新显示信息
+            for(var i = 0; i < mPianoScoreList.Count; i++)
+            {
+                if(mPianoScoreList[i].id.GetValueOrDefault().Equals(targetVm.id.GetValueOrDefault()))
+                {
+                    mPianoScoreList.RemoveAt(i);
+                    targetVm.Star = Convert.ToByte(nStarVal);
+                    mPianoScoreList.Insert(i, CreateViewInstance(targetVm));
+                    break;
+                }
+            }
         }
     }
 }

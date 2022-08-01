@@ -12,7 +12,7 @@ namespace AcgnuX.Source.Model
         // 乐谱名称
         public string Name { get; set; }
         // 喜好评级 1 - 5
-        public byte star { get; set; }
+        public byte Star { get; set; }
         //封面图
         public ImageSource cover { get; set; }
         //是否自动下载 (下载需要)

@@ -37,7 +37,20 @@ namespace AcgnuX.Source.ViewModel
         {
             get
             {
-                return Ver == 1 ? "🎵" : "🎹";
+                return Ver == 1 ? "🎵 Flash" : "🎹";      
+            }
+        }
+
+        public string IsCollectView
+        {
+            get
+            {
+                return Star > 0 ? "🖤" : "🤍";
+            }
+            set
+            {
+                Star = System.Convert.ToByte(value);
+                OnPropertyChanged(nameof(Star));
             }
         }
     }
