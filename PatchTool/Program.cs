@@ -164,10 +164,10 @@ namespace PatchTool
         /// </summary>
         /// <param name="dbPath"></param>
         /// <param name="savePath"></param>
-        private static void ShowNameNotExistsFolder(string dbPath, string savePath)
+        private async static void ShowNameNotExistsFolder(string dbPath, string savePath)
         {
             Console.WriteLine("检查仅存在数据库中的乐谱");
-            InitDB(dbPath);
+            await InitDB(dbPath);
             var totalNe = 0;
             var cur = 0;
             var delSQL = new StringBuilder("DELETE FROM tan8_music WHERE ypid in (");
@@ -203,10 +203,10 @@ namespace PatchTool
         /// <summary>
         /// ckdir -fD:\\丢雷老谋.txt -d
         /// </summary>
-        private static void ShowFolderNotExistsDB(string dbPath, string savePath, bool autoDel)
+        private async static void ShowFolderNotExistsDB(string dbPath, string savePath, bool autoDel)
         {
             Console.WriteLine("检查不存在于数据的文件夹");
-            InitDB(dbPath);
+            await InitDB(dbPath);
             //找出文件夹存在, 而数据库中不存在的
             var ypHomePath = Settings.Default.Tan8HomeDir;
             var dir = Directory.GetDirectories(ypHomePath);
@@ -244,10 +244,10 @@ namespace PatchTool
         /// <summary>
         /// 重新下载重名的
         /// </summary>
-        private static void CheckRepeat(string dbPath, string savePath, bool autoDel)
+        private async static void CheckRepeat(string dbPath, string savePath, bool autoDel)
         {
             Console.WriteLine("检查并重新下载重名的乐谱");
-            InitDB(dbPath);
+            await InitDB(dbPath);
             var ypHomePath = Settings.Default.Tan8HomeDir;
             var dataSet = SQLite.SqlTable("SELECT count(1) num, name FROM tan8_music GROUP BY name HAVING num > 1 ORDER BY num DESC", null);
             var reDownBuilder = new StringBuilder("INSERT INTO tan8_music_down_task values");
@@ -298,10 +298,10 @@ namespace PatchTool
         /// <summary>
         /// 重新下载旧版本的
         /// </summary>
-        private static void RedownloadOldVer(string dbPath, int maxYpid)
+        private async static void RedownloadOldVer(string dbPath, int maxYpid)
         {
             Console.WriteLine("检查并重新下载旧版本的乐谱播放文件");
-            InitDB(dbPath);
+            await InitDB(dbPath);
             //找出所有旧版本的谱子
             var dataSet = SQLite.SqlTable("select ypid, name, origin_data from tan8_music where ypid <= @ypid", new List<SQLiteParameter>()
             {
@@ -327,9 +327,9 @@ namespace PatchTool
         /// </summary>
         /// <param name="dbPath"></param>
         /// <param name="autoDel"></param>
-        private static void Clean0PageYuepu(string dbPath, bool autoDel)
+        private async static void Clean0PageYuepu(string dbPath, bool autoDel)
         {
-            InitDB(dbPath);
+            await InitDB(dbPath);
             var total = 0;
             var ypHomePath = Settings.Default.Tan8HomeDir;
             var yp0Ypids = SQLite.sqlcolumn("SELECT ypid FROM tan8_music WHERE yp_count = 0", null);
@@ -367,7 +367,7 @@ namespace PatchTool
         /// <param name="dbPath"></param>
         /// <param name="oldHomePath"></param>
         /// <param name="autoCopy"></param>
-        private static void CheckOldHome(string dbPath, string oldHomePath, bool autoCopy)
+        private async static void CheckOldHome(string dbPath, string oldHomePath, bool autoCopy)
         {
             Console.WriteLine("检查旧乐谱谱库");
             if (string.IsNullOrEmpty(oldHomePath))
@@ -375,7 +375,7 @@ namespace PatchTool
                 Console.WriteLine("没有指定旧乐谱路径");
                 return;
             }
-            InitDB(dbPath);
+            await InitDB(dbPath);
             var ypHomePath = Settings.Default.Tan8HomeDir;
             var dataSet = SQLite.SqlTable("SELECT * FROM tan8_music_old", null);
             var total = dataSet.Rows.Count;
@@ -432,7 +432,7 @@ namespace PatchTool
             Console.WriteLine("共复制" + copyTotal + "个目录");
         }
 
-        private async static void InitDB(string dbPath)
+        private async static Task<bool> InitDB(string dbPath)
         {
             if (string.IsNullOrEmpty(dbPath))
             {
@@ -442,10 +442,7 @@ namespace PatchTool
                 //如果没有指定数据库文件, 则使用默认
                 dbPath = Settings.Default.DBFilePath;
             }
-            if (!await SQLite.SetDbFilePath(dbPath))
-            {
-                Console.WriteLine("数据库没有正确配置");
-            }
+            return await SQLite.SetDbFilePath(dbPath);
         }
 
 
@@ -454,10 +451,10 @@ namespace PatchTool
         /// </summary>
         /// <param name="dbPath"></param>
         /// <param name="threadCount"></param>
-        private static void CheckSheetPreviewImg(string dbPath, int threadCount)
+        private async static void CheckSheetPreviewImg(string dbPath, int threadCount)
         {
             Console.WriteLine("执行上传乐谱首页任务, dbPath=" + dbPath + ", 线程数 = " + threadCount);
-            InitDB(dbPath);
+            await InitDB(dbPath);
             var ypHomePath = Settings.Default.Tan8HomeDir;
             if (string.IsNullOrEmpty(ypHomePath))
             {
@@ -551,10 +548,10 @@ namespace PatchTool
         /// </summary>
         /// <param name="dbPath">数据库路径</param>
         /// <param name="threadCount">最大线程数</param>
-        private static void CheckWhiteBlackPreview(string dbPath, bool overwrite, int threadCount)
+        private async static void CheckWhiteBlackPreview(string dbPath, bool overwrite, int threadCount)
         {
             Console.WriteLine("执行水印任务, dbPath=" + dbPath + ", 线程数 = " + threadCount);
-            InitDB(dbPath);
+            await InitDB(dbPath);
             var ypHomePath = Settings.Default.Tan8HomeDir;
             if(string.IsNullOrEmpty(ypHomePath))
             {
@@ -685,10 +682,10 @@ namespace PatchTool
             }
         }
 
-        private static void CheckDirName(string dbPath)
+        private async static void CheckDirName(string dbPath)
         {
             Console.WriteLine("重命名乐谱文件夹名称");
-            InitDB(dbPath);
+            await InitDB(dbPath);
             var ypHomePath = Settings.Default.Tan8HomeDir;
             if (string.IsNullOrEmpty(ypHomePath))
             {

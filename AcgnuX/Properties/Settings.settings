@@ -3,13 +3,13 @@
   <Profiles />
   <Settings>
     <Setting Name="AccountFilePath" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">E:\Codes\Chromium\loli\data\account.json</Value>
     </Setting>
     <Setting Name="Tan8HomeDir" Type="System.String" Scope="User">
-      <Value Profile="(Default)">E:\曲谱</Value>
+      <Value Profile="(Default)">H:\乐谱</Value>
     </Setting>
     <Setting Name="DBFilePath" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">E:\档案\master.db</Value>
     </Setting>
   </Settings>
 </SettingsFile>
