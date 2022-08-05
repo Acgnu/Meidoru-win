@@ -311,7 +311,7 @@ namespace AcgnuX.Pages
             {
                 mDownloadRecordWindow = new Tan8DownloadRecordWindow();
                 //mDownloadRecordWindow.ShowInTaskbar = true;
-                mDownloadRecordWindow.editConfirmHnadler += DownLoadTan8MusicV2;
+                mDownloadRecordWindow.editConfirmHnadler += TriggerTan8DownLoadTask;
                 OnDownloadFinish += mDownloadRecordWindow.OnTan8SheetDownloadFinish;
             }
             mDownloadRecordWindow.Show();
@@ -339,7 +339,7 @@ namespace AcgnuX.Pages
             {
                 //新增则绑定下载事件
                 //dialog.editConfirmHnadler += new EditConfirmHandler<PianoScore>(DownLoadTan8Music);
-                dialog.editConfirmHnadler += new EditConfirmHandler<PianoScore>(DownLoadTan8MusicV2);
+                dialog.editConfirmHnadler += new EditConfirmHandler<PianoScore>(TriggerTan8DownLoadTask);
             }
             else
             {
@@ -431,6 +431,7 @@ namespace AcgnuX.Pages
             //判断任务是否已经中止
             if (isTaskStop)
             {
+                isTaskStop = false;
                 mIsQueueTask = false;
                 isAutoDownload = false;
                 IsUseProxyDownload = true;
@@ -513,7 +514,7 @@ namespace AcgnuX.Pages
         /// </summary>
         /// <param name="pianoScore">曲谱对象</param>
         /// <returns>公共函数返回结果</returns>
-        private InvokeResult<PianoScore> DownLoadTan8MusicV2(PianoScore pianoScore)
+        private InvokeResult<PianoScore> TriggerTan8DownLoadTask(PianoScore pianoScore)
         {
             //校验基本参数
             if (null == pianoScore || null == pianoScore.id)
@@ -550,7 +551,6 @@ namespace AcgnuX.Pages
                     AutoDownload = true
                 };
             }
-            isTaskStop = false;
             isAutoDownload = pianoScore.AutoDownload;
             IsUseProxyDownload = pianoScore.UseProxy;
             //打开播放器, 触发主动下载
@@ -797,7 +797,7 @@ namespace AcgnuX.Pages
         ***/
 
         /// <summary>
-        ///  下载弹琴吧琴谱后台任务 (不汇报进度)
+        ///  下载弹琴吧琴谱后台任务
         /// </summary>
         /// <param name="pianoScore">乐谱信息</param>
         private InvokeResult<object> StartDownLoadV2(PianoScore pianoScore)
