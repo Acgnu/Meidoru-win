@@ -193,7 +193,15 @@ namespace AcgnuX.Pages
             else
             {
                 //修改替换原有未知的数据
-                accountList[PasswordDataGrid.SelectedIndex] = account;
+                for (var i = 0; i < accountList.Count; i++)
+                {
+                    var item = accountList[i];
+                    if (item.Id.GetValueOrDefault() == account.Id.GetValueOrDefault())
+                    {
+                        accountList[i] = account;
+                        break;
+                    }
+                }
             }
             //保存到文件
             FileUtil.SaveJsonToFile(accountList, Settings.Default.AccountFilePath);
