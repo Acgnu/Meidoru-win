@@ -120,7 +120,7 @@ namespace AcgnuX.Pages
             if (result.GetValueOrDefault())
             {
                 accountList.Remove(selected);
-                FileUtil.SaveJsonToFile(accountList, Settings.Default.AccountFilePath);
+                FileUtil.IncrSaveJsonToFile(accountList, Settings.Default.AccountFilePath);
             }
         }
 
@@ -204,7 +204,7 @@ namespace AcgnuX.Pages
                 }
             }
             //保存到文件
-            FileUtil.SaveJsonToFile(accountList, Settings.Default.AccountFilePath);
+            FileUtil.IncrSaveJsonToFile(accountList, Settings.Default.AccountFilePath);
 
             return InvokeSuccess(account);
         }

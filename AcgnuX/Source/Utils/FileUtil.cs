@@ -65,6 +65,27 @@ namespace AcgnuX.Source.Utils
         }
 
         /// <summary>
+        /// 增量将实体序列化为JSON存储到文件, 备份原文件
+        /// </summary>
+        /// <param name="data">目标数据</param>
+        /// <param name="JsonFileFullPath">JSON完整保存目录</param>
+        public static void IncrSaveJsonToFile(object data, string JsonFileFullPath)
+        {
+            if(File.Exists(JsonFileFullPath))
+            {
+                var originFileName = Path.GetFileNameWithoutExtension(JsonFileFullPath);
+                var originFileExtension = Path.GetExtension(JsonFileFullPath);
+                var orginFileDir = Path.GetDirectoryName(JsonFileFullPath);
+                var bakFileName = originFileName + ".bak" + originFileExtension;
+                var bakFileFullPath = Path.Combine(orginFileDir, bakFileName);
+                File.Copy(JsonFileFullPath, bakFileFullPath, true);
+            }
+            // Update json data string
+            var jsonData = JsonConvert.SerializeObject(data);
+            File.WriteAllText(JsonFileFullPath, jsonData);
+        }
+
+        /// <summary>
         /// 将文本保存至文件
         /// 文件存在则覆盖
         /// </summary>
