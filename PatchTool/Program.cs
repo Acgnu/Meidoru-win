@@ -50,6 +50,7 @@ namespace PatchTool
             var autoCopy = false;
             var savePath = string.Empty;
             var oldHomePath = string.Empty;
+            var ypHomePath = string.Empty;
             var dbPath = string.Empty;
             var threadCount = 5;
             var maxYpid = 0;
@@ -77,6 +78,7 @@ namespace PatchTool
             Console.WriteLine("7 [-d] [-o] [-t]\t检查并将数据库所有曲目生成去水印封面");
             Console.WriteLine("8 [-d] [-t]\t\t检查并上传乐谱图片");
             Console.WriteLine("9 [-d]\t\t\t以乐谱ID重命名文件夹");
+            Console.WriteLine("10 [-f] [-l]\t\tMD5排重乐谱");
             Console.WriteLine("e \t\t\t退出\n");
 
             Console.WriteLine("命令编号 [可选参数1] [可选参数n...] 例:1 -dD:\\master.db -fD:\\autosave -r");
@@ -84,6 +86,7 @@ namespace PatchTool
             Console.WriteLine("-c 自动复制");
             Console.WriteLine("-f 保存路径 例: -fC:\\Desktop\a.txt");
             Console.WriteLine("-h 旧乐谱路径 例: -hC:\\Desktop");
+            Console.WriteLine("-l 乐谱路径 例: -hC:\\Desktop");
             Console.WriteLine("-d 数据库路径 例: -dC:\\master.db");
             Console.WriteLine("-t 线程数量 默认5 例: -t10");
             Console.WriteLine("-i 最大乐谱ID 默认0 例: -i666");
@@ -123,6 +126,10 @@ namespace PatchTool
                         {
                             oldHomePath = arg.Substring(2);
                         }
+                        if (arg.StartsWith("-l"))
+                        {
+                            ypHomePath = arg.Substring(2);
+                        }
                         if (arg.Equals("-c"))
                         {
                             autoCopy = true;
@@ -149,6 +156,7 @@ namespace PatchTool
                     case "7": CheckWhiteBlackPreview(dbPath, overwrite, threadCount); break;
                     case "8": CheckSheetPreviewImg(dbPath, threadCount); break;
                     case "9": CheckDirName(dbPath); break;
+                    case "10": CheckFileMD5(savePath, ypHomePath); break;
                     default: Console.WriteLine("命令不正确"); break;
                 }
             }
@@ -704,6 +712,89 @@ namespace PatchTool
                 }
             }
             Console.WriteLine("重命名完成");
+        }
+
+        /// <summary>
+        /// 对播放文件执行MD5校验, 记录重复的乐谱ID
+        /// </summary>
+        /// <param name="dbPath"></param>
+        /// <param name="savePath"></param>
+        private static void CheckFileMD5(string savePath, string ypHomePath)
+        {
+            Console.WriteLine("MD5排重...");
+            ypHomePath = string.IsNullOrEmpty(ypHomePath) ? Settings.Default.Tan8HomeDir : ypHomePath;
+            if (string.IsNullOrEmpty(ypHomePath))
+            {
+                Console.WriteLine("无法获取乐谱路径, 先检查一下配置文件");
+                return;
+            }
+            var dir = Directory.GetDirectories(ypHomePath);
+            //key = md5, vaue = 路径
+            Dictionary<string, string> md5 = new Dictionary<string, string>();
+            //key = md5, value = 重复id集合
+            Dictionary<string, List<string>> repeat = new Dictionary<string, List<string>>();
+            for (var i = 0; i < dir.Length; i++)
+            {
+                //Console.Clear();
+                Console.WriteLine("进度 {0} / {1}", i + 1, dir.Length);
+                var d = dir[i];
+                var folderName = Path.GetFileName(d);
+                var playFileHash = string.Empty;
+                if(File.Exists(Path.Combine(d, "play.ypdx")))
+                {
+                    playFileHash = FileUtil.GetMD5(Path.Combine(d, "play.ypdx"));
+                } 
+                else if (File.Exists(Path.Combine(d, "play.ypa2")))
+                {
+                    playFileHash = FileUtil.GetMD5(Path.Combine(d, "play.ypa2"));
+                }
+                else
+                {
+                    continue;
+                }
+                if (md5.ContainsKey(playFileHash))
+                {
+                    if(repeat.ContainsKey(playFileHash))
+                    {
+                        repeat[playFileHash].Add(folderName);
+                    }
+                    else
+                    {
+                        repeat[playFileHash] = new List<string>()
+                        {
+                            md5[playFileHash],
+                            folderName
+                        };
+                    }
+                }
+                else
+                {
+                    md5[playFileHash] = folderName;
+                }
+            }
+
+            int repeatSheetNum = 0;
+            int repeatFileNum = 0;
+            StringBuilder sql = new StringBuilder();
+            foreach (var item in repeat)
+            {
+                sql.Append("SELECT * FROM tan8_music WHERE ypid IN (");
+                foreach (var ypid in item.Value)
+                {
+                    sql.Append(ypid).Append(",");
+                    repeatFileNum++;
+                }
+                sql.Remove(sql.Length - 1, 1);
+                sql.Append("); \n");
+                repeatSheetNum++;
+            }
+            Console.WriteLine(sql.ToString());
+            Console.WriteLine("检查完毕, 共 {0} 首乐谱重复, 共 {1} 个文件", repeatSheetNum, repeatFileNum);
+            if(!string.IsNullOrEmpty(savePath))
+            {
+                FileUtil.SaveStringToFile(sql.ToString(), Path.GetDirectoryName(savePath), Path.GetFileName(savePath));
+                Console.WriteLine("SQL文件已保存至{0}", savePath);
+            }
         }
     }
 }

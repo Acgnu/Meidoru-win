@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -403,6 +404,30 @@ namespace AcgnuX.Source.Utils
             { 
             }
             return null;
+        }
+
+        /// <summary>
+        /// 获取文件MD5
+        /// </summary>
+        /// <param name="fileFullPath"></param>
+        /// <returns></returns>
+        public static string GetMD5(string fileFullPath)
+        {
+            using (HashAlgorithm hash = HashAlgorithm.Create())
+            {
+                using (FileStream file1 = new FileStream(fileFullPath, FileMode.Open))
+                {
+                    byte[] buffer = hash.ComputeHash(file1);
+                    hash.Clear();
+                    //将字节数组转换成十六进制的字符串形式
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (int i = 0; i < buffer.Length; i++)
+                    {
+                        stringBuilder.Append(buffer[i].ToString("x2"));
+                    }
+                    return stringBuilder.ToString();
+                }
+            }
         }
 
         //public static JArray LoadJsonFile(string JsonFileFullPath)
