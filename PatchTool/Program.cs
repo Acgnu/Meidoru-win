@@ -79,6 +79,7 @@ namespace PatchTool
             Console.WriteLine("8 [-d] [-t]\t\t检查并上传乐谱图片");
             Console.WriteLine("9 [-d]\t\t\t以乐谱ID重命名文件夹");
             Console.WriteLine("10 [-f] [-l]\t\tMD5排重乐谱");
+            Console.WriteLine("11 [-d] [-l]\t\t进入按ID批量删除模式");
             Console.WriteLine("e \t\t\t退出\n");
 
             Console.WriteLine("命令编号 [可选参数1] [可选参数n...] 例:1 -dD:\\master.db -fD:\\autosave -r");
@@ -145,22 +146,31 @@ namespace PatchTool
                     }
                 }
 
+                SetDB(dbPath);
+
                 switch (command)
                 {
-                    case "1": ShowFolderNotExistsDB(dbPath, savePath, autoDel); break;
-                    case "2": Clean0PageYuepu(dbPath, autoDel); break;
-                    case "3": CheckRepeat(dbPath, savePath, autoDel); break;
-                    case "4": RedownloadOldVer(dbPath, maxYpid); break;
-                    case "5": ShowNameNotExistsFolder(dbPath, savePath); break;
-                    case "6": CheckOldHome(dbPath, oldHomePath, autoCopy); break;
-                    case "7": CheckWhiteBlackPreview(dbPath, overwrite, threadCount); break;
-                    case "8": CheckSheetPreviewImg(dbPath, threadCount); break;
-                    case "9": CheckDirName(dbPath); break;
+                    case "1": ShowFolderNotExistsDB(savePath, autoDel); break;
+                    case "2": Clean0PageYuepu(autoDel); break;
+                    case "3": CheckRepeat(savePath, autoDel); break;
+                    case "4": RedownloadOldVer(maxYpid); break;
+                    case "5": ShowNameNotExistsFolder(savePath); break;
+                    case "6": CheckOldHome(oldHomePath, autoCopy); break;
+                    case "7": CheckWhiteBlackPreview(overwrite, threadCount); break;
+                    case "8": CheckSheetPreviewImg(threadCount); break;
+                    case "9": CheckDirName(); break;
                     case "10": CheckFileMD5(savePath, ypHomePath); break;
+                    case "11": BatchDel(ypHomePath); break;
                     default: Console.WriteLine("命令不正确"); break;
                 }
             }
         }
+
+        private async static void SetDB(string dbPath)
+        {
+            await InitDB(dbPath);
+        }
+
 
         //private static void ShowTips()
         //{
@@ -172,10 +182,10 @@ namespace PatchTool
         /// </summary>
         /// <param name="dbPath"></param>
         /// <param name="savePath"></param>
-        private async static void ShowNameNotExistsFolder(string dbPath, string savePath)
+        private static void ShowNameNotExistsFolder(string savePath)
         {
             Console.WriteLine("检查仅存在数据库中的乐谱");
-            await InitDB(dbPath);
+
             var totalNe = 0;
             var cur = 0;
             var delSQL = new StringBuilder("DELETE FROM tan8_music WHERE ypid in (");
@@ -211,10 +221,9 @@ namespace PatchTool
         /// <summary>
         /// ckdir -fD:\\丢雷老谋.txt -d
         /// </summary>
-        private async static void ShowFolderNotExistsDB(string dbPath, string savePath, bool autoDel)
+        private static void ShowFolderNotExistsDB(string savePath, bool autoDel)
         {
             Console.WriteLine("检查不存在于数据的文件夹");
-            await InitDB(dbPath);
             //找出文件夹存在, 而数据库中不存在的
             var ypHomePath = Settings.Default.Tan8HomeDir;
             var dir = Directory.GetDirectories(ypHomePath);
@@ -252,10 +261,9 @@ namespace PatchTool
         /// <summary>
         /// 重新下载重名的
         /// </summary>
-        private async static void CheckRepeat(string dbPath, string savePath, bool autoDel)
+        private static void CheckRepeat(string savePath, bool autoDel)
         {
             Console.WriteLine("检查并重新下载重名的乐谱");
-            await InitDB(dbPath);
             var ypHomePath = Settings.Default.Tan8HomeDir;
             var dataSet = SQLite.SqlTable("SELECT count(1) num, name FROM tan8_music GROUP BY name HAVING num > 1 ORDER BY num DESC", null);
             var reDownBuilder = new StringBuilder("INSERT INTO tan8_music_down_task values");
@@ -306,10 +314,9 @@ namespace PatchTool
         /// <summary>
         /// 重新下载旧版本的
         /// </summary>
-        private async static void RedownloadOldVer(string dbPath, int maxYpid)
+        private static void RedownloadOldVer(int maxYpid)
         {
             Console.WriteLine("检查并重新下载旧版本的乐谱播放文件");
-            await InitDB(dbPath);
             //找出所有旧版本的谱子
             var dataSet = SQLite.SqlTable("select ypid, name, origin_data from tan8_music where ypid <= @ypid", new List<SQLiteParameter>()
             {
@@ -335,9 +342,8 @@ namespace PatchTool
         /// </summary>
         /// <param name="dbPath"></param>
         /// <param name="autoDel"></param>
-        private async static void Clean0PageYuepu(string dbPath, bool autoDel)
+        private static void Clean0PageYuepu(bool autoDel)
         {
-            await InitDB(dbPath);
             var total = 0;
             var ypHomePath = Settings.Default.Tan8HomeDir;
             var yp0Ypids = SQLite.sqlcolumn("SELECT ypid FROM tan8_music WHERE yp_count = 0", null);
@@ -375,7 +381,7 @@ namespace PatchTool
         /// <param name="dbPath"></param>
         /// <param name="oldHomePath"></param>
         /// <param name="autoCopy"></param>
-        private async static void CheckOldHome(string dbPath, string oldHomePath, bool autoCopy)
+        private static void CheckOldHome(string oldHomePath, bool autoCopy)
         {
             Console.WriteLine("检查旧乐谱谱库");
             if (string.IsNullOrEmpty(oldHomePath))
@@ -383,7 +389,6 @@ namespace PatchTool
                 Console.WriteLine("没有指定旧乐谱路径");
                 return;
             }
-            await InitDB(dbPath);
             var ypHomePath = Settings.Default.Tan8HomeDir;
             var dataSet = SQLite.SqlTable("SELECT * FROM tan8_music_old", null);
             var total = dataSet.Rows.Count;
@@ -450,6 +455,7 @@ namespace PatchTool
                 //如果没有指定数据库文件, 则使用默认
                 dbPath = Settings.Default.DBFilePath;
             }
+            Console.WriteLine("数据库路径 :" + dbPath);
             return await SQLite.SetDbFilePath(dbPath);
         }
 
@@ -459,10 +465,9 @@ namespace PatchTool
         /// </summary>
         /// <param name="dbPath"></param>
         /// <param name="threadCount"></param>
-        private async static void CheckSheetPreviewImg(string dbPath, int threadCount)
+        private static void CheckSheetPreviewImg(int threadCount)
         {
-            Console.WriteLine("执行上传乐谱首页任务, dbPath=" + dbPath + ", 线程数 = " + threadCount);
-            await InitDB(dbPath);
+            Console.WriteLine("执行上传乐谱首页任务, 线程数 = " + threadCount);
             var ypHomePath = Settings.Default.Tan8HomeDir;
             if (string.IsNullOrEmpty(ypHomePath))
             {
@@ -556,10 +561,9 @@ namespace PatchTool
         /// </summary>
         /// <param name="dbPath">数据库路径</param>
         /// <param name="threadCount">最大线程数</param>
-        private async static void CheckWhiteBlackPreview(string dbPath, bool overwrite, int threadCount)
+        private static void CheckWhiteBlackPreview(bool overwrite, int threadCount)
         {
-            Console.WriteLine("执行水印任务, dbPath=" + dbPath + ", 线程数 = " + threadCount);
-            await InitDB(dbPath);
+            Console.WriteLine("执行水印任务, 线程数 = " + threadCount);
             var ypHomePath = Settings.Default.Tan8HomeDir;
             if(string.IsNullOrEmpty(ypHomePath))
             {
@@ -690,10 +694,9 @@ namespace PatchTool
             }
         }
 
-        private async static void CheckDirName(string dbPath)
+        private static void CheckDirName()
         {
             Console.WriteLine("重命名乐谱文件夹名称");
-            await InitDB(dbPath);
             var ypHomePath = Settings.Default.Tan8HomeDir;
             if (string.IsNullOrEmpty(ypHomePath))
             {
@@ -794,6 +797,37 @@ namespace PatchTool
             {
                 FileUtil.SaveStringToFile(sql.ToString(), Path.GetDirectoryName(savePath), Path.GetFileName(savePath));
                 Console.WriteLine("SQL文件已保存至{0}", savePath);
+            }
+        }
+
+        /// <summary>
+        /// 根据乐谱ID批量删除乐谱模式
+        /// </summary>
+        /// <param name="ypHome"></param>
+        private static void BatchDel(string ypHome)
+        {
+            var delHome = string.IsNullOrEmpty(ypHome) ? Settings.Default.Tan8HomeDir : ypHome;
+            Console.WriteLine("已进入批量删除模式, 复制ID到输入框, 回车即可删除指定乐谱, 输入 e 回车退出");
+            Console.WriteLine("谱库路径: {0}", delHome);
+            while (true)
+            {
+                var line = Console.ReadLine();
+                if(string.IsNullOrEmpty(line))
+                {
+                    Console.WriteLine("输入有误");
+                    continue;
+                }
+                if("e".Equals(line))
+                {
+                    break;
+                }
+                var ypid = Convert.ToInt32(line);
+                //删除文件夹
+                FileUtil.DeleteDirWithName(delHome, line);
+
+                //删除数据库数据
+                SQLite.ExecuteNonQuery("DELETE FROM tan8_music WHERE ypid = @ypid", new List<SQLiteParameter> { new SQLiteParameter("@ypid", ypid) });
+                Console.WriteLine("已删除 {0}", line);
             }
         }
     }
