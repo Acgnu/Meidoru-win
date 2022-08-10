@@ -55,6 +55,7 @@ namespace PatchTool
             var threadCount = 5;
             var maxYpid = 0;
             var overwrite = false;
+            var sourceFilePath = string.Empty;
             //switch (command)
             //{
             //    case "?": ShowTips(); break;
@@ -80,6 +81,7 @@ namespace PatchTool
             Console.WriteLine("9 [-d]\t\t\t以乐谱ID重命名文件夹");
             Console.WriteLine("10 [-f] [-l]\t\tMD5排重乐谱");
             Console.WriteLine("11 [-d] [-l]\t\t进入按ID批量删除模式");
+            Console.WriteLine("12 [-d] [-l] [-s]\t进入按文件批量删除模式");
             Console.WriteLine("e \t\t\t退出\n");
 
             Console.WriteLine("命令编号 [可选参数1] [可选参数n...] 例:1 -dD:\\master.db -fD:\\autosave -r");
@@ -91,6 +93,7 @@ namespace PatchTool
             Console.WriteLine("-d 数据库路径 例: -dC:\\master.db");
             Console.WriteLine("-t 线程数量 默认5 例: -t10");
             Console.WriteLine("-i 最大乐谱ID 默认0 例: -i666");
+            Console.WriteLine("-s 输入文件路径 例: -sC:\\sql.sql");
             Console.WriteLine("-o 是否覆盖");
             
             while(true)
@@ -139,6 +142,10 @@ namespace PatchTool
                         {
                             threadCount = Convert.ToInt32(arg.Substring(2));
                         }
+                        if (arg.StartsWith("-s"))
+                        {
+                            sourceFilePath = arg.Substring(2);
+                        }
                         if (arg.Equals("-o"))
                         {
                             overwrite = true;
@@ -161,6 +168,7 @@ namespace PatchTool
                     case "9": CheckDirName(); break;
                     case "10": CheckFileMD5(savePath, ypHomePath); break;
                     case "11": BatchDel(ypHomePath); break;
+                    case "12": BatchDelFromInputFile(ypHomePath, sourceFilePath); break;
                     default: Console.WriteLine("命令不正确"); break;
                 }
             }
@@ -828,6 +836,101 @@ namespace PatchTool
                 //删除数据库数据
                 SQLite.ExecuteNonQuery("DELETE FROM tan8_music WHERE ypid = @ypid", new List<SQLiteParameter> { new SQLiteParameter("@ypid", ypid) });
                 Console.WriteLine("已删除 {0}", line);
+            }
+        }
+
+        /// <summary>
+        /// 从输入文件中查询的批量删除模式
+        /// </summary>
+        /// <param name="ypHome"></param>
+        /// <param name="inputSQLFilePath"></param>
+        private static void BatchDelFromInputFile(string ypHome, string inputSQLFilePath)
+        {
+            if(string.IsNullOrEmpty(inputSQLFilePath))
+            {
+                Console.WriteLine("输入文件路径有误");
+                return;
+            }
+            if(!File.Exists(inputSQLFilePath))
+            {
+                Console.WriteLine("输入文件不存在");
+                return;
+            }
+            var delHome = string.IsNullOrEmpty(ypHome) ? Settings.Default.Tan8HomeDir : ypHome;
+            
+            Console.WriteLine("已进入批量删除模式, 系统将列出重复的选项, 输入需要选择需要保留的选项, 回车删除其他乐谱");
+            Console.WriteLine("谱库路径: {0}", delHome);
+
+            using (FileStream fs = new FileStream(inputSQLFilePath, FileMode.Open))
+            {
+                using (StreamReader fileStream = new StreamReader(fs))
+                {
+                    string line;
+                    int lastLineNo = 1;
+                    StringBuilder lastDel = new StringBuilder();
+                    while ((line = fileStream.ReadLine()) != null)
+                    {
+                        Console.Clear();
+                        if(lastDel.Length > 0)
+                        {
+                            Console.WriteLine("已删除: {0}", lastDel.ToString());
+                            lastDel.Clear();
+                        }
+                        var dataSet = SQLite.SqlTable(line, null);
+                        var seq = 1;
+                        var seqDic = new Dictionary<Int32, Int32>();
+                        Console.WriteLine("序号\tID\t页数\t名称");
+                        foreach (DataRow dataRow in dataSet.Rows)
+                        {
+                            Console.WriteLine("{0}\t{1}\t{2}\t{3}",
+                                seq,
+                                Convert.ToInt32(dataRow["ypid"]),
+                                Convert.ToString(dataRow["yp_count"]),
+                                Convert.ToString(dataRow["name"]));
+                            seqDic[seq++] = Convert.ToInt32(dataRow["ypid"]);
+                        }
+
+                        Console.Write("\n行号: {0}, 输入需要保留的序号, 输入0全部删除, 输入00跳过:", lastLineNo++);
+
+                        var skip = false;
+                        do
+                        {
+                            var input = Console.ReadLine();
+                            if ("0".Equals(input)) break;
+                            if ("00".Equals(input))
+                            {
+                                skip = true;
+                                break;
+                            }
+                            if (string.IsNullOrEmpty(input)
+                                || !DataUtil.IsNum(input)
+                                || !seqDic.ContainsKey(Convert.ToInt32(input)))
+                            {
+                                Console.WriteLine("输入无效");
+                                continue;
+                            }
+                            seqDic.Remove(Convert.ToInt32(input));
+                            break;
+                        } while (true);
+                        if (skip)
+                        {
+                            Console.WriteLine("已跳过");
+                            continue;
+                        }
+                        foreach (var item in seqDic)
+                        {
+                            //删除文件夹
+                            FileUtil.DeleteDirWithName(delHome, Convert.ToString(item.Value));
+
+                            //删除数据库数据
+                            SQLite.ExecuteNonQuery("DELETE FROM tan8_music WHERE ypid = @ypid", new List<SQLiteParameter> { new SQLiteParameter("@ypid", item.Value) });
+
+                            lastDel.Append(item.Value).Append(",");
+                        }
+                    }
+                    Console.Clear();
+                    Console.WriteLine("\n已全部处理");
+                }
             }
         }
     }
