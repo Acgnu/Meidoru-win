@@ -10,7 +10,7 @@ namespace AcgnuX.Source.Utils
     /// <summary>
     /// flash 播放工具
     /// </summary>
-    class Tan8PlayUtil
+    public class Tan8PlayUtil
     {
         /// <summary>
         /// FlashPlayer.exe 执行时信任的swf配置目录

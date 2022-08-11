@@ -40,8 +40,9 @@ namespace PatchTool
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            //TestConvertImg();
-            //if(true)
+            //SetDB(@"E:\曲谱\master.db");
+            //ClearInvalidPlayFileSheet(false, @"E:\曲谱");
+            //if (true)
             //{
             //    return;
             //}
@@ -82,6 +83,7 @@ namespace PatchTool
             Console.WriteLine("10 [-f] [-l]\t\tMD5排重乐谱");
             Console.WriteLine("11 [-d] [-l]\t\t进入按ID批量删除模式");
             Console.WriteLine("12 [-d] [-l] [-s]\t进入按文件批量删除模式");
+            Console.WriteLine("13 [-r] [-l] \t\t批量删除无法播放的0页乐谱");
             Console.WriteLine("e \t\t\t退出\n");
 
             Console.WriteLine("命令编号 [可选参数1] [可选参数n...] 例:1 -dD:\\master.db -fD:\\autosave -r");
@@ -169,6 +171,7 @@ namespace PatchTool
                     case "10": CheckFileMD5(savePath, ypHomePath); break;
                     case "11": BatchDel(ypHomePath); break;
                     case "12": BatchDelFromInputFile(ypHomePath, sourceFilePath); break;
+                    case "13": ClearInvalidPlayFileSheet(autoDel, ypHomePath); break;
                     default: Console.WriteLine("命令不正确"); break;
                 }
             }
@@ -932,6 +935,83 @@ namespace PatchTool
                     Console.WriteLine("\n已全部处理");
                 }
             }
+        }
+
+        /// <summary>
+        /// 删除无法播放的乐谱
+        /// </summary>
+        /// <param name="autoDel"></param>
+        /// <param name="ypHomePath"></param>
+        private static void ClearInvalidPlayFileSheet(bool autoDel, string ypHomePath)
+        {
+            var homePath = string.IsNullOrEmpty(ypHomePath) ? Settings.Default.Tan8HomeDir : ypHomePath;
+            Console.WriteLine("谱库路径: {0}", homePath);
+            var yp0Ypids = SQLite.sqlcolumn("SELECT ypid FROM tan8_music WHERE yp_count > 0", null);
+            Console.WriteLine("共 {0} 个0页乐谱", yp0Ypids.Count);
+            var checkedNum = 0;
+            var totalDelNum = 0;
+            foreach (var ypid in yp0Ypids)
+            {
+                Console.WriteLine("正在检查: {0}, 剩余 {1}", ypid, yp0Ypids.Count - checkedNum++);
+                Tan8PlayUtil.ExePlayById(Convert.ToInt32(ypid), 2, false);
+                Thread.Sleep(10000);
+
+                var errDialog = FindWindow(null, "pmady");
+                if (errDialog != IntPtr.Zero)
+                {
+                    Console.WriteLine("{0} 无法播放", ypid);
+                    if (autoDel)
+                    {
+                        //删除文件夹
+                        FileUtil.DeleteDirWithName(homePath, ypid);
+
+                        //删除数据库数据
+                        SQLite.ExecuteNonQuery("DELETE FROM tan8_music WHERE ypid = @ypid", new List<SQLiteParameter> { new SQLiteParameter("@ypid", ypid) });
+                        totalDelNum++;
+                    }
+                } 
+                else
+                {
+                    Console.WriteLine("{0} OK!", ypid);
+                }
+            }
+            Console.WriteLine("已全部处理, 共删除 {0} 个", totalDelNum);
+        }
+
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        [DllImport("user32.dll", EntryPoint = "FindWindowEx")]
+        private extern static IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
+
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int nMaxCount);
+
+        private static bool FindException(string mainTitle, string mainClassName, string labelClassName, string buttonTxt)
+        {
+            var appWin = FindWindow(null, mainTitle);
+            if (appWin != IntPtr.Zero)
+            {
+                IntPtr childHwnd = FindWindowEx(appWin, IntPtr.Zero, null, buttonTxt);
+
+                if (childHwnd != IntPtr.Zero)
+                {
+                    var sb = new StringBuilder(500);
+
+                    var label = FindWindowEx(appWin, IntPtr.Zero, labelClassName, null);
+                    if (label != IntPtr.Zero)
+                    {
+                        GetWindowText(label, sb, sb.Capacity);
+
+                        Console.WriteLine(sb.ToString());
+                    }
+                    //重启程序
+                    //System.Diagnostics.Process.Start(_targetExePath);
+                }
+                return true;
+            }
+            return false;
         }
     }
 }
