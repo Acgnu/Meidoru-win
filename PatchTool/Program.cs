@@ -954,23 +954,29 @@ namespace PatchTool
             {
                 Console.WriteLine("正在检查: {0}, 剩余 {1}", ypid, yp0Ypids.Count - checkedNum++);
                 Tan8PlayUtil.ExePlayById(Convert.ToInt32(ypid), 2, false);
-                Thread.Sleep(10000);
 
-                var errDialog = FindWindow(null, "pmady");
-                if (errDialog != IntPtr.Zero)
+                var timeout = true;
+                for(var i = 0; i < 10; i++)
                 {
-                    Console.WriteLine("{0} 无法播放", ypid);
-                    if (autoDel)
+                    Thread.Sleep(1000);
+                    var errDialog = FindWindow(null, "pmady");
+                    if (errDialog != IntPtr.Zero)
                     {
-                        //删除文件夹
-                        FileUtil.DeleteDirWithName(homePath, ypid);
+                        Console.WriteLine("{0} 无法播放", ypid);
+                        if (autoDel)
+                        {
+                            //删除文件夹
+                            FileUtil.DeleteDirWithName(homePath, ypid);
 
-                        //删除数据库数据
-                        SQLite.ExecuteNonQuery("DELETE FROM tan8_music WHERE ypid = @ypid", new List<SQLiteParameter> { new SQLiteParameter("@ypid", ypid) });
-                        totalDelNum++;
+                            //删除数据库数据
+                            SQLite.ExecuteNonQuery("DELETE FROM tan8_music WHERE ypid = @ypid", new List<SQLiteParameter> { new SQLiteParameter("@ypid", ypid) });
+                            totalDelNum++;
+                        }
+                        timeout = false;
+                        break;
                     }
-                } 
-                else
+                }    
+                if(timeout)
                 {
                     Console.WriteLine("{0} OK!", ypid);
                 }
