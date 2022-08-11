@@ -946,7 +946,7 @@ namespace PatchTool
         {
             var homePath = string.IsNullOrEmpty(ypHomePath) ? Settings.Default.Tan8HomeDir : ypHomePath;
             Console.WriteLine("谱库路径: {0}", homePath);
-            var yp0Ypids = SQLite.sqlcolumn("SELECT ypid FROM tan8_music WHERE yp_count > 0", null);
+            var yp0Ypids = SQLite.sqlcolumn("SELECT ypid FROM tan8_music WHERE yp_count = 0", null);
             Console.WriteLine("共 {0} 个0页乐谱", yp0Ypids.Count);
             var checkedNum = 0;
             var totalDelNum = 0;
