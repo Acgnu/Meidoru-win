@@ -28,7 +28,6 @@ namespace PatchTool
         [DllImport("User32.dll")]
         public static extern int MessageBox(int h, string m, string c, int type);
 
-
         /// <summary>
         /// 建议的执行顺序
         /// 1.Clean0PageYuepu
@@ -40,12 +39,12 @@ namespace PatchTool
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            //SetDB(@"E:\曲谱\master.db");
-            //ClearInvalidPlayFileSheet(false, @"E:\曲谱");
-            //if (true)
-            //{
-            //    return;
-            //}
+               //SetDB(@"E:\曲谱\master.db");
+               //ClearInvalidPlayFileSheet(false, @"E:\曲谱");
+               //if (true)
+               //{
+               //    return;
+               //}
             var command = "?";
             var autoDel = false;
             var autoCopy = false;
@@ -994,30 +993,29 @@ namespace PatchTool
         [DllImport("User32.dll", CharSet = CharSet.Auto)]
         public static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int nMaxCount);
 
-        private static bool FindException(string mainTitle, string mainClassName, string labelClassName, string buttonTxt)
-        {
-            var appWin = FindWindow(null, mainTitle);
-            if (appWin != IntPtr.Zero)
-            {
-                IntPtr childHwnd = FindWindowEx(appWin, IntPtr.Zero, null, buttonTxt);
+        [DllImport("user32.dll", EntryPoint = "SendMessageA")]
+        private static extern int SendMessage(IntPtr hwnd, uint wMsg, int wParam, int lParam);
 
+        private static void FindAndHit()
+        {
+            const int BM_CLICK = 0xF5;
+            IntPtr maindHwnd = FindWindow(null, "QQ"); //获得QQ登陆框的句柄
+            if (maindHwnd != IntPtr.Zero)
+            {
+                IntPtr childHwnd = FindWindowEx(maindHwnd, IntPtr.Zero, null, "登录");   //获得button的句柄
                 if (childHwnd != IntPtr.Zero)
                 {
-                    var sb = new StringBuilder(500);
-
-                    var label = FindWindowEx(appWin, IntPtr.Zero, labelClassName, null);
-                    if (label != IntPtr.Zero)
-                    {
-                        GetWindowText(label, sb, sb.Capacity);
-
-                        Console.WriteLine(sb.ToString());
-                    }
-                    //重启程序
-                    //System.Diagnostics.Process.Start(_targetExePath);
+                    SendMessage(childHwnd, BM_CLICK, 0, 0);     //发送点击button的消息
                 }
-                return true;
+                else
+                {
+                    Console.WriteLine("没有找到子窗体");
+                }
             }
-            return false;
+            else
+            {
+                Console.WriteLine("没有找到窗体");
+            }
         }
     }
 }
