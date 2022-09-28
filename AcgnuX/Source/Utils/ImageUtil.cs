@@ -335,9 +335,17 @@ namespace AcgnuX.Source.Utils
         /// <returns></returns>
         public static Image CreateThumbnail(string filePath, int h, int w)
         {
-            Bitmap myBitmap = new Bitmap(filePath);
-            Image thumbnail = myBitmap.GetThumbnailImage(w, h, new Image.GetThumbnailImageAbort(() => false), IntPtr.Zero);
-            return thumbnail;
+            try
+            {
+                Bitmap myBitmap = new Bitmap(filePath);
+                Image thumbnail = myBitmap.GetThumbnailImage(w, h, new Image.GetThumbnailImageAbort(() => false), IntPtr.Zero);
+                return thumbnail;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex); 
+            }
+            return null;
         }
 
         /// <summary>

@@ -661,7 +661,8 @@ namespace AcgnuX.Pages
                 else
                 {
                     var imgByte = ImageUtil.CreateThumbnail(Path.Combine(folderPath, fileName), 100, 100);
-                    item.ImgByte = ImageUtil.ImageToByteArray(imgByte);
+                    if(null != imgByte)
+                        item.ImgByte = ImageUtil.ImageToByteArray(imgByte);
                 }
             }
             if (mediaType == SyncContentType.AUDIO)

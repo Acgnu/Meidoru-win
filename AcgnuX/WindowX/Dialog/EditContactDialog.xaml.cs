@@ -101,7 +101,7 @@ namespace AcgnuX.WindowX.Dialog
         private void OnAvatarImageClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             Image eventObj = sender as Image;
-            var path = FileUtil.OpenFileDialogForPath("C:\\", "JPEG图片|*.jpeg|JPG图片|*.jpg");
+            var path = FileUtil.OpenFileDialogForPath(String.Empty, "图片文件|*.jpg;*.png;*.jpeg;*.bmp");
             if (!string.IsNullOrEmpty(path))
             {
                 eventObj.Source = ImageUtil.GetBitmapImage(path);
