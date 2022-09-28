@@ -21,8 +21,8 @@
                                 <MouseBinding MouseAction="RightClick" Command="{Binding OnDeleteCommand}" />
                             </Border.InputBindings>
                             <Grid ClipToBounds="True">
-                                <DockPanel Width="208" HorizontalAlignment="Left" LastChildFill="False">
-                                    <Label DockPanel.Dock="Top" Content="{Binding Name}" Foreground="Black" FontSize="20" VerticalContentAlignment="Center"/>
+                                <DockPanel Width="202.5" HorizontalAlignment="Left" LastChildFill="False">
+                                    <Label DockPanel.Dock="Top" Content="{Binding Name}" Foreground="Black" FontSize="18" VerticalContentAlignment="Center"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                                         <Image Source="{Binding Platform, Converter={bizc:ContactPlatformToImageSourceConverter}, ConverterParameter=True}" Width="26" Height="26" Margin="3 0 0 0" Opacity="0.7"/>
                                         <Label Content="{Binding Uid}" FontSize="16" />
