@@ -75,4 +75,13 @@ CREATE TABLE IF NOT EXISTS "media_sync_config" (
   CONSTRAINT "uk_pc_path" UNIQUE ("pc_path" ASC) ON CONFLICT REPLACE,
   CONSTRAINT "uk_mobile_path" UNIQUE ("mobile_path" ASC) ON CONFLICT REPLACE
 );
+CREATE TABLE IF NOT EXISTS "contact" (
+  "id" INTEGER(11) NOT NULL,
+  "platform" TEXT(10) NOT NULL,
+  "uid" text(20) NOT NULL,
+  "name" TEXT(25) NOT NULL,
+  "phone" TEXT(20),
+  "avatar" blob,
+  PRIMARY KEY ("id")
+);
 CREATE INDEX IF NOT EXISTS 'INDEX_TAN8_NAME' ON 'tan8_music' ('name' ASC);
