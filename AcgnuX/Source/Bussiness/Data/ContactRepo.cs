@@ -110,7 +110,7 @@ namespace AcgnuX.Source.Bussiness.Data
                         new SQLiteParameter("@name", vm.Name),
                         new SQLiteParameter("@phone", vm.Phone),
                         new SQLiteParameter("@avatar", vm.Avatar),
-                        new SQLiteParameter("@id", vm.Id)
+                        new SQLiteParameter("@id", vm.Id.GetValueOrDefault())
             });
         }
 
