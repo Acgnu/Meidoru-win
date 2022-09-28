@@ -23,11 +23,11 @@ namespace AcgnuX.Source.ViewModel
         //筛选框对象
         public ObservableCollection<PianoScoreDownloadRecordFilterBox> FilterBoxList { get; set; } = new ObservableCollection<PianoScoreDownloadRecordFilterBox>()
         {
-            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.SUCCESS.ToString()), Convert.ToByte(Tan8SheetDownloadResult.SUCCESS)),
-            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.PLAYER_NO_RESPONSE.ToString()), Convert.ToByte(Tan8SheetDownloadResult.PLAYER_NO_RESPONSE)),
-            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.PIANO_SCORE_NOT_EXSITS.ToString()), Convert.ToByte(Tan8SheetDownloadResult.PIANO_SCORE_NOT_EXSITS)),
-            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL.ToString()), Convert.ToByte(Tan8SheetDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL)),
-            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.PLAY_FILE_DOWNLOAD_FAIL.ToString()), Convert.ToByte(Tan8SheetDownloadResult.PLAY_FILE_DOWNLOAD_FAIL))
+            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetDesc(Tan8SheetDownloadResult.SUCCESS), Convert.ToByte(Tan8SheetDownloadResult.SUCCESS)),
+            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetDesc(Tan8SheetDownloadResult.PLAYER_NO_RESPONSE), Convert.ToByte(Tan8SheetDownloadResult.PLAYER_NO_RESPONSE)),
+            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetDesc(Tan8SheetDownloadResult.PIANO_SCORE_NOT_EXSITS), Convert.ToByte(Tan8SheetDownloadResult.PIANO_SCORE_NOT_EXSITS)),
+            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetDesc(Tan8SheetDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL), Convert.ToByte(Tan8SheetDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL)),
+            new PianoScoreDownloadRecordFilterBox(EnumLoader.GetDesc(Tan8SheetDownloadResult.PLAY_FILE_DOWNLOAD_FAIL), Convert.ToByte(Tan8SheetDownloadResult.PLAY_FILE_DOWNLOAD_FAIL))
         };
 
         public PianoScoreDownloadRecordViewModel() : base()

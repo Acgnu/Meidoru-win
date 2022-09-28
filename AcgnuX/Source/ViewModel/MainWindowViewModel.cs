@@ -1,5 +1,4 @@
 using AcgnuX.Pages;
-using AcgnuX.Pages.Apis.Ten.Dns;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using GalaSoft.MvvmLight.CommandWpf;
@@ -51,11 +50,12 @@ namespace AcgnuX.Source.ViewModel
         {
             navMenus = new ObservableCollection<NavMenu>()
             {
-                new NavMenu() { name = "疼逊云解析", pageType = typeof(DnsRecords), icon=(Geometry)Application.Current.FindResource("Icon_Paperclip") },
+                new NavMenu() { name = "疼逊云解析", pageType = typeof(DnsManage), icon=(Geometry)Application.Current.FindResource("Icon_Paperclip") },
                 new NavMenu() { name = "WEB服务",pageType = typeof (WebServer), icon=(Geometry)Application.Current.FindResource("Icon_Server") },
                 new NavMenu() { name = "密码库",pageType = typeof( PwdRepositroy), icon=(Geometry)Application.Current.FindResource("Icon_PasswordBox") },
                 new NavMenu() { name = "谱库",pageType = typeof( Tan8SheetReponsitory), icon=(Geometry)Application.Current.FindResource("Icon_Book") },
                 new NavMenu() { name = "爪机同步",pageType =typeof ( MobileDeviceControl), icon=(Geometry)Application.Current.FindResource("Icon_Cloud") },
+                new NavMenu() { name = "联系人",pageType =typeof ( ContactManage), icon=(Geometry)Application.Current.FindResource("Icon_ContactBoox") },
                 new NavMenu() { name = "设置",pageType = typeof (AppSettings), icon=(Geometry)Application.Current.FindResource("Icon_Setting") }
             };
 

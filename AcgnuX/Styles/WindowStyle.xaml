@@ -177,7 +177,7 @@
                                     <Border Padding="5" Grid.Column="0">
                                         <StackPanel Orientation="Horizontal">
                                             <!--图标样式-->
-                                            <Image Source="..\..\Assets\Ico\favicon.ico" />
+                                            <Image Source="..\Assets\Ico\favicon.ico" />
                                             <!--标题文字-->
                                             <Viewbox Grid.Column="1" Margin="5 0 0 0">
                                                 <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" />

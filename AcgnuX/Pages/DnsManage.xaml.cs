@@ -14,12 +14,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace AcgnuX.Pages.Apis.Ten.Dns
+namespace AcgnuX.Pages
 {
     /// <summary>
     ///onOpenContextMenuxaml 的交互逻辑
     /// </summary>
-    public partial class DnsRecords : BasePage
+    public partial class DnsManage : BasePage
     {
         //数据展示结果集
         private List<DnsRecord> DnsRecordList;
@@ -32,7 +32,7 @@ namespace AcgnuX.Pages.Apis.Ten.Dns
 
         private event StatusBarNotifyHandler OnStatusBarEvent;
 
-        public DnsRecords(MainWindow mainWin)
+        public DnsManage(MainWindow mainWin)
         {
             InitializeComponent();
             mMainWindow = mainWin;

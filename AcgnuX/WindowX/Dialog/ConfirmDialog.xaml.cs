@@ -17,7 +17,7 @@ namespace AcgnuX.WindowX.Dialog
         public ConfirmDialog(AlertLevel alertLevel, string message)
         {
             InitializeComponent();
-            DialogTitle = EnumLoader.GetEnumDesc(typeof(AlertLevel), alertLevel.ToString());
+            DialogTitle = EnumLoader.GetDesc(alertLevel);
             Message = message;
             DataContext = this;
         }

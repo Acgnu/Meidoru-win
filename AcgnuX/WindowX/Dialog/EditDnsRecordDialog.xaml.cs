@@ -1,5 +1,5 @@
 ﻿using AcgnuX.Model.Ten.Dns;
-using AcgnuX.Pages.Apis.Ten.Dns;
+using AcgnuX.Pages;
 using AcgnuX.Source.Model.Ten.Dns;
 using System;
 using System.Windows;
@@ -15,17 +15,17 @@ namespace AcgnuX.WindowX.Dialog
         //DNS解析记录
         public DnsRecord MdnsRecord { get; set; }
         //父Page
-        protected DnsRecords mParentPage;
+        protected DnsManage mParentPage;
 
-        public EditDnsRecordDialog(DnsRecord dnsRecord, DnsRecords dnsRecords)
+        public EditDnsRecordDialog(DnsRecord dnsRecord, DnsManage dnsManager)
         {
             InitializeComponent();
             //初始化父页面
-            mParentPage = dnsRecords;
+            mParentPage = dnsManager;
             //当前正在修改的解析记录
             MdnsRecord = dnsRecord;
             //保存完成回调
-            dnsRecords.OnSaveFinish += SaveFinishCallBack;
+            dnsManager.OnSaveFinish += SaveFinishCallBack;
             DataContext = this;
             //选中正在编辑的dns类型
             if(null != dnsRecord)

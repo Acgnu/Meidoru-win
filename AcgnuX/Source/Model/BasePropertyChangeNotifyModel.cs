@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace AcgnuX.Source.Model
 {
@@ -14,9 +15,9 @@ namespace AcgnuX.Source.Model
         /// 通知属性变更
         /// </summary>
         /// <param name="name"></param>
-        public void OnPropertyChanged(string name)
+        public void OnPropertyChanged([CallerMemberName] string name = "")
         {
-            PropertyChanged(this, new PropertyChangedEventArgs(name));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

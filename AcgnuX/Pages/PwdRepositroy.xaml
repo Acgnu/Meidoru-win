@@ -26,7 +26,7 @@
                 </Button>
                 <TextBox Style="{StaticResource TextBoxBase}" KeyUp="OnFilterBoxKeyDown" />
             </DockPanel>
-            <DataGrid Name="PasswordDataGrid" Style="{StaticResource commonDataGrid}" Margin="0,10,0,0" MouseDoubleClick="OnGridDoubleClick" Grid.Column="0" Grid.Row="1" ContextMenuOpening="OnContextMenuOpen" Template="{DynamicResource BaseDataGridControlTemplate}">
+            <DataGrid Name="PasswordDataGrid" Style="{StaticResource commonDataGrid}" Margin="0,8,0,0" MouseDoubleClick="OnGridDoubleClick" Grid.Column="0" Grid.Row="1" ContextMenuOpening="OnContextMenuOpen" Template="{DynamicResource BaseDataGridControlTemplate}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="{x:Static res:Resources.S_CopyAccount}" Click="OnClickContextMenuCopyAccount" />

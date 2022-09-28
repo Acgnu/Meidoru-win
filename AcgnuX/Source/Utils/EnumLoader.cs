@@ -1,6 +1,8 @@
-﻿using System;
+﻿
+using AcgnuX.Source.Bussiness.Constants;
+using EnumsNET;
+using System;
 using System.ComponentModel;
-using System.Reflection;
 
 namespace AcgnuX.Utils
 {
@@ -12,18 +14,33 @@ namespace AcgnuX.Utils
         /// 枚举Type
         /// 需要读取
         /// 
-        public static string GetEnumDesc(Type source, string enumName)
+        public static string GetDesc(Enum enumValue)
         {
-            FieldInfo[] fieldinfo = source.GetFields();
-            foreach (FieldInfo item in fieldinfo)
-            {
-                if (item.Name != enumName) continue;
-                Object[] obj = item.GetCustomAttributes(typeof(DescriptionAttribute), false);
-                if (obj.Length == 0) continue;
-                DescriptionAttribute desc = (DescriptionAttribute)obj[0];
-                return desc.Description;
-            }
-            return enumName;
+            var enumType = enumValue.GetType();
+            var enumAttr = Enums.GetAttributes(enumType, enumValue);
+            var desc = enumAttr.Get<DescriptionAttribute>();
+            return desc.Description;
+            //FieldInfo[] fieldinfo = source.GetFields();
+            //foreach (FieldInfo item in fieldinfo)
+            //{
+            //    if (item.Name != enumName) continue;
+            //    Object[] obj = item.GetCustomAttributes(typeof(DescriptionAttribute), false);
+            //    if (obj.Length == 0) continue;
+            //    DescriptionAttribute desc = (DescriptionAttribute)obj[0];
+            //    return desc.Description;
+            //}
+            //return enumName;
+        }
+
+        /// <summary>
+        /// 根据枚举值获得枚举
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static Enum GetByValue(Type enumType, string value)
+        {
+            return Enums.Parse(enumType, value) as Enum;
         }
     }
 }

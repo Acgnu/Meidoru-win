@@ -818,7 +818,7 @@ namespace AcgnuX.Pages
                 {
                     success = false,
                     code = (byte) Tan8SheetDownloadResult.PIANO_SCORE_NOT_EXSITS,
-                    message = EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.PIANO_SCORE_NOT_EXSITS.ToString()),
+                    message = EnumLoader.GetDesc(Tan8SheetDownloadResult.PIANO_SCORE_NOT_EXSITS),
                     data = "未知"
                 };
             }
@@ -848,7 +848,7 @@ namespace AcgnuX.Pages
                 {
                     success = false,
                     code = (byte)checkResult,
-                    message = EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), checkResult.ToString()),
+                    message = EnumLoader.GetDesc(checkResult),
                     data = "未知"
                 };
             }
@@ -900,7 +900,7 @@ namespace AcgnuX.Pages
                     {
                         success = false,
                         code = (byte)Tan8SheetDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL,
-                        message = EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL.ToString()),
+                        message = EnumLoader.GetDesc(Tan8SheetDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL),
                         data = ypNameFolder
                     };
                 }
@@ -920,7 +920,7 @@ namespace AcgnuX.Pages
                 {
                     success = false,
                     code = (byte)Tan8SheetDownloadResult.PLAY_FILE_DOWNLOAD_FAIL,
-                    message = EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.PLAY_FILE_DOWNLOAD_FAIL.ToString()),
+                    message = EnumLoader.GetDesc(Tan8SheetDownloadResult.PLAY_FILE_DOWNLOAD_FAIL),
                     data = ypNameFolder
                 };
             }
@@ -935,7 +935,7 @@ namespace AcgnuX.Pages
             {
                 success = true,
                 code = (byte)Tan8SheetDownloadResult.SUCCESS,
-                message = EnumLoader.GetEnumDesc(typeof(Tan8SheetDownloadResult), Tan8SheetDownloadResult.SUCCESS.ToString()),
+                message = EnumLoader.GetDesc(Tan8SheetDownloadResult.SUCCESS),
                 data = ypNameFolder
             };
         }
