@@ -4,6 +4,7 @@ using AcgnuX.Source.Model;
 using AcgnuX.WindowX.Dialog;
 using GalaSoft.MvvmLight.Command;
 using System;
+using System.Windows;
 using System.Windows.Input;
 
 namespace AcgnuX.Source.ViewModel
@@ -70,7 +71,23 @@ namespace AcgnuX.Source.ViewModel
                 if (!IsSelected.Equals(value))
                 {
                     isSelected = value;
-                    OnPropertyChanged(nameof(IsSelected));
+                    OnPropertyChanged();
+                }
+            }
+        }
+        /// <summary>
+        /// 可见性
+        /// </summary>
+        private Visibility isVisiable = Visibility.Visible;
+        public Visibility IsVisiable
+        {
+            get { return isVisiable; }
+            set
+            {
+                if (!isVisiable.Equals(value))
+                {
+                    isVisiable = value;
+                    OnPropertyChanged();
                 }
             }
         }

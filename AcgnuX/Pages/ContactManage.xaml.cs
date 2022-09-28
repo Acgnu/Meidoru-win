@@ -73,11 +73,19 @@ namespace AcgnuX.Pages
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void OnFilterBoxKeyDown(object sender, KeyEventArgs e)
+        private void OnFilterBoxKeyDown(object sender, KeyEventArgs e)
         {
-            var text = FilterBox.Text;
-            var dataList = await ContactRepo.FindAllAsync(text);
-            AddToList(dataList);
+            if(e.Key == Key.Enter)
+            {
+                var text = FilterBox.Text;
+                foreach (var item in mContactListViewModel.Items)
+                {
+                    if (string.IsNullOrEmpty(text) || item.Uid.Equals(text) || item.Name.Contains(text))
+                        item.IsVisiable = Visibility.Visible;
+                    else
+                        item.IsVisiable = Visibility.Collapsed;
+                }
+            }
         }
 
         /// <summary>
