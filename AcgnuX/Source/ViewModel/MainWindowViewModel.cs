@@ -7,6 +7,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace AcgnuX.Source.ViewModel
@@ -27,6 +28,17 @@ namespace AcgnuX.Source.ViewModel
     {
         //菜单集合
         public ObservableCollection<NavMenu> navMenus { get; set; } = null;
+        public ICommand OnNavMenuItemClickCommand { get ; set; }
+        public Object mainContent {get; set;}
+        public Object MainContent
+        {
+            get { return mainContent; }
+            set
+            {
+                mainContent = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public MainWindowViewModel() : base()
         {
@@ -41,6 +53,28 @@ namespace AcgnuX.Source.ViewModel
                 //退出程序
                 Environment.Exit(0);
             }));
+            OnNavMenuItemClickCommand = new RelayCommand<NavMenu>(NavMenuItemClick);
+        }
+
+        private void NavMenuItemClick(NavMenu navMenuItem)
+        {
+            var item = navMenuItem;
+            //if (mainWindow.NavMenuListBox.SelectedIndex < 0)
+            //{
+            //    return;
+            //}
+            //切换Frame的Page内容
+            //this.ContentFrame.NavigationService.Navigate(new Uri(Convert.ToString(clickedBtn.Tag), UriKind.Relative));
+            //var item = navMenus[NavMenuListBox.SelectedIndex];
+            if (null == item.instance)
+            {
+                object[] parameters = new object[1];
+                parameters[0] = Application.Current.MainWindow;
+                dynamic page = Activator.CreateInstance(item.pageType, parameters);
+                item.instance = page;
+            }
+            //ContentFrame.Content = item.instance;
+            MainContent = item.instance;
         }
 
         /// <summary>

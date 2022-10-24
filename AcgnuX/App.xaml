@@ -12,8 +12,11 @@
                 <!--有现后顺序-->
                 <ResourceDictionary Source="/Styles/Color.xaml" />
                 <ResourceDictionary Source="/Styles/Geometries.xaml" />
+                <ResourceDictionary Source="/Styles/GeometriesStyle.xaml" />
+                
                 <ResourceDictionary Source="/Styles/DataGridStyle.xaml" />
                 <ResourceDictionary Source="/Styles/TextBoxStyle.xaml" />
+                <ResourceDictionary Source="/Styles/ListBoxStyle.xaml" />
                 <ResourceDictionary Source="/Styles/WindowStyle.xaml" />
                 <ResourceDictionary Source="/Styles/PageStyle.xaml" />
                 <ResourceDictionary Source="/Styles/BorderStyle.xaml" />
@@ -24,8 +27,6 @@
                 <ResourceDictionary Source="/Styles/DockPanelStyle.xaml" />
                 <ResourceDictionary Source="/Styles/ProgressBarStyle.xaml" />
                 <ResourceDictionary Source="/Styles/ScrollBarStyle.xaml" />
-                <ResourceDictionary Source="/Styles/GeometriesStyle.xaml" />
-                <ResourceDictionary Source="/Styles/ListBoxStyle.xaml" />
                 <ResourceDictionary Source="/Styles/ListViewStyle.xaml" />
                 <ResourceDictionary>
                     <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" xmlns:vm="clr-namespace:AcgnuX.Source.ViewModel" />

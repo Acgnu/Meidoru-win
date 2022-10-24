@@ -174,14 +174,66 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <!--图标, 标题容器-->
-                                    <Border Padding="5" Grid.Column="0">
+                                    <Border Grid.Column="0">
                                         <StackPanel Orientation="Horizontal">
-                                            <!--图标样式-->
-                                            <Image Source="..\Assets\Ico\favicon.ico" />
-                                            <!--标题文字-->
-                                            <Viewbox Grid.Column="1" Margin="5 0 0 0">
-                                                <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" />
-                                            </Viewbox>
+                                            <!--主菜单-->
+                                            <ListBox x:Name="NavMenuListBox"
+                                                     WindowChrome.IsHitTestVisibleInChrome="True"
+                                                     ItemsSource="{Binding navMenus}"
+                                                     ItemContainerStyle="{StaticResource NavMenuListBoxItemStyle}" 
+                                                     Style="{StaticResource NavMenuListBoxStyle}" 
+                                                     Template="{DynamicResource NavMenuListBoxControlTemplate}">
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <ListBoxItem>
+                                                            <ListBoxItem.Template>
+                                                                <ControlTemplate TargetType="ListBoxItem">
+                                                                    <StackPanel Orientation="Horizontal" Background="Transparent" x:Name="Container" Cursor="Hand">
+                                                                        <!--<Rectangle Style="{StaticResource MenuButtonActiveIco}" x:Name="LeftSideRectangle"/>-->
+                                                                        <WrapPanel VerticalAlignment="Center" Margin="5 0 0 0">
+                                                                            <Path Data="{Binding icon}" Style="{StaticResource NavMenuPathIconStyle}" />
+                                                                            <Label Content="{Binding name}" Margin="5 0 0 0" Foreground="White"/>
+                                                                        </WrapPanel>
+                                                                        <StackPanel.InputBindings>
+                                                                            <MouseBinding 
+                                                                                MouseAction="LeftClick" 
+                                                                                Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType=ListBox}, Path=DataContext.OnNavMenuItemClickCommand}" 
+                                                                                CommandParameter="{Binding}"/>
+                                                                        </StackPanel.InputBindings>
+                                                                    </StackPanel>
+                                                                    <ControlTemplate.Triggers>
+                                                                        <MultiTrigger>
+                                                                            <MultiTrigger.Conditions>
+                                                                                <Condition Property="IsMouseOver" Value="False" />
+                                                                                <Condition Property="IsSelected" Value="False" />
+                                                                            </MultiTrigger.Conditions>
+                                                                            <MultiTrigger.EnterActions>
+                                                                                <BeginStoryboard>
+                                                                                    <Storyboard FillBehavior="Stop">
+                                                                                        <ColorAnimation Duration="0:0:0.4" Storyboard.TargetName="Container" Storyboard.TargetProperty="Background.Color" From="{StaticResource NavMenuListBoxBackgroundColor}" To="Transparent" >
+                                                                                            <ColorAnimation.EasingFunction>
+                                                                                                <CircleEase EasingMode="EaseOut"/>
+                                                                                            </ColorAnimation.EasingFunction>
+                                                                                        </ColorAnimation>
+                                                                                    </Storyboard>
+                                                                                </BeginStoryboard>
+                                                                            </MultiTrigger.EnterActions>
+                                                                        </MultiTrigger>
+                                                                        <Trigger Property="IsMouseOver" Value="true">
+                                                                            <!--<Setter Property="Visibility" Value="Visible" TargetName="LeftSideRectangle"/>-->
+                                                                            <Setter Property="Background" Value="{StaticResource NavMenuHoverColorBrush}" TargetName="Container"/>
+                                                                        </Trigger>
+                                                                        <Trigger Property="IsSelected" Value="true">
+                                                                            <!--<Setter Property="Visibility" Value="Visible" TargetName="LeftSideRectangle"/>-->
+                                                                            <Setter Property="Background" Value="{StaticResource NavMenuSelectedColorBrush}" TargetName="Container"/>
+                                                                        </Trigger>
+                                                                    </ControlTemplate.Triggers>
+                                                                </ControlTemplate>
+                                                            </ListBoxItem.Template>
+                                                        </ListBoxItem>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
                                         </StackPanel>
                                     </Border>
 

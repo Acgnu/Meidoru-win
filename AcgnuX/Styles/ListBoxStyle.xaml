@@ -11,12 +11,19 @@
         <Setter Property="Background" Value="{StaticResource NavMenuListBoxBackgroundColorBrush}" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Padding" Value="0" />
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
   <!--主菜单ListBoxItem控制模板-->
     <ControlTemplate TargetType="{x:Type ListBoxItem}" x:Key="NavMenuListBoxIControlTemplate">
-        <StackPanel Height="40" Orientation="Horizontal" Background="Transparent" x:Name="Container" Cursor="Hand">
-            <Rectangle Style="{StaticResource MenuButtonActiveIco}" x:Name="LeftSideRectangle"/>
+        <StackPanel Height="40" Orientation="Horizontal" Background="Transparent" x:Name="Container" Cursor="Hand" WindowChrome.IsHitTestVisibleInChrome="True">
+            <!--<Rectangle Style="{StaticResource MenuButtonActiveIco}" x:Name="LeftSideRectangle"/>-->
             <WrapPanel VerticalAlignment="Center" Margin="5 0 0 0">
                 <Path Data="{Binding icon}" Style="{StaticResource NavMenuPathIconStyle}" />
                 <Label Content="{Binding name}" Margin="5 0 0 0" Foreground="White"/>
@@ -41,11 +48,11 @@
                 </MultiTrigger.EnterActions>
             </MultiTrigger>
             <Trigger Property="IsMouseOver" Value="true">
-                <Setter Property="Visibility" Value="Visible" TargetName="LeftSideRectangle"/>
+                <!--<Setter Property="Visibility" Value="Visible" TargetName="LeftSideRectangle"/>-->
                 <Setter Property="Background" Value="{StaticResource NavMenuHoverColorBrush}" TargetName="Container"/>
             </Trigger>
             <Trigger Property="IsSelected" Value="true">
-                <Setter Property="Visibility" Value="Visible" TargetName="LeftSideRectangle"/>
+                <!--<Setter Property="Visibility" Value="Visible" TargetName="LeftSideRectangle"/>-->
                 <Setter Property="Background" Value="{StaticResource NavMenuSelectedColorBrush}" TargetName="Container"/>
             </Trigger>
         </ControlTemplate.Triggers>
@@ -55,15 +62,14 @@
     <Style TargetType="{x:Type ListBoxItem}" x:Key="NavMenuListBoxItemStyle">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="Template" Value="{StaticResource NavMenuListBoxIControlTemplate}" />
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        <!--<Setter Property="Template" Value="{StaticResource NavMenuListBoxIControlTemplate}" />-->
     </Style>
 
     <!--主菜单ListBox 模板-->
     <ControlTemplate x:Key="NavMenuListBoxControlTemplate" TargetType="{x:Type ListBox}">
         <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-            <ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}">
-                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-            </ScrollViewer>
+            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
         </Border>
         <ControlTemplate.Triggers>
             <Trigger Property="IsEnabled" Value="False">

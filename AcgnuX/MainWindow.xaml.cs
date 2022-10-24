@@ -35,8 +35,6 @@ namespace AcgnuX
         {
             InitializeComponent();
             //DataContext = new MainWindowViewModel(this);
-            //注册菜单点击事件
-            NavMenuListBox.MouseLeftButtonUp += OnNavMenuClick;
         }
 
         /// <summary>
@@ -65,31 +63,6 @@ namespace AcgnuX
             //隐藏按钮
             var btn = sender as Button;
             btn.Visibility = Visibility.Collapsed;
-        }
-
-        /// <summary>
-        ///  主菜单点击事件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnNavMenuClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if(NavMenuListBox.SelectedIndex < 0)
-            {
-                return;
-            }
-            //切换Frame的Page内容
-            //this.ContentFrame.NavigationService.Navigate(new Uri(Convert.ToString(clickedBtn.Tag), UriKind.Relative));
-            var viewModel = DataContext as MainWindowViewModel;
-            var item = viewModel.navMenus[NavMenuListBox.SelectedIndex];
-            if (null == item.instance)
-            {
-                object[] parameters = new object[1];
-                parameters[0] = this;
-                dynamic page = Activator.CreateInstance(item.pageType, parameters);
-                item.instance = page;
-            }
-            ContentFrame.Content = item.instance;
         }
 
         /// <summary>
