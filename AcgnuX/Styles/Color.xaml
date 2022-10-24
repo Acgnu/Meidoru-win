@@ -43,13 +43,4 @@
     <!--通用表格项目选中背景色-->
     <Color x:Key="TextBoxBackgroundColor">Transparent</Color>
     <SolidColorBrush x:Key="TextBoxBackgroundColorBrush" Color="{StaticResource TextBoxBackgroundColor}" />
-    <!--主菜单鼠标悬停背景色-->
-    <Color x:Key="NavMenuHoverColor">#AA3a3a3a</Color>
-    <SolidColorBrush x:Key="NavMenuHoverColorBrush" Color="{StaticResource NavMenuHoverColor}" />
-    <!--主菜单选中背景色-->
-    <Color x:Key="NavMenuSelectedColor">#AA1a1a1a</Color>
-    <SolidColorBrush x:Key="NavMenuSelectedColorBrush" Color="{StaticResource NavMenuSelectedColor}" />
-    <!--主菜单背景色-->
-    <Color x:Key="NavMenuListBoxBackgroundColor">#77313131</Color>
-    <SolidColorBrush x:Key="NavMenuListBoxBackgroundColorBrush" Color="{StaticResource NavMenuListBoxBackgroundColor}" />
 </ResourceDictionary>

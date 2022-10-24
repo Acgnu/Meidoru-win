@@ -13,7 +13,7 @@
         <Setter Property="WindowChrome.WindowChrome">
             <Setter.Value>
                 <WindowChrome ResizeBorderThickness="5" 
-                      CaptionHeight="30"
+                      CaptionHeight="38"
                       CornerRadius="0"
                       GlassFrameThickness="0"/>
             </Setter.Value>
@@ -164,14 +164,14 @@
                             </Grid.OpacityMask>-->
                                 <Grid.RowDefinitions>
                                     <!--定义标题栏高度-->
-                                    <RowDefinition Height="{Binding TitleHeightGridLength, FallbackValue=30}" />
+                                    <RowDefinition Height="{Binding TitleHeightGridLength, FallbackValue=38}" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
                                 <!--标题栏背景色-->
                                 <Grid Grid.Column="0" Panel.ZIndex="1" Background="{DynamicResource MainWindowTitleBarColorBrush}">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <!--图标, 标题容器-->
                                     <Border Grid.Column="0">
@@ -183,66 +183,21 @@
                                                      ItemContainerStyle="{StaticResource NavMenuListBoxItemStyle}" 
                                                      Style="{StaticResource NavMenuListBoxStyle}" 
                                                      Template="{DynamicResource NavMenuListBoxControlTemplate}">
-                                                <ListBox.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <ListBoxItem>
-                                                            <ListBoxItem.Template>
-                                                                <ControlTemplate TargetType="ListBoxItem">
-                                                                    <StackPanel Orientation="Horizontal" Background="Transparent" x:Name="Container" Cursor="Hand">
-                                                                        <!--<Rectangle Style="{StaticResource MenuButtonActiveIco}" x:Name="LeftSideRectangle"/>-->
-                                                                        <WrapPanel VerticalAlignment="Center" Margin="5 0 0 0">
-                                                                            <Path Data="{Binding icon}" Style="{StaticResource NavMenuPathIconStyle}" />
-                                                                            <Label Content="{Binding name}" Margin="5 0 0 0" Foreground="White"/>
-                                                                        </WrapPanel>
-                                                                        <StackPanel.InputBindings>
-                                                                            <MouseBinding 
-                                                                                MouseAction="LeftClick" 
-                                                                                Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType=ListBox}, Path=DataContext.OnNavMenuItemClickCommand}" 
-                                                                                CommandParameter="{Binding}"/>
-                                                                        </StackPanel.InputBindings>
-                                                                    </StackPanel>
-                                                                    <ControlTemplate.Triggers>
-                                                                        <MultiTrigger>
-                                                                            <MultiTrigger.Conditions>
-                                                                                <Condition Property="IsMouseOver" Value="False" />
-                                                                                <Condition Property="IsSelected" Value="False" />
-                                                                            </MultiTrigger.Conditions>
-                                                                            <MultiTrigger.EnterActions>
-                                                                                <BeginStoryboard>
-                                                                                    <Storyboard FillBehavior="Stop">
-                                                                                        <ColorAnimation Duration="0:0:0.4" Storyboard.TargetName="Container" Storyboard.TargetProperty="Background.Color" From="{StaticResource NavMenuListBoxBackgroundColor}" To="Transparent" >
-                                                                                            <ColorAnimation.EasingFunction>
-                                                                                                <CircleEase EasingMode="EaseOut"/>
-                                                                                            </ColorAnimation.EasingFunction>
-                                                                                        </ColorAnimation>
-                                                                                    </Storyboard>
-                                                                                </BeginStoryboard>
-                                                                            </MultiTrigger.EnterActions>
-                                                                        </MultiTrigger>
-                                                                        <Trigger Property="IsMouseOver" Value="true">
-                                                                            <!--<Setter Property="Visibility" Value="Visible" TargetName="LeftSideRectangle"/>-->
-                                                                            <Setter Property="Background" Value="{StaticResource NavMenuHoverColorBrush}" TargetName="Container"/>
-                                                                        </Trigger>
-                                                                        <Trigger Property="IsSelected" Value="true">
-                                                                            <!--<Setter Property="Visibility" Value="Visible" TargetName="LeftSideRectangle"/>-->
-                                                                            <Setter Property="Background" Value="{StaticResource NavMenuSelectedColorBrush}" TargetName="Container"/>
-                                                                        </Trigger>
-                                                                    </ControlTemplate.Triggers>
-                                                                </ControlTemplate>
-                                                            </ListBoxItem.Template>
-                                                        </ListBoxItem>
-                                                    </DataTemplate>
-                                                </ListBox.ItemTemplate>
                                             </ListBox>
                                         </StackPanel>
                                     </Border>
 
                                     <!--主窗口操作按钮-->
-                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MinimizeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="_" Padding="15 6 15 6" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource CommonNoStyleButtonTemplate}"/>
-                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MaximizeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="☐" Padding="15 6 15 2" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource CommonNoStyleButtonTemplate}"/>
-                                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding CloseCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="✕" Padding="15 6 15 4" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource WindowCloseButtonTemplate}"/>
-                                    </StackPanel>
+                                    <Border Grid.Column="1" Background="{StaticResource DataGridHeaderBackgroundColorBrush}">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding OnSettingCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Padding="0 6 0 4" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource CommonNoStyleButtonTemplate}">
+                                                <Path Data="{StaticResource Icon_Setting}" Style="{StaticResource NavMenuPathIconStyle}" Fill="{StaticResource {x:Static SystemColors.ControlTextBrushKey}}" Width="36" Height="12"/>
+                                            </Button>
+                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MinimizeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="_" Padding="15 6 15 8" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource CommonNoStyleButtonTemplate}"/>
+                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MaximizeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="☐" Padding="15 6 15 2" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource CommonNoStyleButtonTemplate}"/>
+                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding CloseCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="✕" Padding="15 6 15 4" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource WindowCloseButtonTemplate}"/>
+                                        </StackPanel>
+                                    </Border>
                                 </Grid>
 
                                 <!--主内容-->
