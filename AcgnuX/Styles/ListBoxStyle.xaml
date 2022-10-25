@@ -20,20 +20,14 @@
         </Setter>
     </Style>
 
-  <!--主菜单ListBoxItem控制模板-->
+    <!--主菜单ListBoxItem控制模板-->
     <ControlTemplate TargetType="{x:Type ListBoxItem}" x:Key="NavMenuListBoxIControlTemplate">
         <StackPanel Background="{StaticResource DataGridHeaderBackgroundColorBrush}" x:Name="Container" Cursor="Hand">
             <Rectangle Style="{StaticResource MenuButtonActiveIco}" x:Name="LeftSideRectangle"/>
             <StackPanel Orientation="Horizontal" Margin="8 3 8 0">
-                <Path Data="{Binding icon}" Style="{StaticResource NavMenuPathIconStyle}" />
-                <Label Content="{Binding name}" Foreground="White"/>
+                <Path Data="{Binding icon}" Style="{StaticResource NavMenuPathIconStyle}" Fill="{StaticResource NavMenuIconColorBrush}"/>
+                <Label Content="{Binding name}" Foreground="{StaticResource NavMenuTextColorBrush}"/>
             </StackPanel>
-            <StackPanel.InputBindings>
-                <MouseBinding 
-                        MouseAction="LeftClick" 
-                        Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType=ListBox}, Path=DataContext.OnNavMenuItemClickCommand}" 
-                        CommandParameter="{Binding}"/>
-            </StackPanel.InputBindings>
         </StackPanel>
         <ControlTemplate.Triggers>
             <MultiTrigger>

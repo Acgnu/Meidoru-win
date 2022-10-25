@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                     xmlns:local="clr-namespace:AcgnuX">
     <!--Window基本样式-->
     <Style x:Key="WindowBaseStyle" TargetType="Window">
@@ -183,6 +184,11 @@
                                                      ItemContainerStyle="{StaticResource NavMenuListBoxItemStyle}" 
                                                      Style="{StaticResource NavMenuListBoxStyle}" 
                                                      Template="{DynamicResource NavMenuListBoxControlTemplate}">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                                                        <i:InvokeCommandAction Command="{Binding OnNavMenuItemClickCommand}" CommandParameter="{Binding SelectedItem, ElementName=NavMenuListBox}"/>
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
                                             </ListBox>
                                         </StackPanel>
                                     </Border>

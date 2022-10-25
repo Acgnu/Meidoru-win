@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:res="clr-namespace:AcgnuX.Properties"
         mc:Ignorable="d"
-        Title="AcgnuX" Height="740" Width="928" Style="{StaticResource MainWindowStyle}" Loaded="OnWindowLoaded">
+        Title="AcgnuX" Height="740" Width="883" Style="{StaticResource MainWindowStyle}" Loaded="OnWindowLoaded">
 
     <Window.DataContext>
         <Binding Path="Main" Source="{StaticResource Locator}"></Binding>

@@ -26,6 +26,7 @@ namespace AcgnuX.Source.ViewModel
     /// </summary>
     public class MainWindowViewModel : CommonWindowViewModel
     {
+        //标题栏高度
         public int TitleHeightGridLength { get; set; } = 38;
         //菜单集合
         public ObservableCollection<NavMenu> navMenus { get; set; } = null;
@@ -64,6 +65,10 @@ namespace AcgnuX.Source.ViewModel
             OnSettingCommand = new RelayCommand<Window>(OnSettingIconClick);
         }
 
+        /// <summary>
+        /// 设置页面
+        /// </summary>
+        /// <param name="window"></param>
         private void OnSettingIconClick(Window window)
         {
             if (null == appSettingsPage)
@@ -79,15 +84,14 @@ namespace AcgnuX.Source.ViewModel
         /// <param name="navMenuItem"></param>
         private void NavMenuItemClick(NavMenu navMenuItem)
         {
-            var item = navMenuItem;
-            if (null == item.instance)
+            if (null == navMenuItem.instance)
             {
                 object[] parameters = new object[1];
                 parameters[0] = Application.Current.MainWindow;
-                dynamic page = Activator.CreateInstance(item.pageType, parameters);
-                item.instance = page;
+                dynamic page = Activator.CreateInstance(navMenuItem.pageType, parameters);
+                navMenuItem.instance = page;
             }
-            MainContent = item.instance;
+            MainContent = navMenuItem.instance;
         }
 
         /// <summary>
