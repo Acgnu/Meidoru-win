@@ -63,6 +63,7 @@ namespace AcgnuX.Source.ViewModel
             }));
             OnNavMenuItemClickCommand = new RelayCommand<NavMenu>(NavMenuItemClick);
             OnSettingCommand = new RelayCommand<Window>(OnSettingIconClick);
+            //MainContent = new Index();
         }
 
         /// <summary>

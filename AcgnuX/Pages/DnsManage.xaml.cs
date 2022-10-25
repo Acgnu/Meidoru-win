@@ -73,6 +73,7 @@ namespace AcgnuX.Pages
         private void LoadDnsRecord()
         {
             if (null == mTenCloudDns) return;
+            BusyIndicator.IsBusy = true;
             //如果有未完成的请求, 先中止
             AsyncHandle?.Abort();
 
@@ -85,6 +86,7 @@ namespace AcgnuX.Pages
                     {
                         DnsRecordList = response.Data.data.records;
                         DnsRecordDataGrid.ItemsSource = DnsRecordList;
+                        BusyIndicator.IsBusy = false;
                     }
                 });
             });

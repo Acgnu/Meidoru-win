@@ -11,7 +11,7 @@
 
     </local:BasePage.Resources>
     
-    <Grid>
-        
+    <Grid x:Name="MainGrid">
+        <Button Click="Button_Click" />
     </Grid>
 </local:BasePage>

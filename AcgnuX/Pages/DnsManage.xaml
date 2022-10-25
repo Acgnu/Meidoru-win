@@ -3,6 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:local="clr-namespace:AcgnuX.Pages"
       xmlns:res="clr-namespace:AcgnuX.Properties"
+      xmlns:lc="clr-namespace:AcgnuX.Controls"
       Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
 
     <Grid>
@@ -43,5 +44,6 @@
         <Button Style="{StaticResource RefreshFloatButtonStyle}" Click="OnClickRefreshButton">
             <Path Style="{StaticResource RefreshPathIcoStyle}"/>
         </Button>
+        <lc:BusyIndicator x:Name="BusyIndicator" />
     </Grid>
 </local:BasePage>

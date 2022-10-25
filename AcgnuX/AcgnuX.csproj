@@ -138,6 +138,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\BusyIndicator.xaml.cs">
+      <DependentUpon>BusyIndicator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GifImage.cs" />
     <Compile Include="Controls\Contact\ContactItemControl.xaml.cs">
       <DependentUpon>ContactItemControl.xaml</DependentUpon>
     </Compile>
@@ -293,6 +297,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Controls\BusyIndicator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Contact\ContactItemControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -450,6 +458,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="Assets\Images\loading_nekololi.gif" />
     <Resource Include="Assets\Images\avatar_default.jpg" />
     <Resource Include="Assets\Images\icon_qq.png" />
     <Resource Include="Assets\Images\icon_we.png" />
