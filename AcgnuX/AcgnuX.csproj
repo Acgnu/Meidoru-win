@@ -151,6 +151,7 @@
     <Compile Include="Controls\FromComboListBox.xaml.cs">
       <DependentUpon>FromComboListBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\RangeObservableCollection.cs" />
     <Compile Include="Controls\VirtualizingWrapPanel.cs" />
     <Compile Include="Pages\DnsManage.xaml.cs">
       <DependentUpon>DnsManage.xaml</DependentUpon>

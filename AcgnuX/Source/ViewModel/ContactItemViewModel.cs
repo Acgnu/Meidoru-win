@@ -75,22 +75,6 @@ namespace AcgnuX.Source.ViewModel
                 }
             }
         }
-        /// <summary>
-        /// 可见性
-        /// </summary>
-        private Visibility isVisiable = Visibility.Visible;
-        public Visibility IsVisiable
-        {
-            get { return isVisiable; }
-            set
-            {
-                if (!isVisiable.Equals(value))
-                {
-                    isVisiable = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
 
         private ContactManage mManagePage;
 

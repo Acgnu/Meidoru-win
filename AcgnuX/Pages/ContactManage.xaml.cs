@@ -55,9 +55,10 @@ namespace AcgnuX.Pages
             mContactListViewModel.Items.Clear();
             if (!DataUtil.IsEmptyCollection(contacts))
             {
+                var contactVms = new List<ContactItemViewModel>();
                 foreach (var item in contacts)
                 {
-                    mContactListViewModel.Items.Add(new ContactItemViewModel(this)
+                    contactVms.Add(new ContactItemViewModel(this)
                     {
                         Id = item.Id,
                         Name = item.Name,
@@ -66,7 +67,17 @@ namespace AcgnuX.Pages
                         Avatar = item.Avatar,
                         Platform = item.Platform
                     });
+                    //mContactListViewModel.Items.Add(new ContactItemViewModel(this)
+                    //{
+                    //    Id = item.Id,
+                    //    Name = item.Name,
+                    //    Uid = item.Uid,
+                    //    Phone = item.Phone,
+                    //    Avatar = item.Avatar,
+                    //    Platform = item.Platform
+                    //});
                 }
+                mContactListViewModel.Items.AddRange(contactVms);
             }
         }
 
@@ -75,18 +86,15 @@ namespace AcgnuX.Pages
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnFilterBoxKeyDown(object sender, KeyEventArgs e)
+        private async void OnFilterBoxKeyDown(object sender, KeyEventArgs e)
         {
             if(e.Key == Key.Enter)
             {
                 var text = FilterBox.Text;
-                foreach (var item in mContactListViewModel.Items)
-                {
-                    if (string.IsNullOrEmpty(text) || item.Uid.Equals(text) || item.Name.Contains(text))
-                        item.IsVisiable = Visibility.Visible;
-                    else
-                        item.IsVisiable = Visibility.Collapsed;
-                }
+                BusyIndicator.IsBusy = true;
+                var dataList = await ContactRepo.FindAllAsync(text);
+                AddToList(dataList);
+                BusyIndicator.IsBusy = false;
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using AcgnuX.Source.Model;
+﻿using AcgnuX.Controls;
+using AcgnuX.Source.Model;
 using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace AcgnuX.Source.ViewModel
         /// <summary>
         /// 联系人列表
         /// </summary>
-        public ObservableCollection<ContactItemViewModel> Items { get; set; } = new ObservableCollection<ContactItemViewModel>();
+        public RangeObservableCollection<ContactItemViewModel> Items { get; set; } = new RangeObservableCollection<ContactItemViewModel>();
 
         /// <summary>
         /// 选项变更命令

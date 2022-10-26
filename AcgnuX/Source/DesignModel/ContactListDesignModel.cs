@@ -22,19 +22,19 @@ namespace AcgnuX.Source.DesignModel
         /// </summary>
         public ContactListDesignModel()
         {
-            Items = new ObservableCollection<ContactItemViewModel>
-            {
-                new ContactItemViewModel (null)
-                {
-                    Id = 1,
-                    Name = "LM",
-                },
-                new ContactItemViewModel (null)
-                {
-                    Id = 2,
-                    Name = "Jesse",
-                }
-            };
+            //Items = new List<ContactItemViewModel>
+            //{
+            //    new ContactItemViewModel (null)
+            //    {
+            //        Id = 1,
+            //        Name = "LM",
+            //    },
+            //    new ContactItemViewModel (null)
+            //    {
+            //        Id = 2,
+            //        Name = "Jesse",
+            //    }
+            //};
         }
         #endregion
     }
