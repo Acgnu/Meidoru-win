@@ -177,7 +177,7 @@
         <Setter Property="Height" Value="50" />
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="VerticalAlignment" Value="Bottom" />
-        <Setter Property="Margin" Value="0 0 0 5" />
+        <Setter Property="Margin" Value="0 0 5 5" />
         <Setter Property="Opacity" Value="0.5" />
     </Style>
 

@@ -43,8 +43,10 @@ namespace AcgnuX.Pages
         {
             if(DataUtil.IsEmptyCollection(mContactListViewModel.Items))
             {
+                BusyIndicator.IsBusy = true;
                 var dataList = await ContactRepo.FindAllAsync(null);
                 AddToList(dataList);
+                BusyIndicator.IsBusy = false;
             }
         }
 

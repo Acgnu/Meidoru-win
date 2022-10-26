@@ -209,6 +209,7 @@ namespace AcgnuX.Pages
         /// <param name="kw">查询关键字</param>
         private async void OnDataReading()
         {
+            BusyIndicator.IsBusy = true;
             var keyword = SearchTextBox.Text;
             var dataList = await LoadingAsync(keyword);
             if(DataUtil.IsEmptyCollection(dataList))
@@ -265,6 +266,7 @@ namespace AcgnuX.Pages
             //读取完成后将翻页动作设为当前
             pager.Action = PageAction.CURRENT;
             SetListBoxVisibility(true);
+            BusyIndicator.IsBusy = false;
         }
 
         /// <summary>

@@ -26,6 +26,8 @@ namespace AcgnuX.Controls
         //private DispatcherTimer timer = new DispatcherTimer();
         //private RotateTransform rt = new RotateTransform();
         private bool _isBusy = false;
+        private DoubleAnimation _fadeInAnimation;
+        private DoubleAnimation _fadeOutAnimation;
         public bool IsBusy
         {
             get
@@ -37,26 +39,16 @@ namespace AcgnuX.Controls
                 _isBusy = value;
                 if (value)
                 {
-                    this.Opacity = 1;
                     Visibility = Visibility.Visible;
-                    //timer.Start();
+                    BeginAnimation(UIElement.OpacityProperty, _fadeInAnimation);
                 }
                 else
                 {
-                    var fadeOutStoryboard = (Storyboard) this.FindResource("FadeOutStoryboard");
-                    //首先隐藏图片，图片隐藏后隐藏掉透明的背景层。
-                    fadeOutStoryboard.Completed += (sender, e) =>
-                    {
-                        Visibility = Visibility.Collapsed;
-                    };
-                    fadeOutStoryboard.Begin();
+                    //var fadeOutStoryboard = (Storyboard) this.FindResource("FadeOutStoryboard");
+                    //fadeOutStoryboard.AutoReverse = true;
+                    BeginAnimation(UIElement.OpacityProperty, _fadeOutAnimation);
                 }
             }
-        }
-
-        private void FadeOutStoryboard_Completed(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         public BusyIndicator()
@@ -67,6 +59,9 @@ namespace AcgnuX.Controls
             var bytes = FileUtil.Stream2Bytes(steam.Stream);
             var image = ImageUtil.ByteArrayToImage(bytes);
             AnimateImg.AnimatedImageControl(image);
+            _fadeInAnimation = (DoubleAnimation)this.FindResource("FadeInAnimation");
+            _fadeOutAnimation = (DoubleAnimation)this.FindResource("FadeOutAnimation");
+            _fadeOutAnimation.Completed += (sender, e) => Visibility = Visibility.Collapsed;
             //timer.Interval = new TimeSpan(200000);
             //timer.Tick += new EventHandler(timer_Tick);
             //timer.Start();

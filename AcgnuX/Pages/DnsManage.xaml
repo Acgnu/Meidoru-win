@@ -1,46 +1,52 @@
 ﻿<local:BasePage x:Class="AcgnuX.Pages.DnsManage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:local="clr-namespace:AcgnuX.Pages"
       xmlns:res="clr-namespace:AcgnuX.Properties"
       xmlns:lc="clr-namespace:AcgnuX.Controls"
+      mc:Ignorable="d" 
+      d:DesignWidth="1024" d:DesignHeight="768"
       Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
 
     <Grid>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <DockPanel VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="0">
-                <Button Style="{StaticResource AddButtonStyle}"  Click="OnBtnAddClick" DockPanel.Dock="Right">
-                    <WrapPanel>
-                        <Path Style="{StaticResource CommonAddButtonPathIcoStyle}"/>
-                        <TextBlock Text="{x:Static res:Resources.S_Add}" Margin="5 0 0 0" />
-                    </WrapPanel>
-                </Button>
-                <TextBox Style="{StaticResource TextBoxBase}" KeyUp="OnFilterBoxKeyDown" />
-            </DockPanel>
-            <DataGrid Name="DnsRecordDataGrid" Style="{StaticResource commonDataGrid}" Template="{DynamicResource BaseDataGridControlTemplate}" Margin="0,8,0,0" MouseDoubleClick="OnGridDoubleClick" Grid.Column="0" Grid.Row="1" ContextMenuOpening="OnContextMenuOpen" MouseRightButtonDown="OnClickContextMenuDelete">
-                <!--<DataGrid.ContextMenu>
+        <Border Style="{StaticResource PageContainerBorderStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <DockPanel VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="0">
+                    <Button Style="{StaticResource AddButtonStyle}"  Click="OnBtnAddClick" DockPanel.Dock="Right">
+                        <WrapPanel>
+                            <Path Style="{StaticResource CommonAddButtonPathIcoStyle}"/>
+                            <TextBlock Text="{x:Static res:Resources.S_Add}" Margin="5 0 0 0" />
+                        </WrapPanel>
+                    </Button>
+                    <TextBox Style="{StaticResource TextBoxBase}" KeyUp="OnFilterBoxKeyDown" />
+                </DockPanel>
+                <DataGrid Name="DnsRecordDataGrid" Style="{StaticResource commonDataGrid}" Template="{DynamicResource BaseDataGridControlTemplate}" Margin="0,8,0,0" MouseDoubleClick="OnGridDoubleClick" Grid.Column="0" Grid.Row="1" ContextMenuOpening="OnContextMenuOpen" MouseRightButtonDown="OnClickContextMenuDelete">
+                    <!--<DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="{x:Static res:Resources.S_Delete}" Name="delete" Click="OnClickContextMenuDelete" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>-->
-                <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Name}" Header="{x:Static res:Resources.S_Domain}" Width="*"/>
-                    <DataGridTextColumn Binding="{Binding Value}" Header="{x:Static res:Resources.S_DnsRecordValue}" Width="4*" />
-                    <DataGridTextColumn Binding="{Binding type}" Header="{x:Static res:Resources.S_Type}" Width="*" />
-                    <DataGridTextColumn Binding="{Binding line}" Header="{x:Static res:Resources.S_Line}" Width="*" />
-                    <DataGridTextColumn Binding="{Binding enabled}" Header="{x:Static res:Resources.S_Status}" Width="*" />
-                    <DataGridTextColumn Binding="{Binding ttl}" Header="{x:Static res:Resources.S_TTL}" Width="*" />
-                    <DataGridTextColumn Binding="{Binding updated_on}" Header="{x:Static res:Resources.S_UpdateTime}" Width="2*" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </Grid>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Name}" Header="{x:Static res:Resources.S_Domain}" Width="*"/>
+                        <DataGridTextColumn Binding="{Binding Value}" Header="{x:Static res:Resources.S_DnsRecordValue}" Width="4*" />
+                        <DataGridTextColumn Binding="{Binding type}" Header="{x:Static res:Resources.S_Type}" Width="*" />
+                        <DataGridTextColumn Binding="{Binding line}" Header="{x:Static res:Resources.S_Line}" Width="*" />
+                        <DataGridTextColumn Binding="{Binding enabled}" Header="{x:Static res:Resources.S_Status}" Width="*" />
+                        <DataGridTextColumn Binding="{Binding ttl}" Header="{x:Static res:Resources.S_TTL}" Width="*" />
+                        <DataGridTextColumn Binding="{Binding updated_on}" Header="{x:Static res:Resources.S_UpdateTime}" Width="2*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
         <Button Style="{StaticResource RefreshFloatButtonStyle}" Click="OnClickRefreshButton">
             <Path Style="{StaticResource RefreshPathIcoStyle}"/>
         </Button>
