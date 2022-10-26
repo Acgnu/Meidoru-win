@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:dzn="clr-namespace:AcgnuX.Source.DesignModel"
       xmlns:bizc="clr-namespace:AcgnuX.Source.Bussiness.Common"
+      xmlns:lc="clr-namespace:AcgnuX.Controls"
       mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -21,7 +22,8 @@
                                 <MouseBinding MouseAction="RightClick" Command="{Binding OnDeleteCommand}" />
                             </Border.InputBindings>
                             <Grid ClipToBounds="True">
-                                <DockPanel Width="202.5" HorizontalAlignment="Left" LastChildFill="False">
+                                <DockPanel 
+                                    HorizontalAlignment="Left" LastChildFill="False">
                                     <Label DockPanel.Dock="Top" Content="{Binding Name}" Foreground="Black" FontSize="18" VerticalContentAlignment="Center"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                                         <Image Source="{Binding Platform, Converter={bizc:ContactPlatformToImageSourceConverter}, ConverterParameter=True}" Width="26" Height="26" Margin="3 0 0 0" Opacity="0.7"/>
@@ -29,7 +31,9 @@
                                     </StackPanel>
                                     <Label Content="{Binding Phone}" ContentStringFormat="TEL : {0}" DockPanel.Dock="Bottom" />
                                 </DockPanel>
-                                <Image HorizontalAlignment="Right" Height="100" Width="100" Stretch="Fill" Source="{Binding Avatar, Converter={bizc:ByteArrayToAvatarImageConverter}, ConverterParameter=True}" >
+                                <Image HorizontalAlignment="Right"
+                                       Width="{Binding Path=ItemHeight, RelativeSource={RelativeSource AncestorType={x:Type lc:VirtualizingWrapPanel}}, FallbackValue=100}" 
+                                       Stretch="Fill" Source="{Binding Avatar, Converter={bizc:ByteArrayToAvatarImageConverter}, ConverterParameter=True}" >
                                     <!--<Image.Clip>
                                         <EllipseGeometry Center="58.2, 58.2" RadiusX="58.2" RadiusY="58.2" />
                                     </Image.Clip>-->

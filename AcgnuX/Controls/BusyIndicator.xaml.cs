@@ -55,10 +55,12 @@ namespace AcgnuX.Controls
         {
             InitializeComponent();
             this.Visibility = Visibility.Collapsed;
+            //加载GIF图片
             var steam = FileUtil.GetApplicationResourceAsStream("../Assets/Images/loading_nekololi.gif");
             var bytes = FileUtil.Stream2Bytes(steam.Stream);
             var image = ImageUtil.ByteArrayToImage(bytes);
             AnimateImg.AnimatedImageControl(image);
+            //加载动画
             _fadeInAnimation = (DoubleAnimation)this.FindResource("FadeInAnimation");
             _fadeOutAnimation = (DoubleAnimation)this.FindResource("FadeOutAnimation");
             _fadeOutAnimation.Completed += (sender, e) => Visibility = Visibility.Collapsed;

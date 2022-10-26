@@ -37,6 +37,7 @@ namespace AcgnuX.Pages
     {
         //列表数据对象
         private ObservableCollection<PianoScoreViewModel> mPianoScoreList = new ObservableCollection<PianoScoreViewModel>();
+        //private AsyncObservableCollection<PianoScoreViewModel> mPianoScoreList = new AsyncObservableCollection<PianoScoreViewModel>();
         //下载worker
         //private readonly BackgroundWorker bgworker = new BackgroundWorker()
         //{
@@ -124,7 +125,7 @@ namespace AcgnuX.Pages
                 //查询关键字
                 var sql = new StringBuilder(" FROM tan8_music WHERE 1 = 1");
                 var sqlArgs = new List<SQLiteParameter>();
-                pager.MaxRow = 20;
+                pager.MaxRow = 1000;
                 if (!string.IsNullOrEmpty(keyword))
                 {
                     pager.MaxRow = int.MaxValue;
@@ -260,7 +261,11 @@ namespace AcgnuX.Pages
                 default:
                     //刷新则清空所有记录后重新添加
                     mPianoScoreList.Clear();
-                    dataList.ForEach(e => mPianoScoreList.Add(CreateViewInstance(e)));
+                    //dataList.ForEach(e => mPianoScoreList.Add(CreateViewInstance(e)));
+                    dataList.ForEach(e =>
+                    {
+                        Application.Current.Dispatcher.BeginInvoke(new Action(() => mPianoScoreList.Add(CreateViewInstance(e))));
+                    });
                     break;
             }
             //读取完成后将翻页动作设为当前
@@ -295,8 +300,10 @@ namespace AcgnuX.Pages
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnClickRefreshButton(object sender, RoutedEventArgs e)
+        private async void OnClickRefreshButton(object sender, RoutedEventArgs e)
         {
+            //var dataList = await LoadingAsync("");
+            //Console.WriteLine(dataList);
             OnDataReading();
         }
 
