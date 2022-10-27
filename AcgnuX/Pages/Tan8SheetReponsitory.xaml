@@ -56,11 +56,11 @@
                      Visibility="Collapsed" 
                      ScrollViewer.ScrollChanged="OnPianoScoreListBoxScroll"
                      ItemContainerStyle="{StaticResource PianoScoreListBoxItemContainerStyle}">
-                    <ListBox.ItemsPanel>
+                    <!--<ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <VirtualizingStackPanel />
                         </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
+                    </ListBox.ItemsPanel>-->
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <DockPanel LastChildFill="False" Background="Transparent">

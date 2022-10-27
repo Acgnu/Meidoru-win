@@ -261,11 +261,7 @@ namespace AcgnuX.Pages
                 default:
                     //刷新则清空所有记录后重新添加
                     mPianoScoreList.Clear();
-                    //dataList.ForEach(e => mPianoScoreList.Add(CreateViewInstance(e)));
-                    dataList.ForEach(e =>
-                    {
-                        Application.Current.Dispatcher.BeginInvoke(new Action(() => mPianoScoreList.Add(CreateViewInstance(e))));
-                    });
+                    dataList.ForEach(e => mPianoScoreList.Add(CreateViewInstance(e)));
                     break;
             }
             //读取完成后将翻页动作设为当前

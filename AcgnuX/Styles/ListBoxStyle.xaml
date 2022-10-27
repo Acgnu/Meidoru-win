@@ -86,9 +86,11 @@
 
     <!--琴谱列表容器模板-->
     <ControlTemplate TargetType="{x:Type ListBox}" x:Key="PianoScoreListBoxTemplate">
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0 5 0 0" Template="{DynamicResource BaseScrollViewerControlTemplate}" CanContentScroll="False">
-            <ItemsPresenter >
-            </ItemsPresenter>
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Margin="0 5 0 0" 
+                      Template="{DynamicResource BaseScrollViewerControlTemplate}" 
+                      VirtualizingPanel.IsVirtualizing="True"
+                      CanContentScroll="True">
+               <ItemsPresenter />
         </ScrollViewer>
     </ControlTemplate>
 
