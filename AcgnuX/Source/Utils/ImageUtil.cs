@@ -317,10 +317,17 @@ namespace AcgnuX.Source.Utils
         /// <returns></returns>
         public static BitmapImage GetBitmapImage(byte[] bytes)
         {
+            var stream = new MemoryStream(bytes);
+            var bitmap = GetBitmapImageFromStream(stream);
+            return bitmap;
+        }
+
+        public static BitmapImage GetBitmapImageFromStream(Stream stream)
+        {
             BitmapImage bitmap = new BitmapImage();
             bitmap.BeginInit();
             bitmap.CacheOption = BitmapCacheOption.OnLoad;
-            bitmap.StreamSource = new MemoryStream(bytes);
+            bitmap.StreamSource = stream;
             bitmap.EndInit();
             bitmap.Freeze();
             return bitmap;

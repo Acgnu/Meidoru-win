@@ -64,18 +64,9 @@ namespace AcgnuX.Pages
                         Name = item.Name,
                         Uid = item.Uid,
                         Phone = item.Phone,
-                        Avatar = item.Avatar,
+                        Avatar = new ByteArray(item.Avatar),
                         Platform = item.Platform
                     });
-                    //mContactListViewModel.Items.Add(new ContactItemViewModel(this)
-                    //{
-                    //    Id = item.Id,
-                    //    Name = item.Name,
-                    //    Uid = item.Uid,
-                    //    Phone = item.Phone,
-                    //    Avatar = item.Avatar,
-                    //    Platform = item.Platform
-                    //});
                 }
                 mContactListViewModel.Items.AddRange(contactVms);
             }

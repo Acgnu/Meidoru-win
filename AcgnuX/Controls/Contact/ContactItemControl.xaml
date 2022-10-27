@@ -26,14 +26,18 @@
                                     HorizontalAlignment="Left" LastChildFill="False">
                                     <Label DockPanel.Dock="Top" Content="{Binding Name}" Foreground="Black" FontSize="18" VerticalContentAlignment="Center"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                                        <Image Source="{Binding Platform, Converter={bizc:ContactPlatformToImageSourceConverter}, ConverterParameter=True}" Width="26" Height="26" Margin="3 0 0 0" Opacity="0.7"/>
+                                        <lc:AsyncImage Source="{Binding Platform, Converter={bizc:ContactPlatformToImageSourceConverter}, ConverterParameter=True}" Width="26" Height="26" Margin="3 0 0 0" Opacity="0.7"/>
                                         <Label Content="{Binding Uid}" FontSize="16" />
                                     </StackPanel>
                                     <Label Content="{Binding Phone}" ContentStringFormat="TEL : {0}" DockPanel.Dock="Bottom" />
                                 </DockPanel>
-                                <Image HorizontalAlignment="Right"
+                                <!--<Image HorizontalAlignment="Right"
+                                       DataContext="{Binding Avatar, Converter={bizc:ByteArrayToAvatarImageConverter}}"
                                        Width="{Binding Path=ItemHeight, RelativeSource={RelativeSource AncestorType={x:Type lc:VirtualizingWrapPanel}}, FallbackValue=100}" 
-                                       Stretch="Fill" Source="{Binding Avatar, Converter={bizc:ByteArrayToAvatarImageConverter}, ConverterParameter=True}" >
+                                       Stretch="Fill" Source="{Binding Path=Result, IsAsync=True}" >-->
+                                <lc:AsyncImage HorizontalAlignment="Right" ImageBytes="{Binding Avatar, IsAsync=True}"
+                                       Width="{Binding Path=ItemHeight, RelativeSource={RelativeSource AncestorType={x:Type lc:VirtualizingWrapPanel}}, FallbackValue=100}" 
+                                       Stretch="Fill">
                                     <!--<Image.Clip>
                                         <EllipseGeometry Center="58.2, 58.2" RadiusX="58.2" RadiusY="58.2" />
                                     </Image.Clip>-->
@@ -43,7 +47,7 @@
                                             <GradientStop Color="#00FFFFFF" Offset="0"/>
                                         </LinearGradientBrush>
                                     </Image.OpacityMask>
-                                </Image>
+                                </lc:AsyncImage>
                             </Grid>
                         </Border>
                         

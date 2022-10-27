@@ -1,5 +1,6 @@
 ﻿using AcgnuX.Pages;
 using AcgnuX.Source.Bussiness.Constants;
+using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
 using System;
@@ -35,7 +36,7 @@ namespace AcgnuX.Source.DesignModel
             Platform = ContactPlatform.WE;
             Uid = "Acgnu";
             Phone = "13333333333";
-            Avatar = r.ToArray();
+            Avatar = new ByteArray(r.ToArray());
         }
     }
 }

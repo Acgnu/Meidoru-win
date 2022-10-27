@@ -14,7 +14,7 @@ namespace AcgnuX.Source.Model
         // 喜好评级 1 - 5
         public byte Star { get; set; }
         //封面图
-        public ImageSource cover { get; set; }
+        public string Cover { get; set; }
         //是否自动下载 (下载需要)
         public bool AutoDownload { get; set; }
         public bool UseProxy { get; set; } = true;

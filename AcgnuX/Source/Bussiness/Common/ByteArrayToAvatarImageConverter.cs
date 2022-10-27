@@ -1,4 +1,5 @@
 ﻿using AcgnuX.Source.Bussiness.Constants;
+using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using System;
 using System.Collections.Generic;
@@ -26,9 +27,8 @@ namespace AcgnuX.Source.Bussiness.Common
             {
                 if (null == defaultAvatar)
                 {
-                    defaultAvatar = new BitmapImage(new Uri(
-                    string.Format("pack://application:,,,/{0};component/Assets/Images/avatar_default.jpg", System.Reflection.Assembly.GetEntryAssembly().GetName().Name),
-                    UriKind.Absolute));
+                    var stream = FileUtil.GetApplicationResourceAsStream(@"../../Assets/Images/avatar_default.jpg");
+                    defaultAvatar = ImageUtil.GetBitmapImageFromStream(stream.Stream);
                 }
                 return defaultAvatar;
             }
@@ -37,12 +37,43 @@ namespace AcgnuX.Source.Bussiness.Common
 
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (null == value || ((byte[])value).Length == 0)
-            {
-                return DefaultAvatar;
-            }
-            return ImageUtil.GetBitmapImage((byte[])value);
+            //if (null == value || ((byte[])value).Length == 0)
+            //{
+            //    return DefaultAvatar;
+            //}
+            //return ImageUtil.GetBitmapImage((byte[])value);
             //return ImageUtil.GetBitmapImage($"#{value}");
+            byte[] bytes;
+            if (value is byte[] v)
+            {
+                bytes = v;
+            } 
+            else if (value is ByteArray ba)
+            {
+                bytes = ba.Data;
+            }
+            else
+            {
+                bytes = new byte[0];
+            }
+            Task<BitmapImage> task;
+            if (bytes == null || bytes.Count() == 0)
+            {
+                task = Task.Run(() =>
+                {
+                    return DefaultAvatar;
+                    //var stream = FileUtil.GetApplicationResourceAsStream(@"../../Assets/Images/avatar_default.jpg");
+                    //return ImageUtil.GetBitmapImageFromStream(stream.Stream);
+                });
+            } 
+            else
+            {
+                task = Task.Run(() =>
+                {
+                    return ImageUtil.GetBitmapImage(bytes);
+                });
+            }
+            return new TaskCompletionNotifier<BitmapImage>(task);
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

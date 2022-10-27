@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:AcgnuX.Pages"
       xmlns:res="clr-namespace:AcgnuX.Properties"
+      xmlns:lc="clr-namespace:AcgnuX.Controls"
       mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="768" d:Background="White"
       Title="PwdRepositroy" Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
 
@@ -48,5 +49,6 @@
         <!--<Button Style="{StaticResource RefreshFloatButtonStyle}" Click="OnClickRefreshButton">
             <Path Style="{StaticResource RefreshPathIcoStyle}"/>
         </Button>-->
+        <lc:BusyIndicator x:Name="BusyIndicator" />
     </Grid>
 </local:BasePage>

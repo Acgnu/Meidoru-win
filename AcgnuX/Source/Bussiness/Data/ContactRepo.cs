@@ -86,7 +86,7 @@ namespace AcgnuX.Source.Bussiness.Data
                 new SQLiteParameter("@uid", vm.Uid),
                 new SQLiteParameter("@name", vm.Name),
                 new SQLiteParameter("@phone", vm.Phone),
-                new SQLiteParameter("@avatar", vm.Avatar)
+                new SQLiteParameter("@avatar", vm.Avatar.Data)
             });
 
             if(i  == 0) return i;
@@ -109,7 +109,7 @@ namespace AcgnuX.Source.Bussiness.Data
                         new SQLiteParameter("@uid", vm.Uid),
                         new SQLiteParameter("@name", vm.Name),
                         new SQLiteParameter("@phone", vm.Phone),
-                        new SQLiteParameter("@avatar", vm.Avatar),
+                        new SQLiteParameter("@avatar", vm.Avatar.Data),
                         new SQLiteParameter("@id", vm.Id.GetValueOrDefault())
             });
         }

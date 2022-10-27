@@ -39,6 +39,7 @@ namespace AcgnuX.Pages
         {
             if(DataUtil.IsEmptyCollection(accountList))
             {
+                BusyIndicator.IsBusy = true;
                 var itemsInFile = await LoadAllPasswordAsync();
                 if (null != itemsInFile && itemsInFile.Count > 0)
                 {
@@ -47,6 +48,7 @@ namespace AcgnuX.Pages
                         accountList.Add(item);
                     }
                 }
+                BusyIndicator.IsBusy = false;
             }
         }
 

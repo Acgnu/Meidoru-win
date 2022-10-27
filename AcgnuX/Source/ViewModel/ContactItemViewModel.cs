@@ -54,8 +54,8 @@ namespace AcgnuX.Source.ViewModel
         /// <summary>
         /// 联系人头像/二维码
         /// </summary>
-        private byte[] avatar;
-        public byte[] Avatar
+        private ByteArray avatar;
+        public ByteArray Avatar
         {
             get { return avatar; }
             set { avatar = value; OnPropertyChanged(); }

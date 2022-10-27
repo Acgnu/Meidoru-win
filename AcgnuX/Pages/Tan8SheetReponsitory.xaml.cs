@@ -283,9 +283,10 @@ namespace AcgnuX.Pages
         {
             var imgDir = Path.Combine(Settings.Default.Tan8HomeDir, pianoScore.id.GetValueOrDefault().ToString(), ApplicationConstant.DEFAULT_COVER_NAME);
             return new PianoScoreViewModel()
-            { 
+            {
                 //对于不存在cover的路径使用默认图片
-                cover = File.Exists(imgDir) ? ImageUtil.GetBitmapImage(imgDir) : ApplicationConstant.GetDefaultSheetCover(),
+                //cover = File.Exists(imgDir) ? ImageUtil.GetBitmapImage(imgDir) : ApplicationConstant.GetDefaultSheetCover(),
+                Cover = imgDir,
                 Name = pianoScore.Name,
                 id = pianoScore.id,
                 Ver = pianoScore.Ver,
@@ -1033,7 +1034,6 @@ namespace AcgnuX.Pages
             if (confirmDialog.ShowDialog().GetValueOrDefault())
             {
                 //释放文件资源
-                selected.cover = null;
                 mPianoScoreList.Remove(selected);
 
                 //删除文件夹

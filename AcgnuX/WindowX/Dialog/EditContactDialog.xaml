@@ -22,7 +22,10 @@
     
     <DockPanel>
         <StackPanel DockPanel.Dock="Top">
-            <Image Height="250" Stretch="UniformToFill" MouseLeftButtonDown="OnAvatarImageClick" Source="{Binding Path=ContactItem.Avatar,Converter={bizc:ByteArrayToAvatarImageConverter}, ConverterParameter=True}" />
+            <Image Height="250" Stretch="UniformToFill" 
+                   MouseLeftButtonDown="OnAvatarImageClick" 
+                   DataContext="{Binding Path=ContactItem.Avatar,Converter={bizc:ByteArrayToAvatarImageConverter}}"
+                   Source="{Binding Path=Result, IsAsync=True}" />
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="平台" Style="{StaticResource FormFieldTextBlock}" Width="30" Padding="0 10 5 10" />
                 <ListBox Name="ListBoxPlatform" BorderBrush="{x:Null}" Background="Transparent" ItemsSource="{Binding mListBoxItems}" ItemContainerStyle="{StaticResource FromComboListBoxItemStyle}">

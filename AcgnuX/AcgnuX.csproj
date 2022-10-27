@@ -138,6 +138,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\AsyncImage.cs" />
     <Compile Include="Controls\BusyIndicator.xaml.cs">
       <DependentUpon>BusyIndicator.xaml</DependentUpon>
     </Compile>
@@ -183,6 +184,7 @@
     <Compile Include="Source\Bussiness\Common\ByteArrayToAvatarImageConverter.cs" />
     <Compile Include="Source\Bussiness\Common\ContactPlatformToImageSourceConverter.cs" />
     <Compile Include="Source\Bussiness\Common\StringToImageConverter.cs" />
+    <Compile Include="Source\Bussiness\Common\TaskCompletionNotifier.cs" />
     <Compile Include="Source\Bussiness\Constants\ContactPlatform.cs" />
     <Compile Include="Source\Bussiness\Constants\ReadSyncFileTaskProgressType.cs" />
     <Compile Include="Source\Bussiness\Constants\SyncTaskProgressType.cs" />
@@ -207,6 +209,7 @@
     </Compile>
     <Compile Include="Source\DesignModel\ContactListDesignModel.cs" />
     <Compile Include="Source\DesignModel\ContactItemDesignModel.cs" />
+    <Compile Include="Source\Model\ByteArray.cs" />
     <Compile Include="Source\Model\Contact.cs" />
     <Compile Include="Source\Model\DeviceSyncItem.cs" />
     <Compile Include="Source\Model\DeviceSyncReadProgressItem.cs" />

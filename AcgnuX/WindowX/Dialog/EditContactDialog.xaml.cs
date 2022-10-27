@@ -105,7 +105,7 @@ namespace AcgnuX.WindowX.Dialog
             if (!string.IsNullOrEmpty(path))
             {
                 eventObj.Source = ImageUtil.GetBitmapImage(path);
-                ContactItem.Avatar = File.ReadAllBytes(path);
+                ContactItem.Avatar = new ByteArray(File.ReadAllBytes(path));
             }
         }
     }
