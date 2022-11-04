@@ -21,7 +21,7 @@ namespace AcgnuX.Source.ViewModel
     /// <summary>
     /// 设置的视图模型
     /// </summary>
-    public class SettingsViewModel : BasePropertyChangeNotifyModel
+    public class SettingsViewModel : ViewModelBase
     {
         public string AccountJsonPath { get; set; }
         public string PianoScorePath { get; set; }
@@ -36,7 +36,7 @@ namespace AcgnuX.Source.ViewModel
             set
             {
                 AccountJsonPath = value;
-                OnPropertyChanged(nameof(AccountJsonPath));
+                RaisePropertyChanged();
             }
         }
         //乐谱文件目录
@@ -46,7 +46,7 @@ namespace AcgnuX.Source.ViewModel
             set
             {
                 PianoScorePath = value;
-                OnPropertyChanged(nameof(PianoScorePath));
+                RaisePropertyChanged();
             }
         }
         //数据库文件
@@ -56,7 +56,7 @@ namespace AcgnuX.Source.ViewModel
             set
             {
                 DbFilePath = value;
-                OnPropertyChanged(nameof(DbFilePath));
+                RaisePropertyChanged();
             }
         }
         //IP代理数量
@@ -197,7 +197,7 @@ namespace AcgnuX.Source.ViewModel
         private void OnProxyPoolCountChange(int curNum)
         {
             ProxyCount = curNum;
-            OnPropertyChanged(nameof(ProxyCount));
+            RaisePropertyChanged();
         }
 
         /// <summary>
@@ -231,7 +231,7 @@ namespace AcgnuX.Source.ViewModel
         public void CheckIsCheckedAll(bool doNotify)
         {
             IsCheckedAll = CrawlRuls.Where(item => item.Enable == 1).Count() == CrawlRuls.Count();
-            if(doNotify) OnPropertyChanged(nameof(IsCheckedAll));
+            if(doNotify) RaisePropertyChanged();
         }
 
         /// <summary>
@@ -241,7 +241,7 @@ namespace AcgnuX.Source.ViewModel
         public void CheckSyncConfigIsCheckedAll(bool doNotify)
         {
             IsSyncConfigCheckedAll = SyncConfigs.Where(item => item.Enable == 1).Count() == SyncConfigs.Count();
-            if(doNotify) OnPropertyChanged(nameof(IsSyncConfigCheckedAll));
+            if(doNotify) RaisePropertyChanged();
         }
     }
 }

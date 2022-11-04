@@ -9,7 +9,7 @@ namespace AcgnuX.Pages
     public class BasePage : Page
     {
         //主窗口
-        protected MainWindow mMainWindow;
+        protected MainWindow mMainWindow = App.Current.MainWindow as MainWindow;
 
         /// <summary>
         /// 返回通用的成功结果

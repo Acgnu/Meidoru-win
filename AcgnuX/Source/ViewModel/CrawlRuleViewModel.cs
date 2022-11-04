@@ -18,7 +18,7 @@ namespace AcgnuX.Source.ViewModel
             set 
             {
                 Enable = value;
-                OnPropertyChanged(nameof(Enable));
+                RaisePropertyChanged();
             }
         }
         public string NameView
@@ -27,7 +27,7 @@ namespace AcgnuX.Source.ViewModel
             set
             {
                 Name = value;
-                OnPropertyChanged(nameof(Name));
+                RaisePropertyChanged();
             }
         }
         public string UrlView
@@ -36,7 +36,7 @@ namespace AcgnuX.Source.ViewModel
             set
             {
                 Url = value;
-                OnPropertyChanged(nameof(Url));
+                RaisePropertyChanged();
             }
         }
         public string ParttenView
@@ -45,7 +45,7 @@ namespace AcgnuX.Source.ViewModel
             set
             {
                 Partten = value;
-                OnPropertyChanged(nameof(Partten));
+                RaisePropertyChanged();
             }
         }
         public int MaxPageView
@@ -54,7 +54,7 @@ namespace AcgnuX.Source.ViewModel
             set
             {
                 MaxPage = value;
-                OnPropertyChanged(nameof(MaxPage));
+                RaisePropertyChanged();
             }
         }
     }

@@ -74,7 +74,7 @@ namespace AcgnuX.Source.ViewModel
         {
             if (null == appSettingsPage)
             {
-                appSettingsPage = new AppSettings((MainWindow)window);
+                appSettingsPage = new AppSettings();
             }
             MainContent = appSettingsPage;
         }
@@ -87,9 +87,10 @@ namespace AcgnuX.Source.ViewModel
         {
             if (null == navMenuItem.instance)
             {
-                object[] parameters = new object[1];
-                parameters[0] = Application.Current.MainWindow;
-                dynamic page = Activator.CreateInstance(navMenuItem.pageType, parameters);
+                //object[] parameters = new object[1];
+                //parameters[0] = Application.Current.MainWindow;
+                //dynamic page = Activator.CreateInstance(navMenuItem.pageType, parameters);
+                dynamic page = Activator.CreateInstance(navMenuItem.pageType);
                 navMenuItem.instance = page;
             }
             MainContent = navMenuItem.instance;

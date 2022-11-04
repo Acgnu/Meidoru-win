@@ -25,13 +25,13 @@ namespace AcgnuX.WindowX.Dialog
         private void OnConfirmClick(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
-            Close();
+            CloseCommand.Execute(null);
         }
 
         private void OnCancelClick(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
-            Close();
+            CloseCommand.Execute(null);
         }
     }
 }

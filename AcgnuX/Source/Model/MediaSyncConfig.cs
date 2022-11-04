@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace AcgnuX.Source.Model
     /// <summary>
     /// 指定需要同步的路径对应关系
     /// </summary>
-    public class MediaSyncConfig : BasePropertyChangeNotifyModel
+    public class MediaSyncConfig : ViewModelBase
     {
         /// <summary>
         /// ID

@@ -195,6 +195,7 @@
     <Compile Include="Source\Bussiness\Constants\AlertLevel.cs" />
     <Compile Include="Source\Bussiness\Constants\WindowsMessage.cs" />
     <Compile Include="Source\Bussiness\Constants\SyncDeviceType.cs" />
+    <Compile Include="Source\Bussiness\Data\AppSecretKeyRepo.cs" />
     <Compile Include="Source\Bussiness\Data\ContactRepo.cs" />
     <Compile Include="Source\Bussiness\imgrespotroy\IImageRepo.cs" />
     <Compile Include="Source\Bussiness\imgrespotroy\ImageRepoFactory.cs" />
@@ -209,6 +210,7 @@
     </Compile>
     <Compile Include="Source\DesignModel\ContactListDesignModel.cs" />
     <Compile Include="Source\DesignModel\ContactItemDesignModel.cs" />
+    <Compile Include="Source\Model\AppSecretKey.cs" />
     <Compile Include="Source\Model\ByteArray.cs" />
     <Compile Include="Source\Model\Contact.cs" />
     <Compile Include="Source\Model\DeviceSyncItem.cs" />
@@ -218,7 +220,6 @@
     <Compile Include="Source\Model\MediaSyncConfig.cs" />
     <Compile Include="Source\Model\ProxyAddress.cs" />
     <Compile Include="Source\Model\Account.cs" />
-    <Compile Include="Source\Model\BasePropertyChangeNotifyModel.cs" />
     <Compile Include="Source\Model\CrawlRule.cs" />
     <Compile Include="Source\Model\DialogEditResult.cs" />
     <Compile Include="Source\Model\MainWindowStatusNotify.cs" />
@@ -232,8 +233,6 @@
     <Compile Include="Source\Model\Ten\Dns\DnsOperatorResult.cs" />
     <Compile Include="Source\Model\Ten\Dns\DnsRecordResult.cs" />
     <Compile Include="Source\Model\Ten\Dns\DnsOptResultData.cs" />
-    <Compile Include="Source\Model\Ten\Dns\TenApiSecret.cs" />
-    <Compile Include="Source\Model\Ten\Dns\TenDnsApiSecret.cs" />
     <Compile Include="Source\Taskx\HttpWebServer.cs" />
     <Compile Include="Source\Taskx\ProxyFactoryV2.cs" />
     <Compile Include="Source\Utils\Crypto\AlgorithmUtil.cs" />
@@ -257,6 +256,9 @@
     <Compile Include="Source\ViewModel\DeviceDriverViewModel.cs" />
     <Compile Include="Source\ViewModel\AccountViewModel.cs" />
     <Compile Include="Source\ViewModel\CommonWindowViewModel.cs" />
+    <Compile Include="Source\ViewModel\DnsItemViewModel.cs" />
+    <Compile Include="Source\ViewModel\DnsManageViewModel.cs" />
+    <Compile Include="Source\ViewModel\EditDnsRecordDialogViewModel.cs" />
     <Compile Include="Source\ViewModel\SyncConfigViewModel.cs" />
     <Compile Include="Source\ViewModel\CrawlRuleViewModel.cs" />
     <Compile Include="Source\ViewModel\DeviceSyncListViewModel.cs" />
@@ -264,7 +266,6 @@
     <Compile Include="Source\ViewModel\PianoScoreViewModel.cs" />
     <Compile Include="Source\ViewModel\SettingsViewModel.cs" />
     <Compile Include="Source\ViewModel\PianoScoreDownloadRecordViewModel.cs" />
-    <Compile Include="Source\ViewModel\Ten\Dns\DnsRecordViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>

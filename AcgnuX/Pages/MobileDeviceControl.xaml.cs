@@ -65,12 +65,11 @@ namespace AcgnuX.Pages
             WorkerSupportsCancellation = true
         };
 
-        public MobileDeviceControl(MainWindow mainWin)
+        public MobileDeviceControl()
         {
             InitializeComponent();
-            mMainWindow = mainWin;
             mMainWindow.OnClickStatusBarStop += ChangeTaskStatus;
-            OnTaskBarEvent += mainWin.SetStatustProgess;
+            OnTaskBarEvent += mMainWindow.SetStatustProgess;
 
             mCheckDeviceBgWorker.DoWork += new DoWorkEventHandler(DoCheckDeviceTask);
             mCheckDeviceBgWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(CheckDeviceTaskComplate);
@@ -83,7 +82,7 @@ namespace AcgnuX.Pages
             mReadDeviceFileWorker.ProgressChanged += new ProgressChangedEventHandler(OnReadDeviceFileProgress);
             mReadDeviceFileWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(OnReadDeviceFileTaskComplate);
 
-            this.mUsbMonitor = new UsbMonitorManager(mainWin);
+            this.mUsbMonitor = new UsbMonitorManager(mMainWindow);
             //this.mUsbMonitor.UsbPort += OnUsb;
             this.mUsbMonitor.UsbDeviceInterface += OnUsb;
             //this.mUsbMonitor.UsbChanged += OnUsb;

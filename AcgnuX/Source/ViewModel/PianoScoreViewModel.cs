@@ -21,7 +21,7 @@ namespace AcgnuX.Source.ViewModel
             set
             {
                 Name = value;
-                OnPropertyChanged(nameof(Name));
+                RaisePropertyChanged();
             }
         }
 
@@ -50,7 +50,7 @@ namespace AcgnuX.Source.ViewModel
             set
             {
                 Star = System.Convert.ToByte(value);
-                OnPropertyChanged(nameof(Star));
+                RaisePropertyChanged();
             }
         }
     }

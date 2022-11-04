@@ -1,9 +1,11 @@
-﻿namespace AcgnuX.Source.Model
+﻿using GalaSoft.MvvmLight;
+
+namespace AcgnuX.Source.Model
 {
     /// <summary>
     /// 网页IP池爬取规则
     /// </summary>
-    public class CrawlRule : BasePropertyChangeNotifyModel
+    public class CrawlRule : ViewModelBase
     {
         public int Id { get; set; }
         public string Name { get; set; }

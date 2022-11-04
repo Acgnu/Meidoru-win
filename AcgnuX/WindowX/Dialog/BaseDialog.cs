@@ -27,6 +27,12 @@ namespace AcgnuX.WindowX.Dialog
         //允许最大化
         public Visibility CanMaxmize { get; set; } = Visibility.Collapsed;
 
+        //最小化命令
+        public ICommand MinimizeCommand { get; set; }
+
+        //最大化
+        public ICommand MaximizeCommand { get; set; }
+
         //关闭对话框命令
         public ICommand CloseCommand { get; set; }
 

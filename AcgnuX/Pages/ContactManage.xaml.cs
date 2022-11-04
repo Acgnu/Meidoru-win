@@ -26,10 +26,9 @@ namespace AcgnuX.Pages
         private ContactListViewModel mContactListViewModel = new ContactListViewModel();
         private readonly ContactRepo ContactRepo = ContactRepo.Instance;
 
-        public ContactManage(MainWindow mainWin)
+        public ContactManage()
         {
             InitializeComponent();
-            mMainWindow = mainWin;
             ContactListControl.DataContext = mContactListViewModel;
         }
 

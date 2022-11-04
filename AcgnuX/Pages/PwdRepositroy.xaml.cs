@@ -22,10 +22,9 @@ namespace AcgnuX.Pages
         //数据集
         private ObservableCollection<Account> accountList = new ObservableCollection<Account>();
 
-        public PwdRepositroy(MainWindow mainWin)
+        public PwdRepositroy()
         {
             InitializeComponent();
-            mMainWindow = mainWin;
             PasswordDataGrid.ItemsSource = accountList;
         }
 

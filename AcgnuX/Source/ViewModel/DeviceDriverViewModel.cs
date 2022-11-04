@@ -1,9 +1,10 @@
 ﻿using AcgnuX.Source.Model;
+using GalaSoft.MvvmLight;
 using System.ComponentModel;
 
 namespace AcgnuX.ViewModel
 {
-    class DeviceDriverViewModel : BasePropertyChangeNotifyModel
+    class DeviceDriverViewModel : ViewModelBase
     {
         /// <summary>
         /// 驱动值

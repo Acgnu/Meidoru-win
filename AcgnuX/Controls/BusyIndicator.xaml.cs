@@ -1,19 +1,7 @@
 ﻿using AcgnuX.Source.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace AcgnuX.Controls
 {
@@ -25,18 +13,18 @@ namespace AcgnuX.Controls
         //private int _counter = 0;
         //private DispatcherTimer timer = new DispatcherTimer();
         //private RotateTransform rt = new RotateTransform();
-        private bool _isBusy = false;
+        //private bool _isBusy = false;
         private DoubleAnimation _fadeInAnimation;
         private DoubleAnimation _fadeOutAnimation;
         public bool IsBusy
         {
             get
             {
-                return _isBusy;
+                return (bool)GetValue(IsBusyProperty);
             }
             set
             {
-                _isBusy = value;
+                //SetValue(IsBusyProperty, value);
                 if (value)
                 {
                     Visibility = Visibility.Visible;
@@ -50,6 +38,13 @@ namespace AcgnuX.Controls
                 }
             }
         }
+
+        public static readonly DependencyProperty IsBusyProperty =
+         DependencyProperty.Register(
+             nameof(IsBusy),
+             typeof(bool),
+             typeof(BusyIndicator),
+             new PropertyMetadata(false, OnIsBusyPropertyChange));
 
         public BusyIndicator()
         {
@@ -67,6 +62,17 @@ namespace AcgnuX.Controls
             //timer.Interval = new TimeSpan(200000);
             //timer.Tick += new EventHandler(timer_Tick);
             //timer.Start();
+        }
+
+        /// <summary>
+        /// IsBusy 属性变化事件
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="args"></param>
+        private static void OnIsBusyPropertyChange(DependencyObject obj, DependencyPropertyChangedEventArgs args)
+        {
+            var indicator = obj as BusyIndicator;
+            indicator.IsBusy = (bool) args.NewValue;
         }
 
         /**

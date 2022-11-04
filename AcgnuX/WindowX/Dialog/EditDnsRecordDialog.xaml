@@ -23,37 +23,41 @@
         </DrawingImage>
     </Window.Icon>
 
-    <DockPanel>
+    <DockPanel DataContext="{Binding ContentViewModel}">
         <StackPanel DockPanel.Dock="Top">
             <!--子域名-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_SubDomian}" Style="{StaticResource FormFieldTextBlock}" />
-                <TextBox Name="TextBlockDomain" Style="{StaticResource TextBoxBase}" Text="{Binding Path=MdnsRecord.Name}"/>
+                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Path=DnsItem.Name, Mode=TwoWay}"/>
             </DockPanel>
             <!--记录值-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_DnsRecordValue}" Style="{StaticResource FormFieldTextBlock}"/>
-                <TextBox Name="TextBlockValue" Style="{StaticResource TextBoxBase}" Text="{Binding Path=MdnsRecord.Value}"/>
+                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Path=DnsItem.Value, Mode=TwoWay}" />
             </DockPanel>
             <!--记录类型-->
 
             <!--容器排列-->
             <DockPanel>
                 <TextBlock Text="{x:Static res:Resources.S_Type}" Style="{StaticResource FormFieldTextBlock}"/>
-                <ListBox Name="DnsTypeListBox" BorderBrush="{x:Null}" Background="Transparent"  ItemContainerStyle="{StaticResource FromComboListBoxItemStyle}">
+                <ListBox 
+                    ItemsSource="{Binding TypeCombos}"
+                    SelectedItem="{Binding SelectedType}"
+                    BorderBrush="{x:Null}" 
+                    Background="Transparent"  
+                    ItemContainerStyle="{StaticResource FromComboListBoxItemStyle}">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal" IsItemsHost="True" VerticalAlignment="Center"/>
+                            <StackPanel Orientation="Horizontal" IsItemsHost="True" VerticalAlignment="Center"/>
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
-                    <ListBoxItem Content="A" />
-                    <ListBoxItem Content="CNAME" />
-                    <ListBoxItem Content="TXT" />
-                    <ListBoxItem Content="MX" />
-                    <ListBoxItem Content="NS" />
                 </ListBox>
             </DockPanel>
         </StackPanel>
-        <Button x:Name="ConfirmButton" Content="{x:Static res:Resources.S_Confirm}" Click="OnConfirmClick" Style="{DynamicResource DnsEditConfirmButtonStyle}" />
+        <Button x:Name="ConfirmButton" 
+                Content="{x:Static res:Resources.S_Confirm}" 
+                Command="{Binding OnSaveComand}" 
+                Style="{DynamicResource DnsEditConfirmButtonStyle}" 
+                IsEnabled="{Binding IsBusy}"/>
     </DockPanel>
 </local:BaseDialog>

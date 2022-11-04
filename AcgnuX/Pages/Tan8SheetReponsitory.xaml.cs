@@ -67,6 +67,7 @@ namespace AcgnuX.Pages
         //需要下载的任务列表
         private Queue<int> mTaskQueue; 
         private object mCollectLock = new object();
+        private Visibility ListVisible { get; set; } = Visibility.Collapsed;
         //导出的Worker
         private readonly BackgroundWorker mExportBgWorker = new BackgroundWorker()
         {
@@ -74,11 +75,10 @@ namespace AcgnuX.Pages
             WorkerSupportsCancellation = true
         };
 
-        public Tan8SheetReponsitory(MainWindow mainWin)
+        public Tan8SheetReponsitory()
         {
             InitializeComponent();
-            mMainWindow = mainWin;
-            OnTaskBarEvent += mainWin.SetStatustProgess;
+            OnTaskBarEvent += mMainWindow.SetStatustProgess;
             mMainWindow.OnClickStatusBarStop += ChangeTaskStatus;
             PianoScoreListBox.ItemsSource = mPianoScoreList;
             DataContext = this;
@@ -266,7 +266,7 @@ namespace AcgnuX.Pages
             }
             //读取完成后将翻页动作设为当前
             pager.Action = PageAction.CURRENT;
-            SetListBoxVisibility(true);
+            ListVisible = Visibility.Visible;
             BusyIndicator.IsBusy = false;
         }
 
@@ -1042,7 +1042,7 @@ namespace AcgnuX.Pages
                 SQLite.ExecuteNonQuery("DELETE FROM tan8_music WHERE ypid = @ypid", new List<SQLiteParameter> { new SQLiteParameter("@ypid", selected.id) });
 
                 //如果没有曲谱了, 则展示默认按钮
-                if (DataUtil.IsEmptyCollection(mPianoScoreList)) SetListBoxVisibility(false);
+                if (DataUtil.IsEmptyCollection(mPianoScoreList)) ListVisible = Visibility.Collapsed;
             }
         }
 
@@ -1091,44 +1091,6 @@ namespace AcgnuX.Pages
         //    mTan8Player.Show();
         //    mTan8Player.PlaySelected(new PianoScore() { id = 0 });
         //}
-
-        /// <summary>
-        /// 由于Flash被禁用, 使用内置的flash播放器
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnDefaultPlayButtonClickV2(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrEmpty(Settings.Default.DBFilePath))
-            {
-                mMainWindow.SetStatustProgess(new MainWindowStatusNotify()
-                {
-                    alertLevel = AlertLevel.ERROR,
-                    message = "答应我, 先去配置数据库"
-                });
-                return;
-            }
-            Tan8PlayUtil.ExePlayById(0, 1, false);
-        }
-
-        /// <summary>
-        /// 设置主列表和默认按钮的显示和隐藏
-        /// </summary>
-        /// <param name="showListBox"></param>
-        private void SetListBoxVisibility(bool showListBox)
-        {
-            this.Dispatcher.Invoke(() => 
-            {
-                if (showListBox)
-                {
-                    PianoScoreListBox.Visibility = Visibility.Visible;
-                    DefaultOpenPlayerButton.Visibility = Visibility.Collapsed;
-                    return;
-                }
-                PianoScoreListBox.Visibility = Visibility.Collapsed;
-                DefaultOpenPlayerButton.Visibility = Visibility.Visible;
-            });
-        }
 
         /// <summary>
         /// 曲谱列表滚动事件

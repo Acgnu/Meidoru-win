@@ -22,10 +22,9 @@ namespace AcgnuX.Pages
     /// </summary>
     public partial class AppSettings : BasePage
     {
-        public AppSettings(MainWindow mainWin)
+        public AppSettings()
         {
             InitializeComponent();
-            mMainWindow = mainWin;
         }
 
         /// <summary>

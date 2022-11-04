@@ -1,11 +1,12 @@
-﻿using System.Windows.Media;
+﻿using GalaSoft.MvvmLight;
+using System.Windows.Media;
 
 namespace AcgnuX.Source.Model
 {
     /// <summary>
     /// UI 展示对象
     /// </summary>
-    public class PianoScore : BasePropertyChangeNotifyModel
+    public class PianoScore : ViewModelBase
     {
         // 对应弹琴吧的乐谱id
         public int? id { get; set; }

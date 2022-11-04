@@ -20,7 +20,7 @@ namespace AcgnuX.Source.ViewModel
             set 
             {
                 PcPath = value;
-                OnPropertyChanged(nameof(PcPath));
+                RaisePropertyChanged();
             }
         }
         public string MobilePathView
@@ -29,7 +29,7 @@ namespace AcgnuX.Source.ViewModel
             set
             {
                 MobilePath = value;
-                OnPropertyChanged(nameof(MobilePath));
+                RaisePropertyChanged();
             }
         }
         public byte EnableView
@@ -38,7 +38,7 @@ namespace AcgnuX.Source.ViewModel
             set
             {
                 Enable = value;
-                OnPropertyChanged(nameof(Enable));
+                RaisePropertyChanged();
             }
         }
     }

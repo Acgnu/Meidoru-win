@@ -10,6 +10,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace AcgnuX.Utils
 {
@@ -27,7 +28,7 @@ namespace AcgnuX.Utils
         /**
          * HTTP协议POST请求添加参数的封装方法
          */
-        public static String ConcatQueryString(SortedDictionary<String, String> paramsMap)
+        public static string ConcatQueryString(SortedDictionary<string, string> paramsMap)
         {
             if (DataUtil.IsEmptyCollection(paramsMap))
             {
@@ -62,6 +63,19 @@ namespace AcgnuX.Utils
             var client = new RestClient(url);
             var asyncHandle = client.ExecuteAsync<T>(request, callBackActoin);
             return asyncHandle;
+        }
+
+        public static async Task<IRestResponse<T>> TaskRequestAsync<T>(string url, SortedDictionary<string, string> prams, Method type) where T : new()
+        {
+            var request = new RestRequest(type);
+            request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
+            request.OnBeforeDeserialization = response => response.ContentType = ContentType.Json;
+            foreach (KeyValuePair<string, string> kvp in prams)
+            {
+                request.AddParameter(kvp.Key, kvp.Value);
+            }
+            var client = new RestClient(url);
+            return await client.ExecuteTaskAsync<T>(request);
         }
 
         /// <summary>

@@ -42,12 +42,15 @@ namespace AcgnuX.Source.ViewModel
             ////}
 
             SimpleIoc.Default.Register<MainWindowViewModel>();
+            SimpleIoc.Default.Register<DnsManageViewModel>();
             SimpleIoc.Default.Register<PianoScoreDownloadRecordViewModel>();
             SimpleIoc.Default.Register<Tan8PlayerViewModel>();
             SimpleIoc.Default.Register<SettingsViewModel>();
         }
 
         public MainWindowViewModel Main { get { return ServiceLocator.Current.GetInstance<MainWindowViewModel>(); } }
+
+        public DnsManageViewModel DnsManage { get { return ServiceLocator.Current.GetInstance<DnsManageViewModel>(); } }
 
         //public PianoScoreDownloadRecordViewModel Tan8DownloadRecord { get { return ServiceLocator.Current.GetInstance<PianoScoreDownloadRecordViewModel>(); } }
 

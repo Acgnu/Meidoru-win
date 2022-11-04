@@ -2,6 +2,7 @@
 using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
 using AcgnuX.WindowX.Dialog;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using System;
 using System.Windows;
@@ -9,7 +10,7 @@ using System.Windows.Input;
 
 namespace AcgnuX.Source.ViewModel
 {
-    public class ContactItemViewModel : BasePropertyChangeNotifyModel
+    public class ContactItemViewModel : ViewModelBase
     {
         /// <summary>
         /// 数据ID
@@ -22,7 +23,7 @@ namespace AcgnuX.Source.ViewModel
         public ContactPlatform? Platform
         {
             get { return platform; }
-            set { platform = value; OnPropertyChanged(); }
+            set { platform = value; RaisePropertyChanged(); }
         }
         /// <summary>
         /// 联系人名称/备注名称
@@ -31,7 +32,7 @@ namespace AcgnuX.Source.ViewModel
         public string Name 
         {
             get { return name; }
-            set { name = value; OnPropertyChanged(); }
+            set { name = value; RaisePropertyChanged(); }
         }
         /// <summary>
         /// 联系人UID
@@ -40,7 +41,7 @@ namespace AcgnuX.Source.ViewModel
         public string Uid
         {
             get { return uid; }
-            set { uid = value; OnPropertyChanged(); }
+            set { uid = value; RaisePropertyChanged(); }
         }
         /// <summary>
         /// 联系人手机号
@@ -49,7 +50,7 @@ namespace AcgnuX.Source.ViewModel
         public string Phone
         {
             get { return phone; }
-            set { phone = value; OnPropertyChanged(); }
+            set { phone = value; RaisePropertyChanged(); }
         }
         /// <summary>
         /// 联系人头像/二维码
@@ -58,7 +59,7 @@ namespace AcgnuX.Source.ViewModel
         public ByteArray Avatar
         {
             get { return avatar; }
-            set { avatar = value; OnPropertyChanged(); }
+            set { avatar = value; RaisePropertyChanged(); }
         }
         /// <summary>
         /// True if this item is currently selected
@@ -71,7 +72,7 @@ namespace AcgnuX.Source.ViewModel
                 if (!IsSelected.Equals(value))
                 {
                     isSelected = value;
-                    OnPropertyChanged();
+                    RaisePropertyChanged();
                 }
             }
         }

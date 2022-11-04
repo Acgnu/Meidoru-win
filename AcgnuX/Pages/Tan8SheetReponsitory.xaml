@@ -41,19 +41,18 @@
                     <TextBox Style="{StaticResource TextBoxBase}" KeyUp="OnFilterBoxKeyDown" Name="SearchTextBox"/>
                 </DockPanel>
                 <!--默认的打开播放器按钮-->
-                <Button x:Name="DefaultOpenPlayerButton" Style="{StaticResource PianoScoreDefaultPlayButton}"  Grid.Row="1" Click="OnDefaultPlayButtonClickV2">
-                    <WrapPanel>
-                        <Path Style="{StaticResource PianoScoreDefaultPlayButtonIcoPath}" Data="{StaticResource Icon_Play}"/>
-                        <TextBlock Text="{x:Static res:Resources.S_OpenPlayer}" />
-                    </WrapPanel>
-                </Button>
+                <Image Source="../Assets/Images/icon_we.png" 
+                       Width="100"
+                       Height="100"
+                       Visibility="{Binding ListVisible, FallbackValue=Visible}" Grid.Row="1" />
+
                 <!--ListBox-->
                 <ListBox Name="PianoScoreListBox" 
                      Grid.Row="1" 
                      MouseDoubleClick="OnListBoxDoubleClick" 
                      ContextMenuOpening="OnContextMenuOpen" 
                      Template="{StaticResource PianoScoreListBoxTemplate}" 
-                     Visibility="Collapsed" 
+                     Visibility="{Binding ListVisible}" 
                      ScrollViewer.ScrollChanged="OnPianoScoreListBoxScroll"
                      ItemContainerStyle="{StaticResource PianoScoreListBoxItemContainerStyle}">
                     <!--<ListBox.ItemsPanel>

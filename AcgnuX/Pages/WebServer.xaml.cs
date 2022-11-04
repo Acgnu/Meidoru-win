@@ -5,7 +5,7 @@
     /// </summary>
     public partial class WebServer : BasePage
     {
-        public WebServer(MainWindow mainWin)
+        public WebServer()
         {
             InitializeComponent();
         }

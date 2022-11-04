@@ -8,7 +8,11 @@
       xmlns:lc="clr-namespace:AcgnuX.Controls"
       mc:Ignorable="d" 
       d:DesignWidth="1024" d:DesignHeight="768"
-      Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
+      Style="{StaticResource DataGridPageBaseStyle}">
+
+    <Page.DataContext>
+        <Binding Path="DnsManage" Source="{StaticResource Locator}" />
+    </Page.DataContext>
 
     <Grid>
         <Border Style="{StaticResource PageContainerBorderStyle}">
@@ -21,35 +25,42 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <DockPanel VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="0">
-                    <Button Style="{StaticResource AddButtonStyle}"  Click="OnBtnAddClick" DockPanel.Dock="Right">
+                    <Button Style="{StaticResource AddButtonStyle}" Click="OnBtnAddClick"  DockPanel.Dock="Right">
                         <WrapPanel>
                             <Path Style="{StaticResource CommonAddButtonPathIcoStyle}"/>
                             <TextBlock Text="{x:Static res:Resources.S_Add}" Margin="5 0 0 0" />
                         </WrapPanel>
                     </Button>
-                    <TextBox Style="{StaticResource TextBoxBase}" KeyUp="OnFilterBoxKeyDown" />
+                    <TextBox Text="{Binding FilterText, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxBase}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Command="{Binding OnRefreshCommand}" Key="Enter" />
+                        </TextBox.InputBindings>
+                    </TextBox>
                 </DockPanel>
-                <DataGrid Name="DnsRecordDataGrid" Style="{StaticResource commonDataGrid}" Template="{DynamicResource BaseDataGridControlTemplate}" Margin="0,8,0,0" MouseDoubleClick="OnGridDoubleClick" Grid.Column="0" Grid.Row="1" ContextMenuOpening="OnContextMenuOpen" MouseRightButtonDown="OnClickContextMenuDelete">
-                    <!--<DataGrid.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="{x:Static res:Resources.S_Delete}" Name="delete" Click="OnClickContextMenuDelete" />
-                    </ContextMenu>
-                </DataGrid.ContextMenu>-->
+                <DataGrid Name="DnsRecordDataGrid" 
+                          ItemsSource="{Binding GridData}"
+                          Style="{StaticResource commonDataGrid}" 
+                          Template="{DynamicResource BaseDataGridControlTemplate}" 
+                          Margin="0,8,0,0" 
+                          MouseDoubleClick="OnGridDoubleClick" 
+                          Grid.Column="0" 
+                          Grid.Row="1" 
+                          MouseRightButtonDown="OnClickContextMenuDelete">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="{x:Static res:Resources.S_Domain}" Width="*"/>
                         <DataGridTextColumn Binding="{Binding Value}" Header="{x:Static res:Resources.S_DnsRecordValue}" Width="4*" />
-                        <DataGridTextColumn Binding="{Binding type}" Header="{x:Static res:Resources.S_Type}" Width="*" />
-                        <DataGridTextColumn Binding="{Binding line}" Header="{x:Static res:Resources.S_Line}" Width="*" />
-                        <DataGridTextColumn Binding="{Binding enabled}" Header="{x:Static res:Resources.S_Status}" Width="*" />
-                        <DataGridTextColumn Binding="{Binding ttl}" Header="{x:Static res:Resources.S_TTL}" Width="*" />
-                        <DataGridTextColumn Binding="{Binding updated_on}" Header="{x:Static res:Resources.S_UpdateTime}" Width="2*" />
+                        <DataGridTextColumn Binding="{Binding Type}" Header="{x:Static res:Resources.S_Type}" Width="*" />
+                        <DataGridTextColumn Binding="{Binding Line}" Header="{x:Static res:Resources.S_Line}" Width="*" />
+                        <DataGridTextColumn Binding="{Binding Enabled}" Header="{x:Static res:Resources.S_Status}" Width="*" />
+                        <DataGridTextColumn Binding="{Binding Ttl}" Header="{x:Static res:Resources.S_TTL}" Width="*" />
+                        <DataGridTextColumn Binding="{Binding Updated_on}" Header="{x:Static res:Resources.S_UpdateTime}" Width="2*" />
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
         </Border>
-        <Button Style="{StaticResource RefreshFloatButtonStyle}" Click="OnClickRefreshButton">
+        <Button Style="{StaticResource RefreshFloatButtonStyle}" Command="{Binding OnRefreshCommand}">
             <Path Style="{StaticResource RefreshPathIcoStyle}"/>
         </Button>
-        <lc:BusyIndicator x:Name="BusyIndicator" />
+        <lc:BusyIndicator IsBusy="{Binding IsBusy}" />
     </Grid>
 </local:BasePage>

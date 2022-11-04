@@ -1,9 +1,10 @@
 ﻿using AcgnuX.Source.Model;
+using GalaSoft.MvvmLight;
 using System.Collections.ObjectModel;
 
 namespace AcgnuX.Source.ViewModel
 {
-    class DeviceSyncListViewModel : BasePropertyChangeNotifyModel
+    class DeviceSyncListViewModel : ViewModelBase
     {
         /// <summary>
         /// PC文件夹路径
