@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AcgnuX.Controls.Contact
+namespace AcgnuX.Controls
 {
     /// <summary>
-    /// ContactItem.xaml 的交互逻辑
+    /// ContactList.xaml 的交互逻辑
     /// </summary>
-    public partial class ContactItemControl : UserControl
+    public partial class ContactListControl : UserControl
     {
-        public ContactItemControl()
+        public ContactListControl()
         {
             InitializeComponent();
         }

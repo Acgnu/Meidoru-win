@@ -1,7 +1,6 @@
 ﻿using AcgnuX.Properties;
 using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Bussiness.Data;
-using AcgnuX.Source.DesignModel;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;

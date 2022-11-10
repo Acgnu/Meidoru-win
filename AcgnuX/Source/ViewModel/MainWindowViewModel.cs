@@ -7,6 +7,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -37,8 +38,8 @@ namespace AcgnuX.Source.ViewModel
         //设置页面
         private AppSettings appSettingsPage;
         //主内容
-        private Object mainContent;
-        public Object MainContent
+        private Page mainContent;
+        public Page MainContent
         {
             get { return mainContent; }
             set
@@ -47,6 +48,8 @@ namespace AcgnuX.Source.ViewModel
                 RaisePropertyChanged();
             }
         }
+        //气泡提示
+        public BubbleTipViwerViewModel BubbleTipViwerViewModel { get; set; } = new BubbleTipViwerViewModel();
 
         public MainWindowViewModel() : base()
         {
@@ -63,7 +66,7 @@ namespace AcgnuX.Source.ViewModel
             }));
             OnNavMenuItemClickCommand = new RelayCommand<NavMenu>(NavMenuItemClick);
             OnSettingCommand = new RelayCommand<Window>(OnSettingIconClick);
-            //MainContent = new Index();
+            MainContent = new Index();
         }
 
         /// <summary>

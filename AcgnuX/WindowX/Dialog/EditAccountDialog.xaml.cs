@@ -1,5 +1,7 @@
 ﻿using AcgnuX.Pages;
 using AcgnuX.Source.Model;
+using AcgnuX.Source.ViewModel;
+using AcgnuX.ViewModel;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -10,15 +12,16 @@ namespace AcgnuX.WindowX.Dialog
     /// </summary>
     public partial class EditAccountDialog : BaseDialog
     {
-        public Account Macount { get; set; }
-        //父Page
-        private PwdRepositroy mPwdRepositroy;
+        //编辑的数据vm
+        public AccountViewModel AccountViewModel { get; set; }
+        //父viewmodel
+        private readonly PwdRepositoryViewModel _PwdRepositoryViewModel;
 
-        public EditAccountDialog(Account account, PwdRepositroy pwdRepositroy)
+        public EditAccountDialog(AccountViewModel accountVm, PwdRepositoryViewModel pwdRepositoryViewModel)
         {
             InitializeComponent();
-            mPwdRepositroy = pwdRepositroy;
-            Macount = account;
+            _PwdRepositoryViewModel = pwdRepositoryViewModel;
+            AccountViewModel = accountVm ?? new AccountViewModel();
             DataContext = this;
         }
 
@@ -27,45 +30,15 @@ namespace AcgnuX.WindowX.Dialog
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnConfirmClick(object sender, RoutedEventArgs e)
+        private async void OnConfirmClick(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
             button.IsEnabled = false;
 
             //引发事件
-            var result = mPwdRepositroy.SaveAccount(GetEditAccount());
+            var result = await _PwdRepositoryViewModel.SaveItem(AccountViewModel);
             button.IsEnabled = true;
             if (result.success) Close();
-        }
-
-        /// <summary>
-        /// 提取表单数据
-        /// </summary>
-        /// <returns></returns>
-        private Account GetEditAccount()
-        {
-            return new Account()
-            {
-                Id = Macount?.Id,
-                Site = TextBlockSite.Text,
-                Uname = TextBlockUname.Text,
-                Upass = TextBlockUpass.Text,
-                Describe = TextBlockDescribe.Text,
-                Remark = TextBlockRemark.Text,
-            };
-        }
-
-        /// <summary>
-        /// 键盘按下事件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if(e.Key == System.Windows.Input.Key.Enter)
-            {
-                OnConfirmClick(ConfirmButton, null);
-            }
         }
     }
 }

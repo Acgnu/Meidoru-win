@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="AcgnuX.Controls.BubbleTipViwer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AcgnuX.Controls"
+             xmlns:dv="clr-namespace:AcgnuX.Source.ViewModel.Design"
+              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             IsHitTestVisible="False"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style TargetType="UserControl" x:Key="PrevBubblePanelStyle">
+            <Setter Property="Margin" Value="0 5" />
+            <Style.Triggers>
+                <!--<DataTrigger Binding="{Binding Priority}" Value="1">
+                    <Setter Property="Opacity" Value="0.8" />
+                    <Setter Property="OpacityMask">
+                        <Setter.Value>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#FFFFFFFF" Offset="1"/>
+                                <GradientStop Color="#00FFFFFF" Offset="0"/>
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>-->
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <ItemsControl ItemsSource="{Binding Items}" Background="{x:Null}" d:DataContext="{d:DesignInstance {x:Type dv:BubbleTipViwerDesignModel}, IsDesignTimeCreatable=True}">
+    <!--<ItemsControl ItemsSource="{Binding Items}" Background="{x:Null}" d:DataContext="{x:Static dv:BubbleTipViwerDesignModel.Instance}">-->
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <local:BubbleTip Style="{StaticResource PrevBubblePanelStyle}" IsShow="{Binding IsShow}" HorizontalAlignment="Center" />
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+        <!--<i:Interaction.Behaviors>
+            <local:FadeAnimateItemsBehavior Tick="0:0:0.05">
+                <local:FadeAnimateItemsBehavior.Animation>
+                    <DoubleAnimation From="0" To="1" Duration="0:0:0.3"/>
+                </local:FadeAnimateItemsBehavior.Animation>
+            </local:FadeAnimateItemsBehavior>
+        </i:Interaction.Behaviors>-->
+    </ItemsControl>
+</UserControl>

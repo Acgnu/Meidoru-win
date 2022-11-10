@@ -7,16 +7,16 @@
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="400">
     <UserControl.Resources>
-            <DoubleAnimation x:Key="FadeOutAnimation"
+        <DoubleAnimation x:Key="FadeOutAnimation"
                              From="1" To="0" 
                              Duration="0:0:0.3">
-            </DoubleAnimation>
+        </DoubleAnimation>
         <DoubleAnimation x:Key="FadeInAnimation"
                             From="0" To="1" 
                             Duration="0:0:0.1">
-            </DoubleAnimation>
-        <!--</Storyboard>-->
+        </DoubleAnimation>
     </UserControl.Resources>
+    
     <Grid x:Name="MaskLayer" Background="{StaticResource DataGridHeaderBackgroundColorBrush}">
         <local:GifImage x:Name="AnimateImg" Width="100" Height="100" />
     </Grid>

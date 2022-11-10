@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:AcgnuX.WindowX.Dialog"
         xmlns:res="clr-namespace:AcgnuX.Properties"
         mc:Ignorable="d"
-        Title="{x:Static res:Resources.S_EditAccount}" Height="304" Width="420" Style="{StaticResource DialogWindowBaseStyle}" KeyDown="OnKeyDown">
+        Title="{x:Static res:Resources.S_EditAccount}" Height="304" Width="420" Style="{StaticResource DialogWindowBaseStyle}">
     <Window.Resources>
         <Style TargetType="Button" x:Key="TypeButtonBox" BasedOn="{StaticResource BorderOnlyButton}">
             <Setter Property="Margin" Value="0 0 10 0" />
@@ -25,34 +25,34 @@
     </Window.Icon>
     
     <DockPanel>
-        <StackPanel DockPanel.Dock="Top">
+        <StackPanel DockPanel.Dock="Top" DataContext="{Binding AccountViewModel}">
             <!--站点-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_Site}" Style="{StaticResource FormFieldTextBlock}" />
-                <TextBox Name="TextBlockSite" Style="{StaticResource TextBoxBase}" Text="{Binding Path=Macount.Site}"/>
+                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Site}"/>
             </DockPanel>
              <!--描述-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_Describe}" Style="{StaticResource FormFieldTextBlock}"/>
-                <TextBox Name="TextBlockDescribe" Style="{StaticResource TextBoxBase}" Text="{Binding Path=Macount.Describe}"/>
+                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Describe}"/>
             </DockPanel>
             <!--账户-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_Account}" Style="{StaticResource FormFieldTextBlock}"/>
-                <TextBox Name="TextBlockUname" Style="{StaticResource TextBoxBase}" Text="{Binding Path=Macount.Uname}"/>
+                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Uname}"/>
             </DockPanel>
             <!--密码-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_Password}" Style="{StaticResource FormFieldTextBlock}"/>
-                <TextBox Name="TextBlockUpass" Style="{StaticResource TextBoxBase}" Text="{Binding Path=Macount.Upass}"/>
+                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Upass}"/>
             </DockPanel>
             <!--备注-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_Remark}" Style="{StaticResource FormFieldTextBlock}"/>
-                <TextBox Name="TextBlockRemark" Style="{StaticResource TextBoxBase}" Text="{Binding Path=Macount.Remark}"/>
+                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Remark}"/>
             </DockPanel>
         </StackPanel>
 
-        <Button x:Name="ConfirmButton" Content="{x:Static res:Resources.S_Confirm}" Click="OnConfirmClick" Grid.Column="0" Style="{DynamicResource FormConfirmButtonStyle}" />
+        <Button Content="{x:Static res:Resources.S_Confirm}" Click="OnConfirmClick" Grid.Column="0" Style="{DynamicResource FormConfirmButtonStyle}" />
     </DockPanel>
 </local:BaseDialog>

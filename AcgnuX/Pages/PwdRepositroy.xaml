@@ -6,9 +6,13 @@
       xmlns:local="clr-namespace:AcgnuX.Pages"
       xmlns:res="clr-namespace:AcgnuX.Properties"
       xmlns:lc="clr-namespace:AcgnuX.Controls"
-      mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="768" d:Background="White"
-      Title="PwdRepositroy" Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
+      mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="768"
+      Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
 
+    <Page.DataContext>
+        <Binding Path="PwdRepository" Source="{StaticResource Locator}"></Binding>
+    </Page.DataContext>
+    
     <Grid>
         <Border Style="{StaticResource PageContainerBorderStyle}">
             <Grid>
@@ -26,13 +30,16 @@
                             <TextBlock Text="{x:Static res:Resources.S_Add}" Margin="5 0 0 0" />
                         </WrapPanel>
                     </Button>
-                    <TextBox Style="{StaticResource TextBoxBase}" KeyUp="OnFilterBoxKeyDown" />
+                    <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding FilterText, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" KeyUp="OnFilterBoxKeyDown" />
                 </DockPanel>
-                <DataGrid Name="PasswordDataGrid" Style="{StaticResource commonDataGrid}" Margin="0,8,0,0" MouseDoubleClick="OnGridDoubleClick" Grid.Column="0" Grid.Row="1" ContextMenuOpening="OnContextMenuOpen" Template="{DynamicResource BaseDataGridControlTemplate}">
+                <DataGrid 
+                    x:Name="PwdDataGrid"
+                    ItemsSource="{Binding Accounts}"
+                    Style="{StaticResource commonDataGrid}" Margin="0,8,0,0" MouseDoubleClick="OnGridDoubleClick" Grid.Column="0" Grid.Row="1" ContextMenuOpening="OnContextMenuOpen" Template="{DynamicResource BaseDataGridControlTemplate}">
                     <DataGrid.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="{x:Static res:Resources.S_CopyAccount}" Click="OnClickContextMenuCopyAccount" />
-                            <MenuItem Header="{x:Static res:Resources.S_CopyPassword}" Click="OnClickContextMenuCopyPassword" />
+                            <MenuItem Header="{x:Static res:Resources.S_CopyAccount}" Command="{Binding OnCopyAccountCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}" />
+                            <MenuItem Header="{x:Static res:Resources.S_CopyPassword}" Command="{Binding OnCopyPasswordCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
                             <MenuItem Header="{x:Static res:Resources.S_Delete}" Click="OnClickContextMenuDelete" />
                         </ContextMenu>
                     </DataGrid.ContextMenu>
@@ -49,6 +56,6 @@
         <!--<Button Style="{StaticResource RefreshFloatButtonStyle}" Click="OnClickRefreshButton">
             <Path Style="{StaticResource RefreshPathIcoStyle}"/>
         </Button>-->
-        <lc:BusyIndicator x:Name="BusyIndicator" />
+        <lc:BusyIndicator x:Name="BusyIndicator" IsBusy="{Binding IsBusy}" />
     </Grid>
 </local:BasePage>

@@ -139,14 +139,21 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controls\AsyncImage.cs" />
+    <Compile Include="Controls\BubbleTip.xaml.cs">
+      <DependentUpon>BubbleTip.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BubbleTipViwer.xaml.cs">
+      <DependentUpon>BubbleTipViwer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\BusyIndicator.xaml.cs">
       <DependentUpon>BusyIndicator.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FadeAnimateItemsBehavior.cs" />
     <Compile Include="Controls\GifImage.cs" />
-    <Compile Include="Controls\Contact\ContactItemControl.xaml.cs">
+    <Compile Include="Controls\ContactItemControl.xaml.cs">
       <DependentUpon>ContactItemControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Contact\ContactListControl.xaml.cs">
+    <Compile Include="Controls\ContactListControl.xaml.cs">
       <DependentUpon>ContactListControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\FromComboListBox.xaml.cs">
@@ -208,8 +215,10 @@
     <Compile Include="Pages\Index.xaml.cs">
       <DependentUpon>Index.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Source\DesignModel\ContactListDesignModel.cs" />
-    <Compile Include="Source\DesignModel\ContactItemDesignModel.cs" />
+    <Compile Include="Source\ViewModel\Design\BubbleTipDesignModel.cs" />
+    <Compile Include="Source\ViewModel\Design\BubbleTipViwerDesignModel.cs" />
+    <Compile Include="Source\ViewModel\Design\ContactListDesignModel.cs" />
+    <Compile Include="Source\ViewModel\Design\ContactItemDesignModel.cs" />
     <Compile Include="Source\Model\AppSecretKey.cs" />
     <Compile Include="Source\Model\ByteArray.cs" />
     <Compile Include="Source\Model\Contact.cs" />
@@ -251,6 +260,8 @@
     <Compile Include="Source\Utils\TimeUtil.cs" />
     <Compile Include="Source\Utils\WindowUtil.cs" />
     <Compile Include="Source\Utils\XamlUtil.cs" />
+    <Compile Include="Source\ViewModel\BubbleTipViwerViewModel.cs" />
+    <Compile Include="Source\ViewModel\BubbleTipViewModel.cs" />
     <Compile Include="Source\ViewModel\ContactItemViewModel.cs" />
     <Compile Include="Source\ViewModel\ContactListViewModel.cs" />
     <Compile Include="Source\ViewModel\DeviceDriverViewModel.cs" />
@@ -259,6 +270,7 @@
     <Compile Include="Source\ViewModel\DnsItemViewModel.cs" />
     <Compile Include="Source\ViewModel\DnsManageViewModel.cs" />
     <Compile Include="Source\ViewModel\EditDnsRecordDialogViewModel.cs" />
+    <Compile Include="Source\ViewModel\PwdRepositoryViewModel.cs" />
     <Compile Include="Source\ViewModel\SyncConfigViewModel.cs" />
     <Compile Include="Source\ViewModel\CrawlRuleViewModel.cs" />
     <Compile Include="Source\ViewModel\DeviceSyncListViewModel.cs" />
@@ -303,15 +315,23 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Controls\BubbleTip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\BubbleTipViwer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\BusyIndicator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Contact\ContactItemControl.xaml">
+    <Page Include="Controls\ContactItemControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Contact\ContactListControl.xaml">
+    <Page Include="Controls\ContactListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -348,6 +368,16 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\WebServer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <DesignData Include="Source\ViewModel\DesignData\BubbleTipViwerDesignData.xaml">
+      <SubType>Designer</SubType>
+    </DesignData>
+    <DesignData Include="Source\ViewModel\DesignData\BubbleTipDesignViewData.xaml">
+      <SubType>Designer</SubType>
+    </DesignData>
+    <Page Include="Styles\Animations.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -571,6 +601,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.SDK.Contracts">
       <Version>10.0.19041.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Uwp.Managed">
+      <Version>2.0.1</Version>
     </PackageReference>
     <PackageReference Include="MvvmLight">
       <Version>5.4.1.1</Version>

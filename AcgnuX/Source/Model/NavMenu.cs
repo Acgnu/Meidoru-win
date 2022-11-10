@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace AcgnuX.Source.Model
@@ -15,6 +16,6 @@ namespace AcgnuX.Source.Model
         //图标
         public Geometry icon { get; set; }
         //暂存的page实例
-        public Object instance { get; set; }
+        public Page instance { get; set; }
     }
 }

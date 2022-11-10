@@ -1,6 +1,7 @@
 ﻿using AcgnuX.Bussiness.Ten.Dns;
 using AcgnuX.Source.Model.Ten.Dns;
 using GalaSoft.MvvmLight;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,22 +34,18 @@ namespace AcgnuX.Source.ViewModel
         /// <summary>
         /// 新增或更新
         /// </summary>
-        public async Task<DnsOperatorResult> SaveOrModify()
+        public async Task<IRestResponse<DnsOperatorResult>> SaveOrModify()
         {
-            DnsOperatorResult result;
             if (Id == null)
             {
                 //新增
-                var response = await TenDnsClient.CreateRecordAsync(Name, Type, Line, Value);
-                result = response.Data;
+                return await TenDnsClient.CreateRecordAsync(Name, Type, Line, Value);
             }
             else
             {
                 //修改
-                var response = await TenDnsClient.ModifyRecordAsync(Id.GetValueOrDefault(), Name, Type, Line, Value);
-                result = response.Data;
+                return await TenDnsClient.ModifyRecordAsync(Id.GetValueOrDefault(), Name, Type, Line, Value);
             }
-            return result;
         }
 
         /// <summary>

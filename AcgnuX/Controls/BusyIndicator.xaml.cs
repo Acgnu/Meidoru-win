@@ -1,4 +1,5 @@
 ﻿using AcgnuX.Source.Utils;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
@@ -14,8 +15,6 @@ namespace AcgnuX.Controls
         //private DispatcherTimer timer = new DispatcherTimer();
         //private RotateTransform rt = new RotateTransform();
         //private bool _isBusy = false;
-        private DoubleAnimation _fadeInAnimation;
-        private DoubleAnimation _fadeOutAnimation;
         public bool IsBusy
         {
             get
@@ -28,12 +27,15 @@ namespace AcgnuX.Controls
                 if (value)
                 {
                     Visibility = Visibility.Visible;
+                    var _fadeInAnimation = (DoubleAnimation) FindResource("FadeInAnimation");
                     BeginAnimation(UIElement.OpacityProperty, _fadeInAnimation);
                 }
                 else
                 {
                     //var fadeOutStoryboard = (Storyboard) this.FindResource("FadeOutStoryboard");
                     //fadeOutStoryboard.AutoReverse = true;
+                    var _fadeOutAnimation = (DoubleAnimation) FindResource("FadeOutAnimation");
+                    _fadeOutAnimation.Completed += (sender, e) => Visibility = Visibility.Collapsed;
                     BeginAnimation(UIElement.OpacityProperty, _fadeOutAnimation);
                 }
             }
@@ -50,15 +52,14 @@ namespace AcgnuX.Controls
         {
             InitializeComponent();
             this.Visibility = Visibility.Collapsed;
-            //加载GIF图片
-            var steam = FileUtil.GetApplicationResourceAsStream("../Assets/Images/loading_nekololi.gif");
-            var bytes = FileUtil.Stream2Bytes(steam.Stream);
-            var image = ImageUtil.ByteArrayToImage(bytes);
-            AnimateImg.AnimatedImageControl(image);
-            //加载动画
-            _fadeInAnimation = (DoubleAnimation)this.FindResource("FadeInAnimation");
-            _fadeOutAnimation = (DoubleAnimation)this.FindResource("FadeOutAnimation");
-            _fadeOutAnimation.Completed += (sender, e) => Visibility = Visibility.Collapsed;
+            if (!DesignerProperties.GetIsInDesignMode(this))
+            {
+                //加载GIF图片
+                var steam = FileUtil.GetApplicationResourceAsStream("../Assets/Images/loading_nekololi.gif");
+                var bytes = FileUtil.Stream2Bytes(steam.Stream);
+                var image = ImageUtil.ByteArrayToImage(bytes);
+                AnimateImg.AnimatedImageControl(image);
+            }
             //timer.Interval = new TimeSpan(200000);
             //timer.Tick += new EventHandler(timer_Tick);
             //timer.Start();

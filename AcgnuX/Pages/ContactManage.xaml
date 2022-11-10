@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:AcgnuX.Pages"
-      xmlns:uc="clr-namespace:AcgnuX.Controls.Contact"
+      xmlns:uc="clr-namespace:AcgnuX.Controls"
       xmlns:res="clr-namespace:AcgnuX.Properties"
       xmlns:lc="clr-namespace:AcgnuX.Controls"
       mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="800"

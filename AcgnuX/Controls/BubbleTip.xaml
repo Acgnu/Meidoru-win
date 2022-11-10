@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="AcgnuX.Controls.BubbleTip"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AcgnuX.Controls"
+             xmlns:dv="clr-namespace:AcgnuX.Source.ViewModel.Design"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <DoubleAnimation x:Key="FadeOutAnimation"
+                             From="1" To="0" 
+                             Duration="0:0:0.3">
+        </DoubleAnimation>
+        <DoubleAnimation x:Key="FadeInAnimation"
+                            From="0" To="1" 
+                            Duration="0:0:0.1">
+        </DoubleAnimation>
+    </UserControl.Resources>
+
+    <!--<Border CornerRadius="3" Padding="20 7" BorderThickness="1" d:DataContext="{d:DesignData Source=../Source/ViewModel/DesignData/BubbleTipDesignViewData.xaml}" >-->
+    <Border CornerRadius="3" Padding="20 7" BorderThickness="1" d:DataContext="{d:DesignInstance {x:Type dv:BubbleTipDesignModel}, IsDesignTimeCreatable=True}" >
+        <Border.Style>
+            <Style TargetType="{x:Type Border}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding AlertLevel}" Value="RUN">
+                        <Setter Property="Background" Value="#FF4DC758" />
+                        <Setter Property="BorderBrush" Value="#FF7AE26A" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding AlertLevel}" Value="INFO">
+                        <Setter Property="Background" Value="#FF33A0EC" />
+                        <Setter Property="BorderBrush" Value="#FF79B6FF" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding AlertLevel}" Value="WARN">
+                        <Setter Property="Background" Value="#FFE0CE3F" />
+                        <Setter Property="BorderBrush" Value="#FFFFEC77" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding AlertLevel}" Value="ERROR">
+                        <Setter Property="Background" Value="#FFEE7B7B" />
+                        <Setter Property="BorderBrush" Value="#FFF75936" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+        <Border.Effect>
+            <DropShadowEffect ShadowDepth="0" Opacity="0.6" BlurRadius="10" Color="Gray"/>
+        </Border.Effect>
+        <TextBlock Text="{Binding Text}" Foreground="White" FontSize="15" />
+    </Border>
+</UserControl>

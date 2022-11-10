@@ -1,0 +1,9 @@
+﻿<local:BubbleTipViewModel 
+    xmlns:local="clr-namespace:AcgnuX.Source.ViewModel" 
+    AlertLevel="RUN" Text="Design Run Message" IsShow="True" />
+<local:BubbleTipViewModel 
+    xmlns:local="clr-namespace:AcgnuX.Source.ViewModel" 
+    AlertLevel="WARN" Text="Design Warning Message" IsShow="True" />
+<local:BubbleTipViewModel 
+    xmlns:local="clr-namespace:AcgnuX.Source.ViewModel" 
+    AlertLevel="ERROR" Text="Design Error Message" IsShow="True" />

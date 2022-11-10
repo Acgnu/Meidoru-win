@@ -18,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Windows.Navigation;
 
 namespace AcgnuX
 {
@@ -71,11 +72,11 @@ namespace AcgnuX
         /// <param name="notify"></param>
         public void SetStatustProgess(MainWindowStatusNotify notify)
         {
-            MainProgressBar.Dispatcher.Invoke(() =>
-            {
-                SetStatusBarText(notify.alertLevel, notify.message);
-                SetProgess(notify);
-            });
+            //MainProgressBar.Dispatcher.Invoke(() =>
+            //{
+            //    SetStatusBarText(notify.alertLevel, notify.message);
+            //    SetProgess(notify);
+            //});
             //this.Dispatcher.BeginInvoke((Action)delegate ()
             //{
             //    SetStatusBarText(notify.alertLevel, notify.message);
@@ -89,20 +90,20 @@ namespace AcgnuX
         /// <param name="message">提示文字</param>
         private void SetStatusBarText(AlertLevel alertLevel, string message)
         {
-            switch (alertLevel)
-            {
-                case AlertLevel.INFO: MainProgressBar.Foreground = Application.Current.FindResource("FooterBarColorBrush") as SolidColorBrush; break;
-                case AlertLevel.RUN: MainProgressBar.Foreground = Brushes.ForestGreen; break;
-                case AlertLevel.WARN: MainProgressBar.Foreground = Brushes.Orange; break;
-                case AlertLevel.ERROR: MainProgressBar.Foreground = Brushes.Red; break;
-            }
-            MainStatusBarText.Text = message;
+            //switch (alertLevel)
+            //{
+            //    case AlertLevel.INFO: MainProgressBar.Foreground = Application.Current.FindResource("FooterBarColorBrush") as SolidColorBrush; break;
+            //    case AlertLevel.RUN: MainProgressBar.Foreground = Brushes.ForestGreen; break;
+            //    case AlertLevel.WARN: MainProgressBar.Foreground = Brushes.Orange; break;
+            //    case AlertLevel.ERROR: MainProgressBar.Foreground = Brushes.Red; break;
+            //}
+            //MainStatusBarText.Text = message;
 
-            //如果没有任务在运行, 则显示清空按钮
-            if (!mIsProgressRunning)
-            {
-                ClearStatusBarTextButton.Visibility = Visibility.Visible;
-            }
+            ////如果没有任务在运行, 则显示清空按钮
+            //if (!mIsProgressRunning)
+            //{
+            //    ClearStatusBarTextButton.Visibility = Visibility.Visible;
+            //}
         }
 
         /// <summary>
@@ -111,28 +112,28 @@ namespace AcgnuX
         private void SetProgess(MainWindowStatusNotify notify)
         {
             //如果状态栏有正在执行的任务, 标识任务正在执行, 且隐藏清除消息按钮
-            if (notify.nowProgress < MainProgressBar.Maximum && !mIsProgressRunning)
-            {
-                mIsProgressRunning = true;
-                ClearStatusBarTextButton.Visibility = Visibility.Collapsed;
-                StopTaskButton.Visibility = Visibility.Visible;
-            }
-
-            //如果一个任务已经执行完毕, 则显示清除按钮
-            if (notify.nowProgress == MainProgressBar.Maximum && mIsProgressRunning)
-            {
-                mIsProgressRunning = false;
-                ClearStatusBarTextButton.Visibility = Visibility.Visible;
-                StopTaskButton.Visibility = Visibility.Collapsed;
-            }
-
-            //标识需要动画才会执行进度条动画
-            //if (notify.animateProgress)
+            //if (notify.nowProgress < MainProgressBar.Maximum && !mIsProgressRunning)
             //{
-            //MainProgressBar.IsIndeterminate = true;
-            Duration duration = new Duration(TimeSpan.FromMilliseconds(notify.progressDuration));
-            DoubleAnimation doubleanimation = new DoubleAnimation(notify.oldProgress, notify.nowProgress, duration);
-            MainProgressBar.BeginAnimation(ProgressBar.ValueProperty, doubleanimation);
+            //    mIsProgressRunning = true;
+            //    ClearStatusBarTextButton.Visibility = Visibility.Collapsed;
+            //    StopTaskButton.Visibility = Visibility.Visible;
+            //}
+
+            ////如果一个任务已经执行完毕, 则显示清除按钮
+            //if (notify.nowProgress == MainProgressBar.Maximum && mIsProgressRunning)
+            //{
+            //    mIsProgressRunning = false;
+            //    ClearStatusBarTextButton.Visibility = Visibility.Visible;
+            //    StopTaskButton.Visibility = Visibility.Collapsed;
+            //}
+
+            ////标识需要动画才会执行进度条动画
+            ////if (notify.animateProgress)
+            ////{
+            ////MainProgressBar.IsIndeterminate = true;
+            //Duration duration = new Duration(TimeSpan.FromMilliseconds(notify.progressDuration));
+            //DoubleAnimation doubleanimation = new DoubleAnimation(notify.oldProgress, notify.nowProgress, duration);
+            //MainProgressBar.BeginAnimation(ProgressBar.ValueProperty, doubleanimation);
             //}
             //else
             //{
@@ -158,9 +159,9 @@ namespace AcgnuX
         /// <param name="e"></param>
         private void OnStatusBarTextRightClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            var barText = MainStatusBarText.Text;
-            if (string.IsNullOrEmpty(barText)) return;
-            Clipboard.SetDataObject(barText);
+            //var barText = MainStatusBarText.Text;
+            //if (string.IsNullOrEmpty(barText)) return;
+            //Clipboard.SetDataObject(barText);
         }
     }
 }

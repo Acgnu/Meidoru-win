@@ -13,6 +13,7 @@
                 <ResourceDictionary Source="/Styles/Color.xaml" />
                 <ResourceDictionary Source="/Styles/Geometries.xaml" />
                 <ResourceDictionary Source="/Styles/GeometriesStyle.xaml" />
+                <ResourceDictionary Source="/Styles/Animations.xaml" />
                 
                 <ResourceDictionary Source="/Styles/DataGridStyle.xaml" />
                 <ResourceDictionary Source="/Styles/TextBoxStyle.xaml" />

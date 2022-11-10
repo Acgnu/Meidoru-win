@@ -1,0 +1,3 @@
+﻿<local:BubbleTipViewModel 
+    xmlns:local="clr-namespace:AcgnuX.Source.ViewModel" 
+    AlertLevel="RUN" Text="Design Test Message" IsShow="True" />

@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,14 +66,17 @@ namespace AcgnuX.Source.ViewModel
             DnsItem.Type = SelectedType.Content as string;
             var result = await DnsItem.SaveOrModify();
             IsBusy = false;
-            if (result.code != 0)
+            if (result.Data.code != 0)
             {
-                //错误
-                Console.WriteLine(result.message);
+                Messenger.Default.Send(new BubbleTipViewModel
+                {
+                    AlertLevel = Bussiness.Constants.AlertLevel.ERROR,
+                    Text = result.Data.message
+                });
                 return;
             }
-            LoadAction.Invoke();
-            CloseAction.Invoke();
+            LoadAction?.Invoke();
+            CloseAction?.Invoke();
         }
     }
 }
