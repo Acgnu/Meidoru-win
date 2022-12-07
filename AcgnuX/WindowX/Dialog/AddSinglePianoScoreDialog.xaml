@@ -18,16 +18,27 @@
         </DrawingImage>
     </Window.Icon>
 
+    <Window.Resources>
+        <!--名称输入框-->
+        <Style TargetType="TextBox" x:Key="TextBoxSheetNameStyle" BasedOn="{StaticResource TextBoxBase}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsChecked, ElementName=CheckBoxAutoDownload}" Value="True">
+                    <Setter Property="IsEnabled" Value="False" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
     <DockPanel>
         <StackPanel DockPanel.Dock="Top">
             <!--乐谱ID-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_MusicId}" Style="{StaticResource FormFieldTextBlock}" />
                 <Grid>
-                    <TextBox Name="TextBoxMsuicId" Style="{StaticResource TextBoxBase}" />
+                    <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Ypid, Mode=OneWayToSource, UpdateSourceTrigger=LostFocus}" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <CheckBox Name="AutoDownloadCheckBox" VerticalAlignment="Center" Checked="OnCheckboxChange" Unchecked="OnCheckboxChange" Content="{x:Static res:Resources.S_AutoDownload}" />
-                        <CheckBox Name="UseProxyCheckBox" VerticalAlignment="Center" Checked="OnCheckboxChange" Unchecked="OnCheckboxChange" Content="{x:Static res:Resources.S_UseProxy}" IsChecked="True" Margin="5 0 0 0" />
+                        <CheckBox x:Name="CheckBoxAutoDownload" IsChecked="{Binding AutoDownload, Mode=OneWayToSource, FallbackValue=False}" VerticalAlignment="Center" Content="{x:Static res:Resources.S_AutoDownload}" />
+                        <CheckBox IsChecked="{Binding UseProxy, Mode=OneWayToSource, FallbackValue=True}" VerticalAlignment="Center" Content="{x:Static res:Resources.S_UseProxy}" Margin="5 0 0 0" />
                     </StackPanel> 
                 </Grid>
             </DockPanel>
@@ -35,11 +46,14 @@
             <!--乐谱名称-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_Name}" Style="{StaticResource FormFieldTextBlock}"/>
-                <TextBox Name="TextBoxName" Style="{StaticResource TextBoxBase}"/>
+                <TextBox Text="{Binding SheetName, Mode=OneWayToSource}" Style="{StaticResource TextBoxSheetNameStyle}" />
             </DockPanel>
         </StackPanel>
 
         <!--确认按钮-->
-        <Button x:Name="ConfirmButton" Content="{x:Static res:Resources.S_Confirm}" Click="OnConfirmClick" Style="{StaticResource FormConfirmButtonStyle}" DockPanel.Dock="Bottom"/>
+        <Button Content="{x:Static res:Resources.S_Confirm}" 
+                Command="{Binding OnConfirmCommand}" 
+                Style="{StaticResource FormConfirmButtonStyle}" 
+                DockPanel.Dock="Bottom"/>
     </DockPanel>
 </local:BaseDialog>

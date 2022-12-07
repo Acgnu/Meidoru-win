@@ -13,9 +13,9 @@ namespace AcgnuX.Source.Bussiness.Common
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (parameter == null)
-                return (bool)value ? Visibility.Hidden : Visibility.Visible;
+                return (bool)value ? Visibility.Collapsed : Visibility.Visible;
             else
-                return (bool)value ? Visibility.Visible : Visibility.Hidden;
+                return (bool)value ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

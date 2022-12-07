@@ -26,57 +26,54 @@ namespace AcgnuX.Source.Taskx.Http
         private readonly string LISTENING_ADDRESS = @"http://127.0.0.1:7777/";
 
         //flash发送消息时的主动推送触发事件
-        public event EditConfirmHandler<PianoScore> editConfirmHnadler;
+        public Action<Tan8SheetCrawlArg> DownloadRequestAction;
+
+        //监听对象
+        private readonly HttpListener httpListener = new HttpListener
+        {
+            AuthenticationSchemes = AuthenticationSchemes.Anonymous,
+        };
+    
 
         /// <summary>
         /// 启动监听
         /// </summary>
         public void StartListen()
         {
-            HttpListener httpListener = new HttpListener();
-            httpListener.AuthenticationSchemes = AuthenticationSchemes.Anonymous;
             httpListener.Prefixes.Add(LISTENING_ADDRESS);
             httpListener.Start();
-            new Thread(new ThreadStart(delegate
+            httpListener.BeginGetContext(ListenRequest, null);
+        }
+
+        /// <summary>
+        /// 异步监听方法
+        /// </summary>
+        /// <param name="ar"></param>
+        private void ListenRequest(IAsyncResult ar)
+        {
+            if(!httpListener.IsListening) return;
+
+            //继续异步监听
+            httpListener.BeginGetContext(ListenRequest, null);
+            //获得context对象
+            var context = httpListener.EndGetContext(ar); 
+
+            //var request = context.Request;
+            var response = context.Response;
+
+            response.StatusCode = 200;
+            try
             {
-                while (true)
+                using (StreamWriter writer = new StreamWriter(response.OutputStream))
                 {
-                    try
-                    {
-                        HttpListenerContext httpListenerContext = httpListener.GetContext();
-
-                        //httpListenerContext.Response.Headers.Add("Content-type", "text/html;charset=UTF-8");
-                        //httpListenerContext.Response.ContentEncoding = Encoding.UTF8;
-                        //httpListenerContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");//后台跨域请求，通常设置为配置文件
-                        //httpListenerContext.Response.AppendHeader("Access-Control-Allow-Credentials", "true"); //后台跨域请求
-                        //httpListenerContext.Response.AppendHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-Requested-With");
-                        //httpListenerContext.Response.AppendHeader("Access-Control-Max-Age", "86400");
-                        //httpListenerContext.Response.AppendHeader("Server", "MyIIS");//后台跨域请求，通常设置为配置文件
-
-                        httpListenerContext.Response.StatusCode = 200;
-                        using (StreamWriter writer = new StreamWriter(httpListenerContext.Response.OutputStream))
-                        {
-                            DispacherRequest(httpListenerContext);
-                            //httpListenerContext.Response.ContentType = "application/octet-stream";
-                            //string fileName = @"D:\\Download\Tan8\a小调圆舞曲\page.0.png";
-                            ////httpListenerContext.Response.AddHeader("Content-Disposition", "attachment;FileName=" + fileName);
-
-                            //using (System.IO.FileStream fs = new FileStream(@"D:\Download\Tan8\a小调圆舞曲\page.0.png", FileMode.Open, FileAccess.Read))
-                            //{
-                            //    byte[] data = new byte[fs.Length];
-                            //    httpListenerContext.Response.ContentLength64 = data.Length;
-                            //    System.IO.Stream output = httpListenerContext.Response.OutputStream;
-                            //    output.Write(data, 0, data.Length);
-                            //    output.Close();
-                            //}
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.ToString());
-                    }
+                    DispacherRequest(context);
                 }
-            })).Start();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("HTTP监听异常");
+                Console.WriteLine(ex);
+            }
         }
 
         /// <summary>
@@ -166,9 +163,9 @@ namespace AcgnuX.Source.Taskx.Http
         private void FetchPianoScore(HttpListenerContext httpListenerContext)
         {
             //?ypid=29189&sccode=0373ef7aa7c3e092b8c4e09748574186&r1=8538&r2=5971&input=123
-            editConfirmHnadler?.Invoke(new PianoScore()
+            DownloadRequestAction?.Invoke(new Tan8SheetCrawlArg()
             {
-                id = Convert.ToInt32(httpListenerContext.Request.QueryString["ypid"]),
+                Ypid = Convert.ToInt32(httpListenerContext.Request.QueryString["ypid"]),
                 SheetUrl = string.Format("http://www.77music.com/flash_get_yp_info.php?ypid={0}&sccode={1}&r1={2}&r2={3}&input=123",
                 httpListenerContext.Request.QueryString["ypid"],
                 httpListenerContext.Request.QueryString["sccode"],
@@ -257,6 +254,8 @@ namespace AcgnuX.Source.Taskx.Http
             //http://www.tan8.com/codeindex.php?d=api&c=check77playerPower&m=index&ypid=76202&uid=999999999&token=fbf0ab24ee47bfa1cb460e41c1f61fdb
             var ypid = httpListenerContext.Request.QueryString["ypid"];
             var method = httpListenerContext.Request.QueryString["m"];
+            if (ypid.Equals("9999"))
+                Thread.Sleep(5000);
             string responseText = "";
             if (method.Equals("index"))
             {

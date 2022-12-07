@@ -5,11 +5,16 @@
       xmlns:local="clr-namespace:AcgnuX.Pages"
       xmlns:res="clr-namespace:AcgnuX.Properties"
       xmlns:lc="clr-namespace:AcgnuX.Controls"
+      xmlns:bizc="clr-namespace:AcgnuX.Source.Bussiness.Common"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
                 d:DesignWidth="1024" d:DesignHeight="768"
-      Title="Tan8SheetReponsitory" Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
+      Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
 
+    <Page.DataContext>
+        <Binding Path="SheetRepository" Source="{StaticResource Locator}" />
+    </Page.DataContext>
+    
     <Page.Resources>
         <Style TargetType="Path" x:Key="RefreshHistoryIcoStyle" BasedOn="{StaticResource MainStatusBarIcoPathStyle}">
             <Setter Property="Width" Value="25" />
@@ -18,6 +23,32 @@
         </Style>
         <Style TargetType="Button" x:Key="DownRecordListFloatButtonStyle" BasedOn="{StaticResource RefreshFloatButtonStyle}">
             <Setter Property="Margin" Value="0 0 5 70" />
+        </Style>
+        <Style TargetType="Button" x:Key="AddSheetButtonStyle" BasedOn="{StaticResource AddButtonStyle}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsDownloading}" Value="False">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsDownloading}" Value="True">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type Image}" x:Key="NoDataImageStyle">
+            <Setter Property="Height" Value="100" />
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Setter Property="Source" Value="../Assets/Images/icon_we.png" />
+        </Style>
+        <Style TargetType="ListBox" x:Key="DataListStyle">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsEmpty}" Value="True">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsEmpty}" Value="False">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
     </Page.Resources>
 
@@ -32,92 +63,49 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <DockPanel VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="0">
-                    <Button Style="{StaticResource AddButtonStyle}"  Click="OnBtnAddClick" DockPanel.Dock="Right">
-                        <WrapPanel>
+                    <Button Style="{StaticResource AddSheetButtonStyle}"  Click="OnBtnAddClick" DockPanel.Dock="Right">
+                        <StackPanel Orientation="Horizontal">
                             <Path Style="{StaticResource CommonAddButtonPathIcoStyle}"/>
                             <TextBlock Text="{x:Static res:Resources.S_Add}" Margin="5 0 0 0" />
-                        </WrapPanel>
+                        </StackPanel>
                     </Button>
-                    <TextBox Style="{StaticResource TextBoxBase}" KeyUp="OnFilterBoxKeyDown" Name="SearchTextBox"/>
+                    <Button Style="{StaticResource AddButtonStyle}"  
+                            Command="{Binding OnStopDownloadCommand}" 
+                            Background="OrangeRed"
+                            Visibility="{Binding IsDownloading, Converter={bizc:BooleanToVisiblityConverter}, ConverterParameter=True}"
+                            DockPanel.Dock="Right">
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Fill="White" Width="12" Height="12" />
+                            <TextBlock Text="停止下载" Margin="5 0 0 0" />
+                        </StackPanel>
+                    </Button>
+                    <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding FilterText, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Command="{Binding OnRefreshCommand}" Key="Enter" />
+                        </TextBox.InputBindings>
+                    </TextBox>
                 </DockPanel>
                 <!--默认的打开播放器按钮-->
-                <Image Source="../Assets/Images/icon_we.png" 
-                       Width="100"
-                       Height="100"
-                       Visibility="{Binding ListVisible, FallbackValue=Visible}" Grid.Row="1" />
-
+                <Image Grid.Row="1" Style="{StaticResource NoDataImageStyle}" Visibility="{Binding IsEmpty, Converter={bizc:BooleanToVisiblityConverter}, ConverterParameter=True}" />
                 <!--ListBox-->
-                <ListBox Name="PianoScoreListBox" 
-                     Grid.Row="1" 
-                     MouseDoubleClick="OnListBoxDoubleClick" 
-                     ContextMenuOpening="OnContextMenuOpen" 
-                     Template="{StaticResource PianoScoreListBoxTemplate}" 
-                     Visibility="{Binding ListVisible}" 
-                     ScrollViewer.ScrollChanged="OnPianoScoreListBoxScroll"
-                     ItemContainerStyle="{StaticResource PianoScoreListBoxItemContainerStyle}">
-                    <!--<ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <VirtualizingStackPanel />
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>-->
+                <ListBox ItemsSource="{Binding ListData}"
+                         SelectedItem="{Binding SelectedListData}"
+                         Grid.Row="1" 
+                         Template="{StaticResource PianoScoreListBoxTemplate}" 
+                         ScrollViewer.ScrollChanged="OnPianoScoreListBoxScroll"
+                         Style="{StaticResource DataListStyle}"
+                         ItemContainerStyle="{StaticResource PianoScoreListBoxItemContainerStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <DockPanel LastChildFill="False" Background="Transparent">
-                                <Border DockPanel.Dock="Left" Style="{StaticResource PianoScorePreviewImageBorderStyle}">
-                                    <Grid>
-                                        <lc:AsyncImage ImagePath="{Binding Cover, IsAsync=True}" Panel.ZIndex="0" Style="{StaticResource ImageBaseStyle}"/>
-                                        <Button x:Name="PlayCoverBorder" Style="{StaticResource PianoScorePlayButtonStyle}" Click="OnTan8PlayButtonClickV2">
-                                            <Path Width="30" Height="30" Margin="8 0 0 0" Data="{DynamicResource Icon_Play}" Style="{StaticResource MainStatusBarIcoPathStyle}"/>
-                                        </Button>
-                                    </Grid>
-                                </Border>
-                                <WrapPanel Orientation="Vertical" DockPanel.Dock="Left">
-                                    <Label Content="{Binding NameView}" Margin="10 5 0 2" FontSize="14" FontWeight="Bold" Foreground="#FF252525"/>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Label Content="{Binding IdView}" Margin="10 0 0 0"/>
-                                        <Label Content="{Binding YpCountView}" Margin="10 0 0 0"/>
-                                        <Label Content="{Binding VerView}" Margin="10 0 0 0"/>
-                                        <Label Content="{Binding IsCollectView}" Margin="10 0 0 0" MouseLeftButtonDown="OnCollectIconClick"/>
-                                    </StackPanel>
-                                </WrapPanel>
-                            </DockPanel>
-                            <DataTemplate.Triggers>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsMouseOver" Value="True"/>
-                                    </MultiTrigger.Conditions>
-                                    <!--鼠标移入改变播放按钮透明度-->
-                                    <MultiTrigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Duration="0:0:0.3" Storyboard.TargetName="PlayCoverBorder" Storyboard.TargetProperty="Opacity" From="0" To="0.7">
-                                                    <DoubleAnimation.EasingFunction>
-                                                        <CircleEase EasingMode="EaseOut"/>
-                                                    </DoubleAnimation.EasingFunction>
-                                                </DoubleAnimation>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </MultiTrigger.EnterActions>
-                                    <!--鼠标移出改回播放按钮透明度-->
-                                    <MultiTrigger.ExitActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetName="PlayCoverBorder" Storyboard.TargetProperty="Opacity" From="0.7" To="0">
-                                                    <DoubleAnimation.EasingFunction>
-                                                        <CircleEase EasingMode="EaseOut"/>
-                                                    </DoubleAnimation.EasingFunction>
-                                                </DoubleAnimation>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </MultiTrigger.ExitActions>
-                                </MultiTrigger>
-                            </DataTemplate.Triggers>
+                            <lc:SheetItemControl />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                     <ListBox.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="{x:Static res:Resources.S_OpenFolder}" Click="OnOpenFolderClick"/>
-                            <MenuItem Header="{x:Static res:Resources.S_ExportForShare}" Click="OnExportForShareClick"/>
+                            <MenuItem Header="{x:Static res:Resources.S_OpenFolder}" 
+                                      Command="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem.OnOpenSheetFolderCommand}"/>
+                            <MenuItem Header="{x:Static res:Resources.S_ExportForShare}" 
+                                        Command="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem.OnExportForShareCommand}"/>
                             <MenuItem Header="{x:Static res:Resources.S_Delete}" Click="OnDeleteClick"/>
                         </ContextMenu>
                     </ListBox.ContextMenu>
@@ -125,13 +113,13 @@
             </Grid>
         </Border>
         <!--刷新按钮-->
-        <Button Style="{StaticResource RefreshFloatButtonStyle}" Click="OnClickRefreshButton">
+        <Button Style="{StaticResource RefreshFloatButtonStyle}" Command="{Binding OnRefreshCommand}">
             <Path Style="{StaticResource RefreshPathIcoStyle}"/>
         </Button>
         <!--查看下载历史按钮-->
         <Button Style="{StaticResource DownRecordListFloatButtonStyle}" Click="OnDownloadListButtonClick">
             <Path Style="{StaticResource RefreshHistoryIcoStyle}"/>
         </Button>
-        <lc:BusyIndicator x:Name="BusyIndicator" />
+        <lc:BusyIndicator IsBusy="{Binding IsBusy}" />
     </Grid>
 </local:BasePage>

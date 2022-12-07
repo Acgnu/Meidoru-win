@@ -31,6 +31,11 @@ namespace AcgnuX.Source.Bussiness.Constants
         //抓取IP服务名称
         public static readonly string CRAWL_IP_SERVICE_NAME = "CrawlIPService";
 
+        #region MVVM消息
+        //单个tan8乐谱下载完成消息
+        public static readonly string TAN8_DOWNLOAD_COMPLETE = "tan8_sheet_download_complete";
+        #endregion
+
         //默认的乐谱图标
         private static BitmapImage mDefaultSheetCover = null;
         public static BitmapImage GetDefaultSheetCover()

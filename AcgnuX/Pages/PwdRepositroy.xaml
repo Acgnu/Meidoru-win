@@ -35,7 +35,7 @@
                 <DataGrid 
                     x:Name="PwdDataGrid"
                     ItemsSource="{Binding Accounts}"
-                    Style="{StaticResource commonDataGrid}" Margin="0,8,0,0" MouseDoubleClick="OnGridDoubleClick" Grid.Column="0" Grid.Row="1" ContextMenuOpening="OnContextMenuOpen" Template="{DynamicResource BaseDataGridControlTemplate}">
+                    Style="{StaticResource commonDataGrid}" Margin="0,8,0,0" MouseDoubleClick="OnGridDoubleClick" Grid.Column="0" Grid.Row="1" ContextMenuOpening="OnContextMenuOpen" Template="{StaticResource BaseDataGridControlTemplate}">
                     <DataGrid.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="{x:Static res:Resources.S_CopyAccount}" Command="{Binding OnCopyAccountCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}" />

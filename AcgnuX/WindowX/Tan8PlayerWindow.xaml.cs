@@ -49,11 +49,11 @@ namespace AcgnuX.WindowX
         /// <summary>
         /// 播放给定的曲谱
         /// </summary>
-        /// <param name="pianoScore">需要播放的曲谱</param>
-        public void PlaySelected(PianoScore pianoScore)
+        /// <param name="crawlArg">需要播放的曲谱</param>
+        public void PlaySelected(Tan8SheetCrawlArg crawlArg)
         {
             string flashPath = Environment.CurrentDirectory;
-            flashPath += @"\Assets\flash\fuckTan8\Main.swf?id=" + pianoScore.id;
+            flashPath += @"\Assets\flash\fuckTan8\Main.swf?id=" + crawlArg.Ypid;
             //axShockwaveFlash.Movie = flashPath;
         }
 

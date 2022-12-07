@@ -40,7 +40,7 @@
                 <DataGrid Name="DnsRecordDataGrid" 
                           ItemsSource="{Binding GridData}"
                           Style="{StaticResource commonDataGrid}" 
-                          Template="{DynamicResource BaseDataGridControlTemplate}" 
+                          Template="{StaticResource BaseDataGridControlTemplate}" 
                           Margin="0,8,0,0" 
                           MouseDoubleClick="OnGridDoubleClick" 
                           Grid.Column="0" 

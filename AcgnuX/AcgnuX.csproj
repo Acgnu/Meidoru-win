@@ -138,6 +138,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\ProgressAnimater.cs" />
     <Compile Include="Controls\AsyncImage.cs" />
     <Compile Include="Controls\BubbleTip.xaml.cs">
       <DependentUpon>BubbleTip.xaml</DependentUpon>
@@ -160,6 +161,9 @@
       <DependentUpon>FromComboListBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\RangeObservableCollection.cs" />
+    <Compile Include="Controls\SheetItemControl.xaml.cs">
+      <DependentUpon>SheetItemControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\VirtualizingWrapPanel.cs" />
     <Compile Include="Pages\DnsManage.xaml.cs">
       <DependentUpon>DnsManage.xaml</DependentUpon>
@@ -203,6 +207,9 @@
     <Compile Include="Source\Bussiness\Constants\WindowsMessage.cs" />
     <Compile Include="Source\Bussiness\Constants\SyncDeviceType.cs" />
     <Compile Include="Source\Bussiness\Data\AppSecretKeyRepo.cs" />
+    <Compile Include="Source\Bussiness\Data\Tan8SheetCrawlRecordRepo.cs" />
+    <Compile Include="Source\Bussiness\Data\Tan8SheetCrawlTaskRepo.cs" />
+    <Compile Include="Source\Bussiness\Data\Tan8SheetsRepo.cs" />
     <Compile Include="Source\Bussiness\Data\ContactRepo.cs" />
     <Compile Include="Source\Bussiness\imgrespotroy\IImageRepo.cs" />
     <Compile Include="Source\Bussiness\imgrespotroy\ImageRepoFactory.cs" />
@@ -215,6 +222,7 @@
     <Compile Include="Pages\Index.xaml.cs">
       <DependentUpon>Index.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Source\Model\Tan8SheetCrawlArg.cs" />
     <Compile Include="Source\ViewModel\Design\BubbleTipDesignModel.cs" />
     <Compile Include="Source\ViewModel\Design\BubbleTipViwerDesignModel.cs" />
     <Compile Include="Source\ViewModel\Design\ContactListDesignModel.cs" />
@@ -234,7 +242,7 @@
     <Compile Include="Source\Model\MainWindowStatusNotify.cs" />
     <Compile Include="Source\Model\NavMenu.cs" />
     <Compile Include="Source\Model\Pager.cs" />
-    <Compile Include="Source\Model\PianoScore.cs" />
+    <Compile Include="Source\Model\Tan8Sheet.cs" />
     <Compile Include="Source\Model\Tan8SheetDownloadRecord.cs" />
     <Compile Include="Source\Model\Tan8music.cs" />
     <Compile Include="Source\Model\Ten\Dns\DnsDomain.cs" />
@@ -264,24 +272,26 @@
     <Compile Include="Source\ViewModel\BubbleTipViewModel.cs" />
     <Compile Include="Source\ViewModel\ContactItemViewModel.cs" />
     <Compile Include="Source\ViewModel\ContactListViewModel.cs" />
+    <Compile Include="Source\ViewModel\Design\SheetItemDesignModel.cs" />
     <Compile Include="Source\ViewModel\DeviceDriverViewModel.cs" />
     <Compile Include="Source\ViewModel\AccountViewModel.cs" />
     <Compile Include="Source\ViewModel\CommonWindowViewModel.cs" />
     <Compile Include="Source\ViewModel\DnsItemViewModel.cs" />
     <Compile Include="Source\ViewModel\DnsManageViewModel.cs" />
     <Compile Include="Source\ViewModel\EditDnsRecordDialogViewModel.cs" />
+    <Compile Include="Source\ViewModel\SheetItemViewModel.cs" />
     <Compile Include="Source\ViewModel\PwdRepositoryViewModel.cs" />
     <Compile Include="Source\ViewModel\SyncConfigViewModel.cs" />
     <Compile Include="Source\ViewModel\CrawlRuleViewModel.cs" />
     <Compile Include="Source\ViewModel\DeviceSyncListViewModel.cs" />
     <Compile Include="Source\ViewModel\Tan8PlayerViewModel.cs" />
-    <Compile Include="Source\ViewModel\PianoScoreViewModel.cs" />
     <Compile Include="Source\ViewModel\SettingsViewModel.cs" />
     <Compile Include="Source\ViewModel\PianoScoreDownloadRecordViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Source\ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="Source\ViewModel\Tan8SheetReponsitoryViewModel.cs" />
     <Compile Include="Source\ViewModel\ViewModelLocator.cs" />
     <Compile Include="WindowX\Dialog\BaseDialog.cs" />
     <Compile Include="WindowX\Dialog\ConfirmDialog.xaml.cs">
@@ -336,6 +346,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\FromComboListBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SheetItemControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

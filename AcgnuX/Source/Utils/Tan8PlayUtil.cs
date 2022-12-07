@@ -1,5 +1,6 @@
 ﻿using AcgnuX.Source.Model;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -24,8 +25,9 @@ namespace AcgnuX.Source.Utils
         private static readonly string mFlashTrustFileName = "acgnux_flash.cfg";
         /// <summary>
         /// flash exe线程
+        /// key=乐谱ID, value=线程
         /// </summary>
-        private static Process mPlayerProcess;
+        private static readonly Dictionary<int, Process> _PlayerProcessDictionary = new Dictionary<int, Process>();
 
         /// <summary>
         /// 使用外部flashplayer.exe播放swf文件
@@ -55,7 +57,8 @@ namespace AcgnuX.Source.Utils
         /// <param name="isHide">true 隐藏播放器窗口</param>
         public static void ExePlayById(int ypid, int version, bool isHide)
         {
-            if(version == 1)
+            Process playerProcess;
+            if (version == 1)
             {
                 //检查信任文件是否存在
                 var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -63,7 +66,7 @@ namespace AcgnuX.Source.Utils
                 {
                     WriteTrustFile();
                 }
-                mPlayerProcess = Process.Start(new ProcessStartInfo()
+                playerProcess = Process.Start(new ProcessStartInfo()
                 {
                     FileName = Environment.CurrentDirectory + @"\Assets\flash\flashplayer.exe",
                     WindowStyle = isHide ? ProcessWindowStyle.Hidden : ProcessWindowStyle.Normal,//关键代码
@@ -72,7 +75,7 @@ namespace AcgnuX.Source.Utils
             } 
             else if (version == 2)
             {
-                mPlayerProcess = Process.Start(new ProcessStartInfo()
+                playerProcess = Process.Start(new ProcessStartInfo()
                 {
                     FileName = Environment.CurrentDirectory + @"\Assets\exe\77player.exe",
                     WindowStyle = isHide ? ProcessWindowStyle.Hidden : ProcessWindowStyle.Normal,//关键代码
@@ -83,34 +86,65 @@ namespace AcgnuX.Source.Utils
             {
                 throw new Exception("不支持的播放器版本");
             }
+            _PlayerProcessDictionary.Add(ypid, playerProcess);
         }
 
         /// <summary>
-        /// 退出flash
+        /// 退出flash线程, 并删除管理key
+        /// 此处有个问题, 如果直接关闭播放器, 此处不会有通知, 考虑到占用不会太高, 暂时不处理
         /// </summary>
-        public static void Exit()
+        public static void Exit(int ypid)
         {
-            //检查进程是否存在
-            if (null != mPlayerProcess && !mPlayerProcess.HasExited)
+            var hasKey = ExitProcess(ypid);
+            if(hasKey) _PlayerProcessDictionary.Remove(ypid);
+        }
+
+        /// <summary>
+        /// 退出线程
+        /// </summary>
+        /// <param name="ypid"></param>
+        /// <returns></returns>
+        private static bool ExitProcess(int ypid)
+        {
+            if (!_PlayerProcessDictionary.ContainsKey(ypid))
             {
-                mPlayerProcess.CloseMainWindow();
+                return false;
+            }
+            var playerProcess = _PlayerProcessDictionary[ypid];
+            //检查进程是否存在
+            if (null != playerProcess && !playerProcess.HasExited)
+            {
+                playerProcess.CloseMainWindow();
                 //mFlashProcess.Close();
-                if (!mPlayerProcess.HasExited)
+                if (!playerProcess.HasExited)
                 {
-                    mPlayerProcess.Kill();
+                    playerProcess.Kill();
                 }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 退出全部
+        /// </summary>
+        public static void ExitAll()
+        {
+            foreach (var k in _PlayerProcessDictionary)
+            {
+                ExitProcess(k.Key);
             }
         }
 
         /// <summary>
         /// 重启Flash播放器
         /// </summary>
-        /// <param name="ypid"></param>
+        /// <param name="prevYpid">重启前的乐谱ID</param>
+        /// <param name="ypid">新的乐谱ID</param>
         /// <param name="ver"></param>
         /// <param name="isHide"></param>
         public static void Restart(int? ypid, int ver, bool isHide)
         {
-            Exit();
+            Exit(ypid.GetValueOrDefault());
             ExePlayById(ypid.GetValueOrDefault(), ver, isHide);
         }
 

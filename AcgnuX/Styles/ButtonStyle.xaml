@@ -180,13 +180,6 @@
         <Setter Property="Margin" Value="0 0 5 5" />
         <Setter Property="Opacity" Value="0.5" />
     </Style>
-
-    <!--琴谱页播放按钮-->
-    <Style TargetType="Button" x:Key="PianoScorePlayButtonStyle" BasedOn="{StaticResource NoneStyleButtonStyle}">
-        <Setter Property="Background" Value="Black" />
-        <Setter Property="Opacity" Value="0" />
-        <Setter Property="BorderBrush" Value="{x:Null}" />
-    </Style>
     
     <!--琴谱页默认播放按钮-->
     <Style TargetType="Button" x:Key="PianoScoreDefaultPlayButton" BasedOn="{StaticResource MainButtonStyle}">

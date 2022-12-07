@@ -484,7 +484,7 @@ namespace PatchTool
                 Console.WriteLine("无法获取乐谱路径, 先检查一下配置文件");
                 return;
             }
-            ConcurrentQueue<PianoScore> sheetDirQueue = new ConcurrentQueue<PianoScore>();
+            ConcurrentQueue<Tan8Sheet> sheetDirQueue = new ConcurrentQueue<Tan8Sheet>();
             var dataSet = SQLite.SqlTable("SELECT ypid, name, yp_count FROM tan8_music WHERE ypid NOT IN (SELECT ypid FROM tan8_music_img)", null);
             var total = dataSet.Rows.Count;
             Console.WriteLine("正在添加任务队列...");
@@ -492,7 +492,7 @@ namespace PatchTool
             {
                 if (Directory.Exists(Path.Combine(ypHomePath, Convert.ToString(dataRow["ypid"]))))
                 {
-                    sheetDirQueue.Enqueue(new PianoScore()
+                    sheetDirQueue.Enqueue(new Tan8Sheet()
                     {
                         id = Convert.ToInt32(dataRow["ypid"]),
                         Name = dataRow["name"].ToString(),
@@ -511,7 +511,7 @@ namespace PatchTool
                 {
                     while (sheetDirQueue.Count > 0)
                     {
-                        PianoScore pianoScore = new PianoScore();
+                        Tan8Sheet pianoScore = new Tan8Sheet();
                         var isOk = sheetDirQueue.TryDequeue(out pianoScore);
                         if (isOk)
                         {
@@ -580,7 +580,7 @@ namespace PatchTool
                 Console.WriteLine("无法获取乐谱路径, 先检查一下配置文件");
                 return;
             }
-            ConcurrentQueue<PianoScore> sheetDirQueue = new ConcurrentQueue<PianoScore>();
+            ConcurrentQueue<Tan8Sheet> sheetDirQueue = new ConcurrentQueue<Tan8Sheet>();
             var dataSet = SQLite.SqlTable("SELECT ypid, name, yp_count FROM tan8_music", null);
             var total = dataSet.Rows.Count;
             foreach (DataRow dataRow in dataSet.Rows)
@@ -588,7 +588,7 @@ namespace PatchTool
                 if (Directory.Exists(Path.Combine(ypHomePath, Convert.ToString(dataRow["ypid"]))))
                 {
                     Console.WriteLine(string.Format("正在添加 {0} 到任务队列...", dataRow["name"]));
-                    sheetDirQueue.Enqueue(new PianoScore() 
+                    sheetDirQueue.Enqueue(new Tan8Sheet() 
                     {
                         id = Convert.ToInt32(dataRow["ypid"]),
                         Name = dataRow["name"].ToString(),
@@ -603,7 +603,7 @@ namespace PatchTool
                 {
                     while (true)
                     {
-                        PianoScore pianoScore = new PianoScore();
+                        Tan8Sheet pianoScore = new Tan8Sheet();
                         var isOk = sheetDirQueue.TryDequeue(out pianoScore);
                         if (isOk)
                         {

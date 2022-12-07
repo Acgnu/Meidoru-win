@@ -8,10 +8,6 @@
         mc:Ignorable="d"
         Title="{x:Static res:Resources.S_DownloadRecord}" Height="500" Width="600" Style="{StaticResource DialogWindowBaseStyle}" Loaded="OnWindowLoaded">
 
-    <!--<Window.DataContext>
-        <Binding Path="Tan8DownloadRecord" Source="{StaticResource Locator}"></Binding>
-    </Window.DataContext>-->
-    
     <Window.Icon>
         <DrawingImage>
             <DrawingImage.Drawing>
@@ -31,33 +27,49 @@
         <Style TargetType="WrapPanel" x:Key="PianoScoreConditionStyle">
             <Setter Property="Margin" Value="0 0 0 5" />
         </Style>
-        
-        <ControlTemplate x:Key="FilterBoxCheckBoxControlTemplate" TargetType="{x:Type CheckBox}">
-            <Grid x:Name="templateRoot" Background="Transparent" SnapsToDevicePixels="True">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Border x:Name="ContentBorder" BorderBrush="#CCC" BorderThickness=" 0 0 0 2" Padding="10 5" Background="{StaticResource ButtonSecondaryColorBrush}">
-                    <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="1" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                </Border>
-            </Grid>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" TargetName="ContentBorder" Value="{DynamicResource WhiteBgHoverColorBrush}" />
-                </Trigger>
-                <Trigger Property="IsChecked" Value="True">
-                    <Setter Property="BorderBrush" TargetName="ContentBorder" Value="{DynamicResource ButtonMainColorBrush}" />
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
+
+        <!--筛选框样式-->
+        <Style TargetType="CheckBox" BasedOn="{StaticResource PianoScoreConditionCbStyle}" x:Key="FilterBoxCheckBoxStyle">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type CheckBox}">
+                        <Grid x:Name="templateRoot" Background="Transparent" SnapsToDevicePixels="True">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border x:Name="ContentBorder" BorderBrush="#CCC" BorderThickness=" 0 0 0 2" Padding="10 5" Background="{StaticResource ButtonSecondaryColorBrush}">
+                                <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="1" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="ContentBorder" Value="{StaticResource WhiteBgHoverColorBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="BorderBrush" TargetName="ContentBorder" Value="{StaticResource ButtonMainColorBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
-    <DockPanel Margin="4 5 0 0" Grid.Column="1" >
-        <ItemsControl Name="FilterBoxItemsControl" DockPanel.Dock="Top">
+    <DockPanel Margin="0 5 0 0" Grid.Column="1" Name="MainContentDock">
+        <DockPanel.DataContext>
+            <Binding Path="Tan8DownloadRecord" Source="{StaticResource Locator}"></Binding>
+        </DockPanel.DataContext>
+        
+        <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding FilterBoxList}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <CheckBox Checked="OnDownloadRecordConditionCheckboxClick" Unchecked="OnDownloadRecordConditionCheckboxClick" Content="{Binding Title}" Tag="{Binding Value}" IsChecked="{Binding IsChecked}" Style="{StaticResource PianoScoreConditionCbStyle}" Template="{DynamicResource FilterBoxCheckBoxControlTemplate}"/>
+                    <CheckBox 
+                        Content="{Binding Title}" 
+                        IsChecked="{Binding IsChecked}" 
+                        Style="{StaticResource FilterBoxCheckBoxStyle}" 
+                        Checked="OnFilterBoxCheckedChange" 
+                        Unchecked="OnFilterBoxCheckedChange" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>
@@ -66,12 +78,22 @@
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
-        <DataGrid Name="DownloadRecordDataGrid" Style="{StaticResource commonDataGrid}" Template="{DynamicResource BaseDataGridControlTemplate}" DockPanel.Dock="Bottom" 
-                              PreviewKeyDown="OnDownloadRecordGridKeyDown">
+        <DataGrid Name="DownloadRecordDataGrid" 
+                  ItemsSource="{Binding DownloadRecordList}"
+                  Style="{StaticResource commonDataGrid}" 
+                  Template="{StaticResource BaseDataGridControlTemplate}" 
+                  DockPanel.Dock="Bottom" 
+                  PreviewKeyDown="OnDownloadRecordGridKeyDown">
+            <DataGrid.InputBindings>
+                <KeyBinding Key="Delete" 
+                            Command="{Binding OnDeleteKeyCommand}" 
+                            CommandParameter="{Binding Path=SelectedItems, ElementName=DownloadRecordDataGrid}" />
+            </DataGrid.InputBindings>
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="{x:Static res:Resources.S_DownloadFromCurId}" Click="OnCopyIncrIdContextMenuClick" />
-                    <MenuItem Header="{x:Static res:Resources.S_Delete}" Click="OnDeleteContextMenuClick" />
+                    <MenuItem Header="{x:Static res:Resources.S_DownloadFromCurId}"
+                              Command="{Binding OnCopyIncrIdCommand}"
+                              CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>

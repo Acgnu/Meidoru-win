@@ -1,5 +1,7 @@
 ﻿using AcgnuX.Source.Model;
 using AcgnuX.Source.Model.Ten.Dns;
+using AcgnuX.Source.ViewModel;
+using System.Collections.ObjectModel;
 /// <summary>
 /// 定义委托
 /// </summary>
@@ -14,9 +16,10 @@ namespace AcgnuX.Source.Bussiness.Common
     public delegate InvokeResult<T> EditConfirmHandler<T>(T data);
 
     /// <summary>
-    /// 状态栏停止按钮点击事件
+    /// 停止所有的乐谱下载任务
     /// </summary>
-    public delegate void StopBtnClickHandler();
+    /// <param name="ListData"></param>
+    public delegate void StopAllTan8SheetDownload(ObservableCollection<SheetItemViewModel> ListData);
 
     /// <summary>
     /// 状态栏变更委托
@@ -25,22 +28,10 @@ namespace AcgnuX.Source.Bussiness.Common
     public delegate void StatusBarNotifyHandler(MainWindowStatusNotify statusNotify);
 
     /// <summary>
-    /// DNS编辑完成
-    /// </summary>
-    /// <param name="result"></param>
-    public delegate void BackgroundFinishHandler(DnsOperatorResult result);
-
-    /// <summary>
     /// IP池数量变化事件
     /// </summary>
     /// <param name="curNum"></param>
     public delegate void ProxyPoolCountChangeHandler(int curNum);
-
-    /// <summary>
-    /// 弹8曲谱下载成功事件
-    /// </summary>
-    /// <param name="pianoScore"></param>
-    public delegate void Tan8SheetDownloadFinishHandler(PianoScore pianoScore);
 
     /// <summary>
     /// 指定了数据库文件事件

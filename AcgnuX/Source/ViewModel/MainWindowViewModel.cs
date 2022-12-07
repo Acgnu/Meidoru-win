@@ -60,7 +60,7 @@ namespace AcgnuX.Source.ViewModel
                 //清空所有通知
                 ToastNotificationManagerCompat.Uninstall();
                 //退出Tan8播放器
-                Tan8PlayUtil.Exit();
+                Tan8PlayUtil.ExitAll();
                 //退出程序
                 Environment.Exit(0);
             }));

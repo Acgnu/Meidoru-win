@@ -6,7 +6,7 @@
       mc:Ignorable="d" 
       xmlns:res="clr-namespace:AcgnuX.Properties"
       xmlns:local="clr-namespace:AcgnuX.Pages"
-      d:DesignWidth="1024" d:DesignHeight="768" d:Background="White"
+      d:DesignWidth="1024" d:DesignHeight="768"
       xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
       Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded" Unloaded="OnPageUnloaded">
     <Page.DataContext>
@@ -52,7 +52,7 @@
                                 </WrapPanel>
                             </Button>
                         </DockPanel>
-                        <DataGrid Name="CrawlConfigDataGrid" Style="{StaticResource commonDataGrid}" Template="{DynamicResource BaseDataGridControlTemplate}" DockPanel.Dock="Bottom"
+                        <DataGrid Name="CrawlConfigDataGrid" Style="{StaticResource commonDataGrid}" Template="{StaticResource BaseDataGridControlTemplate}" DockPanel.Dock="Bottom"
                           ItemsSource ="{Binding CrawlRuls}" MouseDoubleClick="OnCrawlRulsDataGridDoubleClick" MouseRightButtonDown="OnItemMouseRightClick">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Binding="{Binding Name}" Header="{x:Static res:Resources.S_Name}" Width="*" />
@@ -89,7 +89,7 @@
                                 </WrapPanel>
                             </Button>
                         </DockPanel>
-                        <DataGrid Name="SyncPathDataGrid" Style="{StaticResource commonDataGrid}" Template="{DynamicResource BaseDataGridControlTemplate}" DockPanel.Dock="Bottom"
+                        <DataGrid Name="SyncPathDataGrid" Style="{StaticResource commonDataGrid}" Template="{StaticResource BaseDataGridControlTemplate}" DockPanel.Dock="Bottom"
                           ItemsSource ="{Binding SyncConfigs}" MouseDoubleClick="OnSyncConfigDataGridDoubleClick" MouseRightButtonDown="OnSyncConfigItemMouseRightClick">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Binding="{Binding PcPath}" Header="{x:Static res:Resources.S_PcPath}" Width="6*" />

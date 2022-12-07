@@ -29,8 +29,6 @@ namespace AcgnuX
     {
         //标识状态栏是否有任务执行
         private bool mIsProgressRunning = false;
-        //停止任务点击事件
-        public event StopBtnClickHandler OnClickStatusBarStop;
 
         public MainWindow()
         {
@@ -149,7 +147,6 @@ namespace AcgnuX
         /// <param name="e"></param>
         private void OnStopTaskButtonClick(object sender, RoutedEventArgs e)
         {
-            OnClickStatusBarStop?.Invoke();
         }
 
         /// <summary>

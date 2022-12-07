@@ -26,10 +26,10 @@
     </Style>
 
     <!--琴谱条目图片展示-->
-    <Style TargetType="Border" x:Key="PianoScorePreviewImageBorderStyle" BasedOn="{StaticResource BaseCircleBorder}">
+    <!--<Style TargetType="Border" x:Key="PianoScorePreviewImageBorderStyle" BasedOn="{StaticResource BaseCircleBorder}">
         <Setter Property="Height" Value="70" />
         <Setter Property="Width" Value="70" />
-    </Style>
+    </Style>-->
 
     <!--琴谱条目播放按钮-->
     <Style TargetType="Border" x:Key="PianoScorePlayButtonBorderStyle" BasedOn="{StaticResource BaseCircleBorder}">

@@ -68,7 +68,6 @@ namespace AcgnuX.Pages
         public MobileDeviceControl()
         {
             InitializeComponent();
-            mMainWindow.OnClickStatusBarStop += ChangeTaskStatus;
             OnTaskBarEvent += mMainWindow.SetStatustProgess;
 
             mCheckDeviceBgWorker.DoWork += new DoWorkEventHandler(DoCheckDeviceTask);

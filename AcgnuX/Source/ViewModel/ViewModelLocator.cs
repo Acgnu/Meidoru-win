@@ -47,6 +47,7 @@ namespace AcgnuX.Source.ViewModel
             SimpleIoc.Default.Register<PianoScoreDownloadRecordViewModel>();
             SimpleIoc.Default.Register<Tan8PlayerViewModel>();
             SimpleIoc.Default.Register<SettingsViewModel>();
+            SimpleIoc.Default.Register<Tan8SheetReponsitoryViewModel>();
         }
 
         public MainWindowViewModel Main { get { return ServiceLocator.Current.GetInstance<MainWindowViewModel>(); } }
@@ -55,7 +56,9 @@ namespace AcgnuX.Source.ViewModel
 
         public PwdRepositoryViewModel PwdRepository { get { return ServiceLocator.Current.GetInstance<PwdRepositoryViewModel>(); } }
 
-        //public PianoScoreDownloadRecordViewModel Tan8DownloadRecord { get { return ServiceLocator.Current.GetInstance<PianoScoreDownloadRecordViewModel>(); } }
+        public Tan8SheetReponsitoryViewModel SheetRepository { get { return ServiceLocator.Current.GetInstance<Tan8SheetReponsitoryViewModel>(); } }
+
+        public PianoScoreDownloadRecordViewModel Tan8DownloadRecord { get { return ServiceLocator.Current.GetInstance<PianoScoreDownloadRecordViewModel>(); } }
 
         public Tan8PlayerViewModel Tan8Player { get { return ServiceLocator.Current.GetInstance<Tan8PlayerViewModel>(); } }
 

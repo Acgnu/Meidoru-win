@@ -9,6 +9,7 @@ using System.IO;
 using System.Windows.Media.Imaging;
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.Model;
+using System.Windows.Media;
 
 namespace AcgnuX.Controls
 {
@@ -38,6 +39,7 @@ namespace AcgnuX.Controls
                 typeof(AsyncImage),
                 new PropertyMetadata(async (o, e) =>
                     await ((AsyncImage)o).LoadImageBytesAsync((ByteArray)e.NewValue)));
+
 
         /// <summary>
         /// 图片路径, 适用于以文件路径创建
