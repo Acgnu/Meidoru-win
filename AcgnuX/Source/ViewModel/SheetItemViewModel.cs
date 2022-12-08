@@ -375,15 +375,18 @@ namespace AcgnuX.Source.ViewModel
                             Tan8PlayUtil.Restart(Id, 1, true);
                             return;
                         }
-                        //以下代码仅下载成功执行, 如果下载成功, 不论是否中止, 都保存乐谱信息, 当作成功
-                        //每次下载完, 保存最后下载的记录ID
-                        _Tan8SheetCrawlRecordRepo.Save(Id, AutoDownload, Name, result.code, result.message);
-                        Tan8PlayUtil.Exit(Id);
-
-                        //触发下载完成事件
-                        DownloadFinishAction?.Invoke(Id, result.success, IsWorking);
-                        IsWorking = false;      //设为False将退出循环, 结束任务
                     }
+                }
+                if(IsWorking)
+                {
+                    //以下代码仅下载成功执行, 如果下载成功, 不论是否中止, 都保存乐谱信息, 当作成功
+                    //每次下载完, 保存最后下载的记录ID
+                    _Tan8SheetCrawlRecordRepo.Save(Id, AutoDownload, Name, result.code, result.message);
+                    Tan8PlayUtil.Exit(Id);
+
+                    //触发下载完成事件
+                    DownloadFinishAction?.Invoke(Id, result.success, IsWorking);
+                    IsWorking = false;      //设为False将退出循环, 结束任务
                 }
             } while (IsWorking);
         }
