@@ -108,24 +108,6 @@ namespace AcgnuX.Pages
         }
 
         /// <summary>
-        /// 同步配置行双击选中事件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnSyncConfigDataGridDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (null == SyncPathDataGrid.SelectedItem) return;
-            //打开修改对话框
-            var dialog = new EditSyncConfigDialog(SyncPathDataGrid.SelectedItem as SyncConfigViewModel);
-            var result = dialog.ShowDialog();
-            if (result.GetValueOrDefault() == true)
-            {
-                var vm = DataContext as SettingsViewModel;
-                vm.CheckSyncConfigIsCheckedAll(true);
-            }
-        }
-
-        /// <summary>
         /// 添加规则按钮点击事件
         /// </summary>
         /// <param name="sender"></param>
@@ -153,44 +135,6 @@ namespace AcgnuX.Pages
         }
 
         /// <summary>
-        /// 添加规则按钮点击事件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnAddSyncConfigClick(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrEmpty(Settings.Default.DBFilePath))
-            {
-                mMainWindow.SetStatustProgess(new MainWindowStatusNotify()
-                {
-                    alertLevel = AlertLevel.ERROR,
-                    message = "答应我, 先去配置数据库"
-                });
-                return;
-            }
-            //打开修改对话框
-            var dialog = new EditSyncConfigDialog(null);
-            var result = dialog.ShowDialog();
-            if (result.GetValueOrDefault() == true)
-            {
-                var vm = DataContext as SettingsViewModel;
-                //由于添加重复策略是替换, 因此新增成功之后需要检查当前vm中重复的项
-                for(var i = 0;  i < vm.SyncConfigs.Count; i++)
-                {
-                    //如果存在PcPath重复或者MobilePath重复, 都需要删除 (Replace 策略会将任意一个重复的都删除 )
-                    var item = vm.SyncConfigs[i];
-                    if(item.PcPath.Equals(dialog.SyncConfig.PcPath) || item.MobilePath.Equals(dialog.SyncConfig.MobilePath))
-                    {
-                        vm.SyncConfigs.Remove(item);
-                        i--;
-                    }
-                }
-                vm.SyncConfigs.Add(dialog.SyncConfig);
-                vm.CheckSyncConfigIsCheckedAll(true);
-            }
-        }
-
-        /// <summary>
         /// 规则删除事件
         /// </summary>
         /// <param name="sender"></param>
@@ -208,27 +152,6 @@ namespace AcgnuX.Pages
                 var vm = DataContext as SettingsViewModel;
                 vm.CrawlRuls.Remove(selected);
                 vm.CheckIsCheckedAll(true);
-            }
-        }
-
-        /// <summary>
-        /// 同步规则删除事件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnSyncConfigItemMouseRightClick(object sender, MouseButtonEventArgs e)
-        {
-            XamlUtil.SelectRow(SyncPathDataGrid, e);
-            var selected = SyncPathDataGrid.SelectedItem as SyncConfigViewModel;
-            if (null == selected) return;
-            //删除对话框
-            var result = new ConfirmDialog(AlertLevel.WARN, string.Format(Properties.Resources.S_DeleteConfirm, string.Format("{0}", selected.PcPath))).ShowDialog();
-            if (result.GetValueOrDefault())
-            {
-                SQLite.ExecuteNonQuery("DELETE FROM media_sync_config WHERE ID = @id", new List<SQLiteParameter> { new SQLiteParameter("@id", selected.Id) });
-                var vm = DataContext as SettingsViewModel;
-                vm.SyncConfigs.Remove(selected);
-                vm.CheckSyncConfigIsCheckedAll(true);
             }
         }
 

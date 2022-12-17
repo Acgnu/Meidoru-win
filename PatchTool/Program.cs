@@ -494,7 +494,7 @@ namespace PatchTool
                 {
                     sheetDirQueue.Enqueue(new Tan8Sheet()
                     {
-                        id = Convert.ToInt32(dataRow["ypid"]),
+                        Ypid = Convert.ToInt32(dataRow["ypid"]),
                         Name = dataRow["name"].ToString(),
                         YpCount = Convert.ToByte(dataRow["yp_count"])
                     });
@@ -515,7 +515,7 @@ namespace PatchTool
                         var isOk = sheetDirQueue.TryDequeue(out pianoScore);
                         if (isOk)
                         {
-                            var sheetDir = Path.Combine(ypHomePath, pianoScore.id.GetValueOrDefault().ToString());
+                            var sheetDir = Path.Combine(ypHomePath, pianoScore.Ypid.ToString());
                             var previewPicName = "public.png";
                             //检查目标文件夹是否已经存在已处理的图片
                             if (File.Exists(Path.Combine(ypHomePath, sheetDir, previewPicName)))
@@ -527,7 +527,7 @@ namespace PatchTool
                                     FullFilePath = Path.Combine(ypHomePath, sheetDir, previewPicName),
                                     ExtraArgs = new JObject
                                     {
-                                        { "uploadFileFormName", "sheet_" + pianoScore.id + ".png" }
+                                        { "uploadFileFormName", "sheet_" + pianoScore.Ypid + ".png" }
                                     }
                                 };
                                 InvokeResult<ImageRepoUploadResult> invokeResult;
@@ -548,7 +548,7 @@ namespace PatchTool
                                 SQLite.ExecuteNonQuery("INSERT INTO tan8_music_img(ypid, yp_name, img_url, api, api_channel, create_time) VALUES (@ypid, @ypName, @imgUrl, @api, @apiChannel, datetime('now', 'localtime'))",
                                     new List<SQLiteParameter>()
                                 {
-                                    new SQLiteParameter("@ypid", pianoScore.id.GetValueOrDefault()),
+                                    new SQLiteParameter("@ypid", pianoScore.Ypid),
                                     new SQLiteParameter("@ypName", pianoScore.Name),
                                     new SQLiteParameter("@imgUrl", invokeResult.data.ImgUrl),
                                     new SQLiteParameter("@api", invokeResult.data.Api),
@@ -590,7 +590,7 @@ namespace PatchTool
                     Console.WriteLine(string.Format("正在添加 {0} 到任务队列...", dataRow["name"]));
                     sheetDirQueue.Enqueue(new Tan8Sheet() 
                     {
-                        id = Convert.ToInt32(dataRow["ypid"]),
+                        Ypid = Convert.ToInt32(dataRow["ypid"]),
                         Name = dataRow["name"].ToString(),
                         YpCount = Convert.ToByte(dataRow["yp_count"])
                     });
@@ -607,7 +607,7 @@ namespace PatchTool
                         var isOk = sheetDirQueue.TryDequeue(out pianoScore);
                         if (isOk)
                         {
-                            var sheetDir = Path.Combine(ypHomePath, pianoScore.id.GetValueOrDefault().ToString());
+                            var sheetDir = Path.Combine(ypHomePath, pianoScore.Ypid.ToString());
                             var previewPicName = "public.png";
                             bool doProcess = true;
                             //检查目标文件夹是否已经存在已处理的图片
@@ -625,7 +625,7 @@ namespace PatchTool
                                 if (Path.GetFileName(sheetFile).Equals("page.0.png"))
                                 {
                                     Console.WriteLine("剩余 : " + sheetDirQueue.Count + ", 当前 : " + Path.GetFileName(sheetDir));
-                                    var sufId = "(" + pianoScore.id.GetValueOrDefault() + ")";
+                                    var sufId = "(" + pianoScore.Ypid + ")";
                                     var titleName = pianoScore.Name.EndsWith(sufId) ? pianoScore.Name.Substring(0, pianoScore.Name.Length - sufId.Length) : pianoScore.Name;
                                     Bitmap rawImg = (Bitmap)Bitmap.FromFile(sheetFile);
                                     Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, titleName, 1, pianoScore.YpCount, true);

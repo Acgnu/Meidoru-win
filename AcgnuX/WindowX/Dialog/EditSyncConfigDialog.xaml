@@ -24,7 +24,7 @@
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_PcPath}" Style="{StaticResource FormFieldTextBlock}" Width="80"/>
                 <Grid>
-                    <TextBox Name="TextBlockPcPath" Style="{StaticResource TextBoxBase}" Text="{Binding Path=SyncConfig.PcPathView, UpdateSourceTrigger=Explicit}"/>
+                    <TextBox Name="TextBlockPcPath" Style="{StaticResource TextBoxBase}" Text="{Binding Path=SyncConfig.PcPath, UpdateSourceTrigger=Explicit}"/>
                     <Path MouseLeftButtonDown="OnChooseFolder"  Style="{StaticResource SettingsOpenFolderPathIcoStyle}"/>
                 </Grid>
             </DockPanel>
@@ -32,8 +32,8 @@
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_MobilePath}" Style="{StaticResource FormFieldTextBlock}" Width="80"/>
                 <Grid>
-                    <TextBox Name="TextBlockMobilePath" Style="{StaticResource TextBoxBase}" Text="{Binding Path=SyncConfig.MobilePathView, UpdateSourceTrigger=Explicit}"/>
-                    <CheckBox Name="CheckboxEnable" Content="{x:Static res:Resources.S_Enable}" IsChecked="{Binding SyncConfig.EnableView, UpdateSourceTrigger=Explicit}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    <TextBox Name="TextBlockMobilePath" Style="{StaticResource TextBoxBase}" Text="{Binding Path=SyncConfig.MobilePath, UpdateSourceTrigger=Explicit}"/>
+                    <CheckBox Name="CheckboxEnable" Content="{x:Static res:Resources.S_Enable}" IsChecked="{Binding SyncConfig.Enable, UpdateSourceTrigger=Explicit}" HorizontalAlignment="Right" VerticalAlignment="Center" />
                 </Grid>
              </DockPanel>
         </StackPanel>

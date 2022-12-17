@@ -78,41 +78,6 @@
                             </DataGrid.Columns>
                         </DataGrid>
                     </DockPanel>
-
-                    <DockPanel Style="{StaticResource CrawlConfigContainerDock}">
-                        <DockPanel DockPanel.Dock="Top" Height="30" Margin="0 0 0 10">
-                            <TextBlock VerticalAlignment ="Center" Margin="8 0 0 0" Text="{x:Static res:Resources.S_SyncPathConfig}" />
-                            <Button x:Name="AddPathButton" Style="{StaticResource AddButtonStyle}" HorizontalAlignment="Right" Click="OnAddSyncConfigClick">
-                                <WrapPanel>
-                                    <Path Style="{StaticResource CommonAddButtonPathIcoStyle}"/>
-                                    <TextBlock Text="{x:Static res:Resources.S_Add}" Margin="5 0 0 0" />
-                                </WrapPanel>
-                            </Button>
-                        </DockPanel>
-                        <DataGrid Name="SyncPathDataGrid" Style="{StaticResource commonDataGrid}" Template="{StaticResource BaseDataGridControlTemplate}" DockPanel.Dock="Bottom"
-                          ItemsSource ="{Binding SyncConfigs}" MouseDoubleClick="OnSyncConfigDataGridDoubleClick" MouseRightButtonDown="OnSyncConfigItemMouseRightClick">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding PcPath}" Header="{x:Static res:Resources.S_PcPath}" Width="6*" />
-                                <DataGridTextColumn Binding="{Binding MobilePath}" Header="{x:Static res:Resources.S_MobilePath}" Width="6*" />
-                                <DataGridCheckBoxColumn Binding="{Binding Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="1*">
-                                    <DataGridCheckBoxColumn.HeaderTemplate >
-                                        <DataTemplate>
-                                            <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" Tag="0" IsChecked="{Binding Path=DataContext.IsSyncConfigCheckedAll, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                            Command="{Binding Path=DataContext.OnSyncConfigCheckboxClick, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}" />
-                                        </DataTemplate>
-                                    </DataGridCheckBoxColumn.HeaderTemplate>
-                                    <!--为该列的CheckBox Tag属性绑定值-->
-                                    <DataGridCheckBoxColumn.ElementStyle>
-                                        <Style TargetType="CheckBox">
-                                            <Setter Property="Command" Value="{Binding Path=DataContext.OnSyncConfigCheckboxClick, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
-                                            <Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}}"/>
-                                            <Setter Property="Tag" Value="{Binding Id}" />
-                                        </Style>
-                                    </DataGridCheckBoxColumn.ElementStyle>
-                                </DataGridCheckBoxColumn>
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </DockPanel>
                 </StackPanel>
             </ScrollViewer>
             <!--<Button Style="{StaticResource RefreshFloatButtonStyle}" Command="{Binding SaveSettingCommand}">

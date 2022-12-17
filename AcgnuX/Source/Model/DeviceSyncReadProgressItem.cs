@@ -22,7 +22,7 @@ namespace AcgnuX.Source.ViewModel
         /// <summary>
         /// 文件项
         /// </summary>
-        public DeviceSyncItem FileItem { get; set; }
+        public FileItemViewModel FileItem { get; set; }
         /// <summary>
         /// 文件源
         /// </summary>
@@ -34,6 +34,6 @@ namespace AcgnuX.Source.ViewModel
         /// <summary>
         /// 通知对象
         /// </summary>
-        public MainWindowStatusNotify Notify { get; set; }
+        public BubbleTipViewModel Notify { get; set; }
     }
 }

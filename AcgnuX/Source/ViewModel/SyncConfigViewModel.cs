@@ -1,6 +1,7 @@
 ﻿using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
 using AcgnuX.Utils;
+using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,34 +13,26 @@ namespace AcgnuX.Source.ViewModel
     /// <summary>
     /// 同步配置视图模型
     /// </summary>
-    public class SyncConfigViewModel : MediaSyncConfig
+    public class SyncConfigViewModel : ViewModelBase
     {
-        public string PcPathView
-        {
-            get { return PcPath; }
-            set 
-            {
-                PcPath = value;
-                RaisePropertyChanged();
-            }
-        }
-        public string MobilePathView
-        {
-            get { return MobilePath; }
-            set
-            {
-                MobilePath = value;
-                RaisePropertyChanged();
-            }
-        }
-        public byte EnableView
-        {
-            get { return Enable; }
-            set
-            {
-                Enable = value;
-                RaisePropertyChanged();
-            }
-        }
+        /// <summary>
+        /// ID
+        /// </summary>
+        public int Id { get; set; }
+        /// <summary>
+        /// PC路径
+        /// </summary>
+        private string _PcPath;
+        public string PcPath { get => _PcPath; set { _PcPath = value; RaisePropertyChanged(); } }
+        /// <summary>
+        /// 移动端路径
+        /// </summary>
+        private string _MobilePath;
+        public string MobilePath { get => _MobilePath; set { _MobilePath = value; RaisePropertyChanged(); } }
+        /// <summary>
+        /// 是否启用 1 是 0 否
+        /// </summary>
+        private bool _Enable;
+        public bool Enable { get => _Enable; set { _Enable = value; RaisePropertyChanged(); } }
     }
 }

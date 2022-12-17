@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace AcgnuX.ViewModel
 {
-    class DeviceDriverViewModel : ViewModelBase
+    public class DeviceDriverViewModel : ViewModelBase
     {
         /// <summary>
         /// 驱动值

@@ -1,0 +1,93 @@
+﻿<UserControl x:Class="AcgnuX.Controls.FileItemCompareControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AcgnuX.Controls"
+             xmlns:lc="clr-namespace:AcgnuX.Controls"
+             xmlns:res="clr-namespace:AcgnuX.Properties"
+             xmlns:dv="clr-namespace:AcgnuX.Source.ViewModel.Design"
+             mc:Ignorable="d" 
+             d:DesignHeight="345" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock" x:Key="FolderNameTextBlockStyle">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="5 0 0 2" />
+            <Setter Property="FontSize" Value="15" />
+        </Style>
+        <Style TargetType="StackPanel" x:Key="FolderNameStackPanelStyle">
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="Background" Value="{StaticResource DataGridHeaderBackgroundColorBrush}" />
+        </Style>
+        <Style TargetType="Border" x:Key="PlatformIconBorderStyle">
+            <Setter Property="CornerRadius" Value="50" />
+            <Setter Property="Width" Value="30" />
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Padding" Value="5" />
+            <Setter Property="Margin" Value="5 0 0 1" />
+        </Style>
+        <!--同步按钮样式-->
+        <Style TargetType="Button" x:Key="SyncButtonStyle" BasedOn="{StaticResource AddButtonStyle}">
+            <Setter Property="Height" Value="28" />
+            <Setter Property="Width" Value="80" />
+            <Setter Property="Margin" Value="0 0 5 1" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                    <Setter Property="IsEnabled" Value="False" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <UserControl.BorderThickness>1</UserControl.BorderThickness>
+    <UserControl.BorderBrush>
+        <SolidColorBrush Color="{StaticResource ButtonHoverColor}" />
+    </UserControl.BorderBrush>
+
+    <Grid d:DataContext="{d:DesignInstance {x:Type dv:FileItemsCompareDesignViewModel}, IsDesignTimeCreatable=True}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="1" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Column="0" Grid.Row="0" Style="{StaticResource FolderNameStackPanelStyle}">
+            <Border Background="OrangeRed" Style="{StaticResource PlatformIconBorderStyle}">
+                <Path Data="{StaticResource Icon_DesktopComputer}" Style="{StaticResource MainStatusBarIcoPathStyle}">
+                    <!--<Path.LayoutTransform>
+                    <RotateTransform Angle="-45" />
+                </Path.LayoutTransform>-->
+                </Path>
+            </Border>
+            <TextBlock Text="{Binding PcFolderPath}" Style="{StaticResource FolderNameTextBlockStyle}">
+                <TextBlock.InputBindings>
+                    <MouseBinding MouseAction="LeftClick" Command="{Binding OnOpenFolderCommand}" />
+                </TextBlock.InputBindings>
+            </TextBlock>
+        </StackPanel>
+        <Line Stroke="{StaticResource ButtonHoverColorBrush}" Grid.Column="1" Grid.Row="0" Y1="43" StrokeThickness="2" X1="1" X2="1"  />
+        <DockPanel Grid.Column="2" Grid.Row="0" Background="{StaticResource DataGridHeaderBackgroundColorBrush}" LastChildFill="False">
+            <Border Background="{StaticResource ThemeTextColorBrush}" Style="{StaticResource PlatformIconBorderStyle}">
+                <Path Data="{StaticResource Icon_MobilePhone}" Style="{StaticResource MainStatusBarIcoPathStyle}">
+                    <!--<Path.LayoutTransform>
+                    <RotateTransform Angle="-45" />
+                </Path.LayoutTransform>-->
+                </Path>
+            </Border>
+            <TextBlock Text="{Binding MobileFolderPath}" Style="{StaticResource FolderNameTextBlockStyle}"/>
+            <!--同步按钮-->
+            <Button Style="{StaticResource SyncButtonStyle}" Command="{Binding OnSyncCommand}" DockPanel.Dock="Right">
+                <StackPanel Orientation="Horizontal">
+                    <Path Style="{StaticResource RefreshPathIcoStyle}" Width="13" Height="13"/>
+                    <TextBlock Text="{x:Static res:Resources.S_Sync}" Margin="5 0 0 0" />
+                </StackPanel>
+            </Button>
+        </DockPanel >
+        <lc:FileItemListControl Grid.Column="0" Grid.Row="1" DataContext="{Binding PcFileItems}" />
+        <Border Background="{StaticResource ButtonHoverColorBrush}" Grid.Column="1" Grid.Row="1" />
+        <lc:FileItemListControl Grid.Column="2" Grid.Row="1" DataContext="{Binding MobileFileItems}"/>
+    </Grid>
+</UserControl>

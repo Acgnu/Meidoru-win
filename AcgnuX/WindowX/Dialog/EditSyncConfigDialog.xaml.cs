@@ -20,7 +20,7 @@ namespace AcgnuX.WindowX.Dialog
         //视图对象
         public SyncConfigViewModel SyncConfig { get; set; } = new SyncConfigViewModel()
         {
-            Enable = 1
+            Enable = true
         };
 
         public EditSyncConfigDialog(SyncConfigViewModel syncConfig)
@@ -30,6 +30,10 @@ namespace AcgnuX.WindowX.Dialog
             if (null != syncConfig)
             {
                 SyncConfig = syncConfig;
+                //SyncConfig.Id = syncConfig.Id;
+                //SyncConfig.PcPath = syncConfig.PcPath;
+                //SyncConfig.MobilePath = syncConfig.MobilePath;
+                //SyncConfig.Enable = syncConfig.Enable;
             }
         }
 

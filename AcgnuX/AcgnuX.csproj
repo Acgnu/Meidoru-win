@@ -138,6 +138,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\FileItemCompareControl.xaml.cs">
+      <DependentUpon>FileItemCompareControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FileItemControl.xaml.cs">
+      <DependentUpon>FileItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FileItemListControl.xaml.cs">
+      <DependentUpon>FileItemListControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ProgressAnimater.cs" />
     <Compile Include="Controls\AsyncImage.cs" />
     <Compile Include="Controls\BubbleTip.xaml.cs">
@@ -190,6 +199,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Source\Bussiness\Common\AsyncObservableCollection.cs" />
     <Compile Include="Source\Bussiness\Common\BaseValueConverter.cs" />
+    <Compile Include="Source\Bussiness\Common\BooleanToVisiblityInverseConverter.cs" />
     <Compile Include="Source\Bussiness\Common\BooleanToVisiblityConverter.cs" />
     <Compile Include="Source\Bussiness\Common\DelegateDefine.cs" />
     <Compile Include="Source\Bussiness\Common\ByteArrayToAvatarImageConverter.cs" />
@@ -207,6 +217,7 @@
     <Compile Include="Source\Bussiness\Constants\WindowsMessage.cs" />
     <Compile Include="Source\Bussiness\Constants\SyncDeviceType.cs" />
     <Compile Include="Source\Bussiness\Data\AppSecretKeyRepo.cs" />
+    <Compile Include="Source\Bussiness\Data\MediaSyncConfigRepo.cs" />
     <Compile Include="Source\Bussiness\Data\Tan8SheetCrawlRecordRepo.cs" />
     <Compile Include="Source\Bussiness\Data\Tan8SheetCrawlTaskRepo.cs" />
     <Compile Include="Source\Bussiness\Data\Tan8SheetsRepo.cs" />
@@ -230,9 +241,7 @@
     <Compile Include="Source\Model\AppSecretKey.cs" />
     <Compile Include="Source\Model\ByteArray.cs" />
     <Compile Include="Source\Model\Contact.cs" />
-    <Compile Include="Source\Model\DeviceSyncItem.cs" />
     <Compile Include="Source\Model\DeviceSyncReadProgressItem.cs" />
-    <Compile Include="Source\Model\DeviceSyncReadArgs.cs" />
     <Compile Include="Source\Model\DeviceSyncTaskArgs.cs" />
     <Compile Include="Source\Model\MediaSyncConfig.cs" />
     <Compile Include="Source\Model\ProxyAddress.cs" />
@@ -272,18 +281,26 @@
     <Compile Include="Source\ViewModel\BubbleTipViewModel.cs" />
     <Compile Include="Source\ViewModel\ContactItemViewModel.cs" />
     <Compile Include="Source\ViewModel\ContactListViewModel.cs" />
+    <Compile Include="Source\ViewModel\Design\DeviceSyncDesignViewModel.cs" />
+    <Compile Include="Source\ViewModel\Design\FileItemDesignViewModel.cs" />
+    <Compile Include="Source\ViewModel\Design\FileItemListDesignViewModel.cs" />
+    <Compile Include="Source\ViewModel\Design\FileItemsCompareDesignViewModel.cs" />
     <Compile Include="Source\ViewModel\Design\SheetItemDesignModel.cs" />
     <Compile Include="Source\ViewModel\DeviceDriverViewModel.cs" />
     <Compile Include="Source\ViewModel\AccountViewModel.cs" />
     <Compile Include="Source\ViewModel\CommonWindowViewModel.cs" />
+    <Compile Include="Source\ViewModel\DeviceSyncPathConfigDialogViewModel.cs" />
+    <Compile Include="Source\ViewModel\DeviceSyncViewModel.cs" />
     <Compile Include="Source\ViewModel\DnsItemViewModel.cs" />
     <Compile Include="Source\ViewModel\DnsManageViewModel.cs" />
     <Compile Include="Source\ViewModel\EditDnsRecordDialogViewModel.cs" />
+    <Compile Include="Source\ViewModel\FileItemsCompareViewModel.cs" />
+    <Compile Include="Source\ViewModel\FileItemsListViewModel.cs" />
+    <Compile Include="Source\ViewModel\FileItemViewModel.cs" />
     <Compile Include="Source\ViewModel\SheetItemViewModel.cs" />
     <Compile Include="Source\ViewModel\PwdRepositoryViewModel.cs" />
     <Compile Include="Source\ViewModel\SyncConfigViewModel.cs" />
     <Compile Include="Source\ViewModel\CrawlRuleViewModel.cs" />
-    <Compile Include="Source\ViewModel\DeviceSyncListViewModel.cs" />
     <Compile Include="Source\ViewModel\Tan8PlayerViewModel.cs" />
     <Compile Include="Source\ViewModel\SettingsViewModel.cs" />
     <Compile Include="Source\ViewModel\PianoScoreDownloadRecordViewModel.cs" />
@@ -299,6 +316,9 @@
     </Compile>
     <Compile Include="WindowX\Dialog\AddSinglePianoScoreDialog.xaml.cs">
       <DependentUpon>AddSinglePianoScoreDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WindowX\Dialog\DeviceSyncPathConfigDialog.xaml.cs">
+      <DependentUpon>DeviceSyncPathConfigDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="WindowX\Dialog\EditContactDialog.xaml.cs">
       <DependentUpon>EditContactDialog.xaml</DependentUpon>
@@ -342,6 +362,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ContactListControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\FileItemCompareControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\FileItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\FileItemListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -470,6 +502,10 @@
     <Page Include="WindowX\Dialog\ConfirmDialog.xaml" />
     <Page Include="WindowX\Dialog\AddSinglePianoScoreDialog.xaml">
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WindowX\Dialog\DeviceSyncPathConfigDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WindowX\Dialog\EditContactDialog.xaml">
       <SubType>Designer</SubType>

@@ -5,291 +5,131 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:AcgnuX.Pages"
       xmlns:res="clr-namespace:AcgnuX.Properties"
+      xmlns:lc="clr-namespace:AcgnuX.Controls"
+      xmlns:dv="clr-namespace:AcgnuX.Source.ViewModel.Design"
+      xmlns:bizc="clr-namespace:AcgnuX.Source.Bussiness.Common"
       xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Class="AcgnuX.Pages.MobileDeviceControl"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-                Loaded="OnPageLoaded"  Style="{StaticResource DataGridPageBaseStyle}"
-      Title="MobileDeviceControl">
+      d:DesignHeight="450" d:DesignWidth="800" Loaded="OnPageLoaded"  Style="{StaticResource DataGridPageBaseStyle}">
 
     <Page.Resources>
-        <!--图片同步列表交互模板(PC端)-->
-        <Style TargetType="{x:Type ListViewItem}" x:Key="DeviceSyncListViewItemControlStyle">
-            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="Margin" Value="0 0 3 5"/>
-            <Setter Property="Padding" Value="0 0 0 0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ListViewItem}">
-                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="Transparent" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true" Margin="{TemplateBinding Margin}">
-                            <!--<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>-->
-                            <StackPanel 
-                                Orientation="Vertical"  
-                                Height="120" 
-                                Width="100" 
-                                MouseRightButtonDown="ImgItemRightClick"
-                                MouseLeftButtonUp="ImgItemLeftClick"
-                                KeyDown="SubItemOnKeyDown">
-                                <Grid>
-                                    <Border CornerRadius="3" Width="100" Height="100">
-                                        <Border.Background>
-                                            <ImageBrush ImageSource="{Binding BitImg}" Stretch="UniformToFill"/>
-                                        </Border.Background>
-                                    </Border>
-                                    <Border Width="45" Height="45" Margin="55 55 0 0" ClipToBounds="True">
-                                        <Border Background ="OrangeRed" Width="90" Height="90" Margin="-8 -8 0 0">
-                                            <Border.LayoutTransform>
-                                                <RotateTransform Angle="45" />
-                                            </Border.LayoutTransform>
-                                            <Path Data="{DynamicResource Icon_DesktopComputer}" Style="{StaticResource MainStatusBarIcoPathStyle}" Width="26" Height="26" Margin="-68 5 0 0">
-                                                <Path.LayoutTransform>
-                                                    <RotateTransform Angle="-45" />
-                                                </Path.LayoutTransform>
-                                            </Path>
-                                        </Border>
-                                    </Border>
-                                </Grid>
-                                <Label Content="{Binding NameView}" Height="20" Width="100" Margin="0 2 0 0" Padding="0"></Label>
-                            </StackPanel>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsMouseOver" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource WhiteBgHoverColorBrush}"/>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsMouseOver" Value="False" />
-                                    <Condition Property="IsSelected" Value="False" />
-                                </MultiTrigger.Conditions>
-                                <!--鼠标移除非选中的ListViewItem播放背景色动画-->
-                                <MultiTrigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <ColorAnimation Duration="0:0:0.4" Storyboard.TargetName="Bd" Storyboard.TargetProperty="Background.Color" From="{StaticResource DataGridItemSelectedBackgroundColor}" To="Transparent" >
-                                                <ColorAnimation.EasingFunction>
-                                                    <CircleEase EasingMode="EaseOut"/>
-                                                </ColorAnimation.EasingFunction>
-                                            </ColorAnimation>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </MultiTrigger.EnterActions>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="Selector.IsSelectionActive" Value="False"/>
-                                    <Condition Property="IsSelected" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource DataGridItemSelectedBackgroundColorBrush}"/>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="Selector.IsSelectionActive" Value="True"/>
-                                    <Condition Property="IsSelected" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource DataGridItemSelectedBackgroundColorBrush}"/>
-                            </MultiTrigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+        <!--USB未连接图标-->
+        <Style TargetType="Path" x:Key="DeviceNotConnectedPathStyle" BasedOn="{StaticResource MainStatusBarIcoPathStyle}">
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Setter Property="Data" Value="{StaticResource Icon_UsbDisConnected}" />
+            <Setter Property="Fill" Value="{StaticResource ButtonMainColorBrush}" />
+            <Setter Property="Width" Value="50" />
+            <Setter Property="Height" Value="50" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Step}" Value="0">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
-
-        <!--图片同步列表交互模板(移动端)-->
-        <Style TargetType="{x:Type ListViewItem}" x:Key="DeviceSyncListMobileViewItemControlStyle">
-            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="Margin" Value="0 0 3 5"/>
-            <Setter Property="Padding" Value="0 0 0 0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0 0 0 0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ListViewItem}">
-                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="Transparent" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true" CornerRadius="1" Margin="{TemplateBinding Margin}">
-                            <!--<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>-->
-                            <StackPanel 
-                                Orientation="Vertical"  
-                                Height="120" 
-                                Width="100" 
-                                MouseRightButtonDown="ImgItemRightClick"
-                                MouseLeftButtonUp="ImgItemLeftClick"
-                                KeyDown="SubItemOnKeyDown">
-                                <Grid>
-                                    <Border CornerRadius="3" Width="100" Height="100">
-                                        <Border.Background>
-                                            <ImageBrush ImageSource="{Binding BitImg}" Stretch="UniformToFill"/>
-                                        </Border.Background>
-                                    </Border>
-                                    <Border Width="45" Height="45" Margin="55 55 0 0" ClipToBounds="True">
-                                        <Border Background="{StaticResource FooterBarColorBrush}" Width="90" Height="90" Margin="-8 -8 0 0">
-                                            <Border.LayoutTransform>
-                                                <RotateTransform Angle="45" />
-                                            </Border.LayoutTransform>
-                                            <Path Data="{DynamicResource Icon_MobilePhone}" Style="{StaticResource MainStatusBarIcoPathStyle}" Width="24" Height="24" Margin="-63 -7 0 0">
-                                                <Path.LayoutTransform>
-                                                    <RotateTransform Angle="-45" />
-                                                </Path.LayoutTransform>
-                                            </Path>
-                                        </Border>
-                                    </Border>
-                                </Grid>
-                                <Label Content="{Binding NameView}" Height="20" Width="100" Margin="0 2 0 0" Padding="0"></Label>
-                            </StackPanel>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsMouseOver" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource WhiteBgHoverColorBrush}"/>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsMouseOver" Value="False" />
-                                    <Condition Property="IsSelected" Value="False" />
-                                </MultiTrigger.Conditions>
-                                <!--鼠标移除非选中的ListViewItem播放背景色动画-->
-                                <MultiTrigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <ColorAnimation Duration="0:0:0.4" Storyboard.TargetName="Bd" Storyboard.TargetProperty="Background.Color" From="{StaticResource DataGridItemSelectedBackgroundColor}" To="Transparent" >
-                                                <ColorAnimation.EasingFunction>
-                                                    <CircleEase EasingMode="EaseOut"/>
-                                                </ColorAnimation.EasingFunction>
-                                            </ColorAnimation>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </MultiTrigger.EnterActions>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="Selector.IsSelectionActive" Value="False"/>
-                                    <Condition Property="IsSelected" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource DataGridItemSelectedBackgroundColorBrush}"/>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="Selector.IsSelectionActive" Value="True"/>
-                                    <Condition Property="IsSelected" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource DataGridItemSelectedBackgroundColorBrush}"/>
-                            </MultiTrigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+        <!--设备选择板块-->
+        <Style TargetType="StackPanel" x:Key="DeviceSelectStackPanelStyle">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Step}" Value="1">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
-
-        <!--移动端设备同步交互模板-->
-        <Style TargetType="{x:Type ListViewItem}" x:Key="DeviceSyncListViewItemContainerStyle">
-            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="Margin" Value="0 0 0 5" />
-            <Setter Property="Padding" Value="0 0 0 0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="#BBd9d9d9"/>
-            <Setter Property="BorderThickness" Value="0 0 0 1"/>
-            <Setter Property="Template">
+        <!--同步列表板块-->
+        <Style TargetType="ItemsControl" x:Key="FileItemsCompareItemsControlStyle">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Setter Property="Margin" Value="0 0 5 0" />
+            <Setter Property="ItemsPanel">
                 <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ListViewItem}">
-                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
-                            <StackPanel Orientation="Vertical">
-                                <DockPanel LastChildFill="False" Margin="0 0 0 5">
-                                    <Path MouseLeftButtonDown="OnOpenFolderClick"  Style="{StaticResource DeviceSyncOpenFolderIcoStyle}" DockPanel.Dock="Left" Margin="0 0 0 0"/>
-                                    <Label DockPanel.Dock="Left" Content="{Binding PcFolderNameView}" FontSize="15" FontWeight="Bold" Foreground="#FF252525" Margin="0 0 0 0"/>
-                                    <Button DockPanel.Dock="Right" Style="{StaticResource AddButtonStyle}" Click="OnSyncButtonClick" Height="30" Width="80">
-                                        <WrapPanel>
-                                            <Path Style="{StaticResource RefreshPathIcoStyle}" Width="11" Height="11"/>
-                                            <TextBlock Text="{x:Static res:Resources.S_Sync}" Margin="5 0 0 0" />
-                                        </WrapPanel>
-                                    </Button>
-                                </DockPanel>
-                                <ListView 
-                                    Style="{StaticResource DeviceSyncInnerListView}"
-                                    ItemsSource="{Binding PcItemList}" 
-                                    PreviewMouseWheel="PreviewMouseWheel" 
-                                    ItemContainerStyle="{StaticResource DeviceSyncListViewItemControlStyle}"
-                                    KeyDown="SubItemOnKeyDown">
-                                    <ListView.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel Orientation="Horizontal"></WrapPanel>
-                                        </ItemsPanelTemplate>
-                                    </ListView.ItemsPanel>
-                                </ListView>
-                                <ListView 
-                                Style="{DynamicResource DeviceSyncInnerListView}" 
-                                ItemsSource="{Binding MobileItemList}" 
-                                PreviewMouseWheel="PreviewMouseWheel" 
-                                ItemContainerStyle="{StaticResource DeviceSyncListMobileViewItemControlStyle}"
-                                KeyDown="SubItemOnKeyDown">
-                                    <ListView.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel Orientation="Horizontal"></WrapPanel>
-                                        </ItemsPanelTemplate>
-                                    </ListView.ItemsPanel>
-                                </ListView>
-                            </StackPanel>
-                        </Border>
-                    </ControlTemplate>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
                 </Setter.Value>
             </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Step}" Value="2">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <!--状态栏按钮-->
+        <Style TargetType="Button" x:Key="PathSettingButtonStyle" BasedOn="{StaticResource NoneStyleButtonStyle}">
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="Margin" Value="0 0 5 0" />
+        </Style>
+        <!--路径设置按钮-->
+        <Style TargetType="Button" x:Key="OpenPathSettingButtonStyle" BasedOn="{StaticResource RefreshFloatButtonStyle}">
+            <Setter Property="Margin" Value="0 0 5 70" />
         </Style>
     </Page.Resources>
 
+
     <Grid>
-        <Border Style="{StaticResource PageContainerBorderStyle}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <!--主内容Frame-->
-                <ListView 
-                Visibility="Collapsed"
-                x:Name="DeviceSyncListView" 
-                Grid.Row="1" 
-                ItemContainerStyle="{StaticResource DeviceSyncListViewItemContainerStyle}" 
-                Template="{StaticResource DeviceSyncListViewTemplate}" 
-                Background="Transparent"/>
-                <TextBlock Text="{x:Static res:Resources.S_NoConnectedDevice}" VerticalAlignment="Center" HorizontalAlignment="Center" Name="DefaultHintText" FontSize="16" Foreground="#FF363636" Visibility="Collapsed"/>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="DeviceChoosePanel" Visibility="Collapsed">
-                    <ComboBox Width="140" 
-                          x:Name="DeviceListCombobox"
-                          Style="{DynamicResource ComboBoxCommonStyle}" 
-                          SelectionChanged="ComboBoxDeviceSelectionChanged" 
+        <Grid.DataContext>
+            <Binding Path="DeviceSync" Source="{StaticResource Locator}"></Binding>
+        </Grid.DataContext>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="20" />
+        </Grid.RowDefinitions>
+        <Border 
+            Grid.Column="0" Grid.Row="0"
+            Style="{StaticResource PageContainerBorderStyle}" d:DataContext="{d:DesignInstance {x:Type dv:DeviceSyncDesignViewModel}, IsDesignTimeCreatable=True}">
+                <ScrollViewer VerticalScrollBarVisibility="Visible" 
+                            VirtualizingPanel.IsVirtualizing="True"
+                            CanContentScroll="True"
+                            Template="{StaticResource BaseScrollViewerControlTemplate}">
+                    <ItemsControl ItemsSource="{Binding ListData, IsAsync=True}" Grid.Row="1" Style="{StaticResource FileItemsCompareItemsControlStyle}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <lc:FileItemCompareControl Margin="0 0 0 5"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+        </Border>
+        <Path Style="{StaticResource DeviceNotConnectedPathStyle}" Grid.Column="0" Grid.Row="0"/>
+        <StackPanel Style="{StaticResource DeviceSelectStackPanelStyle}" Grid.Column="0" Grid.Row="0">
+            <ComboBox Width="140" 
+                              ItemsSource="{Binding DeviceListData}"
+                              SelectedItem="{Binding SelectedDevice}"
+                          Style="{StaticResource ComboBoxCommonStyle}" 
                           DisplayMemberPath="FriendlyName"
                           SelectedValuePath="DeviceId"
-                          ItemContainerStyle="{DynamicResource ComboBoxItemCommonStyle}">
-                    </ComboBox>
-                    <ComboBox Width="140" 
+                          ItemContainerStyle="{StaticResource ComboBoxItemCommonStyle}">
+            </ComboBox>
+            <ComboBox Width="140" 
                           Margin="10 0 0 0"
-                          x:Name="DriverListCombobox"
-                          Style="{DynamicResource ComboBoxCommonStyle}" 
-                          SelectionChanged="ComboBoxDriverSelectionChanged" 
+                              ItemsSource="{Binding DriverListData}"
+                              SelectedItem="{Binding SelectedDriver}"
+                          Style="{StaticResource ComboBoxCommonStyle}" 
                           DisplayMemberPath="NameView"
                           SelectedValuePath="ValueView"
-                          ItemContainerStyle="{DynamicResource ComboBoxItemCommonStyle}">
-                    </ComboBox>
-                </StackPanel>
-            </Grid>
-        </Border>
+                          ItemContainerStyle="{StaticResource ComboBoxItemCommonStyle}">
+            </ComboBox>
+        </StackPanel>
+        <Grid Grid.Row="1" Grid.Column="0">
+            <ProgressBar Style="{StaticResource ProgressBarBaseStyle}" Value="100" lc:ProgressAnimater.AnimateValue="{Binding ProgressValue}"/>
+            <TextBlock Text="{Binding ProgressText}" Style="{StaticResource MainWindowStatusBarTextBlock}" />
+            <!--停止按钮-->
+            <Button Command="{Binding OnSyncStopComand}" 
+                Style="{StaticResource PathSettingButtonStyle}" ToolTip="停止同步" 
+                Visibility="{Binding IsFileSyncing, Converter={bizc:BooleanToVisiblityConverter}, ConverterParameter=True}">
+                <Path Width="11" Height="11" Data="{StaticResource Icon_Stop}" Style="{StaticResource MainStatusBarIcoPathStyle}"/>
+            </Button>
+        </Grid>
+        <!--设置配置路径按钮-->
+        <Button Style="{StaticResource OpenPathSettingButtonStyle}" Click="OnPathConfigSettingClick"  ToolTip="{x:Static res:Resources.S_SyncPathConfig}">
+            <Path Width="25" Height="25" Data="{StaticResource Icon_Setting}" Style="{StaticResource MainStatusBarIcoPathStyle}"/>
+        </Button>
         <!--刷新按钮-->
-        <Button Style="{StaticResource RefreshFloatButtonStyle}" 
-                Click="OnRefreshButtonClick">
+        <Button Style="{StaticResource RefreshFloatButtonStyle}" Command="{Binding OnReloadCommand}" ToolTip="重新读取文件列表">
             <Path Style="{StaticResource RefreshPathIcoStyle}"/>
         </Button>
     </Grid>

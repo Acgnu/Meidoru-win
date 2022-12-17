@@ -92,7 +92,17 @@ namespace AcgnuX.Controls
                 {
                     return null;
                 }
-                return ImageUtil.GetBitmapImage(byteArray.Data);
+                BitmapImage readedSource = null;
+                try
+                {
+                    readedSource = ImageUtil.GetBitmapImage(byteArray.Data);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("字节数组转BitmapImage异常");
+                    Console.WriteLine(ex);
+                }
+                return readedSource;
             });
         }
     }

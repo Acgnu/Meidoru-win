@@ -53,6 +53,18 @@
                         <Trigger Property="IsIndeterminate" Value="true">
                             <Setter Property="Visibility" TargetName="Indicator" Value="Collapsed"/>
                         </Trigger>
+                        <DataTrigger Binding="{Binding ProgressAlertLevel}" Value="RUN">
+                            <Setter Property="Foreground" Value="ForestGreen" />
+                        </DataTrigger>
+                        <!--<DataTrigger Binding="{Binding AlertLevel}" Value="INFO">
+                            <Setter Property="Foreground" Value="" />
+                        </DataTrigger>-->
+                        <DataTrigger Binding="{Binding ProgressAlertLevel}" Value="WARN">
+                            <Setter Property="Foreground" Value="Orange" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ProgressAlertLevel}" Value="ERROR">
+                            <Setter Property="Foreground" Value="Red" />
+                        </DataTrigger>
                         <!--<Trigger Property="IsIndeterminate" Value="false">
                                 <Setter Property="Background" TargetName="Animation" Value="Transparent"/>
                             </Trigger>-->

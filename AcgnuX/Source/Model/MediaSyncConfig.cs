@@ -10,7 +10,7 @@ namespace AcgnuX.Source.Model
     /// <summary>
     /// 指定需要同步的路径对应关系
     /// </summary>
-    public class MediaSyncConfig : ViewModelBase
+    public class MediaSyncConfig
     {
         /// <summary>
         /// ID
@@ -27,6 +27,6 @@ namespace AcgnuX.Source.Model
         /// <summary>
         /// 是否启用 1 是 0 否
         /// </summary>
-        public byte Enable { get; set; }
+        public bool Enable { get; set; }
     }
 }

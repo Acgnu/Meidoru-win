@@ -32,6 +32,11 @@ namespace AcgnuX.Utils
             //return enumName;
         }
 
+        public static int GetValue()
+        {
+            return 0;
+        }
+
         /// <summary>
         /// 根据枚举值获得枚举
         /// </summary>

@@ -48,6 +48,8 @@ namespace AcgnuX.Source.ViewModel
             SimpleIoc.Default.Register<Tan8PlayerViewModel>();
             SimpleIoc.Default.Register<SettingsViewModel>();
             SimpleIoc.Default.Register<Tan8SheetReponsitoryViewModel>();
+            SimpleIoc.Default.Register<DeviceSyncViewModel>();
+            SimpleIoc.Default.Register<DeviceSyncPathConfigDialogViewModel>();
         }
 
         public MainWindowViewModel Main { get { return ServiceLocator.Current.GetInstance<MainWindowViewModel>(); } }
@@ -63,6 +65,10 @@ namespace AcgnuX.Source.ViewModel
         public Tan8PlayerViewModel Tan8Player { get { return ServiceLocator.Current.GetInstance<Tan8PlayerViewModel>(); } }
 
         public SettingsViewModel SettingsMajor { get { return ServiceLocator.Current.GetInstance<SettingsViewModel>(); } }
+
+        public DeviceSyncViewModel DeviceSync { get { return ServiceLocator.Current.GetInstance<DeviceSyncViewModel>(); } }
+
+        public DeviceSyncPathConfigDialogViewModel DeviceSyncPathConfig { get { return ServiceLocator.Current.GetInstance<DeviceSyncPathConfigDialogViewModel>(); } }
 
         public static void Cleanup()
         {
