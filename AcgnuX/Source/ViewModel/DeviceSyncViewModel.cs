@@ -417,11 +417,9 @@ namespace AcgnuX.Source.ViewModel
         private FileItemViewModel CreateSyncItem(string fileName, string folderPath, SyncDeviceType source, MediaDevice device, string driverName)
         {
             //判断文件是否存在于设备
-            var item = new FileItemViewModel()
+            var item = new FileItemViewModel
             {
                 Name = fileName,
-                SourceView = source,
-                FolderView = folderPath,
                 DeviceSyncViewModel = this
             };
             var mediaType = FileUtil.GetMediaTypeByName(fileName);
@@ -512,8 +510,16 @@ namespace AcgnuX.Source.ViewModel
             if (null == listItem)
             {
                 //没有则新建一个项
-                var listItemPcFileList = new FileItemsListViewModel();
-                var listItemMoblieFileList = new FileItemsListViewModel();
+                var listItemPcFileList = new FileItemsListViewModel
+                {
+                    SyncDeviceType = SyncDeviceType.PC,
+                    FolderPath = newItem.PcFolderNameView
+                };
+                var listItemMoblieFileList = new FileItemsListViewModel
+                {
+                    SyncDeviceType = SyncDeviceType.PHONE,
+                    FolderPath = newItem.MobileFolderNameView
+                };
                 AddFolderListFileItem(listItemPcFileList, listItemMoblieFileList, newItem);
                 ListData.Add(new FileItemsCompareViewModel
                 {
@@ -747,7 +753,7 @@ namespace AcgnuX.Source.ViewModel
         /// <param name="e"></param>
         private void DoSyncFileTask(object sender, DoWorkEventArgs e)
         {
-            int totalProgress = 0;
+            //int totalProgress = 0;
             var progressMessage = new BubbleTipViewModel()
             {
                 AlertLevel = AlertLevel.RUN
@@ -759,11 +765,8 @@ namespace AcgnuX.Source.ViewModel
             var maxedQueueCount = mSyncTaskQueue.Count;
             while (mSyncTaskQueue.Count > 0)
             {
-                var arg = new DeviceSyncTaskArgs();
-                var isPick = mSyncTaskQueue.TryDequeue(out arg);
+                var isPick = mSyncTaskQueue.TryDequeue(out DeviceSyncTaskArgs arg);
                 if (!isPick) continue;
-                //每个队列的分片进度
-                double eachBaseProgress = 0;
                 //筛选WPD设备
                 using (var device = SelectedDevice)
                 {
@@ -775,57 +778,69 @@ namespace AcgnuX.Source.ViewModel
                     if (!device.DirectoryExists(targetMobileFolder)) device.CreateDirectory(targetMobileFolder);
 
                     //将两端的文件合并到一个集合
-                    var allItems = arg.Item.PcFileItems.FileItems.ToList();
-                    allItems.AddRange(arg.Item.MobileFileItems.FileItems.ToList());
+                    //var allItems = arg.Item.PcFileItems.FileItems.ToList();
+                    //allItems.AddRange(arg.Item.MobileFileItems.FileItems.ToList());
                     var fileCounter = 1;
-                    allItems.ForEach((syncFile) => {
-                        //检查任务是否取消
-                        if (mSyncFileBgWorker.CancellationPending)
+                    var allFileCount = arg.Item.PcFileItems.FileItems.Count + arg.Item.MobileFileItems.FileItems.Count;
+                    FileItemsListViewModel[] twoClientFileListArray = new FileItemsListViewModel[]
+                    {
+                        arg.Item.PcFileItems,
+                        arg.Item.MobileFileItems
+                    };
+                    foreach (FileItemsListViewModel lv in twoClientFileListArray)
+                    {
+                        var lvFileItems = lv.FileItems.ToList();
+                        foreach (var syncFile in lvFileItems)
                         {
-                            isTaskStop = true;
-                            return;
-                        }
-                        //如果队列数量增大超过初始量, 记录一个最大数量
-                        if (mSyncTaskQueue.Count + 1 > maxedQueueCount)
-                            maxedQueueCount = mSyncTaskQueue.Count + 1;
-                        //当前队列数量=此队列拥有过的最大数量
-                        var curQueueCount = maxedQueueCount;
-                        //计算每个队列的分片进度
-                        eachBaseProgress = 100 / curQueueCount;
-                        //每个队列的基础进度, 从0开始, 以分片进度递增
-                        double baseProgress = 100 - (mSyncTaskQueue.Count + 1) * eachBaseProgress;
-                        //计算每个文件的分片进度
-                        double eachFileProgress = eachBaseProgress / allItems.Count;
-                        //文件的执行进度, 从0开始递增
-                        double fileProgress = eachFileProgress * fileCounter - eachFileProgress;
-                        //总进度 = 基础进度 + 文件进度
-                        progressMessage.Text = string.Format("主任务 [{0}/{1}], 子任务 [{2}/{3}], 正在复制 [ {4} ]", curTaskNo, curQueueCount, fileCounter, allItems.Count, syncFile.Name);
-                        arg.ProgressMessage = progressMessage;
-                        arg.ProgressType = SyncTaskProgressType.SUB_ITEM_FINISH;
-                        mSyncFileBgWorker.ReportProgress(Convert.ToInt32(baseProgress + fileProgress), arg);
-                        //执行同步
-                        Thread.Sleep(1000);
-                        if (syncFile.SourceView == SyncDeviceType.PC)
-                        {
-                            //电脑端, 需要复制到移动端
-                            var targetFolder = Path.Combine(SelectedDriver.ValueView, arg.Item.MobileFolderPath);
-                            using (FileStream stream = System.IO.File.OpenRead(Path.Combine(arg.Item.PcFolderPath, syncFile.Name)))
+                            //检查任务是否取消
+                            if (mSyncFileBgWorker.CancellationPending)
                             {
-                                device.UploadFile(stream, Path.Combine(targetFolder, syncFile.Name));
+                                isTaskStop = true;
+                                return;
                             }
+                            //如果队列数量增大超过初始量, 记录一个最大数量
+                            if (mSyncTaskQueue.Count + 1 > maxedQueueCount)
+                                maxedQueueCount = mSyncTaskQueue.Count + 1;
+                            //当前队列数量=此队列拥有过的最大数量
+                            var curQueueCount = maxedQueueCount;
+                            //每个队列的分片进度
+                            //计算每个队列的分片进度
+                            double eachBaseProgress = 100 / curQueueCount;
+                            //每个队列的基础进度, 从0开始, 以分片进度递增
+                            double baseProgress = 100 - (mSyncTaskQueue.Count + 1) * eachBaseProgress;
+                            //计算每个文件的分片进度
+                            double eachFileProgress = eachBaseProgress / allFileCount;
+                            //文件的执行进度, 从0开始递增
+                            double fileProgress = eachFileProgress * fileCounter - eachFileProgress;
+                            //总进度 = 基础进度 + 文件进度
+                            progressMessage.Text = string.Format("主任务 [{0}/{1}], 子任务 [{2}/{3}], 正在复制 [ {4} ]", curTaskNo, curQueueCount, fileCounter, allFileCount, syncFile.Name);
+                            arg.ProgressMessage = progressMessage;
+                            arg.ProgressType = SyncTaskProgressType.SUB_ITEM_FINISH;
+                            mSyncFileBgWorker.ReportProgress(Convert.ToInt32(baseProgress + fileProgress), arg);
+                            //Thread.Sleep(1000); 
+                            //执行同步
+                            if (lv.SyncDeviceType == SyncDeviceType.PC)
+                            {
+                                //电脑端, 需要复制到移动端
+                                var targetFolder = Path.Combine(SelectedDriver.ValueView, arg.Item.MobileFolderPath);
+                                using (FileStream stream = System.IO.File.OpenRead(Path.Combine(arg.Item.PcFolderPath, syncFile.Name)))
+                                {
+                                    device.UploadFile(stream, Path.Combine(targetFolder, syncFile.Name));
+                                }
+                            }
+                            else
+                            {
+                                MediaFileInfo fileInfo = device.GetFileInfo(Path.Combine(SelectedDriver.ValueView, arg.Item.MobileFolderPath, syncFile.Name));
+                                fileInfo.CopyTo(Path.Combine(arg.Item.PcFolderPath, syncFile.Name));
+                            }
+                            fileProgress = eachFileProgress * fileCounter;
+                            progressMessage.Text = string.Format("主任务 [{0}/{1}], 子任务 [{2}/{3}], 正在复制 [ {4} ]", curTaskNo, curQueueCount, fileCounter, allFileCount, syncFile.Name);
+                            arg.Source = lv.SyncDeviceType;
+                            arg.DeviceSyncItem = syncFile;
+                            mSyncFileBgWorker.ReportProgress(Convert.ToInt32(baseProgress + fileProgress), arg);
+                            fileCounter++;
                         }
-                        else
-                        {
-                            MediaFileInfo fileInfo = device.GetFileInfo(Path.Combine(SelectedDriver.ValueView, arg.Item.MobileFolderPath, syncFile.Name));
-                            fileInfo.CopyTo(Path.Combine(arg.Item.PcFolderPath, syncFile.Name));
-                        }
-                        fileProgress = eachFileProgress * fileCounter;
-                        progressMessage.Text = string.Format("主任务 [{0}/{1}], 子任务 [{2}/{3}], 正在复制 [ {4} ]", curTaskNo, curQueueCount, fileCounter, allItems.Count, syncFile.Name);
-                        arg.Source = syncFile.SourceView;
-                        arg.DeviceSyncItem = syncFile;
-                        mSyncFileBgWorker.ReportProgress(Convert.ToInt32(baseProgress + fileProgress), arg);
-                        fileCounter++;
-                    });
+                    }
                     device.Disconnect();
                 }
                 arg.IsOk = !isTaskStop;
@@ -833,8 +848,8 @@ namespace AcgnuX.Source.ViewModel
                 if (!isTaskStop)
                 {
                     //一个队列执行完之后, 发送当前队列进度
-                    progressMessage.Text = string.Format("主任务 [{0}/{1}]同步完成", curTaskNo, maxedQueueCount);
-                    mSyncFileBgWorker.ReportProgress(totalProgress, arg);
+                    //progressMessage.Text = string.Format("主任务 [{0}/{1}]同步完成", curTaskNo, maxedQueueCount);
+                    mSyncFileBgWorker.ReportProgress(0, arg);
                     curTaskNo++;
                 }
                 else
@@ -859,6 +874,7 @@ namespace AcgnuX.Source.ViewModel
                     arg.Item.PcFileItems.FileItems.Remove(arg.DeviceSyncItem);
                 else
                     arg.Item.MobileFileItems.FileItems.Remove(arg.DeviceSyncItem);
+                SetProgress(e.ProgressPercentage, arg.ProgressMessage);
             }
             else
             {
@@ -866,7 +882,6 @@ namespace AcgnuX.Source.ViewModel
                     ListData.Remove(arg.Item);
                 arg.Item.IsBusy = false;
             }
-            SetProgress(e.ProgressPercentage, arg.ProgressMessage);
         }
 
         /// <summary>

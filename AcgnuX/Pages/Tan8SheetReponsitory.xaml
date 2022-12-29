@@ -34,13 +34,6 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <Style TargetType="Path" x:Key="NoDataPathStyle">
-            <Setter Property="Fill" Value="White" />
-            <Setter Property="Height" Value="100" />
-            <Setter Property="Width" Value="100" />
-            <Setter Property="Visibility" Value="{Binding IsEmpty, Converter={bizc:BooleanToVisiblityConverter}, ConverterParameter=True}" />
-            <Setter Property="Data" Value="{StaticResource Icon_EmptySearchResult}" />
-        </Style>
         <Style TargetType="ListBox" x:Key="DataListStyle">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsEmpty}" Value="True">
@@ -87,7 +80,9 @@
                     </TextBox>
                 </DockPanel>
                 <!--默认的打开播放器按钮-->
-                <Path Grid.Row="1" Style="{StaticResource NoDataPathStyle}"/>
+                <Path Grid.Row="1" Style="{StaticResource EmptyDataIndicatorStyle}" 
+                      Data="{StaticResource Icon_EmptySearchResult}"
+                      Visibility="{Binding IsEmpty, Converter={bizc:BooleanToVisiblityConverter}, ConverterParameter=True}"/>
                 <!--ListBox-->
                 <ListBox ItemsSource="{Binding ListData}"
                          SelectedItem="{Binding SelectedListData}"

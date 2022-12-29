@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight;
+﻿using AcgnuX.Source.Bussiness;
+using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,6 +14,10 @@ namespace AcgnuX.Source.ViewModel
     /// </summary>
     public class FileItemsListViewModel : ViewModelBase
     {
+        //目标设备
+        public SyncDeviceType SyncDeviceType { get; set; }
+        //路径
+        public string FolderPath { get; set; }
         //文件
         public ObservableCollection<FileItemViewModel> FileItems { get; set; } = new ObservableCollection<FileItemViewModel>();
 

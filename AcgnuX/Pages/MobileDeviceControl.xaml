@@ -14,12 +14,9 @@
 
     <Page.Resources>
         <!--USB未连接图标-->
-        <Style TargetType="Path" x:Key="DeviceNotConnectedPathStyle" BasedOn="{StaticResource MainStatusBarIcoPathStyle}">
+        <Style TargetType="Path" x:Key="DeviceNotConnectedPathStyle" BasedOn="{StaticResource EmptyDataIndicatorStyle}">
             <Setter Property="Visibility" Value="Collapsed"/>
             <Setter Property="Data" Value="{StaticResource Icon_UsbDisConnected}" />
-            <Setter Property="Fill" Value="{StaticResource ButtonMainColorBrush}" />
-            <Setter Property="Width" Value="50" />
-            <Setter Property="Height" Value="50" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Step}" Value="0">
                     <Setter Property="Visibility" Value="Visible" />

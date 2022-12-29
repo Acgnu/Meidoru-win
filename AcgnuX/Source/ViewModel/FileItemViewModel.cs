@@ -26,14 +26,14 @@ namespace AcgnuX.Source.ViewModel
         //文件名
         public string Name { get; set; }
         //在视图中显示的名称
-        public string ViewName 
-        { 
-            get
-            {
-                if (Name.Length > 20) return Name.Substring(0, 20);
-                return Name;
-            }
-        }
+        //public string ViewName 
+        //{ 
+        //    get
+        //    {
+        //        if (Name.Length > 20) return Name.Substring(0, 20);
+        //        return Name;
+        //    }
+        //}
         /// 文件类型
         public SyncContentType ContentType;
         //预览图
@@ -46,18 +46,8 @@ namespace AcgnuX.Source.ViewModel
                 return (int)ContentType;
             }
         }
-
-
-        /// 文件归属文件夹
-        public string FolderView { get; set; }
-        /// 文件来源 1 PC, 2 手机
-        public SyncDeviceType SourceView { get; set; }
-        /// 文件预览图
-        //public Bitmap BitImg { get; set; }
-        public BitmapImage BitImg { get; set; }
         /// 表示文件是否正在复制, 防止重复点击
         public bool IsCopying = false;
-
 
 
         //项目左键点击命令
@@ -81,8 +71,6 @@ namespace AcgnuX.Source.ViewModel
             ItemDeleteKeyCommand = new RelayCommand(SubItemOnKeyDown);
             //ItemDoubleClickCommand = new RelayCommand(() => { });
         }
-
-
 
         /// <summary>
         /// 具体同步项右击事件, 移除项目
@@ -113,10 +101,10 @@ namespace AcgnuX.Source.ViewModel
             //var subListView = XamlUtil.GetParentListView(e);
             ////根据触发按钮获取点击的行
             //var selected = (DeviceSyncItem)((ListViewItem)subListView.ContainerFromElement(sender as StackPanel)).Content;
-            if (SourceView == SyncDeviceType.PC)
+            if (FileItemsListViewModel.SyncDeviceType == SyncDeviceType.PC)
             {
                 //如果文件存在于PC, 则打开文件
-                System.Diagnostics.Process.Start(Path.Combine(FolderView, Name));
+                System.Diagnostics.Process.Start(Path.Combine(FileItemsListViewModel.FolderPath, Name));
             }
             else
             {
@@ -153,7 +141,7 @@ namespace AcgnuX.Source.ViewModel
                 using (var device = DeviceSyncViewModel.SelectedDevice)
                 {
                     device.Connect();
-                    var filePath = Path.Combine(DeviceSyncViewModel.SelectedDriver.ValueView, FolderView, Name);
+                    var filePath = Path.Combine(DeviceSyncViewModel.SelectedDriver.ValueView, FileItemsListViewModel.FolderPath, Name);
                     MediaFileInfo fileInfo = device.GetFileInfo(filePath);
                     fileInfo.CopyTo(targetFullPath);
                     device.Disconnect();
@@ -177,7 +165,7 @@ namespace AcgnuX.Source.ViewModel
         {
             var selectedDevice = DeviceSyncViewModel.SelectedDevice;
             var selectedDriver = DeviceSyncViewModel.SelectedDriver;
-            if (SourceView == SyncDeviceType.PHONE && (null == selectedDevice || null == selectedDriver))
+            if (FileItemsListViewModel.SyncDeviceType== SyncDeviceType.PHONE && (null == selectedDevice || null == selectedDriver))
                 return;
 
             //var confirmDialog = new ConfirmDialog(AlertLevel.WARN, string.Format(Properties.Resources.S_DeleteConfirm, Name));
@@ -185,9 +173,9 @@ namespace AcgnuX.Source.ViewModel
             //if (confirmDialog.ShowDialog().GetValueOrDefault())
             //{
             //从电脑删除
-            if (SourceView == SyncDeviceType.PC)
+            if (FileItemsListViewModel.SyncDeviceType == SyncDeviceType.PC)
             {
-                FileUtil.DeleteFile(Path.Combine(FolderView, Name));
+                FileUtil.DeleteFile(Path.Combine(FileItemsListViewModel.FolderPath, Name));
                 Messenger.Default.Send(new BubbleTipViewModel
                 {
                     Text = string.Format("文件[{0}]已删除", Name),
@@ -205,7 +193,7 @@ namespace AcgnuX.Source.ViewModel
                         {
                             selectedDevice.Connect();
                         }
-                        var targetFile = Path.Combine(selectedDriver.ValueView, FolderView, Name);
+                        var targetFile = Path.Combine(selectedDriver.ValueView, FileItemsListViewModel.FolderPath, Name);
                         if (selectedDevice.FileExists(targetFile))
                         {
                             selectedDevice.DeleteFile(targetFile);

@@ -234,6 +234,7 @@
       <DependentUpon>Index.xaml</DependentUpon>
     </Compile>
     <Compile Include="Source\Model\Tan8SheetCrawlArg.cs" />
+    <Compile Include="Source\ViewModel\ContactManageViewModel.cs" />
     <Compile Include="Source\ViewModel\Design\BubbleTipDesignModel.cs" />
     <Compile Include="Source\ViewModel\Design\BubbleTipViwerDesignModel.cs" />
     <Compile Include="Source\ViewModel\Design\ContactListDesignModel.cs" />
@@ -444,10 +445,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Styles\BorderStyle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Styles\DockPanelStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

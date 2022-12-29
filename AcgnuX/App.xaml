@@ -8,6 +8,11 @@
              xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006">
     <Application.Resources>
         <ResourceDictionary>
+            <!--零散的基础部分-->
+            <Style TargetType="DockPanel" x:Key="FormDockBaseStyle">
+                <Setter Property="Height" Value="40" />
+            </Style>
+            
             <ResourceDictionary.MergedDictionaries>
                 <!--有现后顺序-->
                 <ResourceDictionary Source="/Styles/Color.xaml" />
@@ -25,7 +30,6 @@
                 <ResourceDictionary Source="/Styles/ImageStyle.xaml" />
                 <ResourceDictionary Source="/Styles/ButtonStyle.xaml" />
                 <ResourceDictionary Source="/Styles/TextBlockStyle.xaml" />
-                <ResourceDictionary Source="/Styles/DockPanelStyle.xaml" />
                 <ResourceDictionary Source="/Styles/ProgressBarStyle.xaml" />
                 <ResourceDictionary Source="/Styles/ScrollBarStyle.xaml" />
                 <ResourceDictionary Source="/Styles/ListViewStyle.xaml" />

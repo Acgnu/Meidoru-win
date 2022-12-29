@@ -14,7 +14,14 @@
         <Setter Property="Stretch" Value="Uniform" />
         <Setter Property="Fill" Value="White" />
     </Style>
-    
+
+    <!--空数据指示器-->
+    <Style TargetType="Path" x:Key="EmptyDataIndicatorStyle" BasedOn="{StaticResource MainStatusBarIcoPathStyle}">
+        <Setter Property="Fill" Value="{StaticResource ButtonMainColorBrush}" />
+        <Setter Property="Height" Value="50" />
+        <Setter Property="Width" Value="50" />
+    </Style>
+
     <!-- 曲谱页默认播放按钮 -->
     <Style TargetType="Path" x:Key="PianoScoreDefaultPlayButtonIcoPath" BasedOn="{StaticResource MainStatusBarIcoPathStyle}">
         <Setter Property="Width" Value="12" />

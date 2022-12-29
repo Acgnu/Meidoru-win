@@ -21,9 +21,9 @@ namespace AcgnuX.Source.ViewModel
         //移动端目录路径
         public string MobileFolderPath { get; set; }
         //电脑端文件列表
-        public FileItemsListViewModel PcFileItems { get; set; } = new FileItemsListViewModel();
+        public FileItemsListViewModel PcFileItems { get; set; }
         //移动端文件列表
-        public FileItemsListViewModel MobileFileItems { get; set; } = new FileItemsListViewModel();
+        public FileItemsListViewModel MobileFileItems { get; set; }
         //是否正在同步
         public bool _IsBusy;
         public bool IsBusy { get => _IsBusy; set { _IsBusy = value; RaisePropertyChanged(); } }

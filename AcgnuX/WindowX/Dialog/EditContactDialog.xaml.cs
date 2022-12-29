@@ -22,7 +22,7 @@ namespace AcgnuX.WindowX.Dialog
     /// 编辑账号的弹窗
     /// </summary>
     public partial class EditContactDialog : BaseDialog {
-        private ContactManage mContactManage;
+        private ContactManageViewModel _MngViewModel;
         /// <summary>
         /// 下拉框选项
         /// </summary>
@@ -31,7 +31,7 @@ namespace AcgnuX.WindowX.Dialog
         //视图对象
         public ContactItemViewModel ContactItem { get; set; }
 
-        public EditContactDialog(ContactItemViewModel contactItem, ContactManage contactManage)
+        public EditContactDialog(ContactItemViewModel contactItem, ContactManageViewModel mngVm)
         {
             InitializeComponent();
             var enumItems = Enums.GetMembers<ContactPlatform>();
@@ -47,11 +47,11 @@ namespace AcgnuX.WindowX.Dialog
                     selectedIndex = i;
             }
             DataContext = this;
-            mContactManage = contactManage;
+            _MngViewModel = mngVm;
             if (null != contactItem)
                 ContactItem = contactItem;
             else
-                ContactItem = new ContactItemViewModel(contactManage);
+                ContactItem = new ContactItemViewModel(_MngViewModel);
             ListBoxPlatform.SelectedIndex = selectedIndex;
         }
 
@@ -66,9 +66,9 @@ namespace AcgnuX.WindowX.Dialog
             button.IsEnabled = false;
             ManualTriggerSourceUpdate();
             ContactItem.Platform = (ContactPlatform) EnumLoader.GetByValue(typeof(ContactPlatform), ((ListBoxItem)ListBoxPlatform.SelectedItem).Content.ToString());
-            var r = mContactManage.SaveContact(ContactItem);
+            var r = _MngViewModel.SaveContact(ContactItem);
             button.IsEnabled = true;
-            if (!r.success)
+            if (!r)
             {
                 return;
             }

@@ -7,10 +7,14 @@
       xmlns:uc="clr-namespace:AcgnuX.Controls"
       xmlns:res="clr-namespace:AcgnuX.Properties"
       xmlns:lc="clr-namespace:AcgnuX.Controls"
+      xmlns:bizc="clr-namespace:AcgnuX.Source.Bussiness.Common"
       mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="800"
-      Title="Contact" Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
+      Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
 
-    <Grid>
+    <Grid x:Name="FramGrid">
+        <Grid.DataContext>
+            <Binding Path="ContactMng" Source="{StaticResource Locator}" />
+        </Grid.DataContext>
         <Border Style="{StaticResource PageContainerBorderStyle}">
             <Grid>
                 <Grid.RowDefinitions>
@@ -27,11 +31,18 @@
                             <TextBlock Text="{x:Static res:Resources.S_Add}" Margin="5 0 0 0" />
                         </WrapPanel>
                     </Button>
-                    <TextBox Style="{StaticResource TextBoxBase}" KeyUp="OnFilterBoxKeyDown" x:Name="FilterBox" />
+                    <TextBox Text="{Binding FilterText, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxBase}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding OnFilterInputCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
                 </DockPanel>
-                <uc:ContactListControl Margin="0,8,0,0" Grid.Column="0" Grid.Row="1" x:Name="ContactListControl"/>
+                        <uc:ContactListControl Margin="0,8,0,0" Grid.Column="0" Grid.Row="1" x:Name="ContactListControl" DataContext="{Binding ContactListData}"/>
+                <Path Grid.Row="1" Style="{StaticResource EmptyDataIndicatorStyle}" 
+                      Data="{StaticResource Icon_EmptySearchResult}"
+                      Visibility="{Binding IsEmpty, Converter={bizc:BooleanToVisiblityConverter}, ConverterParameter=True, FallbackValue=Hidden}"/>
             </Grid>
         </Border>
-        <lc:BusyIndicator x:Name="BusyIndicator" />
+        <lc:BusyIndicator x:Name="BusyIndicator" IsBusy="{Binding IsBusy}" />
     </Grid>
 </local:BasePage>

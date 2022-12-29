@@ -77,7 +77,7 @@ namespace AcgnuX.Source.ViewModel
             }
         }
 
-        private ContactManage mManagePage;
+        private ContactManageViewModel _MngViewModel;
 
         /// <summary>
         /// Opens the current message thread
@@ -93,12 +93,12 @@ namespace AcgnuX.Source.ViewModel
         /// <summary>
         /// Default constructor
         /// </summary>
-        public ContactItemViewModel(ContactManage managePage)
+        public ContactItemViewModel(ContactManageViewModel mngVm)
         {
             // Create commands
             OnEditCommand = new RelayCommand(OnEditItem);
             OnDeleteCommand = new RelayCommand(DeleteItem);
-            mManagePage = managePage;
+            _MngViewModel = mngVm;
         }
 
         #endregion
@@ -107,7 +107,7 @@ namespace AcgnuX.Source.ViewModel
 
         public void OnEditItem()
         {
-            new EditContactDialog(this, mManagePage).ShowDialog();
+            new EditContactDialog(this, _MngViewModel).ShowDialog();
         }
 
         public void DeleteItem()
@@ -116,7 +116,7 @@ namespace AcgnuX.Source.ViewModel
             var result = new ConfirmDialog(AlertLevel.WARN, string.Format(Properties.Resources.S_DeleteConfirm, Name)).ShowDialog();
             if (result.GetValueOrDefault())
             {
-                mManagePage.DeleteContact(this);
+                _MngViewModel.DeleteContact(this);
             }
         }
 

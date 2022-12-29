@@ -50,6 +50,7 @@ namespace AcgnuX.Source.ViewModel
             SimpleIoc.Default.Register<Tan8SheetReponsitoryViewModel>();
             SimpleIoc.Default.Register<DeviceSyncViewModel>();
             SimpleIoc.Default.Register<DeviceSyncPathConfigDialogViewModel>();
+            SimpleIoc.Default.Register<ContactManageViewModel>();
         }
 
         public MainWindowViewModel Main { get { return ServiceLocator.Current.GetInstance<MainWindowViewModel>(); } }
@@ -69,6 +70,8 @@ namespace AcgnuX.Source.ViewModel
         public DeviceSyncViewModel DeviceSync { get { return ServiceLocator.Current.GetInstance<DeviceSyncViewModel>(); } }
 
         public DeviceSyncPathConfigDialogViewModel DeviceSyncPathConfig { get { return ServiceLocator.Current.GetInstance<DeviceSyncPathConfigDialogViewModel>(); } }
+
+        public ContactManageViewModel ContactMng { get { return ServiceLocator.Current.GetInstance<ContactManageViewModel>(); } }
 
         public static void Cleanup()
         {
