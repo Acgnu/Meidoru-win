@@ -19,7 +19,8 @@
                 <ResourceDictionary Source="/Styles/Geometries.xaml" />
                 <ResourceDictionary Source="/Styles/GeometriesStyle.xaml" />
                 <ResourceDictionary Source="/Styles/Animations.xaml" />
-                
+
+                <ResourceDictionary Source="/Styles/ButtonStyle.xaml" />
                 <ResourceDictionary Source="/Styles/DataGridStyle.xaml" />
                 <ResourceDictionary Source="/Styles/TextBoxStyle.xaml" />
                 <ResourceDictionary Source="/Styles/ListBoxStyle.xaml" />
@@ -28,7 +29,6 @@
                 <ResourceDictionary Source="/Styles/BorderStyle.xaml" />
                 <ResourceDictionary Source="/Styles/ComboBoxStyle.xaml" />
                 <ResourceDictionary Source="/Styles/ImageStyle.xaml" />
-                <ResourceDictionary Source="/Styles/ButtonStyle.xaml" />
                 <ResourceDictionary Source="/Styles/TextBlockStyle.xaml" />
                 <ResourceDictionary Source="/Styles/ProgressBarStyle.xaml" />
                 <ResourceDictionary Source="/Styles/ScrollBarStyle.xaml" />

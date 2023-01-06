@@ -30,20 +30,45 @@ namespace AcgnuX.Source.ViewModel
         //过滤命令
         public ICommand OnFilterInputCommand { get; set; }
 
+        //默认为安全模式, 不展示数据
+        public bool SafeMode { get; set; } = true;
+        //关闭安全模式口令
+        private readonly string _OffSafeModelKey = "turn off safe mode";
+
         private readonly ContactRepo _ContactRepo = ContactRepo.Instance;
 
 
         public ContactManageViewModel()
         {
-            OnFilterInputCommand = new RelayCommand(OnFilterInput);
+            OnFilterInputCommand = new RelayCommand(() => Load(true));
         }
 
-        public async void Load()
+        /// <summary>
+        /// 读取数据
+        /// </summary>
+        public async void Load(bool forceSearch)
         {
-            if (DataUtil.IsEmptyCollection(ContactListData.Items))
+            if (_OffSafeModelKey.Equals(FilterText))
+            {
+                //口令正确则关闭安全模式
+                SafeMode = false;
+                //清空口令以展示所有结果
+                FilterText = null;
+            }
+            if (SafeMode)
+            {
+                //安全模式不查询数据, 直接返回
+                Messenger.Default.Send(new BubbleTipViewModel
+                {
+                    AlertLevel = Bussiness.Constants.AlertLevel.WARN,
+                    Text = "此功能暂不可用"
+                });
+                return;
+            }
+            if (DataUtil.IsEmptyCollection(ContactListData.Items) || forceSearch)
             {
                 IsBusy = true;
-                var dataList = await _ContactRepo.FindAllAsync(null);
+                var dataList = await _ContactRepo.FindAllAsync(FilterText);
                 AddToList(dataList);
                 IsBusy = false;
             }
@@ -70,17 +95,6 @@ namespace AcgnuX.Source.ViewModel
                 ContactListData.Items.AddRange(contactVms);
             }
             NotifyIsEmpty();
-        }
-
-        /// <summary>
-        /// 过滤输入框命令
-        /// </summary>
-        private async void OnFilterInput()
-        {
-            IsBusy = true;
-            var dataList = await _ContactRepo.FindAllAsync(FilterText);
-            AddToList(dataList);
-            IsBusy = false;
         }
 
         /// <summary>

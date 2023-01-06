@@ -39,7 +39,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Window}">
                     <Border Padding="10">
-                        <Grid Background="{DynamicResource MainWindowBackgroundColorBrush}" SnapsToDevicePixels="True">
+                        <Grid Background="{StaticResource MainWindowBackgroundColorBrush}" SnapsToDevicePixels="True">
                             <Border Background ="{StaticResource PopupWindowBackgroundImg}" BorderBrush="LightGray" BorderThickness="1" SnapsToDevicePixels="True">
                                 <Border.Effect>
                                     <DropShadowEffect ShadowDepth="0" Opacity="0.6" BlurRadius="10"/>
@@ -74,16 +74,16 @@
                                                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
                                                 Content="_" 
                                                 Padding="15,1" 
-                                                Style="{DynamicResource NoneStyleButtonStyle}" 
-                                                Template="{DynamicResource CommonNoStyleButtonTemplate}"
+                                                Style="{StaticResource NoneStyleButtonStyle}" 
+                                                Template="{StaticResource CommonNoStyleButtonTemplate}"
                                                 Visibility="{Binding CanMinimize, FallbackValue=False}"/>
                                         <Button WindowChrome.IsHitTestVisibleInChrome="True" 
                                                 Command="{Binding MaximizeCommand}" 
                                                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
                                                 Content="☐" 
                                                 Padding="15,1" 
-                                                Style="{DynamicResource NoneStyleButtonStyle}" 
-                                                Template="{DynamicResource CommonNoStyleButtonTemplate}"
+                                                Style="{StaticResource NoneStyleButtonStyle}" 
+                                                Template="{StaticResource CommonNoStyleButtonTemplate}"
                                                 Visibility="{Binding CanMaxmize, FallbackValue=False}"/>
                                         <!--对话框关闭按钮-->
                                         <Button WindowChrome.IsHitTestVisibleInChrome="True" 
@@ -92,8 +92,8 @@
                                                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
                                                 Content="✕" 
                                                 Padding="15,1" 
-                                                Style="{DynamicResource NoneStyleButtonStyle}" 
-                                                Template="{DynamicResource WindowCloseButtonTemplate}"/>
+                                                Style="{StaticResource NoneStyleButtonStyle}" 
+                                                Template="{StaticResource WindowCloseButtonTemplate}"/>
                                     </StackPanel>
                                 </Grid>
                                 <!--主内容-->
@@ -152,9 +152,9 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Window}">
                     <Border Padding="10">
-                        <Grid Background="{DynamicResource MainWindowBackgroundColorBrush}">
+                        <Grid Background="{StaticResource MainWindowBackgroundColorBrush}">
                             <!--<Border x:Name="Container" Background="{x:Null}"/>-->
-                            <Border Background="{DynamicResource MainWindowBackgroundImg}">
+                            <Border Background="{StaticResource MainWindowBackgroundImg}">
                                 <Border.Effect>
                                     <DropShadowEffect ShadowDepth="0" Opacity="0.6" BlurRadius="10"/>
                                 </Border.Effect>
@@ -169,21 +169,31 @@
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
                                 <!--标题栏背景色-->
-                                <Grid Grid.Column="0" Panel.ZIndex="1" Background="{DynamicResource MainWindowTitleBarColorBrush}">
+                                <Grid Grid.Column="0" Panel.ZIndex="1" Background="{StaticResource MainWindowTitleBarColorBrush}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
+
                                     <!--图标, 标题容器-->
                                     <Border Grid.Column="0">
                                         <StackPanel Orientation="Horizontal">
+                                            <!--图标样式-->
+                                            <Border Padding="8 0" Background="{StaticResource DataGridHeaderBackgroundColorBrush}">
+                                                <Image Source="..\Assets\Ico\favicon.ico" Width="21" Height="21" Cursor="Hand" WindowChrome.IsHitTestVisibleInChrome="True">
+                                                    <Image.InputBindings>
+                                                        <MouseBinding MouseAction="LeftClick" Command="{Binding FaviconClickCommand}" />
+                                                    </Image.InputBindings>
+                                                </Image>
+                                            </Border>
                                             <!--主菜单-->
                                             <ListBox x:Name="NavMenuListBox"
                                                      WindowChrome.IsHitTestVisibleInChrome="True"
                                                      ItemsSource="{Binding navMenus}"
+                                                     SelectedItem="{Binding SelectedNavItem}"
                                                      ItemContainerStyle="{StaticResource NavMenuListBoxItemStyle}" 
                                                      Style="{StaticResource NavMenuListBoxStyle}" 
-                                                     Template="{DynamicResource NavMenuListBoxControlTemplate}">
+                                                     Template="{StaticResource NavMenuListBoxControlTemplate}">
                                                 <i:Interaction.Triggers>
                                                     <i:EventTrigger EventName="MouseLeftButtonUp">
                                                         <i:InvokeCommandAction Command="{Binding OnNavMenuItemClickCommand}" CommandParameter="{Binding SelectedItem, ElementName=NavMenuListBox}"/>
@@ -196,12 +206,12 @@
                                     <!--主窗口操作按钮-->
                                     <Border Grid.Column="1" Background="{StaticResource DataGridHeaderBackgroundColorBrush}">
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding OnSettingCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Padding="0 6 0 4" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource CommonNoStyleButtonTemplate}">
+                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding OnSettingCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Padding="0 6 0 4" Style="{StaticResource NoneStyleButtonStyle}" Template="{StaticResource CommonNoStyleButtonTemplate}">
                                                 <Path Data="{StaticResource Icon_Setting}" Style="{StaticResource NavMenuPathIconStyle}" Fill="{StaticResource {x:Static SystemColors.ControlTextBrushKey}}" Width="36" Height="12"/>
                                             </Button>
-                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MinimizeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="_" Padding="15 6 15 8" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource CommonNoStyleButtonTemplate}"/>
-                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MaximizeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="☐" Padding="15 6 15 2" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource CommonNoStyleButtonTemplate}"/>
-                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding CloseCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="✕" Padding="15 6 15 4" Style="{DynamicResource NoneStyleButtonStyle}" Template="{DynamicResource WindowCloseButtonTemplate}"/>
+                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MinimizeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="_" Padding="15 6 15 8" Style="{StaticResource NoneStyleButtonStyle}" Template="{StaticResource CommonNoStyleButtonTemplate}"/>
+                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MaximizeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="☐" Padding="15 6 15 2" Style="{StaticResource NoneStyleButtonStyle}" Template="{StaticResource CommonNoStyleButtonTemplate}"/>
+                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding CloseCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="✕" Padding="15 6 15 4" Style="{StaticResource NoneStyleButtonStyle}" Template="{StaticResource WindowCloseButtonTemplate}"/>
                                         </StackPanel>
                                     </Border>
                                 </Grid>

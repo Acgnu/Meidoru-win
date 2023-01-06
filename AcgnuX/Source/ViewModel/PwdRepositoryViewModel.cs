@@ -124,7 +124,7 @@ namespace AcgnuX.Source.ViewModel
                 Id = accountVm.Id,
                 Site = accountVm.Site,
                 Describe = accountVm.Describe,
-                Uname = accountVm.Describe,
+                Uname = accountVm.Uname,
                 Upass = accountVm.Upass,
                 Remark = accountVm.Remark
             };

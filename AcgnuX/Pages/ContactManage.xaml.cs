@@ -30,7 +30,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnPageLoaded(object sender, RoutedEventArgs e)
         {
-            _ViewModel.Load();
+            _ViewModel.Load(false);
         }
 
         /// <summary>
@@ -40,6 +40,15 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnBtnAddClick(object sender, RoutedEventArgs e)
         {
+            if(_ViewModel.SafeMode)
+            {
+                Messenger.Default.Send(new BubbleTipViewModel
+                {
+                    AlertLevel = AlertLevel.WARN,
+                    Text = "此功能暂不可用"
+                });
+                return;
+            }
             if (string.IsNullOrEmpty(Settings.Default.DBFilePath))
             {
                 Messenger.Default.Send(new BubbleTipViewModel

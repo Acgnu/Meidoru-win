@@ -33,23 +33,26 @@ namespace AcgnuX.Source.ViewModel
         public ObservableCollection<NavMenu> navMenus { get; set; } = null;
         //菜单点击命令
         public ICommand OnNavMenuItemClickCommand { get; set; }
-        //设置页面
+        //favicon图标点击命令
+        public ICommand FaviconClickCommand { get; set; }
+        //进入设置页面命令
         public ICommand OnSettingCommand { get; set; }
         //设置页面
-        private AppSettings appSettingsPage;
+        private AppSettings _AppSettingsPage;
+        //首页
+        private readonly Index _IndexPage;
         //主内容
-        private Page mainContent;
+        private Page _MainContent;
         public Page MainContent
         {
-            get { return mainContent; }
-            set
-            {
-                mainContent = value;
-                RaisePropertyChanged();
-            }
+            get { return _MainContent; }
+            set { _MainContent = value; RaisePropertyChanged(); }
         }
         //气泡提示
         public BubbleTipViwerViewModel BubbleTipViwerViewModel { get; set; } = new BubbleTipViwerViewModel();
+        //选中的导航菜单项
+        private NavMenu _SelectedNavItem;
+        public NavMenu SelectedNavItem { get => _SelectedNavItem; set { _SelectedNavItem = value; RaisePropertyChanged(); } }
 
         public MainWindowViewModel() : base()
         {
@@ -66,7 +69,9 @@ namespace AcgnuX.Source.ViewModel
             }));
             OnNavMenuItemClickCommand = new RelayCommand<NavMenu>(NavMenuItemClick);
             OnSettingCommand = new RelayCommand<Window>(OnSettingIconClick);
-            MainContent = new Index();
+            FaviconClickCommand = new RelayCommand(OnFaviconClick);
+            _IndexPage = new Index();
+            MainContent = _IndexPage;
         }
 
         /// <summary>
@@ -75,11 +80,21 @@ namespace AcgnuX.Source.ViewModel
         /// <param name="window"></param>
         private void OnSettingIconClick(Window window)
         {
-            if (null == appSettingsPage)
+            if (null == _AppSettingsPage)
             {
-                appSettingsPage = new AppSettings();
+                _AppSettingsPage = new AppSettings();
             }
-            MainContent = appSettingsPage;
+            SelectedNavItem = null;
+            MainContent = _AppSettingsPage;
+        }
+
+        /// <summary>
+        /// OnFavicon 点击事件
+        /// </summary>
+        private void OnFaviconClick()
+        {
+            SelectedNavItem = null;
+            MainContent = _IndexPage;
         }
 
         /// <summary>
