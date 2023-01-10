@@ -104,7 +104,7 @@
                 <Setter.Value>
                     <ControlTemplate>
                         <Grid>
-                            <ProgressBar Style="{StaticResource ProgressBarBaseStyle}" Value="0" lc:ProgressAnimater.AnimateValue="{Binding Progress}" Visibility="{Binding IsWorking, Converter={bizc:BooleanToVisiblityConverter}, ConverterParameter=True}" />
+                            <ProgressBar Style="{StaticResource ProgressBarBaseStyle}" lc:ProgressAnimater.AnimateValue="{Binding Progress}" Visibility="{Binding IsWorking, Converter={bizc:BooleanToVisiblityConverter}, ConverterParameter=True}" />
                             <Border Padding="3">
                                 <StackPanel Background="Transparent" Orientation="Horizontal">
                                     <Canvas Width="{StaticResource ItemSize}" Height="{StaticResource ItemSize}">

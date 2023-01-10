@@ -214,11 +214,11 @@ namespace AcgnuX.Properties {
         }
         
         /// <summary>
-        ///   查找类似 下载记录 的本地化字符串。
+        ///   查找类似 下载管理器 的本地化字符串。
         /// </summary>
-        public static string S_DownloadRecord {
+        public static string S_DownloadManager {
             get {
-                return ResourceManager.GetString("S_DownloadRecord", resourceCulture);
+                return ResourceManager.GetString("S_DownloadManager", resourceCulture);
             }
         }
         

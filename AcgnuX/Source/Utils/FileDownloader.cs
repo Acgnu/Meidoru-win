@@ -151,7 +151,14 @@ namespace AcgnuX.Utils
             }
             catch (Exception ex)
             {
-                Console.WriteLine("获取远程文件大小失败！exception：\n" + ex.ToString());
+                if (ex.HResult == -2146233079)
+                {
+                    Console.WriteLine("Code: -2146233079, Message: " + ex.Message + ", URL: " + url);
+                }
+                else
+                {
+                    Console.WriteLine("获取远程文件大小失败！exception：\n" + ex.ToString());
+                }
             }
             finally
             {

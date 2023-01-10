@@ -1,12 +1,14 @@
-﻿<local:BaseDialog x:Class="AcgnuX.WindowX.Tan8DownloadRecordWindow"
+﻿<local:BaseDialog x:Class="AcgnuX.WindowX.Tan8DownloadManageWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AcgnuX.WindowX.Dialog"
         xmlns:res="clr-namespace:AcgnuX.Properties"
+        xmlns:lc="clr-namespace:AcgnuX.Controls"
+        xmlns:bizc="clr-namespace:AcgnuX.Source.Bussiness.Common"
         mc:Ignorable="d"
-        Title="{x:Static res:Resources.S_DownloadRecord}" Height="500" Width="600" Style="{StaticResource DialogWindowBaseStyle}" Loaded="OnWindowLoaded">
+        Title="{x:Static res:Resources.S_DownloadManager}" Height="500" Width="800" Style="{StaticResource DialogWindowBaseStyle}" Loaded="OnWindowLoaded">
 
     <Window.Icon>
         <DrawingImage>
@@ -20,7 +22,7 @@
 
     <Window.Resources>
         <Style TargetType="CheckBox" x:Key="PianoScoreConditionCbStyle">
-            <Setter Property="Margin" Value="0 0 5 5" />
+            <Setter Property="Margin" Value="0 0 5 0" />
             <Setter Property="Cursor" Value="Hand" />
         </Style>
 
@@ -28,6 +30,42 @@
             <Setter Property="Margin" Value="0 0 0 5" />
         </Style>
 
+        <Style TargetType="Path" x:Key="DownloadEmptyDataIndicatorStyle" BasedOn="{StaticResource EmptyDataIndicatorStyle}">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ButtonStep}" Value="1">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        
+        <!--按钮样式-->
+        <Style TargetType="Button" x:Key="AddFloatButtonTriggerStyle" BasedOn="{StaticResource RefreshFloatButtonStyle}">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ButtonStep}" Value="1">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Button" x:Key="ContinueFloatButtonTriggerStyle" BasedOn="{StaticResource RefreshFloatButtonStyle}">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ButtonStep}" Value="2">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Button" x:Key="StopFloatButtonTriggerStyle" BasedOn="{StaticResource RefreshFloatButtonStyle}">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Setter Property="Background" Value="OrangeRed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ButtonStep}" Value="3">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        
         <!--筛选框样式-->
         <Style TargetType="CheckBox" BasedOn="{StaticResource PianoScoreConditionCbStyle}" x:Key="FilterBoxCheckBoxStyle">
             <Setter Property="Template">
@@ -56,52 +94,84 @@
         </Style>
     </Window.Resources>
 
-    <DockPanel Margin="0 5 0 0" Grid.Column="1" Name="MainContentDock">
-        <DockPanel.DataContext>
+    <Grid x:Name="MainContent">
+        <Grid.DataContext>
             <Binding Path="Tan8DownloadRecord" Source="{StaticResource Locator}"></Binding>
-        </DockPanel.DataContext>
-        
-        <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding FilterBoxList}">
+        </Grid.DataContext>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Path Style="{StaticResource DownloadEmptyDataIndicatorStyle}" Data="{StaticResource Icon_Download}"   
+              Grid.Column="0" />
+        <ItemsControl Grid.Column="0"
+                ItemsSource="{Binding DownloadingData}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <CheckBox 
+                    <lc:SheetItemDownloadingControl Margin="0 0 0 5"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <DockPanel Margin="10 0 0 0" Grid.Column="1">
+            <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding FilterBoxList}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <CheckBox 
                         Content="{Binding Title}" 
                         IsChecked="{Binding IsChecked}" 
                         Style="{StaticResource FilterBoxCheckBoxStyle}" 
                         Checked="OnFilterBoxCheckedChange" 
                         Unchecked="OnFilterBoxCheckedChange" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Style="{StaticResource PianoScoreConditionStyle}" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
-        <DataGrid Name="DownloadRecordDataGrid" 
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Style="{StaticResource PianoScoreConditionStyle}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+            <Grid DockPanel.Dock="Bottom" >
+                <DataGrid Name="DownloadRecordDataGrid" 
                   ItemsSource="{Binding DownloadRecordList}"
                   Style="{StaticResource commonDataGrid}" 
                   Template="{StaticResource BaseDataGridControlTemplate}" 
-                  DockPanel.Dock="Bottom" 
                   PreviewKeyDown="OnDownloadRecordGridKeyDown">
-            <DataGrid.InputBindings>
-                <KeyBinding Key="Delete" 
+                    <DataGrid.InputBindings>
+                        <KeyBinding Key="Delete" 
                             Command="{Binding OnDeleteKeyCommand}" 
                             CommandParameter="{Binding Path=SelectedItems, ElementName=DownloadRecordDataGrid}" />
-            </DataGrid.InputBindings>
-            <DataGrid.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="{x:Static res:Resources.S_DownloadFromCurId}"
+                    </DataGrid.InputBindings>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="{x:Static res:Resources.S_DownloadFromCurId}"
                               Command="{Binding OnCopyIncrIdCommand}"
                               CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
-                </ContextMenu>
-            </DataGrid.ContextMenu>
-            <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Ypid}" Header="{x:Static res:Resources.S_MusicId}" Width="0.5*" />
-                <DataGridTextColumn Binding="{Binding Name}" Header="{x:Static res:Resources.S_Name}" Width="1.5*" />
-                <DataGridTextColumn Binding="{Binding Create_time}" Header="{x:Static res:Resources.S_DownloadTime}" Width="*" />
-                <DataGridTextColumn Binding="{Binding Result}" Header="{x:Static res:Resources.S_DownloadResult}" Width="*" />
-            </DataGrid.Columns>
-        </DataGrid>
-    </DockPanel>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Ypid}" Header="{x:Static res:Resources.S_MusicId}" Width="0.5*" />
+                        <DataGridTextColumn Binding="{Binding Name}" Header="{x:Static res:Resources.S_Name}" Width="1.5*" />
+                        <!--<DataGridTextColumn Binding="{Binding Create_time}" Header="{x:Static res:Resources.S_DownloadTime}" Width="*" />-->
+                        <DataGridTextColumn Binding="{Binding Result}" Header="{x:Static res:Resources.S_DownloadResult}" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button Style="{StaticResource AddFloatButtonTriggerStyle}" 
+                        Click="OnAddNewClick"
+                        ToolTip="新增下载任务">
+                    <Path Style="{StaticResource CommonAddButtonPathIcoStyle}" Width="20" Height="20"/>
+                </Button>
+                <Button Style="{StaticResource ContinueFloatButtonTriggerStyle}" 
+                        Command="{Binding OnContinueDownloadCommand}"
+                        ToolTip="继续下载">
+                    <Path Data="{StaticResource Icon_Play}" Style="{StaticResource MainStatusBarIcoPathStyle}" Width="20" Height="20" Margin="5 0 0 0"/>
+                </Button>
+                <Button Style="{StaticResource StopFloatButtonTriggerStyle}" 
+                        Command="{Binding OnStopDownloadCommand}"
+                        ToolTip="停止下载">
+                    <Rectangle Fill="White" Width="15" Height="15" />
+                </Button>
+            </Grid>
+        </DockPanel>
+    </Grid>
 </local:BaseDialog>

@@ -51,7 +51,7 @@ namespace AcgnuX.WindowX.Dialog
                 Name = SheetName,
                 AutoDownload = AutoDownload,
                 UseProxy = UseProxy,
-                Ver = 2
+                //Ver = 2
             };
             if (!string.IsNullOrEmpty(Ypid) && DataUtil.IsNum(Ypid))
             {

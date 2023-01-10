@@ -14,25 +14,10 @@
     <Page.DataContext>
         <Binding Path="SheetRepository" Source="{StaticResource Locator}" />
     </Page.DataContext>
-    
+
     <Page.Resources>
-        <Style TargetType="Path" x:Key="RefreshHistoryIcoStyle" BasedOn="{StaticResource MainStatusBarIcoPathStyle}">
-            <Setter Property="Width" Value="25" />
-            <Setter Property="Height" Value="25" />
-            <Setter Property="Data" Value="{DynamicResource Icon_ListWithRightMark}" />
-        </Style>
         <Style TargetType="Button" x:Key="DownRecordListFloatButtonStyle" BasedOn="{StaticResource RefreshFloatButtonStyle}">
             <Setter Property="Margin" Value="0 0 5 70" />
-        </Style>
-        <Style TargetType="Button" x:Key="AddSheetButtonStyle" BasedOn="{StaticResource AddButtonStyle}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsDownloading}" Value="False">
-                    <Setter Property="Visibility" Value="Visible" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding IsDownloading}" Value="True">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </DataTrigger>
-            </Style.Triggers>
         </Style>
         <Style TargetType="ListBox" x:Key="DataListStyle">
             <Style.Triggers>
@@ -57,20 +42,10 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <DockPanel VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="0">
-                    <Button Style="{StaticResource AddSheetButtonStyle}"  Click="OnBtnAddClick" DockPanel.Dock="Right">
+                    <Button Style="{StaticResource AddButtonStyle}"  Click="OnBtnOpenDownloadManageClick" DockPanel.Dock="Right">
                         <StackPanel Orientation="Horizontal">
-                            <Path Style="{StaticResource CommonAddButtonPathIcoStyle}"/>
-                            <TextBlock Text="{x:Static res:Resources.S_Add}" Margin="5 0 0 0" />
-                        </StackPanel>
-                    </Button>
-                    <Button Style="{StaticResource AddButtonStyle}"  
-                            Command="{Binding OnStopDownloadCommand}" 
-                            Background="OrangeRed"
-                            Visibility="{Binding IsDownloading, Converter={bizc:BooleanToVisiblityConverter}, ConverterParameter=True}"
-                            DockPanel.Dock="Right">
-                        <StackPanel Orientation="Horizontal">
-                            <Rectangle Fill="White" Width="12" Height="12" />
-                            <TextBlock Text="停止下载" Margin="5 0 0 0" />
+                            <Path Style="{StaticResource MainStatusBarIcoPathStyle}" Data="{StaticResource Icon_Download}" Height="15" Width="15"/>
+                            <TextBlock Text="{x:Static res:Resources.S_DownloadManager}" Margin="5 0 0 0" />
                         </StackPanel>
                     </Button>
                     <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding FilterText, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}">
@@ -111,10 +86,6 @@
         <!--刷新按钮-->
         <Button Style="{StaticResource RefreshFloatButtonStyle}" Command="{Binding OnRefreshCommand}">
             <Path Style="{StaticResource RefreshPathIcoStyle}"/>
-        </Button>
-        <!--查看下载历史按钮-->
-        <Button Style="{StaticResource DownRecordListFloatButtonStyle}" Click="OnDownloadListButtonClick">
-            <Path Style="{StaticResource RefreshHistoryIcoStyle}"/>
         </Button>
         <lc:BusyIndicator IsBusy="{Binding IsBusy}" />
     </Grid>

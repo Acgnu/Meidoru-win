@@ -22,7 +22,7 @@ namespace AcgnuX.Source.Model
         //v2版的乐谱下载地址
         public string SheetUrl { get; set; }
         //版本1-flash, 2-exe
-        public int Ver { get; set; }
+        //public int Ver { get; set; }
         //是否为队列下载
         public bool IsQueueTask { get; set; } = false;
     }

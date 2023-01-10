@@ -16,7 +16,7 @@
         <Setter Property="RowHeaderWidth" Value="0" />
         <Setter Property="AutoGenerateColumns" Value="False" />
         <Setter Property="IsReadOnly" Value="True" />
-        <Setter Property="Background" Value="{DynamicResource DataGridBackgroundColorBrush}" />
+        <Setter Property="Background" Value="{StaticResource DataGridBackgroundColorBrush}" />
     </Style>
 
     <Style TargetType="DataGridColumnHeader">

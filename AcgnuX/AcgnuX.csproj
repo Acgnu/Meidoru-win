@@ -170,6 +170,9 @@
       <DependentUpon>FromComboListBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\RangeObservableCollection.cs" />
+    <Compile Include="Controls\SheetItemDownloadingControl.xaml.cs">
+      <DependentUpon>SheetItemDownloadingControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SheetItemControl.xaml.cs">
       <DependentUpon>SheetItemControl.xaml</DependentUpon>
     </Compile>
@@ -199,8 +202,8 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Source\Bussiness\Common\AsyncObservableCollection.cs" />
     <Compile Include="Source\Bussiness\Common\BaseValueConverter.cs" />
-    <Compile Include="Source\Bussiness\Common\BooleanToVisiblityInverseConverter.cs" />
     <Compile Include="Source\Bussiness\Common\BooleanToVisiblityConverter.cs" />
+    <Compile Include="Source\Bussiness\Common\BooleanToVisiblityInverseConverter.cs" />
     <Compile Include="Source\Bussiness\Common\DelegateDefine.cs" />
     <Compile Include="Source\Bussiness\Common\ByteArrayToAvatarImageConverter.cs" />
     <Compile Include="Source\Bussiness\Common\ContactPlatformToImageSourceConverter.cs" />
@@ -287,6 +290,7 @@
     <Compile Include="Source\ViewModel\Design\FileItemListDesignViewModel.cs" />
     <Compile Include="Source\ViewModel\Design\FileItemsCompareDesignViewModel.cs" />
     <Compile Include="Source\ViewModel\Design\SheetItemDesignModel.cs" />
+    <Compile Include="Source\ViewModel\Design\SheetItemDownloadDesignModel.cs" />
     <Compile Include="Source\ViewModel\DeviceDriverViewModel.cs" />
     <Compile Include="Source\ViewModel\AccountViewModel.cs" />
     <Compile Include="Source\ViewModel\CommonWindowViewModel.cs" />
@@ -298,6 +302,7 @@
     <Compile Include="Source\ViewModel\FileItemsCompareViewModel.cs" />
     <Compile Include="Source\ViewModel\FileItemsListViewModel.cs" />
     <Compile Include="Source\ViewModel\FileItemViewModel.cs" />
+    <Compile Include="Source\ViewModel\SheetItemDownloadViewModel.cs" />
     <Compile Include="Source\ViewModel\SheetItemViewModel.cs" />
     <Compile Include="Source\ViewModel\PwdRepositoryViewModel.cs" />
     <Compile Include="Source\ViewModel\SyncConfigViewModel.cs" />
@@ -381,6 +386,10 @@
     <Page Include="Controls\FromComboListBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SheetItemDownloadingControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\SheetItemControl.xaml">
       <SubType>Designer</SubType>

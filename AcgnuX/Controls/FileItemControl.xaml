@@ -31,7 +31,8 @@
         <ControlTemplate x:Key="ItemContainerControlTemplate" TargetType="ListBoxItem">
             <Border x:Name="Bd"
                     d:DataContext="{d:DesignInstance {x:Type dv:FileItemDesignViewModel}, IsDesignTimeCreatable=True}"
-                    Style="{StaticResource ContainerBorderStyle}">
+                    Style="{StaticResource ContainerBorderStyle}"
+                    Focusable="True">
                 <Border.InputBindings>
                     <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding ItemLeftClickCommand}"/>
                     <MouseBinding MouseAction="RightClick" Command="{Binding ItemRightClickCommand}"/>

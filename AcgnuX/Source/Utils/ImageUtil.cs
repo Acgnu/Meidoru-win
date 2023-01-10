@@ -402,6 +402,7 @@ namespace AcgnuX.Source.Utils
         {
             try
             {
+                if(!File.Exists(path)) return false;
                 var bitmap = GetBitmapImage(path);
                 if (null == bitmap)
                 {

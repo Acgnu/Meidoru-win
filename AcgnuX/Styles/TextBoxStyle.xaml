@@ -5,6 +5,6 @@
         <Setter Property="Height" Value="30" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Padding" Value="0 1 0 0" />
-        <Setter Property="Background" Value="{DynamicResource TextBoxBackgroundColorBrush}" />
+        <Setter Property="Background" Value="Transparent" />
     </Style>
 </ResourceDictionary>

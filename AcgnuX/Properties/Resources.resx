@@ -117,7 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="S_Account" xml:space="preserve">
     <value>账号</value>
   </data>
@@ -169,8 +168,8 @@
   <data name="S_DownloadFromCurId" xml:space="preserve">
     <value>从此ID开始下载</value>
   </data>
-  <data name="S_DownloadRecord" xml:space="preserve">
-    <value>下载记录</value>
+  <data name="S_DownloadManager" xml:space="preserve">
+    <value>下载管理器</value>
   </data>
   <data name="S_DownloadResult" xml:space="preserve">
     <value>下载结果</value>

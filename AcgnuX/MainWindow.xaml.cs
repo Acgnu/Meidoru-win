@@ -27,9 +27,6 @@ namespace AcgnuX
     /// </summary>
     public partial class MainWindow : Window
     {
-        //标识状态栏是否有任务执行
-        private bool mIsProgressRunning = false;
-
         public MainWindow()
         {
             InitializeComponent();

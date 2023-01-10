@@ -18,7 +18,6 @@ namespace AcgnuX.Source.ViewModel
     {
         public ObservableCollection<BubbleTipViewModel> Items { get; set; } = new ObservableCollection<BubbleTipViewModel>();
 
-
         public BubbleTipViwerViewModel()
         {
             Messenger.Default.Register<BubbleTipViewModel>(this, OnTipMessage);
@@ -26,12 +25,11 @@ namespace AcgnuX.Source.ViewModel
 
         private void UnRegisteMessage()
         {
-            Messenger.Default.Unregister<BubbleTipViewModel>(this, OnTipMessage);
+            //Messenger.Default.Unregister<BubbleTipViewModel>(this, OnTipMessage);
         }
 
-        private async void OnTipMessage(BubbleTipViewModel content)
+        public async void OnTipMessage(BubbleTipViewModel content)
         {
-            Console.WriteLine(Items.Count);
             Items.Add(content);
             content.IsShow = true;
             await Task.Delay(2000);

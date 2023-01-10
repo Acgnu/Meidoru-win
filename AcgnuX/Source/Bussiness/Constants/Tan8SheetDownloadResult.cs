@@ -9,15 +9,15 @@ namespace AcgnuX.Source.Bussiness.Constants
     public enum Tan8SheetDownloadResult
     {
         [EnumMember]
-        [Description("下载成功")]
+        [Description("成功")]
         SUCCESS = 0,
 
         [EnumMember]
-        [Description("没有返回乐谱信息")]
+        [Description("信息获取失败")]
         PLAYER_NO_RESPONSE = 1,
 
         [EnumMember]
-        [Description("该乐谱不存在")]
+        [Description("不存在")]
         PIANO_SCORE_NOT_EXSITS = 2,
 
         [EnumMember]

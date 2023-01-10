@@ -1,4 +1,5 @@
-﻿using AcgnuX.Source.Bussiness.Constants;
+﻿using AcgnuX.Properties;
+using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.ViewModel;
 using AcgnuX.WindowX.Dialog;
@@ -12,25 +13,24 @@ namespace AcgnuX.WindowX
     /// <summary>
     /// Tan8DownloadRecordWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class Tan8DownloadRecordWindow : BaseDialog
+    public partial class Tan8DownloadManageWindow : BaseDialog
     {
         /// <summary>
         /// 控件数据源
         /// </summary>
-        private readonly PianoScoreDownloadRecordViewModel _ContentDataContext;
+        public PianoScoreDownloadRecordViewModel ContentDataContext { get; set; }
 
-        public Tan8DownloadRecordWindow(Action<Tan8SheetCrawlArg> downloadAction)
+        public Tan8DownloadManageWindow()
         {
             InitializeComponent();
             DataContext = this;
-            _ContentDataContext = MainContentDock.DataContext as PianoScoreDownloadRecordViewModel;
-            _ContentDataContext._DownloadAction = downloadAction;
+            ContentDataContext = MainContent.DataContext as PianoScoreDownloadRecordViewModel;
             //监听单个乐谱下载完成事件
             Messenger.Default.Register<int>(this, ApplicationConstant.TAN8_DOWNLOAD_COMPLETE, (ypid) =>
             {
                 Dispatcher.BeginInvoke((Action)delegate ()
                 {
-                    _ContentDataContext.OnSheetItemDownloadComplete(ypid);
+                    ContentDataContext.OnSheetItemDownloadComplete(ypid, DownloadRecordDataGrid);
                 });
             });
         }
@@ -43,7 +43,7 @@ namespace AcgnuX.WindowX
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
             //加载曲谱下载记录
-            _ContentDataContext.Load();
+            ContentDataContext.Load();
         }
 
         /// <summary>
@@ -66,8 +66,31 @@ namespace AcgnuX.WindowX
         /// <param name="e"></param>
         private void OnFilterBoxCheckedChange(object sender, RoutedEventArgs e)
         {
-            _ContentDataContext.Load();
-            Console.WriteLine("111");
+            ContentDataContext.Load();
+        }
+
+        /// <summary>
+        /// 新增下载任务点击按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnAddNewClick(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(Settings.Default.DBFilePath))
+            {
+                Messenger.Default.Send(new BubbleTipViewModel
+                {
+                    Text = "答应我, 先去配置数据库",
+                    AlertLevel = AlertLevel.ERROR
+                });
+                return;
+            }
+            var dialog = new AddSinglePianoScoreDialog
+            {
+                //绑定窗口点击事件
+                ConfirmAction = ContentDataContext.TriggerTan8DownLoadTask
+            };
+            dialog.ShowDialog();
         }
 
         /// <summary>

@@ -15,12 +15,9 @@
     <!--白底按钮悬停背景色-->
     <Color x:Key="WhiteBgHoverColor">#99EAEAEA</Color>
     <SolidColorBrush x:Key="WhiteBgHoverColorBrush" Color="{StaticResource WhiteBgHoverColor}" />
-    <!--状态栏前景色-->
-    <Color x:Key="FooterBarColor">#FF0083DF</Color>
-    <SolidColorBrush x:Key="FooterBarColorBrush" Color="{StaticResource FooterBarColor}" />
-    <!--标题栏背景色-->
-    <Color x:Key="TitleBarColor">#FFFFFFFF</Color>
-    <SolidColorBrush x:Key="TitleBarColorBrush" Color="{StaticResource TitleBarColor}" />
+    <!--进度条运行颜色-->
+    <Color x:Key="ProgressBarRuningColor">#BB228B22</Color>
+    <SolidColorBrush x:Key="ProgressBarRuningColorBrush" Color="{StaticResource ProgressBarRuningColor}" />
     <!--主窗口背景色-->
     <Color x:Key="MainWindowBackgroundColor">Black</Color>
     <SolidColorBrush x:Key="MainWindowBackgroundColorBrush" Color="{StaticResource MainWindowBackgroundColor}" />
@@ -43,9 +40,6 @@
     <!--通用表格项目选中背景色-->
     <Color x:Key="DataGridItemSelectedBackgroundColor">#99CCCCCC</Color>
     <SolidColorBrush x:Key="DataGridItemSelectedBackgroundColorBrush" Color="{StaticResource DataGridItemSelectedBackgroundColor}" />
-    <!--通用表格项目选中背景色-->
-    <Color x:Key="TextBoxBackgroundColor">Transparent</Color>
-    <SolidColorBrush x:Key="TextBoxBackgroundColorBrush" Color="{StaticResource TextBoxBackgroundColor}" />
     <!--导航菜单文字颜色-->
     <Color x:Key="NavMenuTextColor">#FF4F4F4F</Color>
     <SolidColorBrush x:Key="NavMenuTextColorBrush" Color="{StaticResource NavMenuTextColor}" />

@@ -11,11 +11,12 @@
     <Style x:Key="ProgressBarBaseStyle" TargetType="{x:Type ProgressBar}">
         <Setter Property="Maximum" Value="100" />
         <Setter Property="Minimum" Value="0" />
-        <Setter Property="Value" Value="100" />
-        <Setter Property="Foreground" Value="{StaticResource FooterBarColorBrush}" />
-        <Setter Property="Background" Value="#FF979797"/>
+        <Setter Property="Value" Value="0" />
+        <Setter Property="Foreground" Value="{StaticResource ButtonMainColorBrush}" />
+        <!--<Setter Property="Background" Value="#FF979797"/>-->
+        <Setter Property="Background" Value="{StaticResource DataGridItemBackgroundColorBrush}"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Opacity" Value="0.6" />
+        <!--<Setter Property="Opacity" Value="0.6" />-->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ProgressBar}">
@@ -54,7 +55,7 @@
                             <Setter Property="Visibility" TargetName="Indicator" Value="Collapsed"/>
                         </Trigger>
                         <DataTrigger Binding="{Binding ProgressAlertLevel}" Value="RUN">
-                            <Setter Property="Foreground" Value="ForestGreen" />
+                            <Setter Property="Foreground" Value="{StaticResource ProgressBarRuningColorBrush}" />
                         </DataTrigger>
                         <!--<DataTrigger Binding="{Binding AlertLevel}" Value="INFO">
                             <Setter Property="Foreground" Value="" />

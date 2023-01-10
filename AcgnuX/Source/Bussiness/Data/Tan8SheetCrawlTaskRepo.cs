@@ -34,5 +34,17 @@ namespace AcgnuX.Source.Bussiness.Data
             var taskIds = SQLite.sqlcolumn("SELECT ypid FROM tan8_music_down_task", null);
             return taskIds.Select(e => Convert.ToInt32(e)).ToList();
         }
+
+        /// <summary>
+        /// 新增任务
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        internal int AddNew(int id)
+        {
+            var r = SQLite.ExecuteNonQuery("INSERT INTO tan8_music_down_task (ypid) VALUES (@ypid)",
+                new List<SQLiteParameter> { new SQLiteParameter("@ypid", id) });
+            return r;
+        }
     }
 }

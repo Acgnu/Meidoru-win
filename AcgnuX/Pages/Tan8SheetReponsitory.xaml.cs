@@ -1,10 +1,8 @@
-﻿using AcgnuX.Properties;
-using AcgnuX.Source.Bussiness.Constants;
+﻿using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Taskx.Http;
 using AcgnuX.Source.ViewModel;
 using AcgnuX.WindowX;
 using AcgnuX.WindowX.Dialog;
-using GalaSoft.MvvmLight.Messaging;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -18,7 +16,7 @@ namespace AcgnuX.Pages
         //弹吧播放器
         //private Tan8PlayerWindow mTan8Player;
         //tan8服务
-        private HttpWebServer mTan8WebListener;
+        private readonly HttpWebServer _Tan8WebListener = new HttpWebServer();
         //private object mCollectLock = new object();
         //view model
         private Tan8SheetReponsitoryViewModel _ViewModel;
@@ -39,58 +37,30 @@ namespace AcgnuX.Pages
             }
 
             //开启http监听
-            if (null == mTan8WebListener)
+            if (false == _Tan8WebListener.IsListen)
             {
-                mTan8WebListener = new HttpWebServer
-                {
-                    DownloadRequestAction = _ViewModel.DoDownloadTaskDispatche
-                };
-                mTan8WebListener.StartListen();
+                _Tan8WebListener.StartListen();
             }
         }
 
         /// <summary>
-        /// 刷新按钮点击事件
-        /// 刷新列表内容
+        /// 打开下载管理器
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnDownloadListButtonClick(object sender, RoutedEventArgs e)
+        private void OnBtnOpenDownloadManageClick(object sender, RoutedEventArgs e)
         {
-            Tan8DownloadRecordWindow mDownloadRecordWindow = null;
-            if (null == mDownloadRecordWindow)
+            Tan8DownloadManageWindow _DownloadMangeWindow = null;
+            if (null == _DownloadMangeWindow)
             {
-                mDownloadRecordWindow = new Tan8DownloadRecordWindow(_ViewModel.TriggerTan8DownLoadTask)
+                _DownloadMangeWindow = new Tan8DownloadManageWindow()
                 {
                     ShowInTaskbar = true,
+                    Owner = null
                 };
+                _Tan8WebListener.DownloadRequestAction = _DownloadMangeWindow.ContentDataContext.DoDownloadTaskDispatche;
             }
-            mDownloadRecordWindow.Show();
-        }
-
-        /// <summary>
-        /// 添加按钮点击事件
-        /// 打开添加按钮对话框
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnBtnAddClick(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrEmpty(Settings.Default.DBFilePath))
-            {
-                Messenger.Default.Send(new BubbleTipViewModel
-                {
-                    Text = "答应我, 先去配置数据库",
-                    AlertLevel = AlertLevel.ERROR
-                });
-                return;
-            }
-            var dialog = new AddSinglePianoScoreDialog
-            {
-                //绑定窗口点击事件
-                ConfirmAction = _ViewModel.TriggerTan8DownLoadTask
-            };
-            dialog.ShowDialog();
+            _DownloadMangeWindow.Show();
         }
 
         /// <summary>

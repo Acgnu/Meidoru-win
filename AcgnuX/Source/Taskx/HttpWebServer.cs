@@ -33,6 +33,9 @@ namespace AcgnuX.Source.Taskx.Http
         {
             AuthenticationSchemes = AuthenticationSchemes.Anonymous,
         };
+
+        //标识是否正在监听
+        public bool IsListen { get => httpListener.IsListening; }
     
 
         /// <summary>
@@ -71,8 +74,15 @@ namespace AcgnuX.Source.Taskx.Http
             }
             catch (Exception ex)
             {
-                Console.WriteLine("HTTP监听异常");
-                Console.WriteLine(ex);
+                if(ex.HResult == -2147467259)
+                {
+                    Console.WriteLine("Code: -2147467259, Message: " + ex.Message);
+                }
+                else
+                {
+                    Console.WriteLine("HTTP监听异常");
+                    Console.WriteLine(ex);
+                }
             }
         }
 
@@ -171,7 +181,7 @@ namespace AcgnuX.Source.Taskx.Http
                 httpListenerContext.Request.QueryString["sccode"],
                 httpListenerContext.Request.QueryString["r1"],
                 httpListenerContext.Request.QueryString["r2"]),
-                Ver = 1
+                //Ver = 1
             });
         }
 
@@ -254,9 +264,7 @@ namespace AcgnuX.Source.Taskx.Http
             //http://www.tan8.com/codeindex.php?d=api&c=check77playerPower&m=index&ypid=76202&uid=999999999&token=fbf0ab24ee47bfa1cb460e41c1f61fdb
             var ypid = httpListenerContext.Request.QueryString["ypid"];
             var method = httpListenerContext.Request.QueryString["m"];
-            if (ypid.Equals("9999"))
-                Thread.Sleep(5000);
-            string responseText = "";
+            var responseText = "";
             if (method.Equals("index"))
             {
                 responseText = "{\"responseCode\":\"1000\",\"message\":\"\\u6b63\\u5e38\",\"power\":{\"openPower\":\"1\",\"printPower\":\"1\",\"printCount\":\"30\",\"vstPower\":\"1\",\"pdfPower\":\"1\"}}";

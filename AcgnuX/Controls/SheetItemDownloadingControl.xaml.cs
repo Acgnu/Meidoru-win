@@ -1,9 +1,5 @@
-﻿using AcgnuX.Source.Bussiness.Common;
-using AcgnuX.Source.ViewModel;
-using GalaSoft.MvvmLight.Messaging;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,11 +16,11 @@ using System.Windows.Shapes;
 namespace AcgnuX.Controls
 {
     /// <summary>
-    /// BubbleTipViwer.xaml 的交互逻辑
+    /// SheetItemControl.xaml 的交互逻辑
     /// </summary>
-    public partial class BubbleTipViwer : UserControl
+    public partial class SheetItemDownloadingControl : UserControl
     {
-        public BubbleTipViwer()
+        public SheetItemDownloadingControl()
         {
             InitializeComponent();
         }

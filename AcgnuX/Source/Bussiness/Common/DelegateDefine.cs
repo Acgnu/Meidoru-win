@@ -19,7 +19,7 @@ namespace AcgnuX.Source.Bussiness.Common
     /// 停止所有的乐谱下载任务
     /// </summary>
     /// <param name="ListData"></param>
-    public delegate void StopAllTan8SheetDownload(ObservableCollection<SheetItemViewModel> ListData);
+    public delegate void StopAllTan8SheetDownload(ObservableCollection<SheetItemDownloadViewModel> ListData);
 
     /// <summary>
     /// 状态栏变更委托
