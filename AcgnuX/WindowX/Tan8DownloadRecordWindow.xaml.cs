@@ -87,6 +87,7 @@ namespace AcgnuX.WindowX
             }
             var dialog = new AddSinglePianoScoreDialog
             {
+                Owner = this,
                 //绑定窗口点击事件
                 ConfirmAction = ContentDataContext.TriggerTan8DownLoadTask
             };
