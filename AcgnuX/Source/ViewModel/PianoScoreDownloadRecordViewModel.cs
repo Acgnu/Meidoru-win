@@ -451,11 +451,16 @@ namespace AcgnuX.Source.ViewModel
         /// <param name="crawlArg"></param>
         public void DoDownloadTaskDispatche(Tan8SheetCrawlArg crawlArg)
         {
-            var taskSheetItem = DownloadingData.Where(e => e.Id.Equals(crawlArg.Ypid)).FirstOrDefault();
+            var ypid = crawlArg.Ypid.GetValueOrDefault();
+            var taskSheetItem = DownloadingData.Where(e => e.Id.Equals(ypid)).FirstOrDefault();
             if (null == taskSheetItem || taskSheetItem.IsWorking == false)
             {
-                //如果找不到目标下载项, 可能是在重启Flash播放器的过程中停止下载了, 需要关闭
-                Tan8PlayUtil.Exit(crawlArg.Ypid.GetValueOrDefault());
+                var isHideStarted = Tan8PlayUtil.IsHideStarted(ypid);
+                if (isHideStarted != null && isHideStarted.GetValueOrDefault())
+                {         
+                    //如果是隐藏启动(即以下载为目的的启动), 找不到目标下载项, 可能是在重启Flash播放器的过程中停止下载了, 需要关闭
+                    Tan8PlayUtil.Exit(ypid);
+                }
                 return;
             }
             taskSheetItem.SheetUrl = crawlArg.SheetUrl;

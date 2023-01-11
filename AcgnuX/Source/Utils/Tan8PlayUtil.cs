@@ -149,6 +149,20 @@ namespace AcgnuX.Source.Utils
         }
 
         /// <summary>
+        /// 判断播放器是否为隐藏启动
+        /// </summary>
+        /// <param name="ypid"></param>
+        /// <returns></returns>
+        public static bool? IsHideStarted(int ypid)
+        {
+            if (!_PlayerProcessDictionary.ContainsKey(ypid))
+            {
+                return false;
+            }
+            return _PlayerProcessDictionary[ypid].StartInfo.WindowStyle == ProcessWindowStyle.Hidden;
+        }
+
+        /// <summary>
         /// 检查信任文件存在, 不存在则创建
         /// </summary>
         public static void WriteTrustFile()
