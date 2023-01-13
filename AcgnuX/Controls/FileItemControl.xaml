@@ -32,6 +32,7 @@
             <Border x:Name="Bd"
                     d:DataContext="{d:DesignInstance {x:Type dv:FileItemDesignViewModel}, IsDesignTimeCreatable=True}"
                     Style="{StaticResource ContainerBorderStyle}"
+                    MouseLeftButtonDown="OnContainerBorderLeftMouseDown"
                     Focusable="True">
                 <Border.InputBindings>
                     <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding ItemLeftClickCommand}"/>
@@ -65,7 +66,7 @@
                             </Style>
                         </lc:AsyncImage.Style>
                     </lc:AsyncImage>
-                    <TextBlock Text="{Binding Name}" ToolTip="{Binding Name}" MinHeight="{StaticResource ItemLabelHeight}" TextWrapping="WrapWithOverflow" Margin="0 5 0 0" TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Text="{Binding Name}" ToolTip="按Delete可删除, 鼠标右键可从同步列表中移除" MinHeight="{StaticResource ItemLabelHeight}" TextWrapping="WrapWithOverflow" Margin="0 5 0 0" TextTrimming="CharacterEllipsis"/>
                 </StackPanel>
             </Border>
             <ControlTemplate.Triggers>

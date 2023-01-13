@@ -68,7 +68,7 @@ namespace AcgnuX.Source.ViewModel
         {
             ItemLeftClickCommand = new RelayCommand(ImgItemLeftClick);
             ItemRightClickCommand = new RelayCommand(ImgItemRightClick);
-            ItemDeleteKeyCommand = new RelayCommand(SubItemOnKeyDown);
+            ItemDeleteKeyCommand = new RelayCommand(SubItemOnDeleteKey);
             //ItemDoubleClickCommand = new RelayCommand(() => { });
         }
 
@@ -161,7 +161,7 @@ namespace AcgnuX.Source.ViewModel
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SubItemOnKeyDown()
+        private void SubItemOnDeleteKey()
         {
             var selectedDevice = DeviceSyncViewModel.SelectedDevice;
             var selectedDriver = DeviceSyncViewModel.SelectedDriver;

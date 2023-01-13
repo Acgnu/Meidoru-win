@@ -18,6 +18,12 @@
     <!--进度条运行颜色-->
     <Color x:Key="ProgressBarRuningColor">#BB228B22</Color>
     <SolidColorBrush x:Key="ProgressBarRuningColorBrush" Color="{StaticResource ProgressBarRuningColor}" />
+    <!--进度条警告颜色-->
+    <Color x:Key="ProgressBarWarnColor">#BBFFA500</Color>
+    <SolidColorBrush x:Key="ProgressBarWarnColorBrush" Color="{StaticResource ProgressBarWarnColor}" />
+    <!--进度条错误颜色-->
+    <Color x:Key="ProgressBarErrorColor">#BBFF0000</Color>
+    <SolidColorBrush x:Key="ProgressBarErrorColorBrush" Color="{StaticResource ProgressBarErrorColor}" />
     <!--主窗口背景色-->
     <Color x:Key="MainWindowBackgroundColor">Black</Color>
     <SolidColorBrush x:Key="MainWindowBackgroundColorBrush" Color="{StaticResource MainWindowBackgroundColor}" />

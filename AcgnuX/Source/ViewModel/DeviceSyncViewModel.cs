@@ -153,6 +153,26 @@ namespace AcgnuX.Source.ViewModel
                 //this.mUsbMonitor.UsbChanged += OnUsb;
                 CheckDevice(false);
             }
+
+            //test data
+            //ListData.Add(new FileItemsCompareViewModel
+            //{
+            //    MobileFolderPath = "DCIM",
+            //    PcFolderPath = "C:/Image",
+            //    PcFileItems = new FileItemsListViewModel
+            //    {
+            //        SyncDeviceType = SyncDeviceType.PC,
+            //        FolderPath = "C:/Image",
+            //        FileItems = new ObservableCollection<FileItemViewModel>()
+            //        {
+            //            new FileItemViewModel
+            //            {
+            //                Name = "MockName",
+            //                ContentType = SyncContentType.OTHER
+            //            }
+            //        }
+            //    }
+            //});
         }
 
         /// <summary>

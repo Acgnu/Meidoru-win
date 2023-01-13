@@ -13,6 +13,8 @@
     </local:BasePage.Resources>
     
     <Canvas x:Name="MainGrid">
-        <Button Content="Show Tip" Click="Button_Click" Canvas.Top="200" Padding="20" />
+        <Button Click="Button_Click" Canvas.Top="200" Padding="20" Visibility="Hidden">
+            <TextBlock Text="Show Tips" />
+        </Button>
     </Canvas>
 </local:BasePage>

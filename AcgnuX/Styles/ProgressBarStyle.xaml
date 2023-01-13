@@ -61,10 +61,10 @@
                             <Setter Property="Foreground" Value="" />
                         </DataTrigger>-->
                         <DataTrigger Binding="{Binding ProgressAlertLevel}" Value="WARN">
-                            <Setter Property="Foreground" Value="Orange" />
+                            <Setter Property="Foreground" Value="{StaticResource ProgressBarWarnColorBrush}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding ProgressAlertLevel}" Value="ERROR">
-                            <Setter Property="Foreground" Value="Red" />
+                            <Setter Property="Foreground" Value="{StaticResource ProgressBarErrorColorBrush}" />
                         </DataTrigger>
                         <!--<Trigger Property="IsIndeterminate" Value="false">
                                 <Setter Property="Background" TargetName="Animation" Value="Transparent"/>
