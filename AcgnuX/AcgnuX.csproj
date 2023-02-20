@@ -220,6 +220,7 @@
     <Compile Include="Source\Bussiness\Constants\WindowsMessage.cs" />
     <Compile Include="Source\Bussiness\Constants\SyncDeviceType.cs" />
     <Compile Include="Source\Bussiness\Data\AppSecretKeyRepo.cs" />
+    <Compile Include="Source\Bussiness\Data\CrawlRuleRepo.cs" />
     <Compile Include="Source\Bussiness\Data\MediaSyncConfigRepo.cs" />
     <Compile Include="Source\Bussiness\Data\Tan8SheetCrawlRecordRepo.cs" />
     <Compile Include="Source\Bussiness\Data\Tan8SheetCrawlTaskRepo.cs" />

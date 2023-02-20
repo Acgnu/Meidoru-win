@@ -58,6 +58,7 @@
                                 <DataGridTextColumn Binding="{Binding Name}" Header="{x:Static res:Resources.S_Name}" Width="*" />
                                 <DataGridTextColumn Binding="{Binding Url}" Header="{x:Static res:Resources.S_CrawlAddress}" Width="1.5*" />
                                 <DataGridTextColumn Binding="{Binding Partten}" Header="{x:Static res:Resources.S_CrawlRule}" Width="2*" />
+                                <DataGridTextColumn Binding="{Binding ExceptionDesc}" Header="抓取状态" Width="*"/>
                                 <DataGridTextColumn Binding="{Binding MaxPage}" Header="{x:Static res:Resources.S_CrawlPages}" Width="0.8*"/>
                                 <DataGridCheckBoxColumn Binding="{Binding Enable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="0.4*">
                                     <DataGridCheckBoxColumn.HeaderTemplate >

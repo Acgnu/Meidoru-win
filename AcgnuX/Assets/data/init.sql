@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS "crawl_rules" (
   "url" TEXT(250) NOT NULL,
   "partten" TEXT(140) NOT NULL,
   "max_page" integer(5) NOT NULL,
+  "exception_desc" TEXT(20) NULL,
   "enable" integer(1) NOT NULL,
   PRIMARY KEY ("id")
 );

@@ -5,7 +5,7 @@ namespace AcgnuX.Source.Model
     /// <summary>
     /// 网页IP池爬取规则
     /// </summary>
-    public class CrawlRule : ViewModelBase
+    public class CrawlRule
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -15,6 +15,8 @@ namespace AcgnuX.Source.Model
         public string Partten { get; set; }
         //最大爬取页
         public int MaxPage { get; set; }
+        //抓取的错误码
+        public int ExceptionDesc { get; set; }
         public byte Enable { get; set; }
     }
 }

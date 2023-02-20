@@ -1,4 +1,5 @@
-﻿using AcgnuX.Source.Model;
+﻿using AcgnuX.Source.Bussiness.Data;
+using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using AcgnuX.Utils;
 using CrawlIPService.Properties;
@@ -40,6 +41,8 @@ namespace CrawIPService
         private readonly string PROXY_TEST_URL = @"http://www.77music.com/flash_get_yp_info.php";
         //测试的期望响应结果
         private readonly string PROXY_TEST_RESPONSE = "验证错误！";
+
+        private readonly CrawlRuleRepo _CrawlRuleRepo = CrawlRuleRepo.Instance;
 
         public CrawlIPService()
         {
@@ -253,10 +256,12 @@ namespace CrawIPService
                         if (!crawlResult.success)
                         {
                             mEventLog.WriteEntry(curTaskDesc + (curTaskDesc + "页面抓取失败"));
+                            _CrawlRuleRepo.UpdateExceptionDesc(item.Id, "页面抓取失败:" + crawlResult.message);
                             continue;
                         }
                         //设置匹配规则
                         Match mstr = Regex.Match(crawlResult.data, item.Partten);
+                        _CrawlRuleRepo.UpdateExceptionDesc(item.Id, mstr.Success ? "规则匹配成功" : "规则匹配失败");
                         mEventLog.WriteEntry(curTaskDesc + (mstr.Success ? "匹配成功" : "匹配失败"));
                         //开始逐行爬取IP
                         while (mstr.Success)
@@ -268,6 +273,7 @@ namespace CrawIPService
                                 SaveProxyToDB(proxyAddress);
                             }
                         }
+                        _CrawlRuleRepo.UpdateExceptionDesc(item.Id, "正常");
                     }
                 });
             });

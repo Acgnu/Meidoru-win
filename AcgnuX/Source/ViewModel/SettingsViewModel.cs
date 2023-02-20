@@ -60,7 +60,8 @@ namespace AcgnuX.Source.ViewModel
             }
         }
         //IP代理数量
-        public int ProxyCount { get; set; }
+        private int _ProxyCount = 0;
+        public int ProxyCount { get => _ProxyCount; set { _ProxyCount = value; RaisePropertyChanged(); } }
         //抓取规则
         public ObservableCollection<CrawlRuleViewModel> CrawlRuls { get; set; } = new ObservableCollection<CrawlRuleViewModel>();
         //是否全选
@@ -88,7 +89,7 @@ namespace AcgnuX.Source.ViewModel
         private void InitCrawlRules()
         {
             //从数据库读取规则
-            var dataSet = SQLite.SqlTable("SELECT id, name, url, partten, max_page, enable FROM crawl_rules", null);
+            var dataSet = SQLite.SqlTable("SELECT id, name, url, partten, max_page, exception_desc, enable FROM crawl_rules", null);
             if (null == dataSet) return;
             //封装进对象
             foreach (DataRow dataRow in dataSet.Rows)
@@ -100,6 +101,7 @@ namespace AcgnuX.Source.ViewModel
                     Url = Convert.ToString(dataRow["url"]),
                     Partten = Convert.ToString(dataRow["partten"]),
                     MaxPage = Convert.ToInt32(dataRow["max_page"]),
+                    ExceptionDesc = dataRow["exception_desc"].ToString(),
                     Enable = Convert.ToByte(dataRow["enable"]),
                 });
             }
@@ -118,7 +120,7 @@ namespace AcgnuX.Source.ViewModel
                 //全选
                 foreach (var crawlRule in CrawlRuls)
                 {
-                    crawlRule.EnableView = checkBox.IsChecked.GetValueOrDefault() ? Convert.ToByte(1) : Convert.ToByte(0);
+                    crawlRule.Enable = checkBox.IsChecked.GetValueOrDefault() ? Convert.ToByte(1) : Convert.ToByte(0);
                 }
                 //for (int i = 0; i < mCrawlRulsDataGrid.Items.Count; i++)
                 //{
@@ -146,7 +148,6 @@ namespace AcgnuX.Source.ViewModel
         private void OnProxyPoolCountChange(int curNum)
         {
             ProxyCount = curNum;
-            RaisePropertyChanged();
         }
 
         /// <summary>
@@ -168,7 +169,7 @@ namespace AcgnuX.Source.ViewModel
         public void CheckIsCheckedAll(bool doNotify)
         {
             IsCheckedAll = CrawlRuls.Where(item => item.Enable == 1).Count() == CrawlRuls.Count();
-            if(doNotify) RaisePropertyChanged();
+            if(doNotify) RaisePropertyChanged(nameof(IsCheckedAll));
         }
     }
 }
