@@ -45,16 +45,6 @@ namespace AcgnuX.Source.Bussiness.Data
         }
 
         /// <summary>
-        /// 根据乐谱ID删除
-        /// </summary>
-        /// <param name="ypid"></param>
-        internal void DelByYpid(int ypid)
-        {
-            SQLite.ExecuteNonQuery("DELETE FROM tan8_music_down_task WHERE ypid = @ypid",
-                new List<SQLiteParameter> { new SQLiteParameter("@ypid", ypid) });
-        }
-
-        /// <summary>
         /// 保存乐谱的下载记录
         /// </summary>
         /// <param name="ypid">乐谱ID</param>

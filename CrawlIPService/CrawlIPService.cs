@@ -261,7 +261,10 @@ namespace CrawIPService
                         }
                         //设置匹配规则
                         Match mstr = Regex.Match(crawlResult.data, item.Partten);
-                        _CrawlRuleRepo.UpdateExceptionDesc(item.Id, mstr.Success ? "规则匹配成功" : "规则匹配失败");
+                        if (!mstr.Success)
+                        {
+                            _CrawlRuleRepo.UpdateExceptionDesc(item.Id, "规则匹配失败");
+                        }
                         mEventLog.WriteEntry(curTaskDesc + (mstr.Success ? "匹配成功" : "匹配失败"));
                         //开始逐行爬取IP
                         while (mstr.Success)
@@ -273,7 +276,10 @@ namespace CrawIPService
                                 SaveProxyToDB(proxyAddress);
                             }
                         }
-                        _CrawlRuleRepo.UpdateExceptionDesc(item.Id, "正常");
+                        if (!"正常".Equals(item.ExceptionDesc))
+                        {
+                            _CrawlRuleRepo.UpdateExceptionDesc(item.Id, "正常");
+                        }    
                     }
                 });
             });

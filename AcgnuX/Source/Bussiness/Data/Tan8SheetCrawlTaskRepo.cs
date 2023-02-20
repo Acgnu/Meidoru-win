@@ -46,5 +46,15 @@ namespace AcgnuX.Source.Bussiness.Data
                 new List<SQLiteParameter> { new SQLiteParameter("@ypid", id) });
             return r;
         }
+
+        /// <summary>
+        /// 根据乐谱ID删除
+        /// </summary>
+        /// <param name="ypid"></param>
+        internal void DelByYpid(int ypid)
+        {
+            SQLite.ExecuteNonQuery("DELETE FROM tan8_music_down_task WHERE ypid = @ypid",
+                new List<SQLiteParameter> { new SQLiteParameter("@ypid", ypid) });
+        }
     }
 }

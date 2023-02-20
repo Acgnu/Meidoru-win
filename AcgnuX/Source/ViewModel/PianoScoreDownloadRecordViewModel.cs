@@ -148,6 +148,12 @@ namespace AcgnuX.Source.ViewModel
                 {
                     foreach (var ypid in queueTaskData)
                     {
+                        var sheetComplete = _Tan8SheetRepo.FindById(ypid);
+                        if (null != sheetComplete)
+                        {
+                            _SheetCrawlTaskRepo.DelByYpid(ypid);
+                            continue;
+                        }
                         var taskItem = CreateTaskViewInstance(new Tan8SheetCrawlArg
                         {
                             Ypid = ypid,
@@ -186,7 +192,11 @@ namespace AcgnuX.Source.ViewModel
             //如果有正在下载但是还没下载完的乐谱, 在停止时存入下次优先下载的列表中
             foreach (var item in DownloadingData)
             {
-                _SheetCrawlTaskRepo.AddNew(item.Id);
+                var sheetComplete = _Tan8SheetRepo.FindById(item.Id);
+                if (null == sheetComplete)
+                {
+                    _SheetCrawlTaskRepo.AddNew(item.Id);
+                }
             }
             _StopBtnClickHandler?.Invoke(DownloadingData);
             //NotifyIsDownloadListEmpty();
@@ -342,6 +352,11 @@ namespace AcgnuX.Source.ViewModel
                         SetNextDownloadYpid(crawlArg);
                         continue;
                     }
+                    else if (crawlArg.IsQueueTask)
+                    {
+                        //不是自动下载, 但是是队列下载, 要从数据中删除队列
+                        _SheetCrawlTaskRepo.DelByYpid(crawlArg.Ypid.GetValueOrDefault());
+                    }
                     return;
                 }
                 //检查任务是否中断
@@ -430,7 +445,7 @@ namespace AcgnuX.Source.ViewModel
             if (crawlArg.IsQueueTask)
             {
                 //取下一个ID时, 删除上一个ID
-                _Tan8SheetCrawlRecordRepo.DelByYpid(crawlArg.Ypid.GetValueOrDefault());
+                _SheetCrawlTaskRepo.DelByYpid(crawlArg.Ypid.GetValueOrDefault());
                 if (DataUtil.IsEmptyCollection(mTaskQueue) && _CurTaskNum == 0)
                 {
                     OnStopDownload();
