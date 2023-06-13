@@ -140,7 +140,7 @@ namespace AcgnuX.Source.ViewModel
                 //先复制目标文件到临时文件夹, 再打开
                 using (var device = DeviceSyncViewModel.SelectedDevice)
                 {
-                    device.Connect();
+                    device.Connect(enableCache: false);
                     var filePath = Path.Combine(DeviceSyncViewModel.SelectedDriver.ValueView, FileItemsListViewModel.FolderPath, Name);
                     MediaFileInfo fileInfo = device.GetFileInfo(filePath);
                     fileInfo.CopyTo(targetFullPath);
@@ -176,6 +176,8 @@ namespace AcgnuX.Source.ViewModel
             if (FileItemsListViewModel.SyncDeviceType == SyncDeviceType.PC)
             {
                 FileUtil.DeleteFile(Path.Combine(FileItemsListViewModel.FolderPath, Name));
+                //从vm中移除对象
+                FileItemsListViewModel.FileItems.Remove(this);
                 Messenger.Default.Send(new BubbleTipViewModel
                 {
                     Text = string.Format("文件[{0}]已删除", Name),
@@ -191,7 +193,8 @@ namespace AcgnuX.Source.ViewModel
                     {
                         if (!selectedDevice.IsConnected)
                         {
-                            selectedDevice.Connect();
+                            //selectedDevice.Connect(MediaDeviceAccess.GenericRead, MediaDeviceShare.Default, false);
+                            selectedDevice.Connect(enableCache: false);
                         }
                         var targetFile = Path.Combine(selectedDriver.ValueView, FileItemsListViewModel.FolderPath, Name);
                         if (selectedDevice.FileExists(targetFile))
@@ -202,15 +205,20 @@ namespace AcgnuX.Source.ViewModel
                         {
                             selectedDevice.Disconnect();
                         }
+                        //从vm中移除对象
+                        FileItemsListViewModel.FileItems.Remove(this);
                     }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex);
+                    Messenger.Default.Send(new BubbleTipViewModel
+                    {
+                        Text = string.Format("[{0}]删除失败: [{1}]", Name, ex.Message),
+                        AlertLevel = AlertLevel.ERROR
+                    });
                 }
             }
-            //从vm中移除对象
-            FileItemsListViewModel.FileItems.Remove(this);
             //}
         }
     }

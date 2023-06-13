@@ -617,7 +617,8 @@ namespace AcgnuX.Source.ViewModel
         {
             if (null == SelectedDevice) return;
 
-            SelectedDevice.Connect();
+            SelectedDevice.Connect(enableCache: false);
+            //SelectedDevice.Connect(MediaDeviceAccess.GenericRead | MediaDeviceAccess.GenericWrite, MediaDeviceShare.Default, false);
             var deviceDrivers = SelectedDevice.GetDrives();
             if (null == deviceDrivers)
             {
@@ -790,7 +791,7 @@ namespace AcgnuX.Source.ViewModel
                 //筛选WPD设备
                 using (var device = SelectedDevice)
                 {
-                    device.Connect();
+                    device.Connect(enableCache: false);
 
                     //检查目标文件夹是否存在, 不存在则创建
                     if (!Directory.Exists(arg.Item.PcFolderPath)) FileUtil.CreateFolder(arg.Item.PcFolderPath);
