@@ -139,6 +139,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\AnimatedScrollViewer\AnimatedListBox.cs" />
+    <Compile Include="Controls\AnimatedScrollViewer\AnimatedScrollViewer.cs" />
     <Compile Include="Controls\FileItemCompareControl.xaml.cs">
       <DependentUpon>FileItemCompareControl.xaml</DependentUpon>
     </Compile>
@@ -208,6 +210,10 @@
     <Compile Include="Source\Bussiness\Common\DelegateDefine.cs" />
     <Compile Include="Source\Bussiness\Common\ByteArrayToAvatarImageConverter.cs" />
     <Compile Include="Source\Bussiness\Common\ContactPlatformToImageSourceConverter.cs" />
+    <Compile Include="Controls\SmoothScrollViewer\ScrollInfoAdapter.cs" />
+    <Compile Include="Controls\PreFrameAnimateScrollViewer.cs" />
+    <Compile Include="Controls\SmoothScrollViewer\SmoothScrollViewer.cs" />
+    <Compile Include="Controls\SmoothScrollViewer\SmoothScrollViewerBehavior.cs" />
     <Compile Include="Source\Bussiness\Common\StringToImageConverter.cs" />
     <Compile Include="Source\Bussiness\Common\TaskCompletionNotifier.cs" />
     <Compile Include="Source\Bussiness\Constants\ContactPlatform.cs" />
@@ -466,10 +472,6 @@
     <Page Include="Styles\DataGridStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\ListViewStyle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Styles\PageStyle.xaml">
       <SubType>Designer</SubType>

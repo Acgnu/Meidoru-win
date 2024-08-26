@@ -23,6 +23,7 @@
                 <ResourceDictionary Source="/Styles/ButtonStyle.xaml" />
                 <ResourceDictionary Source="/Styles/DataGridStyle.xaml" />
                 <ResourceDictionary Source="/Styles/TextBoxStyle.xaml" />
+                <ResourceDictionary Source="/Styles/ScrollBarStyle.xaml" />
                 <ResourceDictionary Source="/Styles/ListBoxStyle.xaml" />
                 <ResourceDictionary Source="/Styles/WindowStyle.xaml" />
                 <ResourceDictionary Source="/Styles/PageStyle.xaml" />
@@ -31,8 +32,6 @@
                 <ResourceDictionary Source="/Styles/ImageStyle.xaml" />
                 <ResourceDictionary Source="/Styles/TextBlockStyle.xaml" />
                 <ResourceDictionary Source="/Styles/ProgressBarStyle.xaml" />
-                <ResourceDictionary Source="/Styles/ScrollBarStyle.xaml" />
-                <ResourceDictionary Source="/Styles/ListViewStyle.xaml" />
                 <ResourceDictionary>
                     <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" xmlns:vm="clr-namespace:AcgnuX.Source.ViewModel" />
                 </ResourceDictionary>

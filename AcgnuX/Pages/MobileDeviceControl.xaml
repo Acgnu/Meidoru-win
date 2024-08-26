@@ -6,6 +6,7 @@
       xmlns:local="clr-namespace:AcgnuX.Pages"
       xmlns:res="clr-namespace:AcgnuX.Properties"
       xmlns:lc="clr-namespace:AcgnuX.Controls"
+      xmlns:lc2="clr-namespace:AcgnuX.Controls.AnimatedScrollViewer"
       xmlns:dv="clr-namespace:AcgnuX.Source.ViewModel.Design"
       xmlns:bizc="clr-namespace:AcgnuX.Source.Bussiness.Common"
       xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Class="AcgnuX.Pages.MobileDeviceControl"
@@ -78,10 +79,9 @@
         <Border 
             Grid.Column="0" Grid.Row="0"
             Style="{StaticResource PageContainerBorderStyle}" d:DataContext="{d:DesignInstance {x:Type dv:DeviceSyncDesignViewModel}, IsDesignTimeCreatable=True}">
-                <ScrollViewer VerticalScrollBarVisibility="Visible" 
-                            VirtualizingPanel.IsVirtualizing="True"
-                            CanContentScroll="True"
-                            Template="{StaticResource BaseScrollViewerControlTemplate}">
+                <lc2:AnimatedScrollViewer 
+                        VerticalScrollBarVisibility="Visible" 
+                        CanContentScroll="True">
                     <ItemsControl ItemsSource="{Binding ListData, IsAsync=True}" Grid.Row="1" Style="{StaticResource FileItemsCompareItemsControlStyle}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
@@ -89,7 +89,7 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                </ScrollViewer>
+            </lc2:AnimatedScrollViewer>
         </Border>
         <Path Style="{StaticResource DeviceNotConnectedPathStyle}" Grid.Column="0" Grid.Row="0"/>
         <StackPanel Style="{StaticResource DeviceSelectStackPanelStyle}" Grid.Column="0" Grid.Row="0">

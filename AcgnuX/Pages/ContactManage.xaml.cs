@@ -42,11 +42,6 @@ namespace AcgnuX.Pages
         {
             if(_ViewModel.SafeMode)
             {
-                Messenger.Default.Send(new BubbleTipViewModel
-                {
-                    AlertLevel = AlertLevel.WARN,
-                    Text = "此功能暂不可用"
-                });
                 return;
             }
             if (string.IsNullOrEmpty(Settings.Default.DBFilePath))

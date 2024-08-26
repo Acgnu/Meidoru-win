@@ -1,10 +1,12 @@
-﻿using AcgnuX.Source.Bussiness.Constants;
+﻿using AcgnuX.Source.Bussiness.Common;
+using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Taskx.Http;
 using AcgnuX.Source.ViewModel;
 using AcgnuX.WindowX;
 using AcgnuX.WindowX.Dialog;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace AcgnuX.Pages
 {
@@ -314,53 +316,6 @@ namespace AcgnuX.Pages
             {
                 _ViewModel.DeleteItem(selected);
             }
-        }
-
-        /// <summary>
-        /// 曲谱列表滚动事件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnPianoScoreListBoxScroll(object sender, ScrollChangedEventArgs e)
-        {
-            //var scrollView = e.OriginalSource as ScrollViewer;
-            //if (XamlUtil.IsScrollToBottom(scrollView))
-            //{
-            //    //触底
-            //    if (pager.CurrentPage + 1 > pager.TotalPage) return;
-            //    pager.CurrentPage++;
-            //    pager.Action = PageAction.NEXT;
-            //    //移除之前的
-            //    CheckAndRemoveItem();
-            //    OnDataReading();
-            //}
-            //if (scrollView.VerticalOffset == 0)
-            //{
-            //    //触顶
-            //    if (pager.CurrentPage - 1 < 1) return;
-            //    pager.CurrentPage--;
-            //    pager.Action = PageAction.PREVIOUS;
-            //    //移除3页之后的
-            //    CheckAndRemoveItem();
-            //    OnDataReading();
-            //}
-        }
-
-        /// <summary>
-        /// 如果数据量大于5页的数据, 则删除之前/后的数据
-        /// </summary>
-        private void CheckAndRemoveItem()
-        {
-            //将主数据控制一定范围内
-            //if (mPianoScoreList.Count > 4 * pager.MaxRow)
-            //{
-            //    for (var i = 0; i < pager.MaxRow; i++)
-            //    {
-            //        //向上翻页, 则删除末端的数据
-            //        //向下翻页, 则删掉顶部的数据
-            //        mPianoScoreList.RemoveAt(pager.Action == PageAction.PREVIOUS ? mPianoScoreList.Count - 1 : 0);
-            //    }
-            //}
         }
     }
 }

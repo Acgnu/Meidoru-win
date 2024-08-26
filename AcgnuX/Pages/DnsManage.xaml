@@ -16,7 +16,7 @@
 
     <Grid>
         <Border Style="{StaticResource PageContainerBorderStyle}">
-            <Grid>
+            <Grid>          
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30" />
                     <RowDefinition Height="*" />
@@ -37,10 +37,9 @@
                         </TextBox.InputBindings>
                     </TextBox>
                 </DockPanel>
-                <DataGrid Name="DnsRecordDataGrid" 
+                <DataGrid 
+                    Name="DnsRecordDataGrid" 
                           ItemsSource="{Binding GridData}"
-                          Style="{StaticResource commonDataGrid}" 
-                          Template="{StaticResource BaseDataGridControlTemplate}" 
                           Margin="0,8,0,0" 
                           MouseDoubleClick="OnGridDoubleClick" 
                           Grid.Column="0" 
@@ -58,9 +57,6 @@
                 </DataGrid>
             </Grid>
         </Border>
-        <Button Style="{StaticResource RefreshFloatButtonStyle}" Command="{Binding OnRefreshCommand}">
-            <Path Style="{StaticResource RefreshPathIcoStyle}"/>
-        </Button>
         <lc:BusyIndicator IsBusy="{Binding IsBusy}" />
     </Grid>
 </local:BasePage>

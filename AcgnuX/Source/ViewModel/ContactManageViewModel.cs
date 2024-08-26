@@ -31,7 +31,7 @@ namespace AcgnuX.Source.ViewModel
         public ICommand OnFilterInputCommand { get; set; }
 
         //默认为安全模式, 不展示数据
-        public bool SafeMode { get; set; } = true;
+        public bool SafeMode { get; set; } = false;
         //关闭安全模式口令
         private readonly string _OffSafeModelKey = "turn off safe mode";
 
@@ -57,12 +57,6 @@ namespace AcgnuX.Source.ViewModel
             }
             if (SafeMode)
             {
-                //安全模式不查询数据, 直接返回
-                Messenger.Default.Send(new BubbleTipViewModel
-                {
-                    AlertLevel = Bussiness.Constants.AlertLevel.WARN,
-                    Text = "此功能暂不可用"
-                });
                 return;
             }
             if (DataUtil.IsEmptyCollection(ContactListData.Items) || forceSearch)

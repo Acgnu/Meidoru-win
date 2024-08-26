@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:dzn="clr-namespace:AcgnuX.Source.ViewModel.Design"
       xmlns:lc="clr-namespace:AcgnuX.Controls" 
+      xmlns:lc2="clr-namespace:AcgnuX.Controls.AnimatedScrollViewer" 
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=PresentationFramework"
              mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800">
@@ -47,12 +48,9 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
-                        <ScrollViewer VerticalScrollBarVisibility="Auto" 
-                            VirtualizingPanel.IsVirtualizing="True"
-                            CanContentScroll="True"
-                            Template="{StaticResource BaseScrollViewerControlTemplate}">
-                            <ItemsPresenter />
-                        </ScrollViewer>
+                        <lc2:AnimatedScrollViewer CanContentScroll="True">
+                            <ItemsPresenter SnapsToDevicePixels ="True"/>
+                        </lc2:AnimatedScrollViewer>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>

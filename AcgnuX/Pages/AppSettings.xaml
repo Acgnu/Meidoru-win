@@ -52,7 +52,7 @@
                                 </WrapPanel>
                             </Button>
                         </DockPanel>
-                        <DataGrid Name="CrawlConfigDataGrid" Style="{StaticResource commonDataGrid}" Template="{StaticResource BaseDataGridControlTemplate}" DockPanel.Dock="Bottom"
+                        <DataGrid Name="CrawlConfigDataGrid" DockPanel.Dock="Bottom"
                           ItemsSource ="{Binding CrawlRuls}" MouseDoubleClick="OnCrawlRulsDataGridDoubleClick" MouseRightButtonDown="OnItemMouseRightClick">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Binding="{Binding Name}" Header="{x:Static res:Resources.S_Name}" Width="*" />

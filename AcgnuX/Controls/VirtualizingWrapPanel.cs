@@ -12,7 +12,7 @@ namespace AcgnuX.Controls
     // MakeVisible() method from: http://www.switchonthecode.com/tutorials/wpf-tutorial-implementing-iscrollinfo
     public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
     {
-        private const double ScrollLineAmount = 16.0;
+        private const double ScrollLineAmount = 60.0;
 
         private Size _extentSize;
         private Size _viewportSize;
@@ -81,7 +81,8 @@ namespace AcgnuX.Controls
         {
             if (_itemsControl == null)
             {
-                return availableSize;
+                return new Size(availableSize.Width, 600);
+                //return availableSize;
             }
 
             _isInMeasure = true;
@@ -366,6 +367,7 @@ namespace AcgnuX.Controls
             }
 
             offset = Clamp(offset, 0, ExtentHeight - ViewportHeight);
+
             _offset = new Point(_offset.X, offset);
 
             InvalidateScrollInfo();
