@@ -11,5 +11,8 @@
     <Setting Name="DBFilePath" Type="System.String" Scope="User">
       <Value Profile="(Default)">E:\档案\master.db</Value>
     </Setting>
+    <Setting Name="SkinFolderPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

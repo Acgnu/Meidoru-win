@@ -154,7 +154,7 @@
                     <Border Padding="10">
                         <Grid Background="{StaticResource MainWindowBackgroundColorBrush}">
                             <!--<Border x:Name="Container" Background="{x:Null}"/>-->
-                            <Border Background="{StaticResource MainWindowBackgroundImg}">
+                            <Border Background="{Binding MainWindowBackgroundBrush}">
                                 <Border.Effect>
                                     <DropShadowEffect ShadowDepth="0" Opacity="0.6" BlurRadius="10"/>
                                 </Border.Effect>

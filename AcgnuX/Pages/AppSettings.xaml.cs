@@ -90,6 +90,23 @@ namespace AcgnuX.Pages
         }
 
         /// <summary>
+        /// 选择文件夹
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnChooseSkinFolder(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var path = FileUtil.OpenFolderDialogForPath(null);
+            if (!string.IsNullOrEmpty(path))
+            {
+                var settingsDataContext = DataContext as SettingsViewModel;
+                settingsDataContext.SkinFolderPathView = path;
+                Settings.Default.SkinFolderPath = path;
+                Settings.Default.Save();
+            }
+        }
+
+        /// <summary>
         /// 行双击选中事件
         /// </summary>
         /// <param name="sender"></param>

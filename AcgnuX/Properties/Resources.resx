@@ -249,6 +249,9 @@
   <data name="S_Site" xml:space="preserve">
     <value>站点</value>
   </data>
+  <data name="S_SkinFolder" xml:space="preserve">
+    <value>皮肤路径</value>
+  </data>
   <data name="S_Status" xml:space="preserve">
     <value>状态</value>
   </data>

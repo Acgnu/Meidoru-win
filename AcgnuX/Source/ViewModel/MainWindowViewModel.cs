@@ -1,15 +1,20 @@
 using AcgnuX.Pages;
+using AcgnuX.Properties;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
+using AcgnuX.Utils;
 using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace AcgnuX.Source.ViewModel
 {
@@ -37,6 +42,8 @@ namespace AcgnuX.Source.ViewModel
         public ICommand FaviconClickCommand { get; set; }
         //进入设置页面命令
         public ICommand OnSettingCommand { get; set; }
+        //主窗口背景图片
+        public Brush MainWindowBackgroundBrush { get; set; } = Brushes.GhostWhite;
         //设置页面
         private AppSettings _AppSettingsPage;
         //首页
@@ -72,6 +79,29 @@ namespace AcgnuX.Source.ViewModel
             FaviconClickCommand = new RelayCommand(OnFaviconClick);
             _IndexPage = new Index();
             MainContent = _IndexPage;
+            LoadSkin();
+        }
+
+        private void LoadSkin()
+        {
+
+            if (Directory.Exists(Settings.Default.SkinFolderPath))
+            {
+                var files = Directory.GetFiles(Settings.Default.SkinFolderPath)
+                    .Where(e => Path.GetExtension(e).Equals(".jpg") || Path.GetExtension(e).Equals(".png"))
+                    .ToArray();
+                if (files.Length == 0) return;
+                var fileIndex = RandomUtil.GetRangeRandomNum(0, files.Length - 1);
+                BitmapImage bi = new BitmapImage();
+                bi.BeginInit();
+                bi.UriSource = new Uri(files[fileIndex], UriKind.Absolute);
+                bi.EndInit();
+                var imageBrush = new ImageBrush(bi);
+                imageBrush.TileMode = TileMode.None;
+                imageBrush.Stretch = Stretch.UniformToFill;
+                imageBrush.Opacity = 0.85;
+                MainWindowBackgroundBrush = imageBrush;
+            }
         }
 
         /// <summary>

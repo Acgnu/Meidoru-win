@@ -28,7 +28,7 @@
     <Color x:Key="MainWindowBackgroundColor">Black</Color>
     <SolidColorBrush x:Key="MainWindowBackgroundColorBrush" Color="{StaticResource MainWindowBackgroundColor}" />
     <!--主窗口背景图-->
-    <ImageBrush x:Key="MainWindowBackgroundImg" Stretch="UniformToFill" ImageSource="/AcgnuX;component/Assets/Images/application_bg_default.jpg" TileMode="None" Opacity="0.85"/>
+    <!--<ImageBrush x:Key="MainWindowBackgroundImg" Stretch="UniformToFill" ImageSource="/AcgnuX;component/Assets/Images/application_bg_default.jpg" TileMode="None" Opacity="0.85"/>-->
     <!--弹窗背景图-->
     <ImageBrush x:Key="PopupWindowBackgroundImg" Stretch="UniformToFill" ImageSource="/AcgnuX;component/Assets/Images/window_bg_default.jpg" TileMode="None" Opacity="0.85"/>
     <!--主窗口标题栏背景色-->

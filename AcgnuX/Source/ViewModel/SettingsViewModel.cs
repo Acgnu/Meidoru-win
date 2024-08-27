@@ -26,6 +26,7 @@ namespace AcgnuX.Source.ViewModel
         public string AccountJsonPath { get; set; }
         public string PianoScorePath { get; set; }
         public string DbFilePath { get; set; }
+        public string SkinFolderPath { get; set; }
 
         /// <summary>
         /// 账号密码文件存储的json完整路径
@@ -59,6 +60,16 @@ namespace AcgnuX.Source.ViewModel
                 RaisePropertyChanged();
             }
         }
+        //皮肤目录
+        public string SkinFolderPathView
+        {
+            get { return SkinFolderPath; }
+            set
+            {
+                SkinFolderPath = value;
+                RaisePropertyChanged();
+            }
+        }
         //IP代理数量
         private int _ProxyCount = 0;
         public int ProxyCount { get => _ProxyCount; set { _ProxyCount = value; RaisePropertyChanged(); } }
@@ -75,6 +86,7 @@ namespace AcgnuX.Source.ViewModel
             AccountJsonPath = Settings.Default.AccountFilePath ?? "";
             PianoScorePath = Settings.Default.Tan8HomeDir ?? "";
             DbFilePath = Settings.Default.DBFilePath ?? "";
+            SkinFolderPath = Settings.Default.SkinFolderPath ?? "";
             //代理池数量变更监听
             ProxyCount = ProxyFactoryV2.GetProxyCount;
             ProxyFactoryV2.mProxyPoolCountChangeHandler += OnProxyPoolCountChange;

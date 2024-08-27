@@ -457,6 +457,15 @@ namespace AcgnuX.Properties {
         }
         
         /// <summary>
+        ///   查找类似 皮肤路径 的本地化字符串。
+        /// </summary>
+        public static string S_SkinFolder {
+            get {
+                return ResourceManager.GetString("S_SkinFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 状态 的本地化字符串。
         /// </summary>
         public static string S_Status {

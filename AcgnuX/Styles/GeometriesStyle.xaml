@@ -22,13 +22,6 @@
         <Setter Property="Width" Value="50" />
     </Style>
 
-    <!-- 曲谱页默认播放按钮 -->
-    <Style TargetType="Path" x:Key="PianoScoreDefaultPlayButtonIcoPath" BasedOn="{StaticResource MainStatusBarIcoPathStyle}">
-        <Setter Property="Width" Value="12" />
-        <Setter Property="Height" Value="12" />
-        <Setter Property="Margin" Value="0 0 5 0" />
-    </Style>
-
     <!--通用添加按钮样式-->
     <Style TargetType="Path" x:Key="CommonAddButtonPathIcoStyle" BasedOn="{StaticResource MainStatusBarIcoPathStyle}">
         <Setter Property="Width" Value="11" />
@@ -55,17 +48,6 @@
         <Setter Property="Fill" Value="#FFF7E074" />
         <Setter Property="Width" Value="25" />
         <Setter Property="Height" Value="20" />
-        <Setter Property="HorizontalAlignment" Value="Right" />
-        <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="Data" Value="{StaticResource Icon_OpenFolder}" />
-    </Style>
-
-    <!--设备同步页打开文件夹按钮-->
-    <Style TargetType="Path" x:Key="DeviceSyncOpenFolderIcoStyle">
-        <Setter Property="Stretch" Value="UniformToFill" />
-        <Setter Property="Fill" Value="{StaticResource ButtonMainColorBrush}" />
-        <Setter Property="Width" Value="21" />
-        <Setter Property="Height" Value="18" />
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Data" Value="{StaticResource Icon_OpenFolder}" />
