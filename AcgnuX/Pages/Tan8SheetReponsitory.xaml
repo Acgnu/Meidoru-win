@@ -5,11 +5,11 @@
       xmlns:local="clr-namespace:AcgnuX.Pages"
       xmlns:res="clr-namespace:AcgnuX.Properties"
       xmlns:lc="clr-namespace:AcgnuX.Controls"
-      xmlns:lc2="clr-namespace:AcgnuX.Controls.AnimatedScrollViewer"
       xmlns:bizc="clr-namespace:AcgnuX.Source.Bussiness.Common"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:dzm="clr-namespace:AcgnuX.Source.ViewModel.Design"
       mc:Ignorable="d" 
-                d:DesignWidth="1024" d:DesignHeight="768"
+      d:DesignWidth="1024" d:DesignHeight="768"
       Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
 
     <Page.DataContext>
@@ -72,7 +72,10 @@
                         ItemContainerStyle="{StaticResource PianoScoreListBoxItemContainerStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <lc:SheetItemControl />
+                            <ContentControl  
+                                    d:DataContext="{d:DesignInstance {x:Type dzm:SheetItemDesignModel}, IsDesignTimeCreatable=True}" 
+                                    Style="{StaticResource SheetItemControlStyle}"/>
+                            <!--<lc:SheetItemControl />-->
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                     <ListBox.ContextMenu>

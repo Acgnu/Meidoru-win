@@ -5,8 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AcgnuX.WindowX.Dialog"
         xmlns:res="clr-namespace:AcgnuX.Properties"
-        xmlns:lc="clr-namespace:AcgnuX.Controls"
-        xmlns:bizc="clr-namespace:AcgnuX.Source.Bussiness.Common"
+        xmlns:dzm="clr-namespace:AcgnuX.Source.ViewModel.Design"
         mc:Ignorable="d"
         Title="{x:Static res:Resources.S_DownloadManager}" Height="500" Width="800" Style="{StaticResource DialogWindowBaseStyle}" Loaded="OnWindowLoaded">
 
@@ -108,7 +107,11 @@
                 ItemsSource="{Binding DownloadingData}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <lc:SheetItemDownloadingControl Margin="0 0 0 5"/>
+                    <ContentControl
+                            d:DataContext="{d:DesignInstance {x:Type dzm:SheetItemDownloadDesignModel}, IsDesignTimeCreatable=True}" 
+                            Style="{StaticResource DownladingSheetItemControlStyle}"
+                            Margin="0 0 0 5"/>
+                    <!--<lc:SheetItemDownloadingControl />-->
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
@@ -134,8 +137,6 @@
             <Grid DockPanel.Dock="Bottom" >
                 <DataGrid Name="DownloadRecordDataGrid" 
                   ItemsSource="{Binding DownloadRecordList}"
-                  Style="{StaticResource commonDataGrid}" 
-                  Template="{StaticResource BaseDataGridControlTemplate}" 
                   PreviewKeyDown="OnDownloadRecordGridKeyDown">
                     <DataGrid.InputBindings>
                         <KeyBinding Key="Delete" 

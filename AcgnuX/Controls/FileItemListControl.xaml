@@ -3,20 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:lc="clr-namespace:AcgnuX.Controls"
              xmlns:dv="clr-namespace:AcgnuX.Source.ViewModel.Design"
              mc:Ignorable="d" 
+             Background="{StaticResource DataGridItemBackgroundColorBrush}"
              d:DesignHeight="400" d:DesignWidth="400">
-    <UserControl.Background>
-        <SolidColorBrush Color="{StaticResource DataGridItemBackgroundColor}" />
-    </UserControl.Background>
 
-    <UserControl.Resources>
-        <Style TargetType="UserControl" x:Key="FileItemStyle">
-            <Setter Property="VerticalAlignment" Value="Top" />
-        </Style>
-    </UserControl.Resources>
-    
     <ItemsControl 
         d:DataContext="{d:DesignInstance {x:Type dv:FileItemListDesignViewModel}, IsDesignTimeCreatable=True}"
                                     ItemsSource="{Binding FileItems}" 
@@ -31,7 +22,11 @@
         </ListView.ItemContainerStyle>-->
         <ItemsControl.ItemTemplate>
             <DataTemplate>
-                <lc:FileItemControl Style="{StaticResource FileItemStyle}"/>
+                <ListBoxItem 
+                    Template="{StaticResource ItemContainerControlTemplate}"
+                    Focusable="True"
+                    PreviewMouseLeftButtonDown="OnFileItemPreviewMouseLeftButtonDown"
+                    VerticalAlignment="Top" />
             </DataTemplate>
         </ItemsControl.ItemTemplate>
         <ItemsControl.ItemsPanel>

@@ -8,29 +8,11 @@
               xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              IsHitTestVisible="False"
              mc:Ignorable="d">
-    <UserControl.Resources>
-        <Style TargetType="UserControl" x:Key="PrevBubblePanelStyle">
-            <Setter Property="Margin" Value="0 5" />
-            <Style.Triggers>
-                <!--<DataTrigger Binding="{Binding Priority}" Value="1">
-                    <Setter Property="Opacity" Value="0.8" />
-                    <Setter Property="OpacityMask">
-                        <Setter.Value>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                <GradientStop Color="#FFFFFFFF" Offset="1"/>
-                                <GradientStop Color="#00FFFFFF" Offset="0"/>
-                            </LinearGradientBrush>
-                        </Setter.Value>
-                    </Setter>
-                </DataTrigger>-->
-            </Style.Triggers>
-        </Style>
-    </UserControl.Resources>
     <ItemsControl ItemsSource="{Binding Items}" Background="{x:Null}" d:DataContext="{d:DesignInstance {x:Type dv:BubbleTipViwerDesignModel}, IsDesignTimeCreatable=True}">
     <!--<ItemsControl ItemsSource="{Binding Items}" Background="{x:Null}" d:DataContext="{x:Static dv:BubbleTipViwerDesignModel.Instance}">-->
         <ItemsControl.ItemTemplate>
             <DataTemplate>
-                <local:BubbleTip Style="{StaticResource PrevBubblePanelStyle}" IsShow="{Binding IsShow}" HorizontalAlignment="Center" />
+                <local:BubbleTip Margin="0 5" IsShow="{Binding IsShow}" HorizontalAlignment="Center" />
             </DataTemplate>
         </ItemsControl.ItemTemplate>
         <!--<i:Interaction.Behaviors>

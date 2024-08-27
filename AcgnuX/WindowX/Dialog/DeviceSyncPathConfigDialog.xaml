@@ -24,8 +24,6 @@
             <Binding Path="DeviceSyncPathConfig" Source="{StaticResource Locator}" />
         </Grid.DataContext>
         <DataGrid Name="SyncPathDataGrid" 
-                  Style="{StaticResource commonDataGrid}" 
-                  Template="{StaticResource BaseDataGridControlTemplate}" 
                   DockPanel.Dock="Bottom"
                   ItemsSource ="{Binding SyncConfigs}" 
                   SelectedItem="{Binding SelectedItem}"

@@ -9,36 +9,6 @@
              xmlns:dv="clr-namespace:AcgnuX.Source.ViewModel.Design"
              mc:Ignorable="d" 
              d:DesignHeight="345" d:DesignWidth="800">
-    <UserControl.Resources>
-        <Style TargetType="TextBlock" x:Key="FolderNameTextBlockStyle">
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Margin" Value="5 0 0 2" />
-            <Setter Property="FontSize" Value="15" />
-        </Style>
-        <Style TargetType="StackPanel" x:Key="FolderNameStackPanelStyle">
-            <Setter Property="Orientation" Value="Horizontal" />
-            <Setter Property="Background" Value="{StaticResource DataGridHeaderBackgroundColorBrush}" />
-        </Style>
-        <Style TargetType="Border" x:Key="PlatformIconBorderStyle">
-            <Setter Property="CornerRadius" Value="50" />
-            <Setter Property="Width" Value="30" />
-            <Setter Property="Height" Value="30" />
-            <Setter Property="Padding" Value="5" />
-            <Setter Property="Margin" Value="5 0 0 1" />
-        </Style>
-        <!--同步按钮样式-->
-        <Style TargetType="Button" x:Key="SyncButtonStyle" BasedOn="{StaticResource AddButtonStyle}">
-            <Setter Property="Height" Value="28" />
-            <Setter Property="Width" Value="80" />
-            <Setter Property="Margin" Value="0 0 5 1" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsBusy}" Value="True">
-                    <Setter Property="IsEnabled" Value="False" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-    </UserControl.Resources>
-
     <UserControl.BorderThickness>1</UserControl.BorderThickness>
     <UserControl.BorderBrush>
         <SolidColorBrush Color="{StaticResource ButtonHoverColor}" />

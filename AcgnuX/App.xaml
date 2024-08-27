@@ -32,6 +32,12 @@
                 <ResourceDictionary Source="/Styles/ImageStyle.xaml" />
                 <ResourceDictionary Source="/Styles/TextBlockStyle.xaml" />
                 <ResourceDictionary Source="/Styles/ProgressBarStyle.xaml" />
+                
+                <!--UserControl-->
+                <ResourceDictionary Source="/Styles/UserControlTan8SheetStyle.xaml" />
+                <ResourceDictionary Source="/Styles/UserControlContactStyle.xaml" />
+                <ResourceDictionary Source="/Styles/UserControlDeviceSyncStyle.xaml" />
+                
                 <ResourceDictionary>
                     <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" xmlns:vm="clr-namespace:AcgnuX.Source.ViewModel" />
                 </ResourceDictionary>

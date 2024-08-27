@@ -39,7 +39,22 @@ namespace AcgnuX.Controls
         }
 
         private void SubItemOnKeyDown(object sender, KeyEventArgs e)
-        { 
+        {
+            //MessageBox.Show("abc");
+        }
+
+        /// <summary>
+        /// 容器Border鼠标按下事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnFileItemPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var container = sender as ListBoxItem;
+            var bd = VisualTreeHelper.GetChild(container, 0) as Border;
+            //设置为焦点, 方便其他地方跟踪按键输入事件
+            bd.Focus();
+            e.Handled = true;
         }
     }
 }

@@ -3,6 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:dzn="clr-namespace:AcgnuX.Source.ViewModel.Design"
       xmlns:local="clr-namespace:AcgnuX.Pages"
       xmlns:uc="clr-namespace:AcgnuX.Controls"
       xmlns:res="clr-namespace:AcgnuX.Properties"
@@ -37,7 +38,15 @@
                         </TextBox.InputBindings>
                     </TextBox>
                 </DockPanel>
-                        <uc:ContactListControl Margin="0,8,0,0" Grid.Column="0" Grid.Row="1" x:Name="ContactListControl" DataContext="{Binding ContactListData}"/>
+                <ItemsControl 
+                    x:Name="ContactListControl"
+                    Margin="0,8,0,0"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Style="{StaticResource ContractListItemsControlStyle}" 
+                    ItemsSource="{Binding Items, IsAsync=True}" 
+                    d:DataContext="{d:DesignInstance {x:Type dzn:ContactListDesignModel}, IsDesignTimeCreatable=True}"
+                    DataContext="{Binding ContactListData}"/>
                 <Path Grid.Row="1" Style="{StaticResource EmptyDataIndicatorStyle}" 
                       Data="{StaticResource Icon_EmptySearchResult}"
                       Visibility="{Binding IsEmpty, Converter={bizc:BooleanToVisiblityConverter}, ConverterParameter=True, FallbackValue=Hidden}"/>

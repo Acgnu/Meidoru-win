@@ -144,9 +144,6 @@
     <Compile Include="Controls\FileItemCompareControl.xaml.cs">
       <DependentUpon>FileItemCompareControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\FileItemControl.xaml.cs">
-      <DependentUpon>FileItemControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\FileItemListControl.xaml.cs">
       <DependentUpon>FileItemListControl.xaml</DependentUpon>
     </Compile>
@@ -163,22 +160,7 @@
     </Compile>
     <Compile Include="Controls\FadeAnimateItemsBehavior.cs" />
     <Compile Include="Controls\GifImage.cs" />
-    <Compile Include="Controls\ContactItemControl.xaml.cs">
-      <DependentUpon>ContactItemControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ContactListControl.xaml.cs">
-      <DependentUpon>ContactListControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\FromComboListBox.xaml.cs">
-      <DependentUpon>FromComboListBox.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\RangeObservableCollection.cs" />
-    <Compile Include="Controls\SheetItemDownloadingControl.xaml.cs">
-      <DependentUpon>SheetItemDownloadingControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\SheetItemControl.xaml.cs">
-      <DependentUpon>SheetItemControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\VirtualizingWrapPanel.cs" />
     <Compile Include="Pages\DnsManage.xaml.cs">
       <DependentUpon>DnsManage.xaml</DependentUpon>
@@ -210,10 +192,6 @@
     <Compile Include="Source\Bussiness\Common\DelegateDefine.cs" />
     <Compile Include="Source\Bussiness\Common\ByteArrayToAvatarImageConverter.cs" />
     <Compile Include="Source\Bussiness\Common\ContactPlatformToImageSourceConverter.cs" />
-    <Compile Include="Controls\SmoothScrollViewer\ScrollInfoAdapter.cs" />
-    <Compile Include="Controls\PreFrameAnimateScrollViewer.cs" />
-    <Compile Include="Controls\SmoothScrollViewer\SmoothScrollViewer.cs" />
-    <Compile Include="Controls\SmoothScrollViewer\SmoothScrollViewerBehavior.cs" />
     <Compile Include="Source\Bussiness\Common\StringToImageConverter.cs" />
     <Compile Include="Source\Bussiness\Common\TaskCompletionNotifier.cs" />
     <Compile Include="Source\Bussiness\Constants\ContactPlatform.cs" />
@@ -371,35 +349,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\ContactItemControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ContactListControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\FileItemCompareControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\FileItemControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\FileItemListControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\FromComboListBox.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\SheetItemDownloadingControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\SheetItemControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
