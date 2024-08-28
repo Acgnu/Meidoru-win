@@ -39,5 +39,15 @@ namespace AcgnuX.Utils
             Random rand = new Random();
             return rand.Next(start, end);
         }
+
+        /// <summary>
+        /// 从传入的项目中随机获取一个
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        public static string GetRandomItem(string[] items)
+        {
+            return items[GetRangeRandomNum(0, items.Length - 1)];
+        }
     }
 }

@@ -4,6 +4,7 @@ using AcgnuX.Source.Taskx.Http;
 using AcgnuX.Source.ViewModel;
 using AcgnuX.WindowX;
 using AcgnuX.WindowX.Dialog;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -62,6 +63,8 @@ namespace AcgnuX.Pages
                 };
                 _Tan8WebListener.DownloadRequestAction = _DownloadMangeWindow.ContentDataContext.DoDownloadTaskDispatche;
             }
+            _DownloadMangeWindow.Top = mMainWindow.Top + (mMainWindow.Height - _DownloadMangeWindow.Height) / 2;
+            _DownloadMangeWindow.Left = mMainWindow.Left + (mMainWindow.Width - _DownloadMangeWindow.Width) / 2;
             _DownloadMangeWindow.Show();
         }
 

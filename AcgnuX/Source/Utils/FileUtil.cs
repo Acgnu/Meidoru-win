@@ -1,10 +1,12 @@
 ﻿using AcgnuX.Source.Bussiness.Constants;
+using AcgnuX.Utils;
 using Microsoft.VisualBasic.Devices;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -428,6 +430,42 @@ namespace AcgnuX.Source.Utils
                     return stringBuilder.ToString();
                 }
             }
+        }
+
+        /// <summary>
+        /// 从指定目录中获取图像文件, 优先从缓存中获取
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="folder"></param>
+        /// <param name="force"></param>
+        /// <returns></returns>
+        public static string[] GetImageFilesWithMemoryCache(string key, string folder, bool force)
+        {
+            if (!Directory.Exists(folder)) return new string[0];
+
+            var mc = MemoryCache.Default;
+            var files = mc[key] as string[];
+            if (null == files || force)
+            {
+                files = Directory.GetFiles(folder)
+                        .Where(e => Path.GetExtension(e).Equals(".jpg") || Path.GetExtension(e).Equals(".png"))
+                        .ToArray();
+                if (files.Length == 0) return new string[0];
+                mc[key] = files;
+            }
+            return files;
+        }
+
+        /// <summary>
+        /// 获取皮肤目录中随机的一个图片文件
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <returns></returns>
+        public static string GetRandomSkinFile(string folder)
+        {
+            var files = GetImageFilesWithMemoryCache("skinFolder", folder, false);
+            if (files.Length == 0) return null;
+            return RandomUtil.GetRandomItem(files);
         }
 
         //public static JArray LoadJsonFile(string JsonFileFullPath)

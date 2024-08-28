@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Tan8PlayerWindow" Height="900" Width="800" Loaded="OnPageLoad" Style="{StaticResource CommonWindowStyle}">
+        Title="Tan8PlayerWindow" Height="900" Width="800" Loaded="OnPageLoad">
     <Window.DataContext>
         <Binding Path="Tan8Player" Source="{StaticResource Locator}"></Binding>
     </Window.DataContext>

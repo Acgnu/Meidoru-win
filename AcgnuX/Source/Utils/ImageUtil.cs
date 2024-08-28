@@ -1,9 +1,11 @@
-﻿using System;
+﻿using AcgnuX.Utils;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -432,6 +434,28 @@ namespace AcgnuX.Source.Utils
             ImageSourceConverter converter = new ImageSourceConverter();
             ImageSource source = (ImageSource)converter.ConvertFrom(memory);
             return source;
+        }
+
+        /// <summary>
+        /// 从文件夹中随机读取一张背景图片
+        /// </summary>
+        /// <returns></returns>
+        public static System.Windows.Media.Brush LoadImageAsBrush(string fileFullPath, double opacity, int decodeH, int decodeW)
+        {
+            if (!File.Exists(fileFullPath)) return null;
+
+            BitmapImage bi = new BitmapImage();
+            bi.BeginInit();
+            bi.DecodePixelHeight = decodeH;
+            bi.DecodePixelWidth = decodeW;
+            bi.UriSource = new Uri(fileFullPath, UriKind.Absolute);
+            bi.EndInit();
+            return new ImageBrush(bi)
+            {
+                TileMode = TileMode.None,
+                Stretch = Stretch.UniformToFill,
+                Opacity = opacity
+            };
         }
     }
 }

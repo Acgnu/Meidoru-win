@@ -44,9 +44,9 @@
                     Grid.Row="1"
                     Grid.Column="0"
                     Style="{StaticResource ContractListItemsControlStyle}" 
+                    DataContext="{Binding ContactListData}"
                     ItemsSource="{Binding Items, IsAsync=True}" 
-                    d:DataContext="{d:DesignInstance {x:Type dzn:ContactListDesignModel}, IsDesignTimeCreatable=True}"
-                    DataContext="{Binding ContactListData}"/>
+                    d:DataContext="{d:DesignInstance {x:Type dzn:ContactListDesignModel}, IsDesignTimeCreatable=True}"/>
                 <Path Grid.Row="1" Style="{StaticResource EmptyDataIndicatorStyle}" 
                       Data="{StaticResource Icon_EmptySearchResult}"
                       Visibility="{Binding IsEmpty, Converter={bizc:BooleanToVisiblityConverter}, ConverterParameter=True, FallbackValue=Hidden}"/>

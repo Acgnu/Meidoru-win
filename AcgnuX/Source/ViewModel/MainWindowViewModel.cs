@@ -7,14 +7,18 @@ using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace AcgnuX.Source.ViewModel
 {
@@ -43,7 +47,12 @@ namespace AcgnuX.Source.ViewModel
         //进入设置页面命令
         public ICommand OnSettingCommand { get; set; }
         //主窗口背景图片
-        public Brush MainWindowBackgroundBrush { get; set; } = Brushes.GhostWhite;
+        private Brush _mainWindowBackgroundBrush;
+        public Brush MainWindowBackgroundBrush
+        {
+            get { return _mainWindowBackgroundBrush; }
+            set { _mainWindowBackgroundBrush = value; RaisePropertyChanged(); }
+        }
         //设置页面
         private AppSettings _AppSettingsPage;
         //首页
@@ -79,30 +88,18 @@ namespace AcgnuX.Source.ViewModel
             FaviconClickCommand = new RelayCommand(OnFaviconClick);
             _IndexPage = new Index();
             MainContent = _IndexPage;
-            LoadSkin();
+
+            //背景图渐变展示 (此过程会阻塞UI)
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.ApplicationIdle, (Action) delegate {
+                var skinFile = FileUtil.GetRandomSkinFile(Settings.Default.SkinFolderPath);
+                MainWindowBackgroundBrush = ImageUtil.LoadImageAsBrush(skinFile, 0, 0, 0);
+                MainWindowBackgroundBrush?.BeginAnimation(
+                    Brush.OpacityProperty, 
+                    Application.Current.FindResource("AniImageBrushFadeIn") as DoubleAnimation);
+            });
         }
 
-        private void LoadSkin()
-        {
 
-            if (Directory.Exists(Settings.Default.SkinFolderPath))
-            {
-                var files = Directory.GetFiles(Settings.Default.SkinFolderPath)
-                    .Where(e => Path.GetExtension(e).Equals(".jpg") || Path.GetExtension(e).Equals(".png"))
-                    .ToArray();
-                if (files.Length == 0) return;
-                var fileIndex = RandomUtil.GetRangeRandomNum(0, files.Length - 1);
-                BitmapImage bi = new BitmapImage();
-                bi.BeginInit();
-                bi.UriSource = new Uri(files[fileIndex], UriKind.Absolute);
-                bi.EndInit();
-                var imageBrush = new ImageBrush(bi);
-                imageBrush.TileMode = TileMode.None;
-                imageBrush.Stretch = Stretch.UniformToFill;
-                imageBrush.Opacity = 0.85;
-                MainWindowBackgroundBrush = imageBrush;
-            }
-        }
 
         /// <summary>
         /// 设置页面

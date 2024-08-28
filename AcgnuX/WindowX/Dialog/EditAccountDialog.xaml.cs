@@ -2,6 +2,7 @@
 using AcgnuX.Source.Model;
 using AcgnuX.Source.ViewModel;
 using AcgnuX.ViewModel;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
