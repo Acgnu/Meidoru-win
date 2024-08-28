@@ -88,15 +88,6 @@ namespace AcgnuX.Source.ViewModel
             FaviconClickCommand = new RelayCommand(OnFaviconClick);
             _IndexPage = new Index();
             MainContent = _IndexPage;
-
-            //背景图渐变展示 (此过程会阻塞UI)
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.ApplicationIdle, (Action) delegate {
-                var skinFile = FileUtil.GetRandomSkinFile(Settings.Default.SkinFolderPath);
-                MainWindowBackgroundBrush = ImageUtil.LoadImageAsBrush(skinFile, 0, 0, 0);
-                MainWindowBackgroundBrush?.BeginAnimation(
-                    Brush.OpacityProperty, 
-                    Application.Current.FindResource("AniImageBrushFadeIn") as DoubleAnimation);
-            });
         }
 
 
@@ -156,6 +147,18 @@ namespace AcgnuX.Source.ViewModel
                 new NavMenu() { name = "联系人",pageType =typeof ( ContactManage), icon=(Geometry)Application.Current.FindResource("Icon_ContactBoox") },
                 //new NavMenu() { name = "设置",pageType = typeof (AppSettings), icon=(Geometry)Application.Current.FindResource("Icon_Setting") }
             };
+        }
+
+        /// <summary>
+        /// 初始化主窗口背景笔刷
+        /// </summary>
+        public void InitBackgroundBrush(double windowWidth)
+        {
+            var skinFile = FileUtil.GetRandomSkinFile(Settings.Default.SkinFolderPath);
+            MainWindowBackgroundBrush = ImageUtil.LoadImageAsBrush(skinFile, 0, 0, (int) windowWidth);
+            MainWindowBackgroundBrush?.BeginAnimation(
+                Brush.OpacityProperty,
+                Application.Current.FindResource("AniImageBrushFadeIn") as DoubleAnimation);
         }
     }
 }

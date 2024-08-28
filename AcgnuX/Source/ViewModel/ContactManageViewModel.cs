@@ -31,7 +31,7 @@ namespace AcgnuX.Source.ViewModel
         public ICommand OnFilterInputCommand { get; set; }
 
         //默认为安全模式, 不展示数据
-        public bool SafeMode { get; set; } = false;
+        public bool SafeMode { get; set; } = true;
         //关闭安全模式口令
         private readonly string _OffSafeModelKey = "turn off safe mode";
 

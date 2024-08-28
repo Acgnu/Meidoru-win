@@ -48,7 +48,7 @@ namespace AcgnuX.Pages
             if (!string.IsNullOrEmpty(path))
             {
                 var settingsDataContext = DataContext as SettingsViewModel;
-                settingsDataContext.AccountJsonPathView = path;
+                settingsDataContext.AccountJsonPath = path;
                 Settings.Default.AccountFilePath = path;
                 Settings.Default.Save();
             }
@@ -65,7 +65,7 @@ namespace AcgnuX.Pages
             if (!string.IsNullOrEmpty(path))
             {
                 var settingsDataContext = DataContext as SettingsViewModel;
-                settingsDataContext.DbFilePathView = path;
+                settingsDataContext.DbFilePath = path;
                 Settings.Default.DBFilePath = path;
                 Settings.Default.Save();
                 await SQLite.SetDbFilePath(path);
@@ -83,7 +83,7 @@ namespace AcgnuX.Pages
             if (!string.IsNullOrEmpty(path))
             {
                 var settingsDataContext = DataContext as SettingsViewModel;
-                settingsDataContext.PianoScorePathView = path;
+                settingsDataContext.PianoScorePath = path;
                 Settings.Default.Tan8HomeDir = path;
                 Settings.Default.Save();
             }
@@ -100,7 +100,7 @@ namespace AcgnuX.Pages
             if (!string.IsNullOrEmpty(path))
             {
                 var settingsDataContext = DataContext as SettingsViewModel;
-                settingsDataContext.SkinFolderPathView = path;
+                settingsDataContext.SkinFolderPath = path;
                 Settings.Default.SkinFolderPath = path;
                 Settings.Default.Save();
             }
@@ -117,7 +117,7 @@ namespace AcgnuX.Pages
             //打开修改对话框
             var dialog = new EditCrawlDialog(CrawlConfigDataGrid.SelectedItem as CrawlRuleViewModel);
             var result = dialog.ShowDialog();
-            if (result.GetValueOrDefault() == true)
+            if (result.GetValueOrDefault())
             {
                 var vm = DataContext as SettingsViewModel;
                 vm.CheckIsCheckedAll(true);

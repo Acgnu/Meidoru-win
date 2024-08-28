@@ -6,7 +6,12 @@
         xmlns:res="clr-namespace:AcgnuX.Properties"
         xmlns:lc="clr-namespace:AcgnuX.Controls"
         mc:Ignorable="d"
-        Title="AcgnuX" Height="740" Width="883" Style="{StaticResource MainWindowStyle}" Loaded="OnWindowLoaded">
+        Title="AcgnuX" 
+        Height="740" 
+        Width="883" 
+        Style="{StaticResource MainWindowStyle}" 
+        WindowStartupLocation="CenterScreen"
+        Loaded="OnWindowLoaded">
 
     <Window.DataContext>
         <Binding Path="Main" Source="{StaticResource Locator}"></Binding>

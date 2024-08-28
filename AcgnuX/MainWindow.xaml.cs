@@ -38,13 +38,18 @@ namespace AcgnuX
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnWindowLoaded(object sender, RoutedEventArgs e)
+        private async void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
             //如果没有配置数据库, 提示错误
             if(string.IsNullOrEmpty(Settings.Default.DBFilePath))
             {
                 SetStatusBarText(AlertLevel.WARN, "没有配置数据库文件路径, 部分功能将无法正常使用");
             }
+            await Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)delegate
+           {
+               var vm = DataContext as MainWindowViewModel;
+               vm.InitBackgroundBrush(Width);
+           });
         }
         /// <summary>
         /// 清空消息

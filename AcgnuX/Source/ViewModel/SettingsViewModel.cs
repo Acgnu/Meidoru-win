@@ -23,53 +23,30 @@ namespace AcgnuX.Source.ViewModel
     /// </summary>
     public class SettingsViewModel : ViewModelBase
     {
-        public string AccountJsonPath { get; set; }
-        public string PianoScorePath { get; set; }
-        public string DbFilePath { get; set; }
-        public string SkinFolderPath { get; set; }
+        /// <summary>
+        /// 账号文件
+        /// </summary>
+        private string _accountJsonPath;
+        public string AccountJsonPath { get => _accountJsonPath; set { _accountJsonPath = value; RaisePropertyChanged(); } }
 
         /// <summary>
-        /// 账号密码文件存储的json完整路径
+        /// 乐谱目录
         /// </summary>
-        public string AccountJsonPathView
-        {
-            get { return AccountJsonPath; }
-            set
-            {
-                AccountJsonPath = value;
-                RaisePropertyChanged();
-            }
-        }
-        //乐谱文件目录
-        public string PianoScorePathView
-        {
-            get { return PianoScorePath; }
-            set
-            {
-                PianoScorePath = value;
-                RaisePropertyChanged();
-            }
-        }
-        //数据库文件
-        public string DbFilePathView
-        {
-            get { return DbFilePath; }
-            set
-            {
-                DbFilePath = value;
-                RaisePropertyChanged();
-            }
-        }
-        //皮肤目录
-        public string SkinFolderPathView
-        {
-            get { return SkinFolderPath; }
-            set
-            {
-                SkinFolderPath = value;
-                RaisePropertyChanged();
-            }
-        }
+        private string _pianoScorePath;
+        public string PianoScorePath { get => _pianoScorePath; set { _pianoScorePath = value; RaisePropertyChanged(); } }
+
+        /// <summary>
+        /// 数据库文件目录
+        /// </summary>
+        private string _dbFilePath;
+        public string DbFilePath { get => _dbFilePath; set { _dbFilePath = value; RaisePropertyChanged(); } }
+
+        /// <summary>
+        /// 皮肤目录
+        /// </summary>
+        private string _skinFolderPath;
+        public string SkinFolderPath { get => _skinFolderPath; set { _skinFolderPath = value; RaisePropertyChanged(); } }
+
         //IP代理数量
         private int _ProxyCount = 0;
         public int ProxyCount { get => _ProxyCount; set { _ProxyCount = value; RaisePropertyChanged(); } }
