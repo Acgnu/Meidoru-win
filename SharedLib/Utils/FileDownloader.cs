@@ -2,7 +2,7 @@
 using System.IO;
 using System.Net;
 
-namespace AcgnuX.Utils
+namespace SharedLib.Utils
 {
     public class FileDownloader
     {
@@ -50,7 +50,7 @@ namespace AcgnuX.Utils
                     if (startPosition > remoteFileLength)
                     {
                         writeStream.Close();
-                        Source.Utils.FileUtil.DeleteFile(localfileWithSuffix);
+                        FileUtil.DeleteFile(localfileWithSuffix);
                         writeStream = new FileStream(localfileWithSuffix, FileMode.Create);
                     }
                     else if (startPosition == remoteFileLength)

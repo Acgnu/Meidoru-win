@@ -1,4 +1,5 @@
 ﻿using AcgnuX.Source.Utils;
+using SharedLib.Utils;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -55,7 +56,7 @@ namespace AcgnuX.Controls
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
                 //加载GIF图片
-                var steam = FileUtil.GetApplicationResourceAsStream("../Assets/Images/loading_nekololi.gif");
+                var steam = XamlUtil.GetApplicationResourceAsStream("../Assets/Images/loading_nekololi.gif");
                 var bytes = FileUtil.Stream2Bytes(steam.Stream);
                 var image = ImageUtil.ByteArrayToImage(bytes);
                 AnimateImg.AnimatedImageControl(image);

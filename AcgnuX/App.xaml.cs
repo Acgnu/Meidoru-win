@@ -2,6 +2,7 @@
 using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
+using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -65,8 +66,9 @@ namespace AcgnuX
             //检查数据库文件是否存在
             if (!File.Exists(dbfilePath)) return;
 
-            //设置数据库
-            await SQLite.SetDbFilePath(dbfilePath);
+            //设置数据库, 创建必须的表
+            var initSQL = XamlUtil.GetApplicationResourceAsString(@"Assets\data\" + ApplicationConstant.DB_INIT_FILE);
+            await SQLite.SetDbFilePath(dbfilePath, initSQL);
 
             //检查IP抓取服务
             var evnFolder = Environment.CurrentDirectory;

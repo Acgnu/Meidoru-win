@@ -1,4 +1,4 @@
-﻿namespace AcgnuX.Source.Model
+﻿namespace SharedLib.Model
 {
     /// <summary>
     /// 函数处理结果对象

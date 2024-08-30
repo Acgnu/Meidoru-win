@@ -17,6 +17,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -31,10 +32,9 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -206,24 +206,18 @@
     <Compile Include="Source\Bussiness\Constants\WindowsMessage.cs" />
     <Compile Include="Source\Bussiness\Constants\SyncDeviceType.cs" />
     <Compile Include="Source\Bussiness\Data\AppSecretKeyRepo.cs" />
-    <Compile Include="Source\Bussiness\Data\CrawlRuleRepo.cs" />
     <Compile Include="Source\Bussiness\Data\MediaSyncConfigRepo.cs" />
     <Compile Include="Source\Bussiness\Data\Tan8SheetCrawlRecordRepo.cs" />
     <Compile Include="Source\Bussiness\Data\Tan8SheetCrawlTaskRepo.cs" />
     <Compile Include="Source\Bussiness\Data\Tan8SheetsRepo.cs" />
     <Compile Include="Source\Bussiness\Data\ContactRepo.cs" />
-    <Compile Include="Source\Bussiness\imgrespotroy\IImageRepo.cs" />
-    <Compile Include="Source\Bussiness\imgrespotroy\ImageRepoFactory.cs" />
-    <Compile Include="Source\Bussiness\imgrespotroy\ImageRepoUploadArg.cs" />
-    <Compile Include="Source\Bussiness\imgrespotroy\ImageRepoUploadResult.cs" />
-    <Compile Include="Source\Bussiness\imgrespotroy\PrntImageRepo.cs" />
-    <Compile Include="Source\Bussiness\imgrespotroy\OleouImageRepo.cs" />
-    <Compile Include="Source\Bussiness\imgrespotroy\MeetImageRepo.cs" />
     <Compile Include="Source\Bussiness\Ten\Dns\TenCloudDns.cs" />
     <Compile Include="Pages\Index.xaml.cs">
       <DependentUpon>Index.xaml</DependentUpon>
     </Compile>
     <Compile Include="Source\Model\Tan8SheetCrawlArg.cs" />
+    <Compile Include="Source\Utils\ImageUtil.cs" />
+    <Compile Include="Source\Utils\MediaUtil.cs" />
     <Compile Include="Source\ViewModel\ContactManageViewModel.cs" />
     <Compile Include="Source\ViewModel\Design\BubbleTipDesignModel.cs" />
     <Compile Include="Source\ViewModel\Design\BubbleTipViwerDesignModel.cs" />
@@ -235,16 +229,11 @@
     <Compile Include="Source\Model\DeviceSyncReadProgressItem.cs" />
     <Compile Include="Source\Model\DeviceSyncTaskArgs.cs" />
     <Compile Include="Source\Model\MediaSyncConfig.cs" />
-    <Compile Include="Source\Model\ProxyAddress.cs" />
     <Compile Include="Source\Model\Account.cs" />
-    <Compile Include="Source\Model\CrawlRule.cs" />
-    <Compile Include="Source\Model\DialogEditResult.cs" />
     <Compile Include="Source\Model\MainWindowStatusNotify.cs" />
     <Compile Include="Source\Model\NavMenu.cs" />
     <Compile Include="Source\Model\Pager.cs" />
-    <Compile Include="Source\Model\Tan8Sheet.cs" />
     <Compile Include="Source\Model\Tan8SheetDownloadRecord.cs" />
-    <Compile Include="Source\Model\Tan8music.cs" />
     <Compile Include="Source\Model\Ten\Dns\DnsDomain.cs" />
     <Compile Include="Source\Model\Ten\Dns\DnsMainData.cs" />
     <Compile Include="Source\Model\Ten\Dns\DnsOperatorResult.cs" />
@@ -254,17 +243,9 @@
     <Compile Include="Source\Taskx\ProxyFactoryV2.cs" />
     <Compile Include="Source\Utils\Crypto\AlgorithmUtil.cs" />
     <Compile Include="Source\Utils\ConfigUtil.cs" />
-    <Compile Include="Source\Utils\ImageUtil.cs" />
     <Compile Include="Source\Utils\ServiceUtil.cs" />
-    <Compile Include="Source\Utils\Tan8PlayUtil.cs" />
-    <Compile Include="Source\Utils\DataUtil.cs" />
     <Compile Include="Source\Utils\EnumLoader.cs" />
-    <Compile Include="Source\Utils\FileUtil.cs" />
     <Compile Include="Source\Taskx\ProxyFactory.cs" />
-    <Compile Include="Source\Utils\RandomUtil.cs" />
-    <Compile Include="Source\Utils\FileDownloader.cs" />
-    <Compile Include="Source\Utils\RequestUtil.cs" />
-    <Compile Include="Source\Utils\SQLite.cs" />
     <Compile Include="Source\Utils\TimeUtil.cs" />
     <Compile Include="Source\Utils\WindowUtil.cs" />
     <Compile Include="Source\Utils\XamlUtil.cs" />
@@ -397,6 +378,10 @@
       <SubType>Designer</SubType>
     </DesignData>
     <Page Include="Styles\Animations.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\CheckBoxStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -603,9 +588,6 @@
     <PackageReference Include="CommonServiceLocator">
       <Version>2.0.2</Version>
     </PackageReference>
-    <PackageReference Include="EntityFramework">
-      <Version>6.3.0</Version>
-    </PackageReference>
     <PackageReference Include="Enums.NET">
       <Version>4.0.0</Version>
     </PackageReference>
@@ -613,11 +595,6 @@
       <Version>1.10.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies">
-      <Version>1.0.0</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472">
       <Version>1.0.0</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -637,23 +614,14 @@
     <PackageReference Include="MvvmLightLibs">
       <Version>5.4.1.1</Version>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.2</Version>
-    </PackageReference>
-    <PackageReference Include="RestSharp">
-      <Version>106.6.10</Version>
-    </PackageReference>
     <PackageReference Include="System.Collections">
       <Version>4.3.0</Version>
     </PackageReference>
-    <PackageReference Include="System.Data.SQLite.EF6">
-      <Version>1.0.112</Version>
+    <PackageReference Include="System.Data.SQLite.Core">
+      <Version>1.0.118</Version>
     </PackageReference>
-    <PackageReference Include="System.Data.SQLite.Linq">
-      <Version>1.0.112</Version>
-    </PackageReference>
-    <PackageReference Include="System.Data.SQLite.x64">
-      <Version>1.0.112</Version>
+    <PackageReference Include="System.Net.Http.Json">
+      <Version>8.0.0</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.WindowsRuntime">
       <Version>4.6.0</Version>
@@ -668,8 +636,14 @@
       <Version>2.1.0</Version>
     </PackageReference>
     <PackageReference Include="WpfUsbMonitor">
-      <Version>3.0.0</Version>
+      <Version>3.2.1</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharedLib\SharedLib.csproj">
+      <Project>{25baea97-b19b-454f-80e8-375ed79f7980}</Project>
+      <Name>SharedLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

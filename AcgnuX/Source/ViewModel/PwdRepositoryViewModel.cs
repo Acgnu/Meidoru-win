@@ -6,6 +6,8 @@ using AcgnuX.ViewModel;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using SharedLib.Model;
+using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

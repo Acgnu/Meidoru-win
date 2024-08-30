@@ -1,7 +1,4 @@
-﻿using GalaSoft.MvvmLight;
-using System.Windows.Media;
-
-namespace AcgnuX.Source.Model
+﻿namespace SharedLib.Model
 {
     /// <summary>
     /// 乐谱数据库对象

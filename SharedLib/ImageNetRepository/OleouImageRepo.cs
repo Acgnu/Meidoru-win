@@ -1,23 +1,21 @@
-﻿using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Source.Model;
-using AcgnuX.Utils;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using SharedLib.Model;
+using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace AcgnuX.Source.Bussiness.imgrespotroy
+namespace SharedLib.ImageNetRepository
 {
     /// <summary>
     /// 多合一图床
     /// https://www.oleou.com/zt/tuc/
     /// </summary>
     public class OleouImageRepo : IImageRepo
-    {
+    { 
         private static readonly string[] CHANNELS = {
             "tt",       //头条
             "sg",  //搜狗
@@ -30,7 +28,7 @@ namespace AcgnuX.Source.Bussiness.imgrespotroy
 
         public string GetApiCode()
         {
-            return ApplicationConstant.IMG_REPO_API[1];
+            return "oleou";
         }
 
         public InvokeResult<ImageRepoUploadResult> Upload(ImageRepoUploadArg arg)
@@ -43,7 +41,12 @@ namespace AcgnuX.Source.Bussiness.imgrespotroy
             };
             //执行上传
             //var uploadFileFormName = "sheet_" + RandomUtil.makeSring(false, 8) + ".png";
-            var response = RequestUtil.UploadFile("https://image.kieng.cn/upload.html?type=" + apiType, arg.FullFilePath, "image", arg.ExtraArgs["uploadFileFormName"].ToString(), null);
+            var response = RequestUtil.UploadFile(
+                "https://image.kieng.cn/upload.html?type=" + apiType, 
+                arg.FullFilePath,
+                "image",
+               arg.ExtraArgs["uploadFileFormName"],
+                 null);
             if (string.IsNullOrEmpty(response))
             {
                 return new InvokeResult<ImageRepoUploadResult>()
@@ -53,17 +56,17 @@ namespace AcgnuX.Source.Bussiness.imgrespotroy
                 };
             }
             //转换为json对象
-            JObject resultModel = (JObject) JsonConvert.DeserializeObject(response);
-            int code = Convert.ToInt32(resultModel["code"]);
+            var jsonDoc = JsonSerializer.Deserialize<JsonDocument>(response);
+            int code = jsonDoc.RootElement.GetProperty("code").GetInt32();
             if (code != 200)
             {
                 return new InvokeResult<ImageRepoUploadResult>()
                 {
                     success = false,
-                    message = "[" + apiType + "]" + Convert.ToString(resultModel["msg"])
+                    message = "[" + apiType + "]" + jsonDoc.RootElement.GetProperty("msg").GetString()
                 };
             }
-            apiResult.ImgUrl = resultModel["data"]["url"].ToString();
+            apiResult.ImgUrl = jsonDoc.RootElement.GetProperty("data").GetProperty("url").GetString();
             return new InvokeResult<ImageRepoUploadResult>()
             {
                 success = true,

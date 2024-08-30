@@ -19,80 +19,6 @@
         </DrawingImage>
     </Window.Icon>
 
-    <Window.Resources>
-        <Style TargetType="CheckBox" x:Key="PianoScoreConditionCbStyle">
-            <Setter Property="Margin" Value="0 0 5 0" />
-            <Setter Property="Cursor" Value="Hand" />
-        </Style>
-
-        <Style TargetType="WrapPanel" x:Key="PianoScoreConditionStyle">
-            <Setter Property="Margin" Value="0 0 0 5" />
-        </Style>
-
-        <Style TargetType="Path" x:Key="DownloadEmptyDataIndicatorStyle" BasedOn="{StaticResource EmptyDataIndicatorStyle}">
-            <Setter Property="Visibility" Value="Collapsed" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding ButtonStep}" Value="1">
-                    <Setter Property="Visibility" Value="Visible" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-        
-        <!--按钮样式-->
-        <Style TargetType="Button" x:Key="AddFloatButtonTriggerStyle" BasedOn="{StaticResource RefreshFloatButtonStyle}">
-            <Setter Property="Visibility" Value="Collapsed" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding ButtonStep}" Value="1">
-                    <Setter Property="Visibility" Value="Visible" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="Button" x:Key="ContinueFloatButtonTriggerStyle" BasedOn="{StaticResource RefreshFloatButtonStyle}">
-            <Setter Property="Visibility" Value="Collapsed" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding ButtonStep}" Value="2">
-                    <Setter Property="Visibility" Value="Visible" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="Button" x:Key="StopFloatButtonTriggerStyle" BasedOn="{StaticResource RefreshFloatButtonStyle}">
-            <Setter Property="Visibility" Value="Collapsed" />
-            <Setter Property="Background" Value="OrangeRed" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding ButtonStep}" Value="3">
-                    <Setter Property="Visibility" Value="Visible" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-        
-        <!--筛选框样式-->
-        <Style TargetType="CheckBox" BasedOn="{StaticResource PianoScoreConditionCbStyle}" x:Key="FilterBoxCheckBoxStyle">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type CheckBox}">
-                        <Grid x:Name="templateRoot" Background="Transparent" SnapsToDevicePixels="True">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Border x:Name="ContentBorder" BorderBrush="#CCC" BorderThickness=" 0 0 0 2" Padding="10 5" Background="{StaticResource ButtonSecondaryColorBrush}">
-                                <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="1" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                            </Border>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" TargetName="ContentBorder" Value="{StaticResource WhiteBgHoverColorBrush}" />
-                            </Trigger>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter Property="BorderBrush" TargetName="ContentBorder" Value="{StaticResource ButtonMainColorBrush}" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </Window.Resources>
-
     <Grid x:Name="MainContent">
         <Grid.DataContext>
             <Binding Path="Tan8DownloadRecord" Source="{StaticResource Locator}"></Binding>
@@ -130,7 +56,7 @@
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel Style="{StaticResource PianoScoreConditionStyle}" />
+                        <WrapPanel Margin="0 0 0 5" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>

@@ -1,11 +1,11 @@
-﻿using AcgnuX.Source.Model;
+﻿using SharedLib.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 
-namespace AcgnuX.Source.Utils
+namespace SharedLib.Utils
 {
     /// <summary>
     /// 一般的数据处理工具类

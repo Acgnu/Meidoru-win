@@ -2,6 +2,7 @@
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using GalaSoft.MvvmLight.Command;
+using SharedLib.Utils;
 using System;
 using System.Windows;
 using System.Windows.Controls;

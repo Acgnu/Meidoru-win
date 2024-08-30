@@ -7,6 +7,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using MediaDevices;
+using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;

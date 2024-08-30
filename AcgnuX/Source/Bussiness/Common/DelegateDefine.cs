@@ -1,6 +1,7 @@
 ﻿using AcgnuX.Source.Model;
 using AcgnuX.Source.Model.Ten.Dns;
 using AcgnuX.Source.ViewModel;
+using SharedLib.Model;
 using System.Collections.ObjectModel;
 /// <summary>
 /// 定义委托
@@ -36,5 +37,5 @@ namespace AcgnuX.Source.Bussiness.Common
     /// <summary>
     /// 指定了数据库文件事件
     /// </summary>
-    public delegate void OnDatabaseFileSetHandler();
+    //public delegate void OnDatabaseFileSetHandler();
 }

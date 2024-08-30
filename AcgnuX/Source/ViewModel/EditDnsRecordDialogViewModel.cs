@@ -66,12 +66,12 @@ namespace AcgnuX.Source.ViewModel
             DnsItem.Type = SelectedType.Content as string;
             var result = await DnsItem.SaveOrModify();
             IsBusy = false;
-            if (result.Data.code != 0)
+            if (result.code != 0)
             {
                 Messenger.Default.Send(new BubbleTipViewModel
                 {
                     AlertLevel = Bussiness.Constants.AlertLevel.ERROR,
-                    Text = result.Data.message
+                    Text = result.message
                 });
                 return;
             }

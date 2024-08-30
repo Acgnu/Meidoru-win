@@ -2,6 +2,7 @@
 using AcgnuX.Properties;
 using AcgnuX.Source.Utils;
 using GalaSoft.MvvmLight.CommandWpf;
+using SharedLib.Utils;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -57,7 +58,7 @@ namespace AcgnuX.WindowX.Dialog
         }
 
         //关闭窗口动画计时器
-        private DispatcherTimer mDispatcherTimer;
+        //private DispatcherTimer mDispatcherTimer;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -67,29 +68,32 @@ namespace AcgnuX.WindowX.Dialog
         public BaseDialog()
         {
             CloseCommand = new RelayCommand(() => {
-                //this.Close();
-                mDispatcherTimer.Start();
+                var storyBoardResource = FindResource("WindowFadeOutStoryboard") as Storyboard;
+                var storyBoard = storyBoardResource.Clone();
+                storyBoard.Completed += new EventHandler((e, s) => Close());
+                storyBoard.Begin(this);
             });
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
             Owner = Application.Current.MainWindow;
-            mDispatcherTimer = new DispatcherTimer();
-            mDispatcherTimer.Tick += new EventHandler(DispatcherTimerHandler);
-            mDispatcherTimer.Interval = TimeSpan.FromSeconds(0.2);
-            this.Loaded += new RoutedEventHandler(OnDialogLoaded);
+            //mDispatcherTimer = new DispatcherTimer();
+            //mDispatcherTimer.Tick += new EventHandler(DispatcherTimerHandler);
+            //mDispatcherTimer.Interval = TimeSpan.FromSeconds(0.2);
+            this.Loaded += new RoutedEventHandler(OnBaseDialogLoaded);
+   
         }
 
-        private void DispatcherTimerHandler(object sender, EventArgs e)
-        {
-            this.mDispatcherTimer.Stop();
-            this.Close();
-        }
+        //private void DispatcherTimerHandler(object sender, EventArgs e)
+        //{
+        //    this.mDispatcherTimer.Stop();
+        //    this.Close();
+        //}
 
         /// <summary>
         /// 窗口Load事件, 读取背景
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void OnDialogLoaded(object sender, RoutedEventArgs e)
+        public void OnBaseDialogLoaded(object sender, RoutedEventArgs e)
         {
             var skinFile = FileUtil.GetRandomSkinFile(Settings.Default.SkinFolderPath);
             DialogWindowBackgroundBrush = ImageUtil.LoadImageAsBrush(skinFile, 0.85, 0, (int)Width);

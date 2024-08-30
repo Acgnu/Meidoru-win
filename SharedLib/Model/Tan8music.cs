@@ -1,4 +1,4 @@
-﻿namespace AcgnuX.Source.Model
+﻿namespace SharedLib.Model
 {
     /// <summary>
     /// tan8接口返回的乐谱信息

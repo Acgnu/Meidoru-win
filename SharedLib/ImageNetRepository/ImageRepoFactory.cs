@@ -1,13 +1,10 @@
-﻿using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Utils;
+﻿using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace AcgnuX.Source.Bussiness.imgrespotroy
+namespace SharedLib.ImageNetRepository
 {
     public class ImageRepoFactory
     {

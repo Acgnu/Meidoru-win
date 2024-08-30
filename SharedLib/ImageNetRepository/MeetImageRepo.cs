@@ -1,16 +1,14 @@
-﻿using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Source.Model;
-using AcgnuX.Utils;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using SharedLib.Model;
+using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace AcgnuX.Source.Bussiness.imgrespotroy
+namespace SharedLib.ImageNetRepository
 {
     /// <summary>
     /// 遇见图床
@@ -56,7 +54,7 @@ namespace AcgnuX.Source.Bussiness.imgrespotroy
 
         public string GetApiCode()
         {
-            return ApplicationConstant.IMG_REPO_API[0];
+            return "meet";
         }
 
         public InvokeResult<ImageRepoUploadResult> Upload(ImageRepoUploadArg arg)
@@ -74,7 +72,12 @@ namespace AcgnuX.Source.Bussiness.imgrespotroy
                 ApiChannel = apiType
             };
             //执行上传
-            var response = RequestUtil.UploadFile("https://www.hualigs.cn/api/upload", arg.FullFilePath, "image", arg.ExtraArgs["uploadFileFormName"].ToString(), args);
+            var response = RequestUtil.UploadFile(
+                "https://www.hualigs.cn/api/upload",
+                arg.FullFilePath,
+                "image", 
+                arg.ExtraArgs["uploadFileFormName"], 
+                args);
             if (string.IsNullOrEmpty(response))
             {
                 return new InvokeResult<ImageRepoUploadResult>()
@@ -84,17 +87,17 @@ namespace AcgnuX.Source.Bussiness.imgrespotroy
                 };
             }
             //转换为json对象
-            JObject resultModel = (JObject) JsonConvert.DeserializeObject(response);
-            int code = Convert.ToInt32(resultModel["code"]);
+            var jsonDoc = JsonSerializer.Deserialize<JsonDocument>(response);
+            int code = jsonDoc.RootElement.GetProperty("code").GetInt32();
             if (code != 200)
             {
                 return new InvokeResult<ImageRepoUploadResult>()
                 {
                     success = false,
-                    message = "[" + apiType + "]" + Convert.ToString(resultModel["msg"])
+                    message = "[" + apiType + "]" + jsonDoc.RootElement.GetProperty("msg").GetString()
                 };
             }
-            apiResult.ImgUrl = resultModel["data"]["url"][apiType].ToString();
+            apiResult.ImgUrl = jsonDoc.RootElement.GetProperty("data").GetProperty("url").GetProperty(apiType).GetString();
             return new InvokeResult<ImageRepoUploadResult>()
             {
                 success = true,

@@ -6,6 +6,8 @@ using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
 using AcgnuX.Utils;
 using GalaSoft.MvvmLight;
+using SharedLib.Model;
+using SharedLib.Utils;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;

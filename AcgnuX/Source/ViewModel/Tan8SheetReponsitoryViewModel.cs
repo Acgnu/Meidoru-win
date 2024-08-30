@@ -5,6 +5,8 @@ using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using SharedLib.Model;
+using SharedLib.Utils;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;

@@ -1,6 +1,10 @@
-﻿using System.Windows;
+﻿using System;
+using System.IO;
+using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Resources;
 
 namespace AcgnuX.Source.Utils
 {
@@ -67,6 +71,33 @@ namespace AcgnuX.Source.Utils
                 parentView = dep as ListView;
             }
             return parentView;
+        }
+
+        /// <summary>
+        /// 以文本方式读取资源文件
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static string GetApplicationResourceAsString(string path)
+        {
+            var uri = new Uri(path, UriKind.Relative);
+            var info = System.Windows.Application.GetResourceStream(uri);
+            StreamReader reader = new StreamReader(info.Stream, Encoding.UTF8);
+            string text = reader.ReadToEnd();
+            info.Stream.Close();
+            return text;
+        }
+
+        /// <summary>
+        /// 以流的方式读取资源文件
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static StreamResourceInfo GetApplicationResourceAsStream(string path)
+        {
+            var uri = new Uri(path, UriKind.Relative);
+            var info = System.Windows.Application.GetResourceStream(uri);
+            return info;
         }
     }
 }

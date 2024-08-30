@@ -93,15 +93,10 @@ namespace AcgnuX.WindowX.Dialog
             //binding.UpdateSource();
         }
 
-        private void OnDialogLoaded(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
         private void OnAvatarImageClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             Image eventObj = sender as Image;
-            var path = FileUtil.OpenFileDialogForPath(String.Empty, "图片文件|*.jpg;*.png;*.jpeg;*.bmp");
+            var path = WindowUtil.OpenFileDialogForPath(String.Empty, "图片文件|*.jpg;*.png;*.jpeg;*.bmp");
             if (!string.IsNullOrEmpty(path))
             {
                 eventObj.Source = ImageUtil.GetBitmapImage(path);

@@ -1,7 +1,4 @@
-﻿using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Utils;
-using Microsoft.VisualBasic.Devices;
-using Newtonsoft.Json;
+﻿using Microsoft.VisualBasic.Devices;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -10,13 +7,9 @@ using System.Runtime.Caching;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Media.Imaging;
-using System.Windows.Resources;
+using System.Text.Json;
 
-namespace AcgnuX.Source.Utils
+namespace SharedLib.Utils
 {
     /// <summary>
     /// 文件工具类
@@ -51,8 +44,8 @@ namespace AcgnuX.Source.Utils
                 return new T();
             }
             var jsonData = File.ReadAllText(JsonFileFullPath);
-            var obj = JsonConvert.DeserializeObject<T>(jsonData);
-            return obj;
+            //var obj = JsonConvert.DeserializeObject<T>(jsonData);
+            return JsonSerializer.Deserialize<T>(jsonData);
         }
 
         /// <summary>
@@ -62,9 +55,8 @@ namespace AcgnuX.Source.Utils
         /// <param name="JsonFileFullPath">JSON完整保存目录</param>
         public static void SaveJsonToFile(object data, string JsonFileFullPath)
         {
-            // Update json data string
-            var jsonData = JsonConvert.SerializeObject(data);
-            File.WriteAllText(JsonFileFullPath, jsonData);
+            var s = JsonSerializer.Serialize(data);
+            File.WriteAllText(JsonFileFullPath, s);
         }
 
         /// <summary>
@@ -84,8 +76,7 @@ namespace AcgnuX.Source.Utils
                 File.Copy(JsonFileFullPath, bakFileFullPath, true);
             }
             // Update json data string
-            var jsonData = JsonConvert.SerializeObject(data);
-            File.WriteAllText(JsonFileFullPath, jsonData);
+            SaveJsonToFile(data, JsonFileFullPath);
         }
 
         /// <summary>
@@ -188,48 +179,6 @@ namespace AcgnuX.Source.Utils
         }
 
         /// <summary>
-        /// 打开文件对话框, 返回所选文件完整路径
-        /// </summary>
-        /// <param name="initialPath">初始化路径</param>
-        /// <param name="filter">文件过滤</param>
-        /// <returns></returns>
-        public static string OpenFileDialogForPath(string initialPath, string filter)
-        {
-            var openFileDialog = new OpenFileDialog
-            {
-                InitialDirectory = initialPath,
-                Filter = filter,
-                RestoreDirectory = true,
-                FilterIndex = 1
-            };
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                return openFileDialog.FileName;
-            }
-            return "";
-        }
-
-        /// <summary>
-        /// 打开文件对话框, 返回所选文件夹完整路径
-        /// </summary>
-        /// <param name="initialPath">初始化路径</param>
-        /// <param name="filter">文件过滤</param>
-        /// <returns></returns>
-        public static string OpenFolderDialogForPath(string initialPath)
-        {
-            var dialog = new FolderBrowserDialog()
-            {
-                Description = "请选择文件路径"
-            };
-
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                return dialog.SelectedPath;
-            }
-            return "";
-        }
-
-        /// <summary>
         /// 重命名文件夹
         /// </summary>
         /// <param name="originPath">原始文件夹完整路径</param>
@@ -261,33 +210,6 @@ namespace AcgnuX.Source.Utils
                 }
             }
             return source;
-        }
-
-        /// <summary>
-        /// 以文本方式读取资源文件
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public static string GetApplicationResourceAsString(string path)
-        {
-            var uri = new Uri(path, UriKind.Relative);
-            var info = System.Windows.Application.GetResourceStream(uri);
-            StreamReader reader = new StreamReader(info.Stream, Encoding.UTF8);
-            string text = reader.ReadToEnd();
-            info.Stream.Close();
-            return text;
-        }
-
-        /// <summary>
-        /// 以流的方式读取资源文件
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public static StreamResourceInfo GetApplicationResourceAsStream(string path)
-        {
-            var uri = new Uri(path, UriKind.Relative);
-            var info = System.Windows.Application.GetResourceStream(uri);
-            return info;
         }
 
         /// <summary>
@@ -359,53 +281,6 @@ namespace AcgnuX.Source.Utils
             // 设置当前流的位置为流的开始 
             //stream.Seek(0, SeekOrigin.Begin);
             return bytes;
-        }
-
-        /// <summary>
-        /// 根据后缀名判断是否为支持的媒体文件类型, 用于读取MTP缩略图
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        public static SyncContentType GetMediaTypeByName(string fileName)
-        {
-            if (Regex.IsMatch(fileName, @"(.*?)\.(mp3|aac|flac|wma)$", RegexOptions.IgnoreCase))
-            {
-                return SyncContentType.AUDIO;
-            }
-            else if (Regex.IsMatch(fileName, @"(.*?)\.(mp4|3gp|wmv)$", RegexOptions.IgnoreCase))
-            {
-                return SyncContentType.VIDEO;
-            }
-            else if (Regex.IsMatch(fileName, @"(.*?)\.(jpg|jpeg|png|bmp|gif)$", RegexOptions.IgnoreCase))
-            {
-                return SyncContentType.IMAGE;
-            }
-            else
-            {
-                return SyncContentType.OTHER;
-            }
-        }
-
-        /// <summary>
-        /// 读取音频文件的专辑图片
-        /// </summary>
-        /// <param name="filePath"></param>
-        /// <returns>byte数组</returns>
-        public static byte[] GetAudioFileAlbum(string filePath)
-        {
-            try
-            {
-                TagLib.File file = TagLib.File.Create(filePath);
-                var firstPicture = file.Tag.Pictures.FirstOrDefault();
-                if (firstPicture != null)
-                {
-                    return firstPicture.Data.Data;
-                }
-            }
-            catch (Exception)
-            { 
-            }
-            return null;
         }
 
         /// <summary>

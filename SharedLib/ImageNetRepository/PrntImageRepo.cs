@@ -1,18 +1,16 @@
-﻿using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Source.Model;
-using AcgnuX.Utils;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using SharedLib.Model;
+using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace AcgnuX.Source.Bussiness.imgrespotroy
+namespace SharedLib.ImageNetRepository
 {
     /// <summary>
     /// Prnt图床
@@ -22,7 +20,7 @@ namespace AcgnuX.Source.Bussiness.imgrespotroy
     {
         public string GetApiCode()
         {
-            return ApplicationConstant.IMG_REPO_API[2];
+            return "prnt";
         }
 
         public InvokeResult<ImageRepoUploadResult> Upload(ImageRepoUploadArg arg)
@@ -47,20 +45,25 @@ namespace AcgnuX.Source.Bussiness.imgrespotroy
             //}
 
             //执行上传
-            var response = RequestUtil.UploadFile("https://prntscr.com/upload.php", arg.FullFilePath, "image", arg.ExtraArgs["uploadFileFormName"].ToString(), null);
+            var response = RequestUtil.UploadFile(
+                "https://prntscr.com/upload.php", 
+                arg.FullFilePath,
+                "image",
+                arg.ExtraArgs["uploadFileFormName"],
+                 null);
             if (string.IsNullOrEmpty(response))
             {
                 return invokeResult;
             }
             //转换为json对象
-            var resultModel = (JObject) JsonConvert.DeserializeObject(response);
-            var status = Convert.ToString(resultModel["status"]);
+            var jsonDoc = JsonSerializer.Deserialize<JsonDocument>(response);
+            var status = jsonDoc.RootElement.GetProperty("status").GetString();
             if (!status.Equals("success"))
             {
-                invokeResult.message = Convert.ToString(resultModel["msg"]);
+                invokeResult.message = jsonDoc.RootElement.GetProperty("msg").GetString();
                 return invokeResult;
             }
-            var ImgAddress = resultModel["data"].ToString();
+            var ImgAddress = jsonDoc.RootElement.GetProperty("data").GetString();
             var crawlResult = RequestUtil.CrawlContentFromWebsit(ImgAddress, null);
 
             //设置匹配规则

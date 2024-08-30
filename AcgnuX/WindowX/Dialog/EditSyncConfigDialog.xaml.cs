@@ -3,6 +3,7 @@ using AcgnuX.Source.Model;
 using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
+using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -127,16 +128,11 @@ namespace AcgnuX.WindowX.Dialog
         /// <param name="e"></param>
         private void OnChooseFolder(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            var path = FileUtil.OpenFolderDialogForPath(null);
+            var path = WindowUtil.OpenFolderDialogForPath(null);
             if (!string.IsNullOrEmpty(path))
             {
                 TextBlockPcPath.Text = path;
             }
-        }
-
-        private void OnDialogLoaded(object sender, RoutedEventArgs e)
-        {
-            
         }
     }
 }

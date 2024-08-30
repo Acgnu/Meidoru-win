@@ -10,7 +10,6 @@ using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
 using AcgnuX.WindowX.Dialog;
 using GalaSoft.MvvmLight.Messaging;
-using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Windows;

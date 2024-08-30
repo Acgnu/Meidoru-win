@@ -9,6 +9,7 @@ using AcgnuX.WindowX.Dialog;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using SharedLib.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;

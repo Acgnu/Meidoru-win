@@ -1,6 +1,4 @@
-﻿using GalaSoft.MvvmLight;
-
-namespace AcgnuX.Source.Model
+﻿namespace SharedLib.Model
 {
     /// <summary>
     /// 网页IP池爬取规则

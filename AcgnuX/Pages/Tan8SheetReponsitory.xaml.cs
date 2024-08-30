@@ -1,6 +1,7 @@
 ﻿using AcgnuX.Source.Bussiness.Common;
 using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Taskx.Http;
+using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
 using AcgnuX.WindowX;
 using AcgnuX.WindowX.Dialog;
@@ -8,6 +9,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace AcgnuX.Pages
 {

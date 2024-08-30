@@ -1,4 +1,5 @@
 ﻿using AcgnuX.Source.Model;
+using SharedLib.Model;
 using System.Windows.Controls;
 
 namespace AcgnuX.Pages
