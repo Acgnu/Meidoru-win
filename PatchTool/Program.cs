@@ -11,14 +11,10 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Source.Model;
-using AcgnuX.Source.Utils;
-using AcgnuX.Utils;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using AcgnuX.Source.Bussiness.imgrespotroy;
 using PatchTool.Properties;
+using SharedLib.ImageNetRepository;
+using SharedLib.Model;
+using SharedLib.Utils;
 
 namespace PatchTool
 {
@@ -522,13 +518,12 @@ namespace PatchTool
                             {
                                 IImageRepo imageAPI = ImageRepoFactory.GetRandomApi();
                                 //IImageRepo imageAPI = new PrntImageRepo();
+                                var extraArgs = new Dictionary<string, string>();
+                                extraArgs.Add("uploadFileFormName", "sheet_" + pianoScore.Ypid + ".png");
                                 ImageRepoUploadArg uploadArg = new ImageRepoUploadArg()
                                 {
                                     FullFilePath = Path.Combine(ypHomePath, sheetDir, previewPicName),
-                                    ExtraArgs = new JObject
-                                    {
-                                        { "uploadFileFormName", "sheet_" + pianoScore.Ypid + ".png" }
-                                    }
+                                    ExtraArgs = extraArgs
                                 };
                                 InvokeResult<ImageRepoUploadResult> invokeResult;
                                 try
@@ -628,7 +623,7 @@ namespace PatchTool
                                     var sufId = "(" + pianoScore.Ypid + ")";
                                     var titleName = pianoScore.Name.EndsWith(sufId) ? pianoScore.Name.Substring(0, pianoScore.Name.Length - sufId.Length) : pianoScore.Name;
                                     Bitmap rawImg = (Bitmap)Bitmap.FromFile(sheetFile);
-                                    Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, titleName, 1, pianoScore.YpCount, true);
+                                    Bitmap bmp = Tan8SheetMaskUtil.CreateIegalTan8Sheet(rawImg, titleName, 1, pianoScore.YpCount, true);
                                     bmp.Save(Path.Combine(ypHomePath, sheetDir, previewPicName), ImageFormat.Png);
                                     bmp.Dispose();
                                 }
@@ -675,7 +670,7 @@ namespace PatchTool
                                         {
                                             Console.WriteLine(Path.GetFileName(sheetDir));
                                             Bitmap rawImg = (Bitmap)Bitmap.FromFile(sheetFile);
-                                            Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, Path.GetFileName(sheetDir), 1, 10, true);
+                                            Bitmap bmp = Tan8SheetMaskUtil.CreateIegalTan8Sheet(rawImg, Path.GetFileName(sheetDir), 1, 10, true);
                                             bmp.Save(Path.Combine(@"C:\Users\Administrator\Desktop\去水印", Path.GetFileName(sheetDir) + ".png"), ImageFormat.Png);
                                             bmp.Dispose();
                                         }
@@ -693,7 +688,7 @@ namespace PatchTool
                 {
                     string dirName = singleTestDirName;
                     Bitmap rawImg = (Bitmap)Bitmap.FromFile(@"E:\曲谱\" + dirName + @"\page.0.png");
-                    Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, dirName, 1 , 10, true);
+                    Bitmap bmp = Tan8SheetMaskUtil.CreateIegalTan8Sheet(rawImg, dirName, 1 , 10, true);
                     bmp.Save(Path.Combine(@"C:\Users\Administrator\Desktop\去水印", dirName + ".png"), ImageFormat.Png);
                     bmp.Dispose();
                 }

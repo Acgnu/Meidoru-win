@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AcgnuX.Source.Model
+namespace SharedLib.Model
 {
     public class ProxyAddress
     {

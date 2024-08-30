@@ -52,4 +52,13 @@
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Data" Value="{StaticResource Icon_OpenFolder}" />
     </Style>
+
+    <Style TargetType="Path" x:Key="DownloadEmptyDataIndicatorStyle" BasedOn="{StaticResource EmptyDataIndicatorStyle}">
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding ButtonStep}" Value="1">
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

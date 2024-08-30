@@ -30,6 +30,8 @@
         <Setter Property="RenderTransformOrigin" Value="0.5, 0.5" />
     </Style>
 
+
+
     <!--对话框window基本样式-->
     <Style x:Key="DialogWindowBaseStyle" TargetType="Window" BasedOn="{StaticResource WindowBaseStyle}">
         <Setter Property="ResizeMode" Value="{Binding DialogResizeMode, FallbackValue=NoResize}" />
@@ -98,7 +100,7 @@
                                                 Content="✕" 
                                                 Padding="15,1" 
                                                 Style="{StaticResource NoneStyleButtonStyle}" 
-                                                Template="{StaticResource WindowCloseButtonTemplate}"/>
+                                                Template="{StaticResource WindowCloseButtonTemplate}" />
                                     </StackPanel>
                                 </Grid>
                                 <!--主内容-->
@@ -109,44 +111,22 @@
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <EventTrigger RoutedEvent="Loaded">
+                        <!--<EventTrigger SourceName="CloseDialogButton" RoutedEvent="Button.Click">
                             <EventTrigger.Actions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation 
-                                            Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" 
-                                            From="0.97" To="1" Duration="0:0:0.15" AccelerationRatio="0.2" />
-                                        <DoubleAnimation 
-                                            Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" 
-                                            From="0.97" To="1" Duration="0:0:0.15" AccelerationRatio="0.2" />
-                                        <DoubleAnimation 
-                                             Storyboard.TargetProperty="Opacity" 
-                                            From="0" To="1" Duration="0:0:0.15" AccelerationRatio="0.2"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
+                                <BeginStoryboard Storyboard="{StaticResource WindowFadeOutStoryboard}" />
                             </EventTrigger.Actions>
-                        </EventTrigger>
-                        <EventTrigger SourceName="CloseDialogButton" RoutedEvent="Button.Click">
-                            <EventTrigger.Actions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation 
-                                            Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" 
-                                            From="1" To="0.97" Duration="0:0:0.15" DecelerationRatio="0.2"/>
-                                        <DoubleAnimation 
-                                            Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" 
-                                            From="1" To="0.97" Duration="0:0:0.15" DecelerationRatio="0.2" />
-                                        <DoubleAnimation 
-                                            Storyboard.TargetProperty="Opacity" 
-                                            From="1" To="0"  Duration="0:0:0.15" DecelerationRatio="0.2"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger.Actions>
-                        </EventTrigger>
+                        </EventTrigger>-->
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="Loaded">
+                <EventTrigger.Actions>
+                    <BeginStoryboard Storyboard="{StaticResource WindowFadeInStoryboard}" />
+                </EventTrigger.Actions>
+            </EventTrigger>
+        </Style.Triggers>
     </Style>
 
     <!--主窗口样式-->
@@ -232,5 +212,10 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="Loaded">
+                <BeginStoryboard Storyboard="{StaticResource WindowFadeInStoryboard}" />
+            </EventTrigger>
+        </Style.Triggers>
     </Style>
 </ResourceDictionary>

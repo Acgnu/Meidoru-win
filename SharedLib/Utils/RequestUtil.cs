@@ -1,18 +1,15 @@
-﻿using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Source.Model;
-using AcgnuX.Source.Utils;
-using RestSharp;
-using RestSharp.Serialization;
+﻿using SharedLib.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AcgnuX.Utils
+namespace SharedLib.Utils
 {
     public class RequestUtil
     {
@@ -43,63 +40,40 @@ namespace AcgnuX.Utils
         }
 
         /// <summary>
-        /// 发起数据异步请求
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="url">远程地址</param>
-        /// <param name="prams">参数</param>
-        /// <param name="callBackActoin">回调函数</param>
-        /// <param name="type">请求方法</param>
-        /// <returns>请求句柄</returns>
-        public static RestRequestAsyncHandle AsyncRequest<T>(string url, SortedDictionary<string, string> prams, Action<IRestResponse<T>> callBackActoin, Method type) where T : new()
-        {
-            var request = new RestRequest(type);
-            request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
-            request.OnBeforeDeserialization = response => response.ContentType = ContentType.Json;
-            foreach (KeyValuePair<string, string> kvp in prams)
-            {
-                request.AddParameter(kvp.Key, kvp.Value);
-            }
-            var client = new RestClient(url);
-            var asyncHandle = client.ExecuteAsync<T>(request, callBackActoin);
-            return asyncHandle;
-        }
-
-        public static async Task<IRestResponse<T>> TaskRequestAsync<T>(string url, SortedDictionary<string, string> prams, Method type) where T : new()
-        {
-            var request = new RestRequest(type);
-            request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
-            request.OnBeforeDeserialization = response => response.ContentType = ContentType.Json;
-            foreach (KeyValuePair<string, string> kvp in prams)
-            {
-                request.AddParameter(kvp.Key, kvp.Value);
-            }
-            var client = new RestClient(url);
-            return await client.ExecuteTaskAsync<T>(request);
-        }
-
-        /// <summary>
-        /// 发起同步请求
+        /// 异步请求
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="url"></param>
         /// <param name="prams"></param>
-        /// <param name="type"></param>
+        /// <param name="method"></param>
         /// <returns></returns>
-        public static IRestResponse<T> SyncRequest<T>(string url, SortedDictionary<string, string> prams, Method type) where T : new()
+        public static async Task<HttpResponseMessage> TaskFormRequestAsync<T>(string url, SortedDictionary<string, string> prams, HttpMethod method) where T : new()
         {
-            var request = new RestRequest(type);
-
-            foreach (KeyValuePair<string, string> kvp in prams)
+            var client = new HttpClient();
+            var body = new FormUrlEncodedContent(prams);
+            if (method == HttpMethod.Post)
             {
-                request.AddParameter(kvp.Key, kvp.Value);
+                return await client.PostAsync(url, body);
             }
+            if (method == HttpMethod.Get)
+            {
+               //
+            }
+            throw new InvalidOperationException("不支持的请求方式");
+        }
 
-            var client = new RestClient(url);
-
-            var response = client.Execute<T>(request);
-
-            return response;
+        public static async Task<HttpResponseMessage> TaskJsonRequestAsync<T>(string url, SortedDictionary<string, string> prams, HttpMethod method) where T : new()
+        {
+            var client = new HttpClient();
+            if (method == HttpMethod.Post)
+            {
+                return await HttpClientJsonExtensions.PostAsJsonAsync(client, url, prams);
+            }
+            if (method == HttpMethod.Get)
+            {
+                //
+            }
+            throw new InvalidOperationException("不支持的请求方式");
         }
 
         /// <summary>

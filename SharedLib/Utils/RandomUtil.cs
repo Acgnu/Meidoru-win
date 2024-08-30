@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace AcgnuX.Utils
+namespace SharedLib.Utils
 {
     public class RandomUtil
     {

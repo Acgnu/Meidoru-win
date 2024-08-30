@@ -1,8 +1,4 @@
-﻿using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Source.Model;
-using AcgnuX.Source.Utils;
-using AcgnuX.Source.ViewModel;
-using AcgnuX.Utils;
+﻿using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AcgnuX.Source.Bussiness.Data
+namespace CrawIPService
 {
     /// <summary>
     /// 抓取规则

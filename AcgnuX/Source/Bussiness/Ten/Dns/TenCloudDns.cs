@@ -3,9 +3,10 @@ using AcgnuX.Source.Model;
 using AcgnuX.Source.Model.Ten.Dns;
 using AcgnuX.Utils;
 using AcgnuX.Utils.Crypto;
-using RestSharp;
+using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace AcgnuX.Bussiness.Ten.Dns
@@ -43,7 +44,7 @@ namespace AcgnuX.Bussiness.Ten.Dns
         /// <param name="recordId"></param>
         /// <param name="callBackActoin"></param>
         /// <returns></returns>
-        public async Task<IRestResponse<DnsOperatorResult>> DeleteRecordAsync(string recordId)
+        public async Task<DnsOperatorResult> DeleteRecordAsync(string recordId)
         {
             SortedDictionary<string, string> urlArgs = new SortedDictionary<string, string>(StringComparer.Ordinal);
             PutUrlArg(urlArgs, "domain", mTenDnsApiSecret.PrivDomain);
@@ -58,7 +59,7 @@ namespace AcgnuX.Bussiness.Ten.Dns
         //    //        String createResult = createTenAccess("DomainCreate", CVM_REQUEST_ADDR, urlArgs);
         //    //        System.out.println(createResult);
         //}
-        public async Task<IRestResponse<DnsOperatorResult>> CreateRecordAsync(string name, string type, string line, string value)
+        public async Task<DnsOperatorResult> CreateRecordAsync(string name, string type, string line, string value)
         {
             var urlArgs = new SortedDictionary<string, string>(StringComparer.Ordinal);
             PutUrlArg(urlArgs, "domain", mTenDnsApiSecret.PrivDomain);
@@ -69,33 +70,6 @@ namespace AcgnuX.Bussiness.Ten.Dns
             return await CreateTenAccessAsync<DnsOperatorResult>("RecordCreate", CVM_REQUEST_ADDR, urlArgs);
         }
 
-        /**
-         * 创建一个腾讯云连接
-         * @param action
-         * @param apiAddr
-         * @param urlArgs
-         * @return 接口返回
-         */
-        private RestRequestAsyncHandle createTenAccess<T>(String action, String apiAddr, SortedDictionary<string, string> urlArgs, Action<IRestResponse<T>> callBackActoin) where T : new()
-        {
-            if (null == urlArgs)
-            {
-                urlArgs = new SortedDictionary<string, string>(StringComparer.Ordinal);
-            }
-            var nonce = RandomUtil.MakeSring(false, 6);
-            PutUrlArg(urlArgs, "Action", action);
-            PutUrlArg(urlArgs, "Timestamp", TimeUtil.CurrentMillis() / 1000 + "");
-            PutUrlArg(urlArgs, "Nonce", nonce);
-            PutUrlArg(urlArgs, "SecretId", mTenDnsApiSecret.SecretId);
-
-            var signature = createSignature("POST", apiAddr, urlArgs);
-            PutUrlArg(urlArgs, "Signature", signature);
-            //return RequestUtil.AsyncRequest<T>(PROTOCOL + CNS_DOMAIN + apiAddr, urlArgs, callBackActoin, Method.POST);
-            return RequestUtil.AsyncRequest<T>(PROTOCOL + CNS_DOMAIN + apiAddr, urlArgs, callBackActoin, Method.POST);
-            //restTemplate.getMessageConverters().add(new FastJsonHttpMessageConverter());
-            //return restTemplate.postForObject(PROTOCOL + CNS_DOMAIN + apiAddr, convertMap(urlArgs), JSONObject.class);
-        }
-
         /// <summary>
         /// 异步创建凭证
         /// </summary>
@@ -104,7 +78,7 @@ namespace AcgnuX.Bussiness.Ten.Dns
         /// <param name="apiAddr"></param>
         /// <param name="urlArgs"></param>
         /// <returns></returns>
-        private async Task<IRestResponse<T>> CreateTenAccessAsync<T>(String action, String apiAddr, SortedDictionary<string, string> urlArgs) where T : new()
+        private async Task<T> CreateTenAccessAsync<T>(String action, String apiAddr, SortedDictionary<string, string> urlArgs) where T : new()
         {
             if (null == urlArgs)
             {
@@ -118,7 +92,14 @@ namespace AcgnuX.Bussiness.Ten.Dns
 
             var signature = createSignature("POST", apiAddr, urlArgs);
             PutUrlArg(urlArgs, "Signature", signature);
-            return await RequestUtil.TaskRequestAsync<T>(PROTOCOL + CNS_DOMAIN + apiAddr, urlArgs, Method.POST);
+
+            var response = await RequestUtil.TaskFormRequestAsync<T>(PROTOCOL + CNS_DOMAIN + apiAddr, urlArgs, System.Net.Http.HttpMethod.Post);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return default;
+            }
+            return await HttpContentJsonExtensions.ReadFromJsonAsync<T>(response.Content); ;
         }
 
         /// <summary>
@@ -128,7 +109,7 @@ namespace AcgnuX.Bussiness.Ten.Dns
         /// <param name="dnsRecord"></param>
         /// <param name="callBackActoin"></param>
         /// <returns></returns>
-        public async Task<IRestResponse<DnsOperatorResult>> ModifyRecordAsync(int id, string name, string type, string line, string value)
+        public async Task<DnsOperatorResult> ModifyRecordAsync(int id, string name, string type, string line, string value)
         {
             SortedDictionary<string, string> urlArgs = new SortedDictionary<string, string>(StringComparer.Ordinal);
             PutUrlArg(urlArgs, "domain", mTenDnsApiSecret.PrivDomain);
@@ -158,7 +139,6 @@ namespace AcgnuX.Bussiness.Ten.Dns
             return AlgorithmUtil.ToHMACSHA1(accessToSign, mTenDnsApiSecret.SecretKey);
         }
 
-
         /**
          * 查询域名解析记录
          * @param domain  主域名
@@ -166,23 +146,7 @@ namespace AcgnuX.Bussiness.Ten.Dns
          * @param recordType  记录值类型  A、CNAME、MX、NS, TXT
          * @return
          */
-        public RestRequestAsyncHandle queryRecordList<T>(String subDomain, String recordType, Action<IRestResponse<T>> callBackActoin) where T : new()
-        {
-            var urlArgs = new SortedDictionary<String, String>(StringComparer.Ordinal);
-            PutUrlArg(urlArgs, "domain", mTenDnsApiSecret.PrivDomain);
-            PutUrlArg(urlArgs, "subDomain", subDomain);
-            PutUrlArg(urlArgs, "recordType", recordType);
-            return createTenAccess("RecordList", CVM_REQUEST_ADDR, urlArgs, callBackActoin);
-        }
-
-        /**
-         * 查询域名解析记录
-         * @param domain  主域名
-         * @param subDomain  子域名
-         * @param recordType  记录值类型  A、CNAME、MX、NS, TXT
-         * @return
-         */
-        public async Task<IRestResponse<T>> QueryRecordsAsync<T>(String subDomain, String recordType) where T : new()
+        public async Task<T> QueryRecordsAsync<T>(String subDomain, String recordType) where T : new()
         {
             var urlArgs = new SortedDictionary<string, string>(StringComparer.Ordinal);
             PutUrlArg(urlArgs, "domain", mTenDnsApiSecret.PrivDomain);
@@ -201,22 +165,6 @@ namespace AcgnuX.Bussiness.Ten.Dns
         //        System.out.println(clientIp);
         //        return clientIp;
         //    }
-
-        /**
-         * 将k-v参数转换成rest template能够使用的类型
-         * @param treeMap
-         * @return
-         */
-        public static List<Parameter> convertMap(SortedDictionary<string, string> treeMap)
-        {
-            List<Parameter> pmsx = new List<Parameter>();
-            foreach (KeyValuePair<string, string> kvp in treeMap)
-            {
-                var item = new Parameter(kvp.Key.Trim(), kvp.Value.Trim(), ParameterType.QueryStringWithoutEncode);
-                pmsx.Add(item);
-            }
-            return pmsx;
-        }
 
         //public JSONObject analyseAndGetData(JSONObject fullresult, String dataKey) throws RuntimeException
         //{

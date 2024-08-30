@@ -10,6 +10,7 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using MediaDevices;
 using Microsoft.Toolkit.Uwp.Notifications;
+using SharedLib.Utils;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -442,7 +443,7 @@ namespace AcgnuX.Source.ViewModel
                 Name = fileName,
                 DeviceSyncViewModel = this
             };
-            var mediaType = FileUtil.GetMediaTypeByName(fileName);
+            var mediaType = MediaUtil.GetMediaTypeByName(fileName);
             item.ContentType = mediaType;
             if (mediaType == SyncContentType.IMAGE || mediaType == SyncContentType.VIDEO)
             {
@@ -465,7 +466,7 @@ namespace AcgnuX.Source.ViewModel
                 //PC文件直接读取
                 if (source == SyncDeviceType.PC)
                 {
-                    item.PreviewImg = new ByteArray(FileUtil.GetAudioFileAlbum(Path.Combine(folderPath, fileName)));
+                    item.PreviewImg = new ByteArray(MediaUtil.GetAudioFileAlbum(Path.Combine(folderPath, fileName)));
                 }
                 else
                 {
@@ -477,14 +478,14 @@ namespace AcgnuX.Source.ViewModel
                         if (System.IO.File.Exists(tempFullPath))
                         {
                             //已存在则直接读取
-                            item.PreviewImg = new ByteArray(FileUtil.GetAudioFileAlbum(tempFullPath));
+                            item.PreviewImg = new ByteArray(MediaUtil.GetAudioFileAlbum(tempFullPath));
                         }
                         else
                         {
                             //不存在则复制
                             var fileInfo = device.GetFileInfo(Path.Combine(driverName, folderPath, fileName));
                             fileInfo.CopyTo(tempFullPath);
-                            item.PreviewImg = new ByteArray(FileUtil.GetAudioFileAlbum(tempFullPath));
+                            item.PreviewImg = new ByteArray(MediaUtil.GetAudioFileAlbum(tempFullPath));
                         }
                     }
                 }

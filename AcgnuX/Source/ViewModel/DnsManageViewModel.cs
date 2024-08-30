@@ -8,7 +8,6 @@ using AcgnuX.Source.Model.Ten.Dns;
 using AcgnuX.WindowX.Dialog;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -71,10 +70,10 @@ namespace AcgnuX.Source.ViewModel
             IsBusy = true;
 
             var response = await TenDnsClient.QueryRecordsAsync<DnsRecordResult>(null, null);
-            if (null != response.Data && null != response.Data.data)
+            if (null != response)
             {
                 GridData.Clear();
-                foreach (var item in response.Data.data.records)
+                foreach (var item in response.data.records)
                 {
                     if (!string.IsNullOrEmpty(FilterText) && !item.Name.Contains(FilterText) && !item.Value.Contains(FilterText))
                     {

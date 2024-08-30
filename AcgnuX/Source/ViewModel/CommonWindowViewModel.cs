@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 
 namespace AcgnuX.Source.ViewModel
 {
@@ -29,7 +30,9 @@ namespace AcgnuX.Source.ViewModel
             //初始化命令
             MinimizeCommand = new RelayCommand<Window>((window) => window.WindowState = WindowState.Minimized);
             MaximizeCommand = new RelayCommand<Window>((window) => window.WindowState ^= WindowState.Maximized);
-            CloseCommand = new RelayCommand<Window>((window) => window.Close());
+            CloseCommand = new RelayCommand<Window>((window) => {
+           
+            });
 
             //注册事件
             //mWindow.StateChanged += (sender, e) =>

@@ -5,6 +5,7 @@ using AcgnuX.Source.Utils;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using SharedLib.Utils;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -225,7 +226,7 @@ namespace AcgnuX.Source.ViewModel
                 worker.ReportProgress(nowProgress, string.Format("正在转换第{0}张乐谱, 共{1}张", i + 1, totalPage));
                 var pageFileName = string.Format("page.{0}.png", i);
                 Bitmap rawImg = (Bitmap)Bitmap.FromFile(Path.Combine(fullPath, pageFileName));
-                Bitmap bmp = ImageUtil.CreateIegalTan8Sheet(rawImg, tan8Sheet.Name, i + 1, totalPage, false);
+                Bitmap bmp = Tan8SheetMaskUtil.CreateIegalTan8Sheet(rawImg, tan8Sheet.Name, i + 1, totalPage, false);
                 bmp.Save(Path.Combine(fullPath, ApplicationConstant.SHARE_TEMP_FOLDER_NAME, i + ApplicationConstant.DEFAULT_SHEET_PAGE_FORMAT), ImageFormat.Png);
                 bmp.Dispose();
             }

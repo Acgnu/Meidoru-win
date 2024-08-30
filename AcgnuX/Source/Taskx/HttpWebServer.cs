@@ -3,6 +3,7 @@ using AcgnuX.Source.Bussiness.Common;
 using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
+using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -252,7 +253,7 @@ namespace AcgnuX.Source.Taskx.Http
                 }
             }
             //没有则返回默认图 (避免flash播放器报错, 无法用程序退出)
-            WriteStream(FileUtil.GetApplicationResourceAsStream(@"/Assets/Images/tan8_sheet_preview_default.png"), httpListenerContext);
+            WriteStream(XamlUtil.GetApplicationResourceAsStream(@"/Assets/Images/tan8_sheet_preview_default.png"), httpListenerContext);
         }
 
         /// <summary>

@@ -1,7 +1,6 @@
 ﻿using AcgnuX.Bussiness.Ten.Dns;
 using AcgnuX.Source.Model.Ten.Dns;
 using GalaSoft.MvvmLight;
-using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +33,7 @@ namespace AcgnuX.Source.ViewModel
         /// <summary>
         /// 新增或更新
         /// </summary>
-        public async Task<IRestResponse<DnsOperatorResult>> SaveOrModify()
+        public async Task<DnsOperatorResult> SaveOrModify()
         {
             if (Id == null)
             {
@@ -54,8 +53,7 @@ namespace AcgnuX.Source.ViewModel
         /// <returns></returns>
         public async Task<DnsOperatorResult> Delete()
         {
-            var response = await TenDnsClient.DeleteRecordAsync(Convert.ToString(Id.GetValueOrDefault()));
-            return response.Data;
+            return await TenDnsClient.DeleteRecordAsync(Convert.ToString(Id.GetValueOrDefault())); ;
         }
     }
 }

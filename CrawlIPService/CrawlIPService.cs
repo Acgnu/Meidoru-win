@@ -1,8 +1,6 @@
-﻿using AcgnuX.Source.Bussiness.Data;
-using AcgnuX.Source.Model;
-using AcgnuX.Source.Utils;
-using AcgnuX.Utils;
-using CrawlIPService.Properties;
+﻿using CrawlIPService.Properties;
+using SharedLib.Model;
+using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

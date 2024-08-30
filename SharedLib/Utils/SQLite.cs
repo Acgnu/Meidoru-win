@@ -1,37 +1,36 @@
-﻿using AcgnuX.Source.Bussiness.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.IO;
 using System.Threading.Tasks;
 
-namespace AcgnuX.Source.Utils
+namespace SharedLib.Utils
 {
     /// <summary>
     /// SQLite查询类
     /// </summary>
     public class SQLite
     {
-        public readonly static string initfile = "init.sql";
         private static string mDbFilePath = string.Empty;
-        public static event OnDatabaseFileSetHandler OnDbFileSetEvent;
+        //public static event OnDatabaseFileSetHandler OnDbFileSetEvent;
+        public static event Action OnDbFileSetEvent;
 
         /// <summary>
         /// 设置数据库文件路径
         /// </summary>
         /// <param name="filePath"></param>
-        public static Task<bool> SetDbFilePath(string filePath)
+        public static Task<bool> SetDbFilePath(string filePath, string initSql = null)
         {
             return Task.Run(() =>
             {
                 mDbFilePath = filePath;
                 try
                 {
-                    //创建必须的表
-                    var initSQL = FileUtil.GetApplicationResourceAsString(@"Assets\data\" + initfile);
-                    ExecuteNonQuery(initSQL, null);
-                    OnDbFileSetEvent?.Invoke();
+                    if (!string.IsNullOrEmpty(initSql))
+                    {
+                        ExecuteNonQuery(initSql, null);
+                        OnDbFileSetEvent?.Invoke();
+                    }
                 }
                 catch (Exception) { }
                 return true;

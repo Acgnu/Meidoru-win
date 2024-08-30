@@ -7,6 +7,7 @@ using AcgnuX.Source.ViewModel;
 using AcgnuX.Utils;
 using AcgnuX.WindowX.Dialog;
 using GalaSoft.MvvmLight.Command;
+using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -44,7 +45,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnChooseFIle(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            var path = FileUtil.OpenFileDialogForPath("C:\\", "JSON文件|*.JSON");
+            var path = WindowUtil.OpenFileDialogForPath("C:\\", "JSON文件|*.JSON");
             if (!string.IsNullOrEmpty(path))
             {
                 var settingsDataContext = DataContext as SettingsViewModel;
@@ -61,14 +62,15 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private async void OnChooseDbFile(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            var path = FileUtil.OpenFileDialogForPath("C:\\", "SQLite数据库文件|*.db");
+            var path = WindowUtil.OpenFileDialogForPath("C:\\", "SQLite数据库文件|*.db");
             if (!string.IsNullOrEmpty(path))
             {
                 var settingsDataContext = DataContext as SettingsViewModel;
                 settingsDataContext.DbFilePath = path;
                 Settings.Default.DBFilePath = path;
                 Settings.Default.Save();
-                await SQLite.SetDbFilePath(path);
+                var initSQL = XamlUtil.GetApplicationResourceAsString(@"Assets\data\" + ApplicationConstant.DB_INIT_FILE);
+                await SQLite.SetDbFilePath(path, initSQL);
             }
         }
 
@@ -79,7 +81,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnChooseFolder(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            var path = FileUtil.OpenFolderDialogForPath(null);
+            var path = WindowUtil.OpenFolderDialogForPath(null);
             if (!string.IsNullOrEmpty(path))
             {
                 var settingsDataContext = DataContext as SettingsViewModel;
@@ -96,7 +98,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnChooseSkinFolder(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            var path = FileUtil.OpenFolderDialogForPath(null);
+            var path = WindowUtil.OpenFolderDialogForPath(null);
             if (!string.IsNullOrEmpty(path))
             {
                 var settingsDataContext = DataContext as SettingsViewModel;

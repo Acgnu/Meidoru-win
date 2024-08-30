@@ -5,6 +5,7 @@ using AcgnuX.Source.Utils;
 using AcgnuX.Utils;
 using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Toolkit.Uwp.Notifications;
+using SharedLib.Utils;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -75,14 +76,25 @@ namespace AcgnuX.Source.ViewModel
             //初始化菜单
             InitializeMenus();
             //主窗口退出则强制退出所有
-            CloseCommand = new RelayCommand<Window>((win) => Task.Run(() => {
-                //清空所有通知
-                ToastNotificationManagerCompat.Uninstall();
-                //退出Tan8播放器
-                Tan8PlayUtil.ExitAll();
-                //退出程序
-                Environment.Exit(0);
-            }));
+            CloseCommand = new RelayCommand<Window>((win) =>
+            {
+                var storyBoardResource = win.FindResource("WindowFadeOutStoryboard") as Storyboard;
+                var storyBoard = storyBoardResource.Clone();
+                storyBoard.Completed += new EventHandler((e, s) =>
+                {
+                    Task.Run(() =>
+                    {
+                        //清空所有通知
+                        ToastNotificationManagerCompat.Uninstall();
+                        //退出Tan8播放器
+                        Tan8PlayUtil.ExitAll();
+                        //退出程序
+                        Environment.Exit(0);
+                    });
+                });
+                storyBoard.Begin(win);
+            });
+
             OnNavMenuItemClickCommand = new RelayCommand<NavMenu>(NavMenuItemClick);
             OnSettingCommand = new RelayCommand<Window>(OnSettingIconClick);
             FaviconClickCommand = new RelayCommand(OnFaviconClick);

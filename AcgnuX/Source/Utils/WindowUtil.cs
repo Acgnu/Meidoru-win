@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
+using System.Windows.Media.Animation;
 
 namespace AcgnuX.Source.Utils
 {
@@ -41,6 +43,48 @@ namespace AcgnuX.Source.Utils
             notify.oldProgress = notify.nowProgress;
             notify.nowProgress = value;
             return notify;
+        }
+
+        /// <summary>
+        /// 打开文件对话框, 返回所选文件完整路径
+        /// </summary>
+        /// <param name="initialPath">初始化路径</param>
+        /// <param name="filter">文件过滤</param>
+        /// <returns></returns>
+        public static string OpenFileDialogForPath(string initialPath, string filter)
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                InitialDirectory = initialPath,
+                Filter = filter,
+                RestoreDirectory = true,
+                FilterIndex = 1
+            };
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                return openFileDialog.FileName;
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// 打开文件对话框, 返回所选文件夹完整路径
+        /// </summary>
+        /// <param name="initialPath">初始化路径</param>
+        /// <param name="filter">文件过滤</param>
+        /// <returns></returns>
+        public static string OpenFolderDialogForPath(string initialPath)
+        {
+            var dialog = new FolderBrowserDialog()
+            {
+                Description = "请选择文件路径"
+            };
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                return dialog.SelectedPath;
+            }
+            return "";
         }
     }
 }

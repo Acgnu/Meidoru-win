@@ -21,6 +21,7 @@
                 <ResourceDictionary Source="/Styles/Animations.xaml" />
 
                 <ResourceDictionary Source="/Styles/ButtonStyle.xaml" />
+                <ResourceDictionary Source="/Styles/CheckBoxStyle.xaml" />
                 <ResourceDictionary Source="/Styles/TextBoxStyle.xaml" />
                 <ResourceDictionary Source="/Styles/ScrollBarStyle.xaml" />
                 <ResourceDictionary Source="/Styles/DataGridStyle.xaml" />

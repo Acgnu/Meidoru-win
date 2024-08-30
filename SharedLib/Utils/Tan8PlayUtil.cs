@@ -1,12 +1,9 @@
-﻿using AcgnuX.Source.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 
-namespace AcgnuX.Source.Utils
+namespace SharedLib.Utils
 {
     /// <summary>
     /// flash 播放工具

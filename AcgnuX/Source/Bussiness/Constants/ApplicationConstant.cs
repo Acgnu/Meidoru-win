@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,14 +23,10 @@ namespace AcgnuX.Source.Bussiness.Constants
         public static readonly string DEFAULT_COVER_NAME = "cover.jpg";
         // 默认的乐谱图片格式
         public static readonly string DEFAULT_SHEET_PAGE_FORMAT = ".png";
-        //图床API
-        public static readonly string[] IMG_REPO_API = {
-            "meet",     //遇见图床APICODE
-            "oleou",     //多合一
-            "prnt"  //prnt
-        };
         //抓取IP服务名称
         public static readonly string CRAWL_IP_SERVICE_NAME = "CrawlIPService";
+        //默认的数据库初始化文件
+        public readonly static string DB_INIT_FILE = "init.sql";
 
         #region MVVM消息
         //单个tan8乐谱下载完成消息

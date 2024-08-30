@@ -180,4 +180,31 @@
         <Setter Property="Margin" Value="0 0 5 5" />
         <Setter Property="Opacity" Value="0.5" />
     </Style>
+
+    <!--按钮样式 乐谱下载记录界面用到 -->
+    <Style TargetType="Button" x:Key="AddFloatButtonTriggerStyle" BasedOn="{StaticResource RefreshFloatButtonStyle}">
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding ButtonStep}" Value="1">
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" x:Key="ContinueFloatButtonTriggerStyle" BasedOn="{StaticResource RefreshFloatButtonStyle}">
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding ButtonStep}" Value="2">
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" x:Key="StopFloatButtonTriggerStyle" BasedOn="{StaticResource RefreshFloatButtonStyle}">
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="Background" Value="OrangeRed" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding ButtonStep}" Value="3">
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

@@ -3,6 +3,8 @@ using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
 using AcgnuX.Utils;
+using SharedLib.Model;
+using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
