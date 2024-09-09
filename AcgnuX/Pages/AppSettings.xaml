@@ -1,4 +1,4 @@
-﻿<local:BasePage x:Class="AcgnuX.Pages.AppSettings"
+﻿<Page x:Class="AcgnuX.Pages.AppSettings"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,11 +7,8 @@
       xmlns:res="clr-namespace:AcgnuX.Properties"
       xmlns:local="clr-namespace:AcgnuX.Pages"
       d:DesignWidth="1024" d:DesignHeight="768"
-      xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
       Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded" Unloaded="OnPageUnloaded">
-    <Page.DataContext>
-        <Binding Path="SettingsMajor" Source="{StaticResource Locator}"></Binding>
-    </Page.DataContext>
 
     <Grid>
         <Border Style="{StaticResource PageContainerBorderStyle}">
@@ -48,7 +45,7 @@
                     </Grid>
                 </DockPanel>
 
-                <DockPanel MaxHeight="600" Margin="0 10 0 0">
+                <DockPanel MaxHeight="500" Margin="0 10 0 0">
                     <DockPanel DockPanel.Dock="Top" Height="30" Margin="0 0 0 10">
                         <TextBlock VerticalAlignment ="Center" Margin="8 0 0 0" Text="{x:Static res:Resources.S_ProxyCount}" />
                         <TextBlock VerticalAlignment="Center" x:Name="ProxyCountTextBlock" Text ="{Binding ProxyCount}"/>
@@ -92,4 +89,4 @@
         </Button>-->
         </Border>
     </Grid>
-</local:BasePage>
+</Page>

@@ -1,19 +1,12 @@
 ﻿using AcgnuX.Properties;
 using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Source.Model;
 using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
-using AcgnuX.Utils;
 using AcgnuX.WindowX.Dialog;
-using GalaSoft.MvvmLight.Command;
+using Microsoft.Extensions.DependencyInjection;
 using SharedLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SQLite;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace AcgnuX.Pages
@@ -21,11 +14,17 @@ namespace AcgnuX.Pages
     /// <summary>
     /// Settings.xaml 的交互逻辑
     /// </summary>
-    public partial class AppSettings : BasePage
+    public partial class AppSettings
     {
+        public SettingsViewModel ViewModel { get; }
+        private ProxyFactoryV2 _ProxyFactoryV2 { get; }
+
         public AppSettings()
         {
             InitializeComponent();
+            ViewModel = App.Current.Services.GetService<SettingsViewModel>();
+            _ProxyFactoryV2 = App.Current.Services.GetService<ProxyFactoryV2>();
+            DataContext = ViewModel;
         }
 
         /// <summary>
@@ -35,7 +34,11 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private async void OnPageLoaded(object sender, RoutedEventArgs e)
         {
-            await ProxyFactoryV2.StartTrack();
+            if (ViewModel.CrawlRuls.Count == 0)
+            {
+                ViewModel.LoadCrawlRule();
+            }
+            await _ProxyFactoryV2.StartTrack();
         }
 
         /// <summary>
@@ -48,10 +51,7 @@ namespace AcgnuX.Pages
             var path = WindowUtil.OpenFileDialogForPath("C:\\", "JSON文件|*.JSON");
             if (!string.IsNullOrEmpty(path))
             {
-                var settingsDataContext = DataContext as SettingsViewModel;
-                settingsDataContext.AccountJsonPath = path;
-                Settings.Default.AccountFilePath = path;
-                Settings.Default.Save();
+                ViewModel.AccountJsonPath = path;
             }
         }
 
@@ -60,17 +60,14 @@ namespace AcgnuX.Pages
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void OnChooseDbFile(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void OnChooseDbFile(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             var path = WindowUtil.OpenFileDialogForPath("C:\\", "SQLite数据库文件|*.db");
             if (!string.IsNullOrEmpty(path))
             {
-                var settingsDataContext = DataContext as SettingsViewModel;
-                settingsDataContext.DbFilePath = path;
-                Settings.Default.DBFilePath = path;
-                Settings.Default.Save();
+                ViewModel.DbFilePath = path;
                 var initSQL = XamlUtil.GetApplicationResourceAsString(@"Assets\data\" + ApplicationConstant.DB_INIT_FILE);
-                await SQLite.SetDbFilePath(path, initSQL);
+                SQLite.SetDbFilePath(path, initSQL);
             }
         }
 
@@ -84,10 +81,7 @@ namespace AcgnuX.Pages
             var path = WindowUtil.OpenFolderDialogForPath(null);
             if (!string.IsNullOrEmpty(path))
             {
-                var settingsDataContext = DataContext as SettingsViewModel;
-                settingsDataContext.PianoScorePath = path;
-                Settings.Default.Tan8HomeDir = path;
-                Settings.Default.Save();
+                ViewModel.PianoScorePath = path;
             }
         }
 
@@ -101,10 +95,7 @@ namespace AcgnuX.Pages
             var path = WindowUtil.OpenFolderDialogForPath(null);
             if (!string.IsNullOrEmpty(path))
             {
-                var settingsDataContext = DataContext as SettingsViewModel;
-                settingsDataContext.SkinFolderPath = path;
-                Settings.Default.SkinFolderPath = path;
-                Settings.Default.Save();
+                ViewModel.SkinFolderPath = path;
             }
         }
 
@@ -121,8 +112,7 @@ namespace AcgnuX.Pages
             var result = dialog.ShowDialog();
             if (result.GetValueOrDefault())
             {
-                var vm = DataContext as SettingsViewModel;
-                vm.CheckIsCheckedAll(true);
+                ViewModel.CheckIsCheckedAll(true);
             }
         }
 
@@ -135,21 +125,16 @@ namespace AcgnuX.Pages
         {
             if (string.IsNullOrEmpty(Settings.Default.DBFilePath))
             {
-                mMainWindow.SetStatustProgess(new MainWindowStatusNotify()
-                {
-                    alertLevel = AlertLevel.ERROR,
-                    message = "答应我, 先去配置数据库"
-                });
+                WindowUtil.ShowBubbleError("答应我, 先去配置数据库");
                 return;
             }
             //打开修改对话框
-            var dialog = new EditCrawlDialog(null);
+            var dialog = new EditCrawlDialog(new CrawlRuleViewModel());
             var result = dialog.ShowDialog();
-            if (result.GetValueOrDefault() == true)
+            if (result.GetValueOrDefault())
             {
-                var vm = DataContext as SettingsViewModel;
-                vm.CrawlRuls.Add(dialog.McrawlRule);
-                vm.CheckIsCheckedAll(true);
+                ViewModel.CrawlRuls.Add(dialog.ContentViewModel);
+                ViewModel.CheckIsCheckedAll(true);
             }
         }
 
@@ -167,10 +152,7 @@ namespace AcgnuX.Pages
             var result = new ConfirmDialog(AlertLevel.WARN, string.Format(Properties.Resources.S_DeleteConfirm, string.Format("{0}", selected.Name))).ShowDialog();
             if (result.GetValueOrDefault())
             {
-                SQLite.ExecuteNonQuery("DELETE FROM crawl_rules WHERE ID = @id", new List<SQLiteParameter> { new SQLiteParameter("@id", selected.Id) });
-                var vm = DataContext as SettingsViewModel;
-                vm.CrawlRuls.Remove(selected);
-                vm.CheckIsCheckedAll(true);
+                ViewModel.DeleteCrawlRule(selected);
             }
         }
 
@@ -181,7 +163,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnPageUnloaded(object sender, RoutedEventArgs e)
         {
-            ProxyFactoryV2.StopTrack();
+            _ProxyFactoryV2.StopTrack();
         }
     }
 }

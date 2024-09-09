@@ -1,14 +1,10 @@
-﻿using AcgnuX.Properties;
-using AcgnuX.Source.Bussiness.Common;
+﻿using AcgnuX.Source.Bussiness.Common;
 using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Bussiness.Data;
 using AcgnuX.Source.Model;
-using AcgnuX.Source.Utils;
 using AcgnuX.Utils;
-using AcgnuX.WindowX.Dialog;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using SharedLib.Utils;
 using System;
 using System.Collections;
@@ -18,18 +14,17 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Threading;
-using System.Web.UI.WebControls;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Threading;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
+using AcgnuX.Source.Utils;
 
 namespace AcgnuX.Source.ViewModel
 {
     /// <summary>
     /// 曲谱下载记录
     /// </summary>
-    public class PianoScoreDownloadRecordViewModel : ViewModelBase
+    public class PianoScoreDownloadRecordViewModel : ObservableObject
     {
         //正在下载任务列表
         public ObservableCollection<SheetItemDownloadViewModel> DownloadingData { get; set; } = new ObservableCollection<SheetItemDownloadViewModel>();
@@ -54,9 +49,9 @@ namespace AcgnuX.Source.ViewModel
         //继续下载命令
         public ICommand OnContinueDownloadCommand { get; set; }
 
-        private readonly Tan8SheetsRepo _Tan8SheetRepo = Tan8SheetsRepo.Instance;
-        public readonly Tan8SheetCrawlRecordRepo _Tan8SheetCrawlRecordRepo = Tan8SheetCrawlRecordRepo.Instance;
-        private readonly Tan8SheetCrawlTaskRepo _SheetCrawlTaskRepo = Tan8SheetCrawlTaskRepo.Instance;
+        private readonly Tan8SheetsRepo _Tan8SheetRepo;
+        private readonly Tan8SheetCrawlRecordRepo _Tan8SheetCrawlRecordRepo;
+        private readonly Tan8SheetCrawlTaskRepo _SheetCrawlTaskRepo;
 
         #region 下载
         //下载任务管理器
@@ -67,20 +62,20 @@ namespace AcgnuX.Source.ViewModel
         };
         //下载列表是否为空
         //public bool IsDownloadListEmpty { get { if (IsInDesignMode) return false; return DownloadingData.Count == 0; }}
-        //private void NotifyIsDownloadListEmpty () { RaisePropertyChanged(nameof(IsDownloadListEmpty)); }
+        //private void NotifyIsDownloadListEmpty () { OnPropertyChanged(nameof(IsDownloadListEmpty)); }
         //悬浮按钮展示阶段 1-点击新增, 2-点击继续, 3-点击停止
         private int _STEP_ADD = 1, _STEP_CONTINUE = 2, _STEP_STOP = 3;
         public int ButtonStep 
         { 
             get 
             {
-                if (IsInDesignMode) return _STEP_STOP;
+                //if (IsInDesignMode) return _STEP_STOP;
                 if (_DownloadTaskWorker.IsBusy) return _STEP_STOP;
                 if (DownloadingData.Count == 0) return _STEP_ADD;
                 return _STEP_CONTINUE;
             } 
         }
-        private void NotifyButtonStep() { RaisePropertyChanged(nameof(ButtonStep)); }
+        private void NotifyButtonStep() { OnPropertyChanged(nameof(ButtonStep)); }
         //允许最大的任务数量
         private readonly int _MaxTaskNum = 5;
         //已经下载完成的数量(包括成功/失败)
@@ -90,14 +85,21 @@ namespace AcgnuX.Source.ViewModel
         //需要下载的任务列表
         private readonly Queue<int> mTaskQueue = new Queue<int>();
         //停止任务的委托
-        private event StopAllTan8SheetDownload _StopBtnClickHandler;
+        private event Action<ObservableCollection<SheetItemDownloadViewModel>> _StopBtnClickHandler;
         #endregion
 
         //标识条件复选框是否初始化完成
         //private bool IsCheckBoxInited = false;
 
-        public PianoScoreDownloadRecordViewModel()
+        public PianoScoreDownloadRecordViewModel(
+            Tan8SheetsRepo tan8SheetsRepo,
+            Tan8SheetCrawlRecordRepo tan8SheetCrawlRecordRepo,
+            Tan8SheetCrawlTaskRepo tan8SheetCrawlTaskRepo)
         {
+            this._Tan8SheetRepo = tan8SheetsRepo;
+            this._Tan8SheetCrawlRecordRepo = tan8SheetCrawlRecordRepo;
+            this._SheetCrawlTaskRepo = tan8SheetCrawlTaskRepo;
+
             OnDeleteKeyCommand = new RelayCommand<IList>(OnDelete);
             OnCopyIncrIdCommand = new RelayCommand<Tan8SheetDownloadRecord>(OnCopyIncrYpid);
             OnStopDownloadCommand = new RelayCommand(OnStopDownload);
@@ -109,6 +111,7 @@ namespace AcgnuX.Source.ViewModel
             _DownloadTaskWorker.ProgressChanged += new ProgressChangedEventHandler(ReportDownloadTaskCreateProgress);
             _DownloadTaskWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(DownloadTaskCreateComplate);
 
+            /**
             if(IsInDesignMode)
             {
                 //设计模式填充虚拟数据
@@ -123,6 +126,7 @@ namespace AcgnuX.Source.ViewModel
                     });
                 }
             }
+            **/
         }
 
         /// <summary>
@@ -270,11 +274,7 @@ namespace AcgnuX.Source.ViewModel
             {
                 //如果有正在执行的任务, 取消并提醒稍后重试
                 _DownloadTaskWorker.CancelAsync();
-                Messenger.Default.Send(new BubbleTipViewModel
-                {
-                    AlertLevel = AlertLevel.WARN,
-                    Text = "任务取消中, 稍后重试"
-                });
+                WindowUtil.ShowBubbleWarn("任务取消中, 稍后重试");
                 return;
             }
             //校验基本参数
@@ -431,7 +431,7 @@ namespace AcgnuX.Source.ViewModel
                 //单个乐谱下载完成事件
                 DownloadFinishAction = OnSheetItemDownloadComplete
             };
-            _StopBtnClickHandler += taskItemInstance.OnStopDownloadEvent;
+            _StopBtnClickHandler += new Action<ObservableCollection<SheetItemDownloadViewModel>>(taskItemInstance.OnStopDownloadEvent);
             return taskItemInstance;
         }
 
@@ -503,11 +503,7 @@ namespace AcgnuX.Source.ViewModel
 
             //}
             NotifyButtonStep();
-            Messenger.Default.Send(new BubbleTipViewModel
-            {
-                AlertLevel = AlertLevel.INFO,
-                Text = "下载完成"
-            });
+            WindowUtil.ShowBubbleInfo("下载完成");
         }
 
         /// <summary>
@@ -523,7 +519,7 @@ namespace AcgnuX.Source.ViewModel
             if (isWorking)
             {
                 //发送下载完成通知
-                Messenger.Default.Send(ypid, ApplicationConstant.TAN8_DOWNLOAD_COMPLETE);
+                WeakReferenceMessenger.Default.Send(new ValueChangedMessage<int>(ypid));
             }
         }
         #endregion
@@ -533,7 +529,7 @@ namespace AcgnuX.Source.ViewModel
     /// <summary>
     /// 筛选框View Model
     /// </summary>
-    public class PianoScoreDownloadRecordFilterBox : ViewModelBase
+    public class PianoScoreDownloadRecordFilterBox : ObservableObject
     {
         //筛选标题
         public string Title { get; set; }
@@ -541,7 +537,7 @@ namespace AcgnuX.Source.ViewModel
         public byte Value { get; set; }
         //选中状态
         private bool _IsChecked = true;
-        public bool IsChecked { get => _IsChecked; set { _IsChecked = value; RaisePropertyChanged(); } }
+        public bool IsChecked { get => _IsChecked; set => SetProperty(ref _IsChecked, value); }
 
         public PianoScoreDownloadRecordFilterBox(string title, byte value)
         {

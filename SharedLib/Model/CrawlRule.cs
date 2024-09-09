@@ -13,8 +13,8 @@
         public string Partten { get; set; }
         //最大爬取页
         public int MaxPage { get; set; }
-        //抓取的错误码
-        public int ExceptionDesc { get; set; }
+        //抓取的错误描述
+        public string ExceptionDesc { get; set; }
         public byte Enable { get; set; }
     }
 }

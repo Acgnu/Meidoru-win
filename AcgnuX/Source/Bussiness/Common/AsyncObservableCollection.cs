@@ -51,16 +51,16 @@ namespace AcgnuX.Source.Bussiness.Common
             if (SynchronizationContext.Current == _synchronizationContext)
             {
                 // Execute the PropertyChanged event on the current thread
-                RaisePropertyChanged(e);
+                OnPropertyChanged(e);
             }
             else
             {
                 // Raises the PropertyChanged event on the creator thread
-                _synchronizationContext.Send(RaisePropertyChanged, e);
+                _synchronizationContext.Send(OnPropertyChanged, e);
             }
         }
 
-        private void RaisePropertyChanged(object param)
+        private void OnPropertyChanged(object param)
         {
             // We are in the creator thread, call the base implementation directly
             base.OnPropertyChanged((PropertyChangedEventArgs)param);

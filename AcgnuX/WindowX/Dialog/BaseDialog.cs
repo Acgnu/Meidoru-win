@@ -1,7 +1,7 @@
 ﻿using AcgnuX.Pages;
 using AcgnuX.Properties;
 using AcgnuX.Source.Utils;
-using GalaSoft.MvvmLight.CommandWpf;
+using CommunityToolkit.Mvvm.Input;
 using SharedLib.Utils;
 using System;
 using System.ComponentModel;
@@ -20,28 +20,28 @@ namespace AcgnuX.WindowX.Dialog
     public class BaseDialog : Window, INotifyPropertyChanged
     {
         //默认的标题栏高度
-        public int TitleHeightGridLength { get; set; } = 30;
+        public int TitleHeightGridLength { get; } = 30;
 
         //是否展示在状态栏
-        public bool ShowInTaskBar { get; set; } = false;
+        public bool ShowInTaskBar { get; } = false;
 
         //状态栏调整大小模式
-        public ResizeMode DialogResizeMode { get; set; } = ResizeMode.NoResize;
+        public ResizeMode DialogResizeMode { get; } = ResizeMode.NoResize;
 
         //允许最小化
-        public Visibility CanMinimize { get; set; } = Visibility.Collapsed;
+        public Visibility CanMinimize { get; } = Visibility.Collapsed;
 
         //允许最大化
-        public Visibility CanMaxmize { get; set; } = Visibility.Collapsed;
+        public Visibility CanMaxmize { get; } = Visibility.Collapsed;
 
         //最小化命令
-        public ICommand MinimizeCommand { get; set; }
+        public ICommand MinimizeCommand { get; }
 
         //最大化
-        public ICommand MaximizeCommand { get; set; }
+        public ICommand MaximizeCommand { get; }
 
         //关闭对话框命令
-        public ICommand CloseCommand { get; set; }
+        public ICommand CloseCommand { get; }
 
         //弹窗背景图片
         public System.Windows.Media.Brush _dialogWindowBackgroundBrush;
@@ -67,19 +67,14 @@ namespace AcgnuX.WindowX.Dialog
         /// </summary>
         public BaseDialog()
         {
-            CloseCommand = new RelayCommand(() => {
-                var storyBoardResource = FindResource("WindowFadeOutStoryboard") as Storyboard;
-                var storyBoard = storyBoardResource.Clone();
-                storyBoard.Completed += new EventHandler((e, s) => Close());
-                storyBoard.Begin(this);
-            });
+            CloseCommand = new RelayCommand(() => AnimateClose());
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
             Owner = Application.Current.MainWindow;
             //mDispatcherTimer = new DispatcherTimer();
             //mDispatcherTimer.Tick += new EventHandler(DispatcherTimerHandler);
             //mDispatcherTimer.Interval = TimeSpan.FromSeconds(0.2);
             this.Loaded += new RoutedEventHandler(OnBaseDialogLoaded);
-   
+            //this.Closing += new CancelEventHandler(OnBaseDialogClosing);
         }
 
         //private void DispatcherTimerHandler(object sender, EventArgs e)
@@ -102,6 +97,18 @@ namespace AcgnuX.WindowX.Dialog
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <summary>
+        /// 动画形式执行关闭对话框
+        /// </summary>
+        /// <param name="callback">动画执行完之后的回调</param>
+        protected void AnimateClose(EventHandler callback = null)
+        {
+            var storyBoardResource = FindResource("WindowFadeOutStoryboard") as Storyboard;
+            var storyBoard = storyBoardResource.Clone();
+            storyBoard.Completed += callback ?? new EventHandler((s, a) => Close());
+            storyBoard.Begin(this);
         }
     }
 }

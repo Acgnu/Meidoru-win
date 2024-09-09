@@ -1,6 +1,6 @@
 ﻿using AcgnuX.Source.Model;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,7 +14,7 @@ namespace AcgnuX.Source.ViewModel
     /// <summary>
     /// 文件列表对比器视图模型
     /// </summary>
-    public class FileItemsCompareViewModel : ViewModelBase
+    public class FileItemsCompareViewModel : ObservableObject
     {
         //电脑端目录路径
         public string PcFolderPath { get; set; }
@@ -25,8 +25,8 @@ namespace AcgnuX.Source.ViewModel
         //移动端文件列表
         public FileItemsListViewModel MobileFileItems { get; set; }
         //是否正在同步
-        public bool _IsBusy;
-        public bool IsBusy { get => _IsBusy; set { _IsBusy = value; RaisePropertyChanged(); } }
+        public bool isBusy;
+        public bool IsBusy { get => isBusy; set => SetProperty(ref isBusy, value); }
 
         //同步按钮点命令
         public ICommand OnSyncCommand { get; set; }

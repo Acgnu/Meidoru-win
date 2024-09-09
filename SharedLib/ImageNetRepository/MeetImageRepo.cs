@@ -62,10 +62,12 @@ namespace SharedLib.ImageNetRepository
             //image File    是 表单名称
             //apiType String 是   公有云CDN，上传的图床类型（this、ali、huluxia等等），支持字符串传入（英文逗号分隔，例如：ali,huluxia）
             //token String  是 用户的秘钥，不填则上传至游客组（前提：支持游客上传）
-            Dictionary<string, object> args = new Dictionary<string, object>();
             var apiType = CHANNELS[RandomUtil.GetRangeRandomNum(0, CHANNELS.Length)];
-            args.Add("apiType", apiType);
-            args.Add("token", "8cf8e506934880417492bde929777da3");
+            Dictionary<string, object> args = new Dictionary<string, object>()
+            {
+                ["apiType"] = apiType,
+                ["token"] = "8cf8e506934880417492bde929777da3",
+            };
             ImageRepoUploadResult apiResult = new ImageRepoUploadResult()
             {
                 Api = GetApiCode(),

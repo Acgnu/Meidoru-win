@@ -1,19 +1,11 @@
 ﻿using AcgnuX.Properties;
-using AcgnuX.Source.Bussiness.Common;
-using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
-using AcgnuX.Source.Utils;
 using SharedLib.Utils;
 using System;
-using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Sockets;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Resources;
 
 namespace AcgnuX.Source.Taskx.Http
@@ -253,7 +245,8 @@ namespace AcgnuX.Source.Taskx.Http
                 }
             }
             //没有则返回默认图 (避免flash播放器报错, 无法用程序退出)
-            WriteStream(XamlUtil.GetApplicationResourceAsStream(@"/Assets/Images/tan8_sheet_preview_default.png"), httpListenerContext);
+            var uri = new Uri("/Assets/Images/tan8_sheet_preview_default.png", UriKind.Relative);
+            WriteStream(App.GetResourceStream(uri), httpListenerContext);
         }
 
         /// <summary>
@@ -325,20 +318,12 @@ namespace AcgnuX.Source.Taskx.Http
         /// <param name="httpListenerContext"></param>
         private void WriteStream(StreamResourceInfo streamResourceInfo, HttpListenerContext httpListenerContext)
         {
-            try
+            using (Stream inputStream = streamResourceInfo.Stream)
+            using (BinaryReader br = new BinaryReader(inputStream))
             {
+                byte[] picbyte = br.ReadBytes(Convert.ToInt32(streamResourceInfo.Stream.Length));
                 Stream output = httpListenerContext.Response.OutputStream;
-                byte[] picbyte;
-                using (BinaryReader br = new BinaryReader(streamResourceInfo.Stream))
-                {
-                    picbyte = br.ReadBytes(Convert.ToInt32(streamResourceInfo.Stream.Length));
-                    output.Write(picbyte, 0, picbyte.Length);
-                    output.Close();
-                }
-            } 
-            finally
-            {
-                streamResourceInfo.Stream.Close();
+                output.Write(picbyte, 0, picbyte.Length);
             }
         }
 

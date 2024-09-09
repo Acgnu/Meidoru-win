@@ -10,35 +10,38 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AcgnuX.Pages
 {
     /// <summary>
     /// Tan8SheetReponsitory.xaml 的交互逻辑
     /// </summary>
-    public partial class Tan8SheetReponsitory : BasePage
+    public partial class Tan8SheetReponsitory
     {
         //弹吧播放器
         //private Tan8PlayerWindow mTan8Player;
         //tan8服务
-        private readonly HttpWebServer _Tan8WebListener = new HttpWebServer();
+        private HttpWebServer _Tan8WebListener { get; }
         //private object mCollectLock = new object();
         //view model
-        private Tan8SheetReponsitoryViewModel _ViewModel;
+        public Tan8SheetReponsitoryViewModel ViewModel { get; }
 
 
         public Tan8SheetReponsitory()
         {
             InitializeComponent();
-            _ViewModel = DataContext as Tan8SheetReponsitoryViewModel;
+            _Tan8WebListener = App.Current.Services.GetService<HttpWebServer>();
+            ViewModel = App.Current.Services.GetService<Tan8SheetReponsitoryViewModel>();
+            DataContext = ViewModel;
             //BindingOperations.EnableCollectionSynchronization(mPianoScoreList, mCollectLock);
         }
 
         private void OnPageLoaded(object sender, RoutedEventArgs e)
         {
-            if (_ViewModel.IsEmpty)
+            if (ViewModel.IsEmpty)
             {
-                _ViewModel.Load();
+                ViewModel.Load();
             }
 
             //开启http监听
@@ -65,8 +68,9 @@ namespace AcgnuX.Pages
                 };
                 _Tan8WebListener.DownloadRequestAction = _DownloadMangeWindow.ContentDataContext.DoDownloadTaskDispatche;
             }
-            _DownloadMangeWindow.Top = mMainWindow.Top + (mMainWindow.Height - _DownloadMangeWindow.Height) / 2;
-            _DownloadMangeWindow.Left = mMainWindow.Left + (mMainWindow.Width - _DownloadMangeWindow.Width) / 2;
+            var mainWin = App.Current.MainWindow;
+            _DownloadMangeWindow.Top = mainWin.Top + (mainWin.Height - _DownloadMangeWindow.Height) / 2;
+            _DownloadMangeWindow.Left = mainWin.Left + (mainWin.Width - _DownloadMangeWindow.Width) / 2;
             _DownloadMangeWindow.Show();
         }
 
@@ -314,12 +318,12 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnDeleteClick(object sender, RoutedEventArgs e)
         {
-            var selected = _ViewModel.SelectedListData;
+            var selected = ViewModel.SelectedListData;
             if (null == selected) return;
             var confirmDialog = new ConfirmDialog(AlertLevel.WARN, string.Format(Properties.Resources.S_DeleteConfirm, selected.Name));
             if (confirmDialog.ShowDialog().GetValueOrDefault())
             {
-                _ViewModel.DeleteItem(selected);
+                ViewModel.DeleteItem(selected);
             }
         }
     }

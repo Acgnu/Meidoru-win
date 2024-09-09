@@ -5,9 +5,17 @@
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                     xmlns:dzn="clr-namespace:AcgnuX.Source.ViewModel.Design"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                    xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=PresentationFramework"
+                    xmlns:bizc="clr-namespace:AcgnuX.Source.Bussiness.Common"
+                    xmlns:vwp="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     mc:Ignorable="d">
     <!--联系人卡片-->
+    <sys:Double x:Key="ItemHeight">100</sys:Double>
     <Style x:Key="ContractCardContentControlStyle" TargetType="ContentControl">
+        <Setter Property="Width" Value="203" />
+        <Setter Property="Height" Value="{StaticResource ItemHeight}" />
+        <Setter Property="Margin" Value="0 0 0 12"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ContentControl">
@@ -16,8 +24,9 @@
                                 Background="{StaticResource DataGridItemBackgroundColorBrush}" 
                                 Cursor="Hand" >
                         <Border.InputBindings>
-                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding OnEditCommand}" />
-                            <MouseBinding MouseAction="RightClick" Command="{Binding OnDeleteCommand}" />
+                            <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.OnSelectedCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" />
+                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DataContext.OnEditCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" />
+                            <MouseBinding MouseAction="RightClick" Command="{Binding DataContext.OnDeleteCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}"/>
                         </Border.InputBindings>
                         <Grid ClipToBounds="True">
                             <DockPanel 
@@ -46,13 +55,13 @@
                             <!--<Image HorizontalAlignment="Right"
                                        DataContext="{Binding Avatar, Converter={bizc:ByteArrayToAvatarImageConverter}}"
                                        Width="{Binding Path=ItemHeight, RelativeSource={RelativeSource AncestorType={x:Type lc:VirtualizingWrapPanel}}, FallbackValue=100}" 
-                                       Stretch="Fill" Source="{Binding Path=Result, IsAsync=True}" >-->
+                                       Stretch="Fill" Source="{Binding Path=Result, IsAsync=True}" />-->
                             <lc:AsyncImage HorizontalAlignment="Right" ImageBytes="{Binding Avatar, IsAsync=True}"
-                                       Width="{Binding Path=ItemHeight, RelativeSource={RelativeSource AncestorType={x:Type lc:VirtualizingWrapPanel}}, FallbackValue=100}" 
+                                       Width="{StaticResource ItemHeight}" 
                                        Stretch="Fill">
                                 <!--<Image.Clip>
-                                        <EllipseGeometry Center="58.2, 58.2" RadiusX="58.2" RadiusY="58.2" />
-                                    </Image.Clip>-->
+                                    <EllipseGeometry Center="58.2, 58.2" RadiusX="58.2" RadiusY="58.2" />
+                                </Image.Clip>-->
                                 <Image.OpacityMask>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                                         <GradientStop Color="#FFFFFFFF" Offset="1"/>
@@ -79,7 +88,7 @@
                         <EventTrigger RoutedEvent="MouseLeave">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    <ColorAnimation To="{StaticResource DataGridItemBackgroundColor}" Duration="0:0:0.2" Storyboard.TargetName="container" Storyboard.TargetProperty="Background.Color" />
+                                    <ColorAnimation Duration="0:0:0.2" Storyboard.TargetName="container" Storyboard.TargetProperty="Background.Color" />
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
@@ -93,8 +102,7 @@
     <!--联系人列表-->
     <Style TargetType="ItemsControl" x:Key="ContractListItemsControlStyle">
         <Style.Triggers>
-            <!--<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=(componentModel:DesignerProperties.IsInDesignMode)}" Value="True">-->
-            <DataTrigger Binding="{Binding IsInDesignMode}" Value="True">
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=(componentModel:DesignerProperties.IsInDesignMode)}" Value="True">
                 <Setter Property="ItemsControl.ItemsPanel">
                     <Setter.Value>
                         <ItemsPanelTemplate>
@@ -103,11 +111,11 @@
                     </Setter.Value>
                 </Setter>
             </DataTrigger>
-            <DataTrigger Binding="{Binding IsInDesignMode}" Value="False">
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=(componentModel:DesignerProperties.IsInDesignMode)}" Value="False">
                 <Setter Property="ItemsControl.ItemsPanel">
                     <Setter.Value>
                         <ItemsPanelTemplate>
-                            <lc:VirtualizingWrapPanel ItemHeight="110" ItemWidth="212.4" />
+                            <vwp:VirtualizingWrapPanel SpacingMode="BetweenItemsOnly" Margin="0 0 5 0"/>
                         </ItemsPanelTemplate>
                     </Setter.Value>
                 </Setter>
@@ -116,14 +124,9 @@
         <Setter Property="ItemsControl.ItemTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <ContentControl 
-                        Margin="0 0 10 12" 
+                    <ContentControl
                         d:DataContext="{d:DesignInstance {x:Type dzn:ContactItemDesignModel}, IsDesignTimeCreatable=True}" 
                         Style="{StaticResource ContractCardContentControlStyle}">
-                        <ContentControl.InputBindings>
-                            <MouseBinding MouseAction="LeftClick" Command="{Binding  RelativeSource={RelativeSource AncestorType=ItemsControl},Path=DataContext.OnSelectedCommand}" CommandParameter="{Binding}" />
-                            <MouseBinding MouseAction="RightClick" Command="{Binding  RelativeSource={RelativeSource AncestorType=ItemsControl},Path=DataContext.OnSelectedCommand}" CommandParameter="{Binding}" />
-                        </ContentControl.InputBindings>
                     </ContentControl>
                 </DataTemplate>
             </Setter.Value>

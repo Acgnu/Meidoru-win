@@ -1,16 +1,9 @@
-﻿using AcgnuX.Pages;
-using AcgnuX.Source.Bussiness.Constants;
+﻿using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
-using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
-using AcgnuX.Utils;
+using CommunityToolkit.Mvvm.Messaging;
 using EnumsNET;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data.SQLite;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -22,37 +15,31 @@ namespace AcgnuX.WindowX.Dialog
     /// 编辑账号的弹窗
     /// </summary>
     public partial class EditContactDialog : BaseDialog {
-        private ContactManageViewModel _MngViewModel;
-        /// <summary>
-        /// 下拉框选项
-        /// </summary>
-        public List<ListBoxItem> mListBoxItems { get; set; } = new List<ListBoxItem>();
-
         //视图对象
-        public ContactItemViewModel ContactItem { get; set; }
+        public ContactItemViewModel ViewModel { get; }
 
-        public EditContactDialog(ContactItemViewModel contactItem, ContactManageViewModel mngVm)
+        public EditContactDialog(ContactItemViewModel viewModel)
         {
             InitializeComponent();
+            InitPlatformComboItemSource();
+            ViewModel = viewModel;
+            DataContext = this;
+            FormGrid.BindingGroup.BeginEdit();
+        }
+
+        /// <summary>
+        /// 初始化平台选择框
+        /// </summary>
+        private void InitPlatformComboItemSource()
+        {
             var enumItems = Enums.GetMembers<ContactPlatform>();
-            var selectedIndex = 0;
+            var comboItems = new string[enumItems.Count];
             for (var i = 0; i < enumItems.Count; i++)
             {
                 var item = enumItems[i];
-                mListBoxItems.Add(new ListBoxItem
-                {
-                    Content = item.Name, 
-                });
-                if (contactItem != null && item.Name.Equals(contactItem.Platform.ToString()))
-                    selectedIndex = i;
+                comboItems[i] = item.Name;
             }
-            DataContext = this;
-            _MngViewModel = mngVm;
-            if (null != contactItem)
-                ContactItem = contactItem;
-            else
-                ContactItem = new ContactItemViewModel(_MngViewModel);
-            ListBoxPlatform.SelectedIndex = selectedIndex;
+            ListBoxPlatform.ItemsSource = comboItems;
         }
 
         /// <summary>
@@ -64,43 +51,50 @@ namespace AcgnuX.WindowX.Dialog
         {
             var button = sender as Button;
             button.IsEnabled = false;
-            ManualTriggerSourceUpdate();
-            ContactItem.Platform = (ContactPlatform) EnumLoader.GetByValue(typeof(ContactPlatform), ((ListBoxItem)ListBoxPlatform.SelectedItem).Content.ToString());
-            var r = _MngViewModel.SaveContact(ContactItem);
-            button.IsEnabled = true;
-            if (!r)
+            //参数校验, 通过则提交变更到ViewModel
+            if (!FormGrid.BindingGroup.CommitEdit())
             {
+                button.IsEnabled = true;
                 return;
             }
-            Close();
+            if (!ViewModel.Save())
+            {
+                button.IsEnabled = true;
+                return;
+            }
+            AnimateClose((s, a) => DialogResult = true);
         }
 
         /// <summary>
-        /// 手动更新源
+        /// 头像点击事件
         /// </summary>
-        private void ManualTriggerSourceUpdate()
-        {
-            //手动表格更新vm
-            BindingExpression binding = TextBlockName.GetBindingExpression(TextBox.TextProperty);
-            binding.UpdateSource();
-            binding = TextBlockUid.GetBindingExpression(TextBox.TextProperty);
-            binding.UpdateSource();
-            binding = TextBlockPhone.GetBindingExpression(TextBox.TextProperty);
-            binding.UpdateSource();
-            binding = TextBlockName.GetBindingExpression(TextBox.TextProperty);
-            binding.UpdateSource();
-            //binding = TextBlockPlatfrom.GetBindingExpression(ComboBox.SelectedValueProperty);
-            //binding.UpdateSource();
-        }
-
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnAvatarImageClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            Image eventObj = sender as Image;
-            var path = WindowUtil.OpenFileDialogForPath(String.Empty, "图片文件|*.jpg;*.png;*.jpeg;*.bmp");
+            var path = WindowUtil.OpenFileDialogForPath(string.Empty, "图片文件|*.jpg;*.png;*.jpeg;*.bmp");
             if (!string.IsNullOrEmpty(path))
             {
-                eventObj.Source = ImageUtil.GetBitmapImage(path);
-                ContactItem.Avatar = new ByteArray(File.ReadAllBytes(path));
+                var drawingImage = System.Drawing.Image.FromFile(path);
+                var imageBytes = ImageUtil.ImageToByteArray(drawingImage);
+                ViewModel.TempAvatar = new ByteArray(imageBytes);
+
+                var border = sender as Border;
+                var borderBackgroundBrush = border.Background as ImageBrush;
+                borderBackgroundBrush.ImageSource = ImageUtil.GetBitmapImage(path);
+            }
+        }
+
+        /// <summary>
+        /// 校验失败提示
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnValidationError(object sender, ValidationErrorEventArgs e)
+        {
+            if (e.Action == ValidationErrorEventAction.Added)
+            {
+                WindowUtil.ShowBubbleError(e.Error.ErrorContent.ToString());
             }
         }
     }

@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:AcgnuX.WindowX.Dialog"
+        xmlns:bizv="clr-namespace:AcgnuX.Source.Bussiness.Validation"
         xmlns:res="clr-namespace:AcgnuX.Properties"
         mc:Ignorable="d"
         Title="{x:Static res:Resources.S_EditAccount}" Height="304" Width="420" Style="{StaticResource DialogWindowBaseStyle}">
@@ -25,31 +26,38 @@
     </Window.Icon>
     
     <DockPanel>
-        <StackPanel DockPanel.Dock="Top" DataContext="{Binding AccountViewModel}">
+        <StackPanel Name="FormStackPanel" DockPanel.Dock="Top" DataContext="{Binding AccountViewModel}" Validation.Error="OnValidationError">
+            <StackPanel.BindingGroup>
+                <BindingGroup NotifyOnValidationError="True">
+                    <BindingGroup.ValidationRules>
+                        <bizv:ValidateAccount />
+                    </BindingGroup.ValidationRules>
+                </BindingGroup>
+            </StackPanel.BindingGroup>
             <!--站点-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_Site}" Style="{StaticResource FormFieldTextBlock}" />
-                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Site}"/>
+                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Site, Mode=TwoWay}"/>
             </DockPanel>
              <!--描述-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_Describe}" Style="{StaticResource FormFieldTextBlock}"/>
-                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Describe}"/>
+                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Describe, Mode=TwoWay}"/>
             </DockPanel>
             <!--账户-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_Account}" Style="{StaticResource FormFieldTextBlock}"/>
-                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Uname}"/>
+                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Uname, Mode=TwoWay}"/>
             </DockPanel>
             <!--密码-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_Password}" Style="{StaticResource FormFieldTextBlock}"/>
-                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Upass}"/>
+                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Upass, Mode=TwoWay}"/>
             </DockPanel>
             <!--备注-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_Remark}" Style="{StaticResource FormFieldTextBlock}"/>
-                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Remark}"/>
+                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Remark, Mode=TwoWay}"/>
             </DockPanel>
         </StackPanel>
 

@@ -1,7 +1,7 @@
 ﻿using AcgnuX.Source.Bussiness.Data;
 using AcgnuX.Source.Utils;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace AcgnuX.Source.ViewModel
     /// <summary>
     /// 设备列表同步路径配置vm
     /// </summary>
-    public class DeviceSyncPathConfigDialogViewModel : ViewModelBase
+    public class DeviceSyncPathConfigDialogViewModel : ObservableObject
     {
         //同步配置
         public ObservableCollection<SyncConfigViewModel> SyncConfigs { get; set; } = new ObservableCollection<SyncConfigViewModel>();
@@ -35,15 +35,16 @@ namespace AcgnuX.Source.ViewModel
                 {
                     item.Enable = value;
                 }
-                RaisePropertyChanged();
+                OnPropertyChanged();
             } 
         }
 
         //数据库访问
-        private readonly MediaSyncConfigRepo _MediaSyncConfigRepo = MediaSyncConfigRepo.Instance;
+        private readonly MediaSyncConfigRepo _MediaSyncConfigRepo;
 
-        public DeviceSyncPathConfigDialogViewModel()
+        public DeviceSyncPathConfigDialogViewModel(MediaSyncConfigRepo mediaSyncConfigRepo)
         {
+            _MediaSyncConfigRepo = mediaSyncConfigRepo;
             OnHeaderCheckboxClick = new RelayCommand<bool>((v) => OnSyncConfigGridCheckBoxClick(v, true));
             OnItemsCheckboxClick = new RelayCommand<bool>((v) => OnSyncConfigGridCheckBoxClick(v, false));
             InitSyncConfig();
@@ -131,7 +132,7 @@ namespace AcgnuX.Source.ViewModel
         /// </summary>
         internal void NotifyCheckBoxChange()
         {
-            RaisePropertyChanged(nameof(IsSyncConfigCheckedAll));
+            OnPropertyChanged(nameof(IsSyncConfigCheckedAll));
         }
     }
 }

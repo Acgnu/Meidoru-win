@@ -1,29 +1,15 @@
-﻿using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Source.Model;
-using AcgnuX.Source.Utils;
-using AcgnuX.Source.ViewModel;
-using AcgnuX.Utils;
-using SharedLib.Model;
+﻿using SharedLib.Model;
 using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AcgnuX.Source.Bussiness.Data
 {
     public class Tan8SheetsRepo
     {
-        public static Tan8SheetsRepo Instance => new Tan8SheetsRepo();
-
-        private Tan8SheetsRepo()
-        {
-
-        }
-
         /// <summary>
         /// 查询数据库中的乐谱
         /// </summary>

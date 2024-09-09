@@ -1,14 +1,11 @@
 ﻿using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
-using AcgnuX.Source.Utils;
-using AcgnuX.Source.ViewModel;
 using AcgnuX.Utils;
 using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,13 +13,6 @@ namespace AcgnuX.Source.Bussiness.Data
 {
     public class ContactRepo
     {
-        public static ContactRepo Instance => new ContactRepo();
-
-        private ContactRepo()
-        {
-
-        }
-
         /// <summary>
         /// 查询所有联系人
         /// </summary>
@@ -77,17 +67,17 @@ namespace AcgnuX.Source.Bussiness.Data
         /// </summary>
         /// <param name="vm"></param>
         /// <returns></returns>
-        public int Add(ContactItemViewModel vm)
+        public int Add(string platform, string uid, string name, string phone, ByteArray avatar)
         {
             var i = SQLite.ExecuteNonQuery(
                 "INSERT INTO contact(id, platform, uid, name, phone, avatar) VALUES ((SELECT IFNULL(MAX(id),0)  + 1 FROM contact), @platform, @uid, @name, @phone, @avatar)", 
                 new List<SQLiteParameter>
             {
-                new SQLiteParameter("@platform", vm.Platform.ToString()),
-                new SQLiteParameter("@uid", vm.Uid),
-                new SQLiteParameter("@name", vm.Name),
-                new SQLiteParameter("@phone", vm.Phone),
-                new SQLiteParameter("@avatar", vm.Avatar.Data)
+                new SQLiteParameter("@platform", platform),
+                new SQLiteParameter("@uid", uid),
+                new SQLiteParameter("@name", name),
+                new SQLiteParameter("@phone", phone),
+                new SQLiteParameter("@avatar", avatar.Data)
             });
 
             if(i  == 0) return i;
@@ -100,18 +90,18 @@ namespace AcgnuX.Source.Bussiness.Data
         /// 更新联系人
         /// </summary>
         /// <param name="vm"></param>
-        public void Update(ContactItemViewModel vm)
+        public void Update(int id, string platform, string uid, string name, string phone, ByteArray avatar)
         {
             SQLite.ExecuteNonQuery(
             "UPDATE contact SET platform = @platform, uid = @uid, name = @name, phone= @phone, avatar = @avatar WHERE id = @id",
                 new List<SQLiteParameter>
             {
-                        new SQLiteParameter("@platform", vm.Platform.ToString()),
-                        new SQLiteParameter("@uid", vm.Uid),
-                        new SQLiteParameter("@name", vm.Name),
-                        new SQLiteParameter("@phone", vm.Phone),
-                        new SQLiteParameter("@avatar", vm.Avatar.Data),
-                        new SQLiteParameter("@id", vm.Id.GetValueOrDefault())
+                        new SQLiteParameter("@platform", platform),
+                        new SQLiteParameter("@uid", uid),
+                        new SQLiteParameter("@name", name),
+                        new SQLiteParameter("@phone", phone),
+                        new SQLiteParameter("@avatar", avatar.Data),
+                        new SQLiteParameter("@id", id)
             });
         }
 

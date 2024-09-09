@@ -24,14 +24,13 @@ namespace AcgnuX.WindowX.Dialog
 
         private void OnConfirmClick(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
-            CloseCommand.Execute(null);
+            //DialogResult 赋值后内部会自动调用Close()
+            AnimateClose((s, a) => DialogResult = true);
         }
 
         private void OnCancelClick(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;
-            CloseCommand.Execute(null);
+            AnimateClose((s, a) => DialogResult = false);
         }
     }
 }

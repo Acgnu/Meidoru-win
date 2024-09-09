@@ -1,20 +1,13 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CommunityToolkit.Mvvm.Input;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Animation;
 
 namespace AcgnuX.Source.ViewModel
 {
     /// <summary>
     /// 一般弹出窗口的数据容器
     /// </summary>
-    public class CommonWindowViewModel : GalaSoft.MvvmLight.ViewModelBase
+    public class CommonWindowViewModel : CommunityToolkit.Mvvm.ComponentModel.ObservableObject
     {
         //属性变更通知
         //public event PropertyChangedEventHandler PropertyChanged = (sender, e) => { };

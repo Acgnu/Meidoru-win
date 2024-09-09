@@ -150,7 +150,7 @@ namespace PatchTool
                     }
                 }
 
-                SetDB(dbPath);
+                InitDB(dbPath);
 
                 switch (command)
                 {
@@ -170,11 +170,6 @@ namespace PatchTool
                     default: Console.WriteLine("命令不正确"); break;
                 }
             }
-        }
-
-        private async static void SetDB(string dbPath)
-        {
-            await InitDB(dbPath);
         }
 
 
@@ -451,7 +446,7 @@ namespace PatchTool
             Console.WriteLine("共复制" + copyTotal + "个目录");
         }
 
-        private async static Task<bool> InitDB(string dbPath)
+        private static void InitDB(string dbPath)
         {
             if (string.IsNullOrEmpty(dbPath))
             {
@@ -462,7 +457,7 @@ namespace PatchTool
                 dbPath = Settings.Default.DBFilePath;
             }
             Console.WriteLine("数据库路径 :" + dbPath);
-            return await SQLite.SetDbFilePath(dbPath);
+            SQLite.SetDbFilePath(dbPath);
         }
 
 

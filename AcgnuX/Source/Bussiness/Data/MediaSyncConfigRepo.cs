@@ -1,16 +1,9 @@
-﻿using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Source.Model;
-using AcgnuX.Source.Utils;
-using AcgnuX.Source.ViewModel;
-using AcgnuX.Utils;
+﻿using AcgnuX.Source.Model;
 using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AcgnuX.Source.Bussiness.Data
 {
@@ -19,12 +12,6 @@ namespace AcgnuX.Source.Bussiness.Data
     /// </summary>
     public class MediaSyncConfigRepo
     {
-        public static MediaSyncConfigRepo Instance => new MediaSyncConfigRepo();
-
-        private MediaSyncConfigRepo()
-        {
-        }
-
         /// <summary>
         /// 查询路径配置
         /// </summary>

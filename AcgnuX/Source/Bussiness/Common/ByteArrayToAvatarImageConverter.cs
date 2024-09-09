@@ -27,8 +27,12 @@ namespace AcgnuX.Source.Bussiness.Common
             {
                 if (null == defaultAvatar)
                 {
-                    var stream = XamlUtil.GetApplicationResourceAsStream(@"../../Assets/Images/avatar_default.jpg");
-                    defaultAvatar = ImageUtil.GetBitmapImageFromStream(stream.Stream);
+                    var uri = new Uri("../../Assets/Images/avatar_default.jpg", UriKind.Relative);
+                    using(var fileStream = App.GetResourceStream(uri).Stream)
+                    {
+                        defaultAvatar = ImageUtil.GetBitmapImageFromStream(fileStream);
+                        return defaultAvatar;
+                    }
                 }
                 return defaultAvatar;
             }

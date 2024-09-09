@@ -2,24 +2,17 @@ using AcgnuX.Pages;
 using AcgnuX.Properties;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
-using AcgnuX.Utils;
-using GalaSoft.MvvmLight.CommandWpf;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Toolkit.Uwp.Notifications;
 using SharedLib.Utils;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 
 namespace AcgnuX.Source.ViewModel
 {
@@ -49,27 +42,19 @@ namespace AcgnuX.Source.ViewModel
         public ICommand OnSettingCommand { get; set; }
         //主窗口背景图片
         private Brush _mainWindowBackgroundBrush;
-        public Brush MainWindowBackgroundBrush
-        {
-            get { return _mainWindowBackgroundBrush; }
-            set { _mainWindowBackgroundBrush = value; RaisePropertyChanged(); }
-        }
+        public Brush MainWindowBackgroundBrush { get => _mainWindowBackgroundBrush; set => SetProperty(ref _mainWindowBackgroundBrush, value); }
         //设置页面
         private AppSettings _AppSettingsPage;
         //首页
         private readonly Index _IndexPage;
         //主内容
         private Page _MainContent;
-        public Page MainContent
-        {
-            get { return _MainContent; }
-            set { _MainContent = value; RaisePropertyChanged(); }
-        }
+        public Page MainContent { get => _MainContent; set => SetProperty(ref _MainContent, value); }
         //气泡提示
         public BubbleTipViwerViewModel BubbleTipViwerViewModel { get; set; } = new BubbleTipViwerViewModel();
         //选中的导航菜单项
         private NavMenu _SelectedNavItem;
-        public NavMenu SelectedNavItem { get => _SelectedNavItem; set { _SelectedNavItem = value; RaisePropertyChanged(); } }
+        public NavMenu SelectedNavItem { get => _SelectedNavItem; set => SetProperty(ref _SelectedNavItem, value); }
 
         public MainWindowViewModel() : base()
         {
@@ -101,7 +86,6 @@ namespace AcgnuX.Source.ViewModel
             _IndexPage = new Index();
             MainContent = _IndexPage;
         }
-
 
 
         /// <summary>
@@ -156,8 +140,7 @@ namespace AcgnuX.Source.ViewModel
                 new NavMenu() { name = "密码库",pageType = typeof( PwdRepositroy), icon=(Geometry)Application.Current.FindResource("Icon_PasswordBox") },
                 new NavMenu() { name = "谱库",pageType = typeof( Tan8SheetReponsitory), icon=(Geometry)Application.Current.FindResource("Icon_Book") },
                 new NavMenu() { name = "爪机同步",pageType =typeof ( MobileDeviceControl), icon=(Geometry)Application.Current.FindResource("Icon_Cloud") },
-                new NavMenu() { name = "联系人",pageType =typeof ( ContactManage), icon=(Geometry)Application.Current.FindResource("Icon_ContactBoox") },
-                //new NavMenu() { name = "设置",pageType = typeof (AppSettings), icon=(Geometry)Application.Current.FindResource("Icon_Setting") }
+                new NavMenu() { name = "联系人",pageType =typeof ( ContactManage), icon=(Geometry)Application.Current.FindResource("Icon_ContactBoox") }
             };
         }
 

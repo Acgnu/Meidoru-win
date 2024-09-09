@@ -1,34 +1,40 @@
-﻿using AcgnuX.Source.Model;
-using GalaSoft.MvvmLight;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SharedLib.Model;
 
 namespace AcgnuX.Source.ViewModel
 {
     /// <summary>
     /// 抓取规则视图模型
     /// </summary>
-    public class CrawlRuleViewModel : ViewModelBase
+    public class CrawlRuleViewModel : ObservableObject
     {
-        public int Id { get; set; }
-        private string _name;
-        public string Name { get => _name; set { _name = value; RaisePropertyChanged(); } }
+        //数据库对象
+        public CrawlRule _CrawlRule { get; }
+
+        public int Id { get => _CrawlRule.Id; set => SetProperty(_CrawlRule.Id, value, _CrawlRule, (rule, v) => rule.Id = v); }
+        public string Name { get => _CrawlRule.Name; set => SetProperty(_CrawlRule.Name, value, _CrawlRule, (rule, v) => rule.Name = v); }
         //目标地址
-        private string _url;
-        public string Url { get => _url; set { _url = value; RaisePropertyChanged(); } }
+        public string Url { get => _CrawlRule.Url; set => SetProperty(_CrawlRule.Url, value, _CrawlRule, (rule, v) => rule.Url = v); }
         //IP匹配表达式
-        private string _partten;
-        public string Partten { get => _partten; set { _partten = value; RaisePropertyChanged(); } }
+        public string Partten { get => _CrawlRule.Partten; set => SetProperty(_CrawlRule.Partten, value, _CrawlRule, (rule, v) => rule.Partten = v); }
         //最大爬取页
-        private int _maxPage;
-        public int MaxPage { get => _maxPage; set { _maxPage = value; RaisePropertyChanged(); } }
+        public int MaxPage { get => _CrawlRule.MaxPage; set => SetProperty(_CrawlRule.MaxPage, value, _CrawlRule, (rule, v) => rule.MaxPage = v); }
         //抓取的错误码
-        private string _exceptionDesc;
-        public string ExceptionDesc { get => _exceptionDesc; set  { _exceptionDesc = value; RaisePropertyChanged(); } }
-        private byte _enable;
-        public byte Enable { get => _enable; set { _enable = value; RaisePropertyChanged(); } }
+        public string ExceptionDesc { get => _CrawlRule.ExceptionDesc; set => SetProperty(_CrawlRule.ExceptionDesc, value, _CrawlRule, (rule, v) => rule.ExceptionDesc = v); }
+        public byte Enable { get => _CrawlRule.Enable; set => SetProperty(_CrawlRule.Enable, value, _CrawlRule, (rule, v) => rule.Enable = v); }
+
+
+        public CrawlRuleViewModel(CrawlRule crawlRule = null)
+        {
+            if (null == crawlRule)
+            {
+                crawlRule = new CrawlRule()
+                {
+                    MaxPage = 1,
+                    Enable = 1
+                };
+            }
+            this._CrawlRule = crawlRule;
+        }
     }
 }

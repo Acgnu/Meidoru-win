@@ -7,11 +7,6 @@
         xmlns:res="clr-namespace:AcgnuX.Properties"
         mc:Ignorable="d"
         Title="{x:Static res:Resources.S_EditDnsRecord}" Height="225" Width="420" Style="{StaticResource DialogWindowBaseStyle}">
-    <Window.Resources>
-        <Style TargetType="Button" x:Key="DnsEditConfirmButtonStyle" BasedOn="{StaticResource FormConfirmButtonStyle}">
-            <Setter Property="Margin" Value="0 5 0 0" />
-        </Style>
-    </Window.Resources>
 
     <Window.Icon>
         <DrawingImage>
@@ -23,17 +18,20 @@
         </DrawingImage>
     </Window.Icon>
 
-    <DockPanel DataContext="{Binding ContentViewModel}">
-        <StackPanel DockPanel.Dock="Top">
+    <DockPanel DataContext="{Binding ItemViewModel}">
+        <StackPanel x:Name="FormStackPanel" DockPanel.Dock="Top">
+            <StackPanel.BindingGroup>
+                <BindingGroup />
+            </StackPanel.BindingGroup>
             <!--子域名-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_SubDomian}" Style="{StaticResource FormFieldTextBlock}" />
-                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Path=DnsItem.Name, Mode=TwoWay}"/>
+                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Path=Name, Mode=TwoWay}"/>
             </DockPanel>
             <!--记录值-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_DnsRecordValue}" Style="{StaticResource FormFieldTextBlock}"/>
-                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Path=DnsItem.Value, Mode=TwoWay}" />
+                <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding Path=Value, Mode=TwoWay}" />
             </DockPanel>
             <!--记录类型-->
 
@@ -41,10 +39,10 @@
             <DockPanel>
                 <TextBlock Text="{x:Static res:Resources.S_Type}" Style="{StaticResource FormFieldTextBlock}"/>
                 <ListBox 
-                    ItemsSource="{Binding TypeCombos}"
-                    SelectedItem="{Binding SelectedType}"
+                    x:Name="TypeListBox"
                     BorderBrush="{x:Null}" 
                     Background="Transparent"  
+                    SelectedItem="{Binding Type, Mode=TwoWay}"
                     ItemContainerStyle="{StaticResource FromComboListBoxItemStyle}">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -54,10 +52,9 @@
                 </ListBox>
             </DockPanel>
         </StackPanel>
-        <Button x:Name="ConfirmButton" 
-                Content="{x:Static res:Resources.S_Confirm}" 
-                Command="{Binding OnSaveComand}" 
-                Style="{DynamicResource DnsEditConfirmButtonStyle}" 
-                IsEnabled="{Binding IsBusy}"/>
+        <Button Content="{x:Static res:Resources.S_Confirm}" 
+                Click="OnClickSaveButton"
+                Style="{DynamicResource FormConfirmButtonStyle}" 
+                Margin="0 5 0 0"/>
     </DockPanel>
 </local:BaseDialog>

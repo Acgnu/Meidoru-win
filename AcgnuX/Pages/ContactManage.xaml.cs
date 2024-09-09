@@ -2,24 +2,26 @@
 using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.ViewModel;
 using AcgnuX.WindowX.Dialog;
-using GalaSoft.MvvmLight.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
+using AcgnuX.Source.Utils;
 
 namespace AcgnuX.Pages
 {
     /// <summary>
     /// PwdRepositroy.xaml 的交互逻辑
     /// </summary>
-    public partial class ContactManage : BasePage
+    public partial class ContactManage
     {
         //内容vm
-        private readonly ContactManageViewModel _ViewModel;
+        public ContactManageViewModel ViewModel { get; }
 
         public ContactManage()
         {
             InitializeComponent();
-            _ViewModel = (ContactManageViewModel) FramGrid.DataContext;
-            DataContext = this;
+            ViewModel = App.Current.Services.GetService<ContactManageViewModel>();
+            DataContext = ViewModel;
         }
 
 
@@ -30,7 +32,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnPageLoaded(object sender, RoutedEventArgs e)
         {
-            _ViewModel.Load(false);
+            ViewModel.Load();
         }
 
         /// <summary>
@@ -40,20 +42,20 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnBtnAddClick(object sender, RoutedEventArgs e)
         {
-            if(_ViewModel.SafeMode)
+            if(ViewModel.SafeMode)
             {
                 return;
             }
             if (string.IsNullOrEmpty(Settings.Default.DBFilePath))
             {
-                Messenger.Default.Send(new BubbleTipViewModel
-                {
-                    AlertLevel = AlertLevel.ERROR,
-                    Text = "答应我, 先去配置数据库"
-                });
+                WindowUtil.ShowBubbleError("答应我, 先去配置数据库");
                 return;
             }
-            new EditContactDialog(null, _ViewModel).ShowDialog();
+            var newItem = new ContactItemViewModel();
+            if(new EditContactDialog(newItem).ShowDialog().GetValueOrDefault())
+            {
+                ViewModel.ContactItems.Insert(0, newItem);
+            }
         }
     }
 }

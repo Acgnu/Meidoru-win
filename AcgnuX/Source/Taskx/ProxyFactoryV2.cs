@@ -1,30 +1,33 @@
 ﻿using AcgnuX.Properties;
 using AcgnuX.Source.Bussiness.Constants;
+using AcgnuX.Source.Bussiness.Data;
 using AcgnuX.Source.Utils;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
+using Microsoft.Extensions.DependencyInjection;
+using SharedLib.Data;
 
 namespace AcgnuX.Source.Taskx
 {
     /// <summary>
     /// 代理IP查询
     /// </summary>
-    class ProxyFactoryV2
+    public class ProxyFactoryV2
     {
         //IP池数量变化事件
-        public static event Bussiness.Common.ProxyPoolCountChangeHandler mProxyPoolCountChangeHandler;
+        public event Action<int> mProxyPoolCountChangeHandler;
         //当前代理IP数量
-        private static int ProxyCount = 0;
-        public static int GetProxyCount => ProxyCount;
-        private static Timer mProxyCounter;
+        private int ProxyCount = 0;
+        public int GetProxyCount => ProxyCount;
+        private Timer mProxyCounter;
 
 
         /// <summary>
         /// 开始 IP池查询任务
         /// </summary>
-        public static async Task StartTrack()
+        public async Task StartTrack()
         {
             if (null == mProxyCounter)
             {
@@ -48,7 +51,7 @@ namespace AcgnuX.Source.Taskx
         /// <summary>
         /// 停止IP池查询任务
         /// </summary>
-        public static void StopTrack()
+        public void StopTrack()
         {
             mProxyCounter.Stop();
         }
@@ -56,7 +59,7 @@ namespace AcgnuX.Source.Taskx
         /// <summary>
         /// 重新执行IP代理抓取任务
         /// </summary>
-        public static void RestartCrawlIPService()
+        public void RestartCrawlIPService()
         {
             ServiceUtil.Restart(ApplicationConstant.CRAWL_IP_SERVICE_NAME, new string[] { Settings.Default.DBFilePath });
         }
@@ -66,9 +69,10 @@ namespace AcgnuX.Source.Taskx
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        private static void OnTimer(object sender, ElapsedEventArgs args)
+        private void OnTimer(object sender, ElapsedEventArgs args)
         {
-            ProxyCount = ProxyFactory.GetAllProxyFromDB().Count();
+            var repo = App.Current.Services.GetService<ProxyAddressRepo>();
+            ProxyCount = repo.GetProxyCountFromDB();
             mProxyPoolCountChangeHandler?.Invoke(ProxyCount);
         }
     }

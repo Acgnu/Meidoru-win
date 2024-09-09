@@ -1,12 +1,14 @@
 ﻿using AcgnuX.Properties;
 using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Source.Model;
 using AcgnuX.Source.ViewModel;
 using AcgnuX.WindowX.Dialog;
-using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Windows;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
+using Microsoft.Extensions.DependencyInjection;
+using AcgnuX.Source.Utils;
 
 namespace AcgnuX.WindowX
 {
@@ -18,19 +20,20 @@ namespace AcgnuX.WindowX
         /// <summary>
         /// 控件数据源
         /// </summary>
-        public PianoScoreDownloadRecordViewModel ContentDataContext { get; set; }
+        public PianoScoreDownloadRecordViewModel ContentDataContext { get; }
 
         public Tan8DownloadManageWindow()
         {
             InitializeComponent();
             DataContext = this;
-            ContentDataContext = MainContent.DataContext as PianoScoreDownloadRecordViewModel;
+            ContentDataContext = App.Current.Services.GetService<PianoScoreDownloadRecordViewModel>();
             //监听单个乐谱下载完成事件
-            Messenger.Default.Register<int>(this, ApplicationConstant.TAN8_DOWNLOAD_COMPLETE, (ypid) =>
+            WeakReferenceMessenger.Default.Register<ValueChangedMessage<int>>(this, (r, m) =>
             {
+                MessageBox.Show("监听单个乐谱下载完成事件");
                 Dispatcher.BeginInvoke((Action)delegate ()
                 {
-                    ContentDataContext.OnSheetItemDownloadComplete(ypid, DownloadRecordDataGrid);
+                    ContentDataContext.OnSheetItemDownloadComplete(m.Value, DownloadRecordDataGrid);
                 });
             });
         }
@@ -78,11 +81,7 @@ namespace AcgnuX.WindowX
         {
             if (string.IsNullOrEmpty(Settings.Default.DBFilePath))
             {
-                Messenger.Default.Send(new BubbleTipViewModel
-                {
-                    Text = "答应我, 先去配置数据库",
-                    AlertLevel = AlertLevel.ERROR
-                });
+                WindowUtil.ShowBubbleError("答应我, 先去配置数据库");
                 return;
             }
             var dialog = new AddSinglePianoScoreDialog

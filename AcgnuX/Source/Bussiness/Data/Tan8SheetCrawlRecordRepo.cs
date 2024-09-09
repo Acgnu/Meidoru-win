@@ -1,16 +1,11 @@
 ﻿using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
-using AcgnuX.Source.Utils;
-using AcgnuX.Source.ViewModel;
-using AcgnuX.Utils;
 using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AcgnuX.Source.Bussiness.Data
 {
@@ -19,13 +14,6 @@ namespace AcgnuX.Source.Bussiness.Data
     /// </summary>
     public class Tan8SheetCrawlRecordRepo
     {
-        public static Tan8SheetCrawlRecordRepo Instance => new Tan8SheetCrawlRecordRepo();
-
-        private Tan8SheetCrawlRecordRepo()
-        {
-
-        }
-
         /// <summary>
         /// 查询最后一次下载的乐谱ID
         /// </summary>

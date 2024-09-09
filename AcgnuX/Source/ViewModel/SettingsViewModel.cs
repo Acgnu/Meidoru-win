@@ -1,56 +1,60 @@
 ﻿using AcgnuX.Properties;
-using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Source.Model;
 using AcgnuX.Source.Taskx;
-using AcgnuX.Source.Utils;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using SharedLib.Utils;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
+using SharedLib.Data;
 
 namespace AcgnuX.Source.ViewModel
 {
     /// <summary>
     /// 设置的视图模型
     /// </summary>
-    public class SettingsViewModel : ViewModelBase
+    public class SettingsViewModel : ObservableObject
     {
         /// <summary>
         /// 账号文件
         /// </summary>
-        private string _accountJsonPath;
-        public string AccountJsonPath { get => _accountJsonPath; set { _accountJsonPath = value; RaisePropertyChanged(); } }
-
+        public string AccountJsonPath 
+        { 
+            get => Settings.Default.AccountFilePath; 
+            set => SetProperty(Settings.Default.AccountFilePath, value, Settings.Default, (s, v) => { s.AccountFilePath = v; s.Save(); }); 
+        }
         /// <summary>
         /// 乐谱目录
         /// </summary>
-        private string _pianoScorePath;
-        public string PianoScorePath { get => _pianoScorePath; set { _pianoScorePath = value; RaisePropertyChanged(); } }
+        public string PianoScorePath 
+        {
+            get => Settings.Default.Tan8HomeDir;
+            set => SetProperty(Settings.Default.Tan8HomeDir, value, Settings.Default, (s, v) => { s.Tan8HomeDir = v; s.Save(); });
+        }
 
         /// <summary>
         /// 数据库文件目录
         /// </summary>
-        private string _dbFilePath;
-        public string DbFilePath { get => _dbFilePath; set { _dbFilePath = value; RaisePropertyChanged(); } }
-
+        public string DbFilePath
+        {
+            get => Settings.Default.DBFilePath;
+            set => SetProperty(Settings.Default.DBFilePath, value, Settings.Default, (s, v) => { s.DBFilePath = v; s.Save(); });
+        }
         /// <summary>
         /// 皮肤目录
         /// </summary>
-        private string _skinFolderPath;
-        public string SkinFolderPath { get => _skinFolderPath; set { _skinFolderPath = value; RaisePropertyChanged(); } }
+        public string SkinFolderPath
+        {
+            get => Settings.Default.SkinFolderPath;
+            set => SetProperty(Settings.Default.SkinFolderPath, value, Settings.Default, (s, v) => { s.SkinFolderPath = v; s.Save(); });
+        }
 
         //IP代理数量
-        private int _ProxyCount = 0;
-        public int ProxyCount { get => _ProxyCount; set { _ProxyCount = value; RaisePropertyChanged(); } }
+        private int _proxyCount = 0;
+        public int ProxyCount { get => _proxyCount; set => SetProperty(ref _proxyCount, value); }
         //抓取规则
         public ObservableCollection<CrawlRuleViewModel> CrawlRuls { get; set; } = new ObservableCollection<CrawlRuleViewModel>();
         //是否全选
@@ -58,45 +62,21 @@ namespace AcgnuX.Source.ViewModel
         //checbox事件
         public ICommand OnCrawlRuleCheckboxClick { get; set; }
 
+        private readonly ProxyFactoryV2 _ProxyFactoryV2;
+        private readonly CrawlRuleRepo _CrawlRuleRepo;
 
-        public SettingsViewModel()
+        public SettingsViewModel(ProxyFactoryV2 proxyFactoryV2, CrawlRuleRepo crawlRuleRepo)
         {
-            AccountJsonPath = Settings.Default.AccountFilePath ?? "";
-            PianoScorePath = Settings.Default.Tan8HomeDir ?? "";
-            DbFilePath = Settings.Default.DBFilePath ?? "";
-            SkinFolderPath = Settings.Default.SkinFolderPath ?? "";
+            _CrawlRuleRepo = crawlRuleRepo;
+            _ProxyFactoryV2 = proxyFactoryV2;
             //代理池数量变更监听
-            ProxyCount = ProxyFactoryV2.GetProxyCount;
-            ProxyFactoryV2.mProxyPoolCountChangeHandler += OnProxyPoolCountChange;
+            ProxyCount = _ProxyFactoryV2.GetProxyCount;
+            //IP代理池数量变化通知
+            _ProxyFactoryV2.mProxyPoolCountChangeHandler += new Action<int>((curNum) => ProxyCount = curNum);
             OnCrawlRuleCheckboxClick = new RelayCommand<object>((sender) => OnGridCheckBoxClick(sender));
-            InitCrawlRules();
-            SQLite.OnDbFileSetEvent += InitCrawlRules;
+            SQLite.OnDbFileSetEvent += LoadCrawlRule;
         }
 
-        /// <summary>
-        /// 初始化抓取规则
-        /// </summary>
-        private void InitCrawlRules()
-        {
-            //从数据库读取规则
-            var dataSet = SQLite.SqlTable("SELECT id, name, url, partten, max_page, exception_desc, enable FROM crawl_rules", null);
-            if (null == dataSet) return;
-            //封装进对象
-            foreach (DataRow dataRow in dataSet.Rows)
-            {
-                CrawlRuls.Add(new CrawlRuleViewModel()
-                {
-                    Id = Convert.ToInt32(dataRow["id"]),
-                    Name = Convert.ToString(dataRow["name"]),
-                    Url = Convert.ToString(dataRow["url"]),
-                    Partten = Convert.ToString(dataRow["partten"]),
-                    MaxPage = Convert.ToInt32(dataRow["max_page"]),
-                    ExceptionDesc = dataRow["exception_desc"].ToString(),
-                    Enable = Convert.ToByte(dataRow["enable"]),
-                });
-            }
-            CheckIsCheckedAll(false);
-        }
 
         /// <summary>
         /// 表格checkbox点击事件
@@ -120,36 +100,15 @@ namespace AcgnuX.Source.ViewModel
                 //    CheckBox cb = (CheckBox)this.mCrawlRulsDataGrid.Columns[mCrawlRulsDataGrid.Columns.Count - 1].GetCellContent(neddrow);
                 //    cb.IsChecked = checkBox.IsChecked;
                 //}
-                UpdateCrawlRulesEnable(null, checkBox.IsChecked.GetValueOrDefault());
+                _CrawlRuleRepo.UpdateCrawlRulesEnable(null, checkBox.IsChecked.GetValueOrDefault());
             }
             else
             {
                 //单选
-                UpdateCrawlRulesEnable(Convert.ToInt32(checkBox.Tag), checkBox.IsChecked.GetValueOrDefault());
+                _CrawlRuleRepo.UpdateCrawlRulesEnable(Convert.ToInt32(checkBox.Tag), checkBox.IsChecked.GetValueOrDefault());
                 CheckIsCheckedAll(true);
             }
-            ProxyFactoryV2.RestartCrawlIPService();
-        }
-
-        /// <summary>
-        /// IP代理池数量变化通知
-        /// </summary>
-        /// <param name="curNum"></param>
-        private void OnProxyPoolCountChange(int curNum)
-        {
-            ProxyCount = curNum;
-        }
-
-        /// <summary>
-        /// 更新规则启用状态
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="enable"></param>
-        private void UpdateCrawlRulesEnable(int? id, bool enable)
-        {
-            SQLite.ExecuteNonQuery(string.Format("UPDATE crawl_rules SET enable = {0} {1}",
-                enable ? 1 : 0,
-                null == id ? "" : " WHERE id = " + id), null);
+            _ProxyFactoryV2.RestartCrawlIPService();
         }
         
         /// <summary>
@@ -159,7 +118,33 @@ namespace AcgnuX.Source.ViewModel
         public void CheckIsCheckedAll(bool doNotify)
         {
             IsCheckedAll = CrawlRuls.Where(item => item.Enable == 1).Count() == CrawlRuls.Count();
-            if(doNotify) RaisePropertyChanged(nameof(IsCheckedAll));
+            if(doNotify) OnPropertyChanged(nameof(IsCheckedAll));
+        }
+
+
+        /// <summary>
+        /// 读取抓取规则
+        /// </summary>
+        internal async void LoadCrawlRule()
+        {
+            CrawlRuls.Clear();
+            var result = await _CrawlRuleRepo.FindCrawlRuleAsync();
+            foreach (var rule in result)
+            {
+                CrawlRuls.Add(new CrawlRuleViewModel(rule));
+            }
+            CheckIsCheckedAll(false);
+        }
+
+        /// <summary>
+        /// 删除抓取规则
+        /// </summary>
+        /// <param name="item"></param>
+        internal void DeleteCrawlRule(CrawlRuleViewModel item)
+        {
+            _CrawlRuleRepo.Delete(item.Id);
+            CrawlRuls.Remove(item);
+            CheckIsCheckedAll(true);
         }
     }
 }

@@ -19,10 +19,7 @@
         </DrawingImage>
     </Window.Icon>
 
-    <Grid x:Name="MainContent">
-        <Grid.DataContext>
-            <Binding Path="Tan8DownloadRecord" Source="{StaticResource Locator}"></Binding>
-        </Grid.DataContext>
+    <Grid x:Name="MainContent" DataContext="{Binding ContentDataContext}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300" />
             <ColumnDefinition Width="*" />

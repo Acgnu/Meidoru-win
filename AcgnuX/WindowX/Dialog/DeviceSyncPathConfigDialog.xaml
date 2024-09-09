@@ -19,10 +19,10 @@
         </DrawingImage>
     </Window.Icon>
 
-    <Grid x:Name="ContentBorder">
-        <Grid.DataContext>
+    <Grid x:Name="ContentBorder" DataContext="{Binding ContentViewModel}">
+        <!--<Grid.DataContext>
             <Binding Path="DeviceSyncPathConfig" Source="{StaticResource Locator}" />
-        </Grid.DataContext>
+        </Grid.DataContext>-->
         <DataGrid Name="SyncPathDataGrid" 
                   DockPanel.Dock="Bottom"
                   ItemsSource ="{Binding SyncConfigs}" 

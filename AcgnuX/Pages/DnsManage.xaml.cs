@@ -1,34 +1,26 @@
-﻿using AcgnuX.Bussiness.Ten.Dns;
-using AcgnuX.Model.Ten.Dns;
-using AcgnuX.Source.Bussiness.Common;
-using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Source.Bussiness.Data;
-using AcgnuX.Source.Bussiness.Ten.Dns;
-using AcgnuX.Source.Model;
-using AcgnuX.Source.Model.Ten.Dns;
+﻿using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
 using AcgnuX.WindowX.Dialog;
-using GalaSoft.MvvmLight.Messaging;
-using System;
-using System.Collections.Generic;
+using CommunityToolkit.Mvvm.Messaging;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AcgnuX.Pages
 {
     /// <summary>
     ///onOpenContextMenuxaml 的交互逻辑
     /// </summary>
-    public partial class DnsManage : BasePage
+    public partial class DnsManage
     {
-        private readonly DnsManageViewModel _ViewModel;
+        public DnsManageViewModel ViewModel { get; }
 
         public DnsManage()
         {
             InitializeComponent();
-            _ViewModel = DataContext as DnsManageViewModel;
+            ViewModel = App.Current.Services.GetService<DnsManageViewModel>();
+            DataContext = ViewModel;
         }
 
         /// <summary>
@@ -36,7 +28,7 @@ namespace AcgnuX.Pages
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void OnClickContextMenuDelete(object sender, MouseButtonEventArgs e)
+        private void OnClickContextMenuDelete(object sender, MouseButtonEventArgs e)
         {
             XamlUtil.SelectRow(DnsRecordDataGrid, e);
             var selected = DnsRecordDataGrid.SelectedItem as DnsItemViewModel;
@@ -44,8 +36,7 @@ namespace AcgnuX.Pages
             var result = new ConfirmDialog(AlertLevel.WARN, string.Format(Properties.Resources.S_DeleteConfirm, selected.Name)).ShowDialog();
             if (result.GetValueOrDefault())
             {
-                await selected.Delete();
-                _ViewModel.OnRefreshClick();
+                ViewModel.DeleteItem(selected);
             }
         }
 
@@ -58,7 +49,7 @@ namespace AcgnuX.Pages
         {
             var selected = DnsRecordDataGrid.SelectedItem as DnsItemViewModel;
             if (null == selected) return;
-            new EditDnsRecordDialog(selected, _ViewModel.OnRefreshClick).ShowDialog();
+            new EditDnsRecordDialog(selected).ShowDialog();
         }
 
         /// <summary>
@@ -68,20 +59,24 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnBtnAddClick(object sender, RoutedEventArgs e)
         {
-            if (null == _ViewModel.TenDnsClient)
+            if (null == ViewModel.TenDnsClient)
             {
-                Messenger.Default.Send(new BubbleTipViewModel
-                {
-                    AlertLevel = AlertLevel.ERROR,
-                    Text = "未配置访问密钥"
-                });
+                WindowUtil.ShowBubbleError("未配置访问密钥");
                 return;
             }
-            new EditDnsRecordDialog(new DnsItemViewModel()
+            var result = new EditDnsRecordDialog(new DnsItemViewModel()
             {
-                Line = "默认",
-                TenDnsClient = _ViewModel.TenDnsClient
-            }, _ViewModel.OnRefreshClick).ShowDialog();
+                _TenDnsClient = ViewModel.TenDnsClient
+            }).ShowDialog();
+            if (result.GetValueOrDefault())
+            {
+                ViewModel.Load(true);
+            }
+        }
+
+        private void OnPageLoaded(object sender, RoutedEventArgs e)
+        {
+            ViewModel.Load(false);
         }
     }
 }

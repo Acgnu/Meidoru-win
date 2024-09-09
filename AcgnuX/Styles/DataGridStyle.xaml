@@ -15,7 +15,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="DataGridColumnHeader">
-                    <Border x:Name="BackgroundBorder" BorderThickness="0,0,0,1" BorderBrush="#FFd9d9d9" Width="Auto" Background="{TemplateBinding Background}">
+                    <Border x:Name="BackgroundBorder" BorderThickness="0,0,0,1" BorderBrush="{StaticResource ControlBorderColorBrush}" Width="Auto" Background="{TemplateBinding Background}">
                         <Grid >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>

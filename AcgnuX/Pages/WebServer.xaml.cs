@@ -3,7 +3,7 @@
     /// <summary>
     /// WebServer.xaml 的交互逻辑
     /// </summary>
-    public partial class WebServer : BasePage
+    public partial class WebServer
     {
         public WebServer()
         {

@@ -1,33 +1,30 @@
 ﻿using AcgnuX.Properties;
 using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
 using AcgnuX.ViewModel;
 using AcgnuX.WindowX.Dialog;
-using GalaSoft.MvvmLight.Messaging;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Messaging;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AcgnuX.Pages
 {
     /// <summary>
     /// PwdRepositroy.xaml 的交互逻辑
     /// </summary>
-    public partial class PwdRepositroy : BasePage
+    public partial class PwdRepositroy
     {
         //view Mdoel
-        private PwdRepositoryViewModel _ViewModel;
+        public PwdRepositoryViewModel ViewModel { get; }
+
         public PwdRepositroy()
         {
             InitializeComponent();
-            _ViewModel = DataContext as PwdRepositoryViewModel;
+            ViewModel = App.Current.Services.GetService<PwdRepositoryViewModel>();
+            DataContext = ViewModel;
         }
 
 
@@ -38,12 +35,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnPageLoaded(object sender, RoutedEventArgs e)
         {
-            _ViewModel.Load();
-        }
-
-        private void OnFilterBoxKeyDown(object sender, KeyEventArgs e)
-        {
-            _ViewModel.Load();
+            ViewModel.Load();
         }
 
         /// <summary>
@@ -55,14 +47,15 @@ namespace AcgnuX.Pages
         {
             if(string.IsNullOrEmpty(Settings.Default.AccountFilePath))
             {
-                Messenger.Default.Send(new BubbleTipViewModel
-                {
-                    AlertLevel = AlertLevel.ERROR,
-                    Text = "未配置账号保存文件路径"
-                });
+                WindowUtil.ShowBubbleError("未配置账号保存文件路径");
                 return;
             }
-            new EditAccountDialog(null, _ViewModel).ShowDialog();
+            var newItemViewModel = new AccountViewModel();
+            var result = new EditAccountDialog(newItemViewModel).ShowDialog();
+            if (result.GetValueOrDefault())
+            {
+                ViewModel.Accounts.Insert(0, newItemViewModel);
+            }
         }
 
         /// <summary>
@@ -70,7 +63,7 @@ namespace AcgnuX.Pages
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnClickContextMenuDelete(object sender, RoutedEventArgs e)
+        private async void OnClickContextMenuDelete(object sender, RoutedEventArgs e)
         {
             var selected = PwdDataGrid.SelectedItem as AccountViewModel;
             if (null == selected) return;
@@ -79,7 +72,7 @@ namespace AcgnuX.Pages
             var result = new ConfirmDialog(AlertLevel.WARN, string.Format(Properties.Resources.S_DeleteConfirm, string.Format("{0} -> {1}", selected.Site, selected.Uname))).ShowDialog();
             if (result.GetValueOrDefault())
             {
-                _ViewModel.DeleteItem(selected);
+                await ViewModel.DeleteItem(selected);
             }
         }
 
@@ -92,7 +85,7 @@ namespace AcgnuX.Pages
         {
             var selected = ((DataGrid)sender).SelectedItem as AccountViewModel;
             if (null == selected) return;
-            new EditAccountDialog(selected, _ViewModel).ShowDialog();
+            _ = new EditAccountDialog(selected).ShowDialog();
         }
 
         /// <summary>

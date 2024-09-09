@@ -1,14 +1,15 @@
 ﻿
+using AcgnuX.Source.ViewModel;
 using AcgnuX.WindowX.Dialog;
-using System;
 using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AcgnuX.Pages
 {
     /// <summary>
     /// MobileDeviceControl.xaml 的交互逻辑
     /// </summary>
-    public partial class MobileDeviceControl : BasePage
+    public partial class MobileDeviceControl
     {
         //标识是否已经监听了串口
         // private bool mIsHookedUsb = false;
@@ -16,6 +17,7 @@ namespace AcgnuX.Pages
         public MobileDeviceControl()
         {
             InitializeComponent();
+            DataContext = App.Current.Services.GetService<DeviceSyncViewModel>();
         }
 
         /// <summary>
@@ -36,34 +38,6 @@ namespace AcgnuX.Pages
                 mIsHookedUsb = true;
             }
             **/
-        }
-
-        /// <summary>
-        /// 监听串口设备
-        /// </summary>
-        /// <param name="hwnd"></param>
-        /// <param name="msg"></param>
-        /// <param name="wParam"></param>
-        /// <param name="lParam"></param>
-        /// <param name="handled"></param>
-        /// <returns></returns>
-        private IntPtr DeveiceChanged(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        {
-            //if (msg == WindowsMessage.WM_DEVICECHANGE)
-            //{
-            //    switch (wParam.ToInt32())
-            //    {
-            //        case WindowsMessage.DBT_DEVICEARRIVAL://设备插入  
-            //            CheckDevice(true);
-            //            break;
-            //        case WindowsMessage.DBT_DEVICEREMOVECOMPLETE: //设备卸载
-            //            CheckDevice(false);
-            //            break;
-            //        default:
-            //            break;
-            //    }
-            //}
-            return IntPtr.Zero;
         }
 
         #region WFP页面元素事件
