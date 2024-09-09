@@ -30,7 +30,7 @@ namespace AcgnuX.Source.Bussiness.Constants
 
         #region MVVM消息
         //单个tan8乐谱下载完成消息
-        public static readonly string TAN8_DOWNLOAD_COMPLETE = "tan8_sheet_download_complete";
+        //public static readonly string TAN8_DOWNLOAD_COMPLETE = "tan8_sheet_download_complete";
         #endregion
 
         //默认的乐谱图标

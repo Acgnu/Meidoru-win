@@ -68,14 +68,9 @@ namespace AcgnuX.Controls
         {
             Source = await Task.Run(() =>
             {
-                if (string.IsNullOrEmpty(imagePath) || !File.Exists(imagePath))
-                {
-                    return null;
-                }
-                using (var stream = File.OpenRead(imagePath))
-                {
-                    return ImageUtil.GetBitmapImageFromStream(stream);
-                }
+                if (!File.Exists(imagePath)) return null;
+
+                return ImageUtil.GetBitmapImage(imagePath);
             });
         }
 

@@ -1,8 +1,7 @@
-﻿using AcgnuX.Model.Ten.Dns;
+﻿using AcgnuX.Source.Bussiness.Ten.Dns;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Model.Ten.Dns;
 using AcgnuX.Utils;
-using AcgnuX.Utils.Crypto;
 using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
@@ -23,40 +22,25 @@ namespace AcgnuX.Bussiness.Ten.Dns
             mTenDnsApiSecret = secret;
         }
 
-        //public void testDelDnsRecord()
-        //{
-        //    delDNSRecord("");
-        //}
-
-        //public void testAddSubDomain()
-        //{
-        //    addSubDomain("");
-        //}
-
-        //public void testModifyDNS(String ip)
-        //{
-        //    modifyDNS(ip, "416075548");
-        //}
-
         /// <summary>
         /// 删除DNS解析记录
         /// </summary>
         /// <param name="recordId"></param>
         /// <param name="callBackActoin"></param>
         /// <returns></returns>
-        public async Task<DnsOperatorResult> DeleteRecordAsync(string recordId)
+        public async Task<DnsOperatorResult> DeleteRecordAsync(int recordId)
         {
             SortedDictionary<string, string> urlArgs = new SortedDictionary<string, string>(StringComparer.Ordinal);
             PutUrlArg(urlArgs, "domain", mTenDnsApiSecret.PrivDomain);
-            PutUrlArg(urlArgs, "recordId", recordId);
+            PutUrlArg(urlArgs, "recordId", Convert.ToString(recordId));
             return await CreateTenAccessAsync<DnsOperatorResult>("RecordDelete", CVM_REQUEST_ADDR, urlArgs);
         }
 
-        //private void addSubDomain(String subDomain)
+        //private void addSubDomain(string subDomain)
         //{
-        //    TreeMap<String, String> urlArgs = new TreeMap<>();
+        //    TreeMap<string, string> urlArgs = new TreeMap<>();
         //    putUrlArg(urlArgs, "domain", subDomain);
-        //    //        String createResult = createTenAccess("DomainCreate", CVM_REQUEST_ADDR, urlArgs);
+        //    //        string createResult = createTenAccess("DomainCreate", CVM_REQUEST_ADDR, urlArgs);
         //    //        System.out.println(createResult);
         //}
         public async Task<DnsOperatorResult> CreateRecordAsync(string name, string type, string line, string value)
@@ -78,7 +62,7 @@ namespace AcgnuX.Bussiness.Ten.Dns
         /// <param name="apiAddr"></param>
         /// <param name="urlArgs"></param>
         /// <returns></returns>
-        private async Task<T> CreateTenAccessAsync<T>(String action, String apiAddr, SortedDictionary<string, string> urlArgs) where T : new()
+        private async Task<T> CreateTenAccessAsync<T>(string action, string apiAddr, SortedDictionary<string, string> urlArgs) where T : new()
         {
             if (null == urlArgs)
             {
@@ -130,12 +114,12 @@ namespace AcgnuX.Bussiness.Ten.Dns
          * @param treeMap
          * @return
          */
-        private String createSignature(String method, String apiAddr, SortedDictionary<String, String> treeMap)
+        private string createSignature(string method, string apiAddr, SortedDictionary<string, string> treeMap)
         {
             //step.1 sort ,tree map does'n t need sort
             //step 2 create url parameter
-            String paramStr = RequestUtil.ConcatQueryString(treeMap);
-            String accessToSign = method + CNS_DOMAIN + apiAddr + "?" + paramStr;
+            string paramStr = RequestUtil.ConcatQueryString(treeMap);
+            string accessToSign = method + CNS_DOMAIN + apiAddr + "?" + paramStr;
             return AlgorithmUtil.ToHMACSHA1(accessToSign, mTenDnsApiSecret.SecretKey);
         }
 
@@ -146,35 +130,27 @@ namespace AcgnuX.Bussiness.Ten.Dns
          * @param recordType  记录值类型  A、CNAME、MX、NS, TXT
          * @return
          */
-        public async Task<T> QueryRecordsAsync<T>(String subDomain, String recordType) where T : new()
+        public async Task<DnsRecordResult> QueryRecordsAsync(string subDomain, string recordType)
         {
             var urlArgs = new SortedDictionary<string, string>(StringComparer.Ordinal);
             PutUrlArg(urlArgs, "domain", mTenDnsApiSecret.PrivDomain);
             PutUrlArg(urlArgs, "subDomain", subDomain);
             PutUrlArg(urlArgs, "recordType", recordType);
-            return await CreateTenAccessAsync<T>("RecordList", CVM_REQUEST_ADDR, urlArgs);
+            return await CreateTenAccessAsync<DnsRecordResult>("RecordList", CVM_REQUEST_ADDR, urlArgs);
         }
 
         /**
          * 获取客户端外网ip
          */
-        //    private String getClientIP(){
+        //    private string getClientIP(){
         ////        return "106.52.125.163";
-        //        String gatway = "http://www.yxxrui.cn/yxxrui_cabangs_api/myip.ashx";
-        //        String clientIp = PrcUtils.doHttpGet(gatway);
+        //        string gatway = "http://www.yxxrui.cn/yxxrui_cabangs_api/myip.ashx";
+        //        string clientIp = PrcUtils.doHttpGet(gatway);
         //        System.out.println(clientIp);
         //        return clientIp;
         //    }
 
-        //public JSONObject analyseAndGetData(JSONObject fullresult, String dataKey) throws RuntimeException
-        //{
-        //    if (0 == fullresult.getInteger("code") && "success".equalsIgnoreCase(fullresult.getString("codeDesc"))) {
-        //        return fullresult.getJSONObject(Optional.ofNullable(dataKey).orElse("data"));
-        //    }
-        //    throw new BizException(MessageFormat.format("{0}({1}) : {2}", fullresult.getString("codeDesc"), fullresult.getInteger("code"), fullresult.getString("message")));
-        //}
-
-        private void PutUrlArg(SortedDictionary<string, string> treeMap, String key, String value)
+        private void PutUrlArg(SortedDictionary<string, string> treeMap, string key, string value)
         {
             if (string.IsNullOrEmpty(value))
             {

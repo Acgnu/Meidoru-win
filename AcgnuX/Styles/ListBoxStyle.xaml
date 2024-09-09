@@ -164,7 +164,7 @@
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Margin" Value="0 0 5 0"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="BorderBrush" Value="#FFd9d9d9"/>
+        <Setter Property="BorderBrush" Value="{StaticResource ControlBorderColorBrush}"/>
         <Setter Property="Background" Value="{StaticResource DataGridItemBackgroundColorBrush}" />
         <Setter Property="Template">
             <Setter.Value>

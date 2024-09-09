@@ -14,6 +14,10 @@ using System.Windows.Shapes;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media.Animation;
 
+/// <summary>
+/// 作者 https://matthiasshapiro.com/DisneyShorts/how-to-create-an-animated-scrollviewer-or-listbox-in-wpf
+/// 引用 https://stackoverflow.com/questions/20731402/animated-smooth-scrolling-on-scrollviewer
+/// </summary>
 namespace AcgnuX.Controls.AnimatedScrollViewer
 {
 [TemplatePart(Name = "PART_AniVerticalScrollBar", Type = typeof(ScrollBar))]

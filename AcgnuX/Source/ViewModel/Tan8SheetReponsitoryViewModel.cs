@@ -3,8 +3,8 @@ using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Bussiness.Data;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using SharedLib.Model;
 using SharedLib.Utils;
 using System.Collections.Generic;
@@ -18,18 +18,18 @@ namespace AcgnuX.Source.ViewModel
     /// <summary>
     /// 乐谱管理ViewModel
     /// </summary>
-    public class Tan8SheetReponsitoryViewModel : ViewModelBase
+    public class Tan8SheetReponsitoryViewModel : ObservableObject
     {
         //乐谱列表对象
         public ObservableCollection<SheetItemViewModel> ListData { get; set; } = new ObservableCollection<SheetItemViewModel>();
         //选中的列表对象
         private SheetItemViewModel _SelectedListData;
-        public SheetItemViewModel SelectedListData { get => _SelectedListData; set { _SelectedListData = value; RaisePropertyChanged(); } }
+        public SheetItemViewModel SelectedListData { get => _SelectedListData; set => SetProperty(ref _SelectedListData, value); }
         //是否忙
         private bool _IsBusy = false;
-        public bool IsBusy { get { return _IsBusy; } set { _IsBusy = value; RaisePropertyChanged(); } }
+        public bool IsBusy { get => _IsBusy; set => SetProperty(ref _IsBusy, value); }
         //是否没有数据
-        public bool IsEmpty { get { return ListData.Count == 0; } set { RaisePropertyChanged(); } }
+        public bool IsEmpty { get { return ListData.Count == 0; } set { OnPropertyChanged(); } }
         //过滤文本
         public string FilterText { get; set; }
 
@@ -37,10 +37,11 @@ namespace AcgnuX.Source.ViewModel
         public ICommand OnRefreshCommand { get; set; }
 
         //乐谱库数据库
-        private readonly Tan8SheetsRepo _Tan8SheetRepo = Tan8SheetsRepo.Instance;
+        private readonly Tan8SheetsRepo _Tan8SheetRepo;
 
-        public Tan8SheetReponsitoryViewModel()
+        public Tan8SheetReponsitoryViewModel(Tan8SheetsRepo tan8SheetsRepo)
         {
+            _Tan8SheetRepo = tan8SheetsRepo;
             OnRefreshCommand = new RelayCommand(Load);
         }
 

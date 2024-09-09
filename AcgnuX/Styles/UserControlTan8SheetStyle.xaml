@@ -97,7 +97,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <Grid>
+                    <Grid ToolTip="{Binding Name}">
                         <ProgressBar Style="{StaticResource ProgressBarBaseStyle}" lc:ProgressAnimater.AnimateValue="{Binding Progress}" Visibility="{Binding IsWorking, Converter={bizc:BooleanToVisiblityConverter}, ConverterParameter=True}" />
                         <Border Padding="3">
                             <StackPanel Background="Transparent" Orientation="Horizontal">
@@ -114,8 +114,8 @@
                                     </Button>
                                 </Canvas>
                                 <StackPanel Orientation="Vertical">
-                                    <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                                 Style="{StaticResource TextBoxSheetNameStyle}" ToolTip="{Binding LongName}">
+                                    <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={bizc:StringTruncateConverter}, ConverterParameter=45}" 
+                                                 Style="{StaticResource TextBoxSheetNameStyle}">
                                         <TextBox.InputBindings>
                                             <KeyBinding Key="Enter" Command="{Binding OnEditSheetNameCommand}" />
                                         </TextBox.InputBindings>
@@ -177,20 +177,19 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <Grid Height="55">
+                    <Grid Height="55" ToolTip="{Binding Name}" >
                         <Grid.Clip>
                             <RectangleGeometry RadiusX="1.5" RadiusY="1.5" Rect="0,0,300,55"  />
                         </Grid.Clip>
                         <ProgressBar Style="{StaticResource ProgressBarBaseStyle}" lc:ProgressAnimater.AnimateValue="{Binding Progress}" ClipToBounds="True" />
                         <StackPanel Orientation="Vertical">
                             <!--乐谱标题-->
-                            <TextBlock Text="{Binding Name}" 
+                            <TextBlock Text="{Binding Name, Converter={bizc:StringTruncateConverter}, ConverterParameter=45}" 
                                        Margin="10 6 0 3"
                                        FontWeight="Bold"
                                        FontSize="14"
                                        Foreground="#FF252525"
-                                       Background="{x:Null}"
-                                       ToolTip="{Binding LongName}" />
+                                       Background="{x:Null}" />
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="{Binding Id}" ContentStringFormat="📄 {0}" Margin="5 0 5 0" VerticalAlignment="Center"/>
                                 <TextBlock Text="{Binding ProgressText}" VerticalAlignment="Center" />

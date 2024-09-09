@@ -3,11 +3,9 @@ using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Bussiness.Data;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
-using AcgnuX.Utils;
 using AcgnuX.ViewModel;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using MediaDevices;
 using Microsoft.Toolkit.Uwp.Notifications;
 using SharedLib.Utils;
@@ -18,9 +16,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using UsbMonitor;
@@ -30,19 +25,19 @@ namespace AcgnuX.Source.ViewModel
     /// <summary>
     /// 设备同步列表ViewModel
     /// </summary>
-    public class DeviceSyncViewModel : ViewModelBase
+    public class DeviceSyncViewModel : ObservableObject
     {
         //总数据
         public ObservableCollection<FileItemsCompareViewModel> ListData { get; set; } = new ObservableCollection<FileItemsCompareViewModel>();
         //进度值
         private double _ProgressValue;
-        public double ProgressValue { get => _ProgressValue; set { _ProgressValue = value; RaisePropertyChanged(); } }
+        public double ProgressValue { get => _ProgressValue; set => SetProperty(ref _ProgressValue, value); }
         //进度文本
-        private string _ProgressText = "No Device Connected";
-        public string ProgressText { get => _ProgressText; set { _ProgressText = value; RaisePropertyChanged(); } }
+        private string _ProgressText = "没有连接的WPD设备";
+        public string ProgressText { get => _ProgressText; set => SetProperty(ref _ProgressText, value); }
         //进度条警示级别
         private AlertLevel _ProgressAlertLevel;
-        public AlertLevel ProgressAlertLevel { get => _ProgressAlertLevel; set { _ProgressAlertLevel = value; RaisePropertyChanged(); } }
+        public AlertLevel ProgressAlertLevel { get => _ProgressAlertLevel; set => SetProperty(ref _ProgressAlertLevel, value); }
         //重新读取命令
         public ICommand OnReloadCommand { get; set; }
         //停止同步命令
@@ -50,18 +45,18 @@ namespace AcgnuX.Source.ViewModel
 
         //是否有设备接入
         private bool _IsDeviceConnected;
-        public bool IsDeviceConnected { get => _IsDeviceConnected; set { _IsDeviceConnected = value; RaisePropertyChanged(); } }
+        public bool IsDeviceConnected { get => _IsDeviceConnected; set  => SetProperty(ref _IsDeviceConnected, value); }
         //所有设备列表
         public ObservableCollection<MediaDevice> DeviceListData { get; set; }  = new ObservableCollection<MediaDevice>();
         //标识设备是否选中
-        //public bool IsDeviceSelected { get => SelectedDevice == null; set { RaisePropertyChanged(); } }
+        //public bool IsDeviceSelected { get => SelectedDevice == null; set { OnPropertyChanged(); } }
         //选中的设备
         private MediaDevice _SelectedDevice;
         public MediaDevice SelectedDevice { get => _SelectedDevice; 
             set 
             { 
                 _SelectedDevice = value; 
-                RaisePropertyChanged(); 
+                OnPropertyChanged(); 
                 ComboBoxDeviceSelectionChanged();
                 NotifyUIStep();
             } 
@@ -70,14 +65,14 @@ namespace AcgnuX.Source.ViewModel
         //可用的驱动列表
         public ObservableCollection<DeviceDriverViewModel> DriverListData { get; set; } = new ObservableCollection<DeviceDriverViewModel>();
         //标识驱动是否选中
-        //public bool IsDriverSelected { get => SelectedDevice == null; set { RaisePropertyChanged(); } }
+        //public bool IsDriverSelected { get => SelectedDevice == null; set { OnPropertyChanged(); } }
         //选中的驱动器
         private DeviceDriverViewModel _SelectedDriver;
         public DeviceDriverViewModel SelectedDriver { get => _SelectedDriver; 
             set 
             { 
                 _SelectedDriver = value; 
-                RaisePropertyChanged();
+                OnPropertyChanged();
                 NotifyUIStep();
                 ComboBoxDriverSelectionChanged();
             } 
@@ -87,7 +82,7 @@ namespace AcgnuX.Source.ViewModel
         public int Step { 
             get
             {
-                if (IsInDesignMode) return 2;
+                //if (DesignerProperties.GetIsInDesignMode(this)) return 2;
                 //第三阶段, 需要展示同步文件列表
                 if (IsDeviceConnected && SelectedDevice != null && SelectedDriver != null) return 2;
                 //第二阶段, 需要展示设备选择列表
@@ -96,7 +91,7 @@ namespace AcgnuX.Source.ViewModel
                 return 0;
             }
         }
-        private void NotifyUIStep() { RaisePropertyChanged(nameof(Step)); }
+        private void NotifyUIStep() { OnPropertyChanged(nameof(Step)); }
 
         //监听USB
         private UsbMonitorManager UsbMonitor;
@@ -105,10 +100,10 @@ namespace AcgnuX.Source.ViewModel
         private static ConcurrentQueue<DeviceSyncTaskArgs> mSyncTaskQueue = new ConcurrentQueue<DeviceSyncTaskArgs>();
         //标识是否正在执行同步
         public bool IsFileSyncing { get => mSyncFileBgWorker.IsBusy; }
-        private void NotifyFileSyncStatus() { RaisePropertyChanged(nameof(IsFileSyncing)); }
+        private void NotifyFileSyncStatus() { OnPropertyChanged(nameof(IsFileSyncing)); }
 
         //数据库对象
-        private readonly MediaSyncConfigRepo _MediaSyncConfigRepo = MediaSyncConfigRepo.Instance;
+        private readonly MediaSyncConfigRepo _MediaSyncConfigRepo;
 
         //读取文件的Worker
         private readonly BackgroundWorker mReadDeviceFileWorker = new BackgroundWorker()
@@ -130,8 +125,10 @@ namespace AcgnuX.Source.ViewModel
         };
 
 
-        public DeviceSyncViewModel()
+        public DeviceSyncViewModel(MediaSyncConfigRepo mediaSyncConfigRepo)
         {
+            _MediaSyncConfigRepo = mediaSyncConfigRepo;
+
             OnReloadCommand = new RelayCommand(OnReloadClick);
             OnSyncStopComand = new RelayCommand(OnStopSyncClick);
 
@@ -146,14 +143,14 @@ namespace AcgnuX.Source.ViewModel
             mSyncFileBgWorker.ProgressChanged += new ProgressChangedEventHandler(OnSyncFileProgress);
             mSyncFileBgWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(SyncFileTaskComplate);
 
-            if(!IsInDesignMode)
-            {
+            //if(!IsInDesignMode)
+            //{
                 UsbMonitor = new UsbMonitorManager(Application.Current.MainWindow);
                 //this.mUsbMonitor.UsbPort += OnUsb;
                 UsbMonitor.UsbDeviceInterface += OnUsb;
                 //this.mUsbMonitor.UsbChanged += OnUsb;
                 CheckDevice(false);
-            }
+            //}
 
             //test data
             //ListData.Add(new FileItemsCompareViewModel

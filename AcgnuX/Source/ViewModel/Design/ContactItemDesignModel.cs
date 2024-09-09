@@ -11,7 +11,7 @@ namespace AcgnuX.Source.ViewModel.Design
 {
     public class ContactItemDesignModel : ContactItemViewModel
     {
-        public ContactItemDesignModel() : base(null)
+        public ContactItemDesignModel() : base()
         {
             Id = 1;
             Name = "Acgnu";

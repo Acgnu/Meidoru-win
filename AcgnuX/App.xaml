@@ -1,48 +1,35 @@
-<Application x:Class="AcgnuX.App" 
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-             xmlns:local="clr-namespace:AcgnuX" 
-             StartupUri="MainWindow.xaml" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             d1p1:Ignorable="d" 
-             xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006">
+﻿<Application x:Class="AcgnuX.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Application.Resources>
         <ResourceDictionary>
-            <!--零散的基础部分-->
-            <Style TargetType="DockPanel" x:Key="FormDockBaseStyle">
-                <Setter Property="Height" Value="40" />
-            </Style>
-            
             <ResourceDictionary.MergedDictionaries>
-                <!--有现后顺序-->
-                <ResourceDictionary Source="/Styles/Color.xaml" />
-                <ResourceDictionary Source="/Styles/Geometries.xaml" />
-                <ResourceDictionary Source="/Styles/GeometriesStyle.xaml" />
-                <ResourceDictionary Source="/Styles/Animations.xaml" />
+                    <!--有现后顺序-->
+                    <ResourceDictionary Source="/Styles/Color.xaml" />
+                    <ResourceDictionary Source="/Styles/Geometries.xaml" />
+                    <ResourceDictionary Source="/Styles/GeometriesStyle.xaml" />
+                    <ResourceDictionary Source="/Styles/Animations.xaml" />
 
-                <ResourceDictionary Source="/Styles/ButtonStyle.xaml" />
-                <ResourceDictionary Source="/Styles/CheckBoxStyle.xaml" />
-                <ResourceDictionary Source="/Styles/TextBoxStyle.xaml" />
-                <ResourceDictionary Source="/Styles/ScrollBarStyle.xaml" />
-                <ResourceDictionary Source="/Styles/DataGridStyle.xaml" />
-                <ResourceDictionary Source="/Styles/ListBoxStyle.xaml" />
-                <ResourceDictionary Source="/Styles/WindowStyle.xaml" />
-                <ResourceDictionary Source="/Styles/PageStyle.xaml" />
-                <ResourceDictionary Source="/Styles/BorderStyle.xaml" />
-                <ResourceDictionary Source="/Styles/ComboBoxStyle.xaml" />
-                <ResourceDictionary Source="/Styles/ImageStyle.xaml" />
-                <ResourceDictionary Source="/Styles/TextBlockStyle.xaml" />
-                <ResourceDictionary Source="/Styles/ProgressBarStyle.xaml" />
-                
-                <!--UserControl-->
-                <ResourceDictionary Source="/Styles/UserControlTan8SheetStyle.xaml" />
-                <ResourceDictionary Source="/Styles/UserControlContactStyle.xaml" />
-                <ResourceDictionary Source="/Styles/UserControlDeviceSyncStyle.xaml" />
-                
-                <ResourceDictionary>
-                    <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" xmlns:vm="clr-namespace:AcgnuX.Source.ViewModel" />
-                </ResourceDictionary>
-            </ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="/Styles/DockPanelStyle.xaml" />
+                    <ResourceDictionary Source="/Styles/ButtonStyle.xaml" />
+                    <ResourceDictionary Source="/Styles/CheckBoxStyle.xaml" />
+                    <ResourceDictionary Source="/Styles/TextBoxStyle.xaml" />
+                    <ResourceDictionary Source="/Styles/ScrollBarStyle.xaml" />
+                    <ResourceDictionary Source="/Styles/DataGridStyle.xaml" />
+                    <ResourceDictionary Source="/Styles/ListBoxStyle.xaml" />
+                    <ResourceDictionary Source="/Styles/WindowStyle.xaml" />
+                    <ResourceDictionary Source="/Styles/PageStyle.xaml" />
+                    <ResourceDictionary Source="/Styles/BorderStyle.xaml" />
+                    <ResourceDictionary Source="/Styles/ComboBoxStyle.xaml" />
+                    <ResourceDictionary Source="/Styles/ImageStyle.xaml" />
+                    <ResourceDictionary Source="/Styles/TextBlockStyle.xaml" />
+                    <ResourceDictionary Source="/Styles/ProgressBarStyle.xaml" />
+
+                    <!--UserControl-->
+                    <ResourceDictionary Source="/Styles/UserControlTan8SheetStyle.xaml" />
+                    <ResourceDictionary Source="/Styles/UserControlContactStyle.xaml" />
+                    <ResourceDictionary Source="/Styles/UserControlDeviceSyncStyle.xaml" />
+                </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

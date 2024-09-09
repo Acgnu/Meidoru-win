@@ -2,9 +2,9 @@
 using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Bussiness.Data;
 using AcgnuX.Source.Utils;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm;
 using SharedLib.Utils;
 using System;
 using System.ComponentModel;
@@ -12,44 +12,42 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AcgnuX.Source.ViewModel
 {
     /// <summary>
     /// 乐谱库项目view model
     /// </summary>
-    public class SheetItemViewModel : ViewModelBase
+    public class SheetItemViewModel : ObservableObject
     {
         #region 属性 
         //乐谱ID
         public int Id { get; set; }
         //乐谱名称
-        public string Name
-        {
-            get { var len = 45; return LongName.Length > len ? LongName.Substring(0, len) + "..." : LongName; }
-            set { LongName = value; RaisePropertyChanged(); }
-        }
-        public string LongName { get; private set; }
+        private string name;
+        public string Name { get => name; set => SetProperty(ref name, value); }
         //乐谱页数
         private int _YpCount;
-        public int YpCount {get { return _YpCount; }set { _YpCount = value; RaisePropertyChanged(); }}
+        public int YpCount { get => _YpCount; set => SetProperty(ref _YpCount, value); }
         //乐谱版本
         public int Ver { get; set; }
         //是否收藏
         private byte _Star;
-        public byte Star { get { return _Star; } set { _Star = value; RaisePropertyChanged(); } }
+        public byte Star { get => _Star; set => SetProperty(ref _Star, value); }
         //封面图
         private string _Cover;
-        public string Cover { get { return _Cover; } set { _Cover = value; RaisePropertyChanged(); } }
+        public string Cover { get => _Cover; set => SetProperty(ref _Cover, value); }
         //进度
         private int _Progress;
-        public int Progress { get { return _Progress; } set { _Progress = value; RaisePropertyChanged(); } }
+        public int Progress { get => _Progress; set => SetProperty(ref _Progress, value); }
         //是否执行任务中
         private bool _IsWorking;
-        public bool IsWorking { get { return _IsWorking; } set { _IsWorking = value; RaisePropertyChanged(); } }
+        public bool IsWorking { get { return _IsWorking; } set => SetProperty(ref _IsWorking, value); }
         //下载进度信息
         private string _ProgressText;
-        public string ProgressText { get => _ProgressText; set { _ProgressText = value; RaisePropertyChanged(); } }
+        public string ProgressText { get => _ProgressText; set => SetProperty(ref _ProgressText, value); }
         //进度级别 (仅存在此字段避免警告)
         public AlertLevel ProgressAlertLevel { get; set; } = AlertLevel.RUN;
         #endregion
@@ -74,15 +72,17 @@ namespace AcgnuX.Source.ViewModel
             WorkerSupportsCancellation = true
         };
 
-        private readonly Tan8SheetsRepo _Tan8SheetsRepo = Tan8SheetsRepo.Instance;
+        private readonly Tan8SheetsRepo _Tan8SheetsRepo;
 
         public SheetItemViewModel()
         {
+            this._Tan8SheetsRepo = App.Current.Services.GetService<Tan8SheetsRepo>();
+
             OnItemPlayCommand = new RelayCommand<Tan8SheetReponsitoryViewModel>(OnCallItemPlay);
             OnStarCommand = new RelayCommand(OnStar);
             OnOpenSheetFolderCommand = new RelayCommand(OnOpenSheetFolder);
             OnExportForShareCommand = new RelayCommand(OnExportForShare);
-            OnEditSheetNameCommand = new RelayCommand(() => _Tan8SheetsRepo.UpdateName(Id, Name));
+            OnEditSheetNameCommand = new RelayCommand(OnUpdateSheetName);
 
             //工作任务
             mExportBgWorker.DoWork += new DoWorkEventHandler(DoExportForShareTask);
@@ -161,11 +161,7 @@ namespace AcgnuX.Source.ViewModel
                     //不存在则开始执行转换任务
                     if (mExportBgWorker.IsBusy)
                     {
-                        Messenger.Default.Send(new BubbleTipViewModel
-                        {
-                            AlertLevel = AlertLevel.ERROR,
-                            Text = "有正在进行中的任务"
-                        });
+                        WindowUtil.ShowBubbleError("有正在进行中的任务");
                         return;
                     }
                     mExportBgWorker.RunWorkerAsync(this);
@@ -308,6 +304,20 @@ namespace AcgnuX.Source.ViewModel
                 Progress = progress.GetValueOrDefault();
             }
             ProgressText = message;
+        }
+
+        /// <summary>
+        /// 重命名乐谱命令
+        /// </summary>
+        private void OnUpdateSheetName()
+        {
+            var result = _Tan8SheetsRepo.UpdateName(Id, Name);
+            if(!result.success)
+            {
+                WindowUtil.ShowBubbleError(result.message);
+                return;
+            }
+            WindowUtil.ShowBubbleInfo("名称已更改");
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using AcgnuX.Source.Bussiness;
-using GalaSoft.MvvmLight;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,7 +12,7 @@ namespace AcgnuX.Source.ViewModel
     /// <summary>
     /// 文件列表视图
     /// </summary>
-    public class FileItemsListViewModel : ViewModelBase
+    public class FileItemsListViewModel : ObservableObject
     {
         //目标设备
         public SyncDeviceType SyncDeviceType { get; set; }

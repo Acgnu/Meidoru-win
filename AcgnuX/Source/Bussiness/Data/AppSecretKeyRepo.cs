@@ -14,10 +14,6 @@ namespace AcgnuX.Source.Bussiness.Data
     /// </summary>
     public class AppSecretKeyRepo
     {
-        public static AppSecretKeyRepo Instance => new AppSecretKeyRepo();
-
-        private AppSecretKeyRepo() { }
-
         /// <summary>
         /// 根据平台查询配置
         /// </summary>

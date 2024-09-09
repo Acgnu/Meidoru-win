@@ -1,8 +1,12 @@
 ﻿using AcgnuX.Pages;
+using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
+using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
 using AcgnuX.ViewModel;
+using CommunityToolkit.Mvvm.Messaging;
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -14,16 +18,14 @@ namespace AcgnuX.WindowX.Dialog
     public partial class EditAccountDialog : BaseDialog
     {
         //编辑的数据vm
-        public AccountViewModel AccountViewModel { get; set; }
-        //父viewmodel
-        private readonly PwdRepositoryViewModel _PwdRepositoryViewModel;
+        public AccountViewModel AccountViewModel { get; }
 
-        public EditAccountDialog(AccountViewModel accountVm, PwdRepositoryViewModel pwdRepositoryViewModel)
+        public EditAccountDialog(AccountViewModel accountVm)
         {
             InitializeComponent();
-            _PwdRepositoryViewModel = pwdRepositoryViewModel;
             AccountViewModel = accountVm ?? new AccountViewModel();
             DataContext = this;
+            FormStackPanel.BindingGroup.BeginEdit();
         }
 
         /// <summary>
@@ -36,10 +38,23 @@ namespace AcgnuX.WindowX.Dialog
             var button = sender as Button;
             button.IsEnabled = false;
 
+            if (!FormStackPanel.BindingGroup.CommitEdit())
+            {
+                button.IsEnabled = true;
+                return;
+            }
+
             //引发事件
-            var result = await _PwdRepositoryViewModel.SaveItem(AccountViewModel);
-            button.IsEnabled = true;
-            if (result.success) Close();
+            await AccountViewModel.SaveAsync();
+            AnimateClose((s, a) => DialogResult = true);
+        }
+
+        private void OnValidationError(object sender, ValidationErrorEventArgs e)
+        {
+            if(e.Action == ValidationErrorEventAction.Added)
+            {
+                WindowUtil.ShowBubbleError(e.Error.ErrorContent.ToString());
+            }
         }
     }
 }

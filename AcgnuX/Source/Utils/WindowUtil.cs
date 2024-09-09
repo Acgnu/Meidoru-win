@@ -1,12 +1,7 @@
-﻿using AcgnuX.Source.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using AcgnuX.Source.Bussiness.Constants;
+using AcgnuX.Source.ViewModel;
+using CommunityToolkit.Mvvm.Messaging;
 using System.Windows.Forms;
-using System.Windows.Media.Animation;
 
 namespace AcgnuX.Source.Utils
 {
@@ -15,36 +10,6 @@ namespace AcgnuX.Source.Utils
     /// </summary>
     public static class WindowUtil
     {
-        /// <summary>
-        /// 设置打开的对话框基本属性
-        /// </summary>
-        /// <param name="window">将要打开的对话框</param>
-        /// <param name="owner">对话框的父窗口</param>
-        /// <returns></returns>
-        public static T SetDialogProperty<T>(T window, Window owner) where T : Window
-        {
-            //设置所属窗口
-            //window.Owner = owner;
-            //在父窗口中心打开
-            //window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            return window;
-        }
-
-        /// <summary>
-        /// 发送进度到主信息栏
-        /// </summary>
-        /// <param name="notify"></param>
-        /// <param name="message"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static MainWindowStatusNotify CalcProgress(MainWindowStatusNotify notify, string message, double value)
-        {
-            notify.message = message;
-            notify.oldProgress = notify.nowProgress;
-            notify.nowProgress = value;
-            return notify;
-        }
-
         /// <summary>
         /// 打开文件对话框, 返回所选文件完整路径
         /// </summary>
@@ -85,6 +50,38 @@ namespace AcgnuX.Source.Utils
                 return dialog.SelectedPath;
             }
             return "";
+        }
+
+        /// <summary>
+        /// 显示信息气泡
+        /// </summary>
+        /// <param name="message"></param>
+        public static void ShowBubbleInfo(string message) => ShowBubbleMessage(message, AlertLevel.INFO);
+
+        /// <summary>
+        /// 显示错误气泡
+        /// </summary>
+        /// <param name="message"></param>
+        public static void ShowBubbleError(string message) => ShowBubbleMessage(message, AlertLevel.ERROR);
+
+        /// <summary>
+        /// 显示警告气泡
+        /// </summary>
+        /// <param name="message"></param>
+        public static void ShowBubbleWarn(string message) => ShowBubbleMessage(message, AlertLevel.WARN);
+
+        /// <summary>
+        /// 显示消息气泡
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="alertLevel"></param>
+        public static void ShowBubbleMessage(string message, AlertLevel alertLevel)
+        {
+            WeakReferenceMessenger.Default.Send(new BubbleTipViewModel
+            {
+                AlertLevel = alertLevel,
+                Text = message
+            });
         }
     }
 }

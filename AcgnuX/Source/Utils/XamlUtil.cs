@@ -4,7 +4,6 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Resources;
 
 namespace AcgnuX.Source.Utils
 {
@@ -81,23 +80,27 @@ namespace AcgnuX.Source.Utils
         public static string GetApplicationResourceAsString(string path)
         {
             var uri = new Uri(path, UriKind.Relative);
-            var info = System.Windows.Application.GetResourceStream(uri);
-            StreamReader reader = new StreamReader(info.Stream, Encoding.UTF8);
-            string text = reader.ReadToEnd();
-            info.Stream.Close();
-            return text;
+            using (var contentStream = App.GetResourceStream(uri).Stream)
+            using (StreamReader reader = new StreamReader(contentStream, Encoding.UTF8))
+            {
+                return reader.ReadToEnd();
+            }
         }
 
+        /**
         /// <summary>
-        /// 以流的方式读取资源文件
+        /// 从应用程序中创建ResourceDictionary
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="uri"></param>
         /// <returns></returns>
-        public static StreamResourceInfo GetApplicationResourceAsStream(string path)
+        public static ResourceDictionary CreateResourceDictionary(string uri)
         {
-            var uri = new Uri(path, UriKind.Relative);
-            var info = System.Windows.Application.GetResourceStream(uri);
-            return info;
+            var dictionary = new ResourceDictionary();
+            dictionary.BeginInit();
+            dictionary.Source = new Uri(uri, UriKind.Relative);
+            dictionary.EndInit();
+            return dictionary;
         }
+        **/
     }
 }

@@ -1,20 +1,13 @@
 ﻿using CrawlIPService.Properties;
+using SharedLib.Data;
 using SharedLib.Model;
 using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.SQLite;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.ServiceProcess;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 
 namespace CrawIPService
 {
@@ -40,7 +33,8 @@ namespace CrawIPService
         //测试的期望响应结果
         private readonly string PROXY_TEST_RESPONSE = "验证错误！";
 
-        private readonly CrawlRuleRepo _CrawlRuleRepo = CrawlRuleRepo.Instance;
+        private readonly CrawlRuleRepo _CrawlRuleRepo = new CrawlRuleRepo();
+        private readonly ProxyAddressRepo _ProxyAddressRepo = new ProxyAddressRepo();
 
         public CrawlIPService()
         {
@@ -103,12 +97,18 @@ namespace CrawIPService
             //SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 
             //读取数据库
-            var dbFilePath = (null == args || args.Length == 0) ? Settings.Default.DBFilePath : args[0];
-            if(string.IsNullOrEmpty(dbFilePath))
+            if (args.Length > 0)
             {
+                mEventLog.WriteEntry(string.Format("启动参数 {0}", args[0]));
+            }
+            var dbFilePath = (null == args || args.Length == 0) ? Settings.Default.DBFilePath : args[0];
+            if (string.IsNullOrEmpty(dbFilePath))
+            {
+                mEventLog.WriteEntry("没有指定数据库路径, 无法执行");
                 OnStop();
                 return;
             }
+            mEventLog.WriteEntry(string.Format("执行参数: {0}", dbFilePath));
             Settings.Default.Save();
             SQLite.SetDbFilePath(dbFilePath);
             //抓取IP定时任务
@@ -138,40 +138,9 @@ namespace CrawIPService
         /// </summary>
         private List<CrawlRule> GetCrawlRules()
         {
-            var crawlRules = new List<CrawlRule>();
-            var dataSet = SQLite.SqlTable("SELECT url, partten, name, max_page FROM crawl_rules WHERE enable = 1", null);
-            if (null == dataSet) return crawlRules;
-            foreach (DataRow dataRow in dataSet.Rows)
-            {
-                crawlRules.Add(new CrawlRule()
-                {
-                    Url = Convert.ToString(dataRow["url"]),
-                    Partten = Convert.ToString(dataRow["partten"]),
-                    Name = Convert.ToString(dataRow["name"]),
-                    MaxPage = Convert.ToInt32(dataRow["max_page"])
-                });
-            }
-            return crawlRules;
-        }
-
-        /// <summary>
-        /// 查询数据库中所有的代理
-        /// </summary>
-        /// <returns></returns>
-        private List<ProxyAddress> GetAllProxyFromDB()
-        {
-            var proxyList = new List<ProxyAddress>();
-            var dataSet = SQLite.SqlTable("SELECT address, addtime FROM proxy_address ORDER BY addtime", null);
-            if (null == dataSet) return proxyList;
-            foreach (DataRow dataRow in dataSet.Rows)
-            {
-                proxyList.Add(new ProxyAddress()
-                {
-                    Address = Convert.ToString(dataRow["address"]),
-                    Addtime = Convert.ToDateTime(dataRow["addtime"])
-                });
-            }
-            return proxyList;
+            var data = _CrawlRuleRepo.FindCrawlRuleAsync().Result;
+            data.RemoveAll(rule => rule.Enable.Equals(Convert.ToByte(0)));
+            return data;
         }
 
         /// <summary>
@@ -180,42 +149,12 @@ namespace CrawIPService
         private void CheckProxy(object state)
         {
             //用于存储已经失效的代理
-            var allProxy = GetAllProxyFromDB();
+            var allProxy = _ProxyAddressRepo.GetAllProxyFromDB();
             foreach (var proxy in allProxy)
             {
                 //如果无法连通则放入失效列表, 检测完后删除
-                if (!IsProxyValid(proxy.Address)) RemoveProxy(proxy.Address, 0);
+                if (!IsProxyValid(proxy.Address)) _ProxyAddressRepo.RemoveProxy(proxy.Address, 0);
             }
-        }
-
-        /// <summary>
-        /// 从代理池移除IP
-        /// </summary>
-        /// <param name="proxyAddress">需要移除的IP地址</param>
-        /// <param name="requeeTime">重新放入IP池的等待时间 (毫秒), 0 = 抛弃</param>
-        public void RemoveProxy(string proxyAddress, int requeeTime)
-        {
-            SQLite.ExecuteNonQuery("DELETE from proxy_address WHERE address = @address",
-                new List<SQLiteParameter> { new SQLiteParameter("@address", proxyAddress) });
-            if (requeeTime == 0)
-            {
-                return;
-            }
-            Task.Run(() =>
-            {
-                Thread.Sleep(requeeTime);
-                SaveProxyToDB(proxyAddress);
-            });
-        }
-
-        /// <summary>
-        /// 保存一条代理到数据库
-        /// </summary>
-        /// <param name="proxyAddress"></param>
-        private void SaveProxyToDB(string proxyAddress)
-        {
-            SQLite.ExecuteNonQuery("INSERT OR IGNORE INTO proxy_address(address, addtime) VALUES (@address, datetime('now', 'localtime'))",
-                new List<SQLiteParameter> { new SQLiteParameter("@address", proxyAddress) });
         }
 
         /// <summary>
@@ -225,7 +164,7 @@ namespace CrawIPService
         /// <returns></returns>
         private bool IsProxyValid(string proxyAddress)
         {
-            if(string.IsNullOrEmpty(proxyAddress))
+            if (string.IsNullOrEmpty(proxyAddress))
             {
                 return false;
             }
@@ -244,7 +183,8 @@ namespace CrawIPService
             crawRules.ForEach(item =>
             {
                 //对每一条规则单开一个线程
-                Task.Run(() => {
+                Task.Run(() =>
+                {
                     //设置爬取的页数, 以第一页为当前页
                     for (var currentPage = 1; currentPage <= item.MaxPage; currentPage++)
                     {
@@ -271,13 +211,13 @@ namespace CrawIPService
                             mstr = mstr.NextMatch();
                             if (IsProxyValid(proxyAddress))
                             {
-                                SaveProxyToDB(proxyAddress);
+                                _ProxyAddressRepo.SaveProxyToDB(proxyAddress);
                             }
                         }
                         if (!"正常".Equals(item.ExceptionDesc))
                         {
                             _CrawlRuleRepo.UpdateExceptionDesc(item.Id, "正常");
-                        }    
+                        }
                     }
                 });
             });

@@ -1,10 +1,9 @@
 ﻿using AcgnuX.Bussiness.Ten.Dns;
 using AcgnuX.Source.Model.Ten.Dns;
-using GalaSoft.MvvmLight;
+using AcgnuX.Source.Utils;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AcgnuX.Source.ViewModel
@@ -12,48 +11,57 @@ namespace AcgnuX.Source.ViewModel
     /// <summary>
     /// DNS管理的DNS条目VM
     /// </summary>
-    public class DnsItemViewModel : ViewModelBase
+    public class DnsItemViewModel : ObservableObject
     {
         public int? Id { get; set; }
         public int Ttl { get; set; }
-        public string Value { get; set; }
         public int Enabled { get; set; }
         public string Status { get; set; }
         public string Updated_on { get; set; }
-        public int Q_project_id { get; set; }
-        public string Name { get; set; }
-        public string Line { get; set; }
-        public string Line_id { get; set; }
-        public string Type { get; set; }
-        public string Remark { get; set; }
-        public int Mx { get; set; }
-        public string Hold { get; set; }
-        public TenCloudDns TenDnsClient { get; set; }
+
+        private string _value;
+        public string Value { get => _value; set => SetProperty(ref _value, value); }
+
+        private string name;
+        public string Name { get => name; set => SetProperty(ref name, value); }
+
+        private string line = "默认";
+        public string Line { get => line; set => SetProperty(ref line, value); }
+
+        private string type = "A";
+        public string Type { get => type; set => SetProperty(ref type, value); }
+
+ 
+        public TenCloudDns _TenDnsClient { set; get; }
+
 
         /// <summary>
-        /// 新增或更新
+        /// 保存或修改DNS记录
         /// </summary>
-        public async Task<DnsOperatorResult> SaveOrModify()
+        /// <param name="unCommitName"></param>
+        /// <param name="unCommitValue"></param>
+        /// <param name="unCommitType"></param>
+        /// <returns></returns>
+        internal async Task<bool> Save(string unCommitName, string unCommitValue, string unCommitType)
         {
+            DnsOperatorResult result;
             if (Id == null)
             {
                 //新增
-                return await TenDnsClient.CreateRecordAsync(Name, Type, Line, Value);
+                result = await _TenDnsClient.CreateRecordAsync(unCommitName, unCommitType, Line, unCommitValue);
             }
             else
             {
                 //修改
-                return await TenDnsClient.ModifyRecordAsync(Id.GetValueOrDefault(), Name, Type, Line, Value);
+                result = await _TenDnsClient.ModifyRecordAsync(Id.GetValueOrDefault(), unCommitName, unCommitType, Line, unCommitValue);
             }
-        }
 
-        /// <summary>
-        /// 删除
-        /// </summary>
-        /// <returns></returns>
-        public async Task<DnsOperatorResult> Delete()
-        {
-            return await TenDnsClient.DeleteRecordAsync(Convert.ToString(Id.GetValueOrDefault())); ;
+            if (result.code != 0)
+            {
+                WindowUtil.ShowBubbleError(result.message);
+                return false;
+            }
+            return true;
         }
     }
 }

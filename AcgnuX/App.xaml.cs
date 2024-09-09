@@ -1,14 +1,17 @@
 ﻿using AcgnuX.Properties;
 using AcgnuX.Source.Bussiness.Constants;
+using AcgnuX.Source.Bussiness.Data;
 using AcgnuX.Source.Taskx;
+using AcgnuX.Source.Taskx.Http;
 using AcgnuX.Source.Utils;
+using AcgnuX.Source.ViewModel;
+using Microsoft.Extensions.DependencyInjection;
+using SharedLib.Data;
 using SharedLib.Utils;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+using System.Collections.ObjectModel;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace AcgnuX
@@ -18,14 +21,20 @@ namespace AcgnuX
     /// </summary>
     public partial class App : Application
     {
-        [DllImport("User32.dll")]
-        private static extern bool ShowWindowAsync(IntPtr hWnd, int cmdShow);
-        [DllImport("User32.dll")]
-        private static extern bool SetForegroundWindow(IntPtr hWnd);
+        //[DllImport("User32.dll")]
+        //private static extern bool ShowWindowAsync(IntPtr hWnd, int cmdShow);
+        //[DllImport("User32.dll")]
+        //private static extern bool SetForegroundWindow(IntPtr hWnd);
 
         //必须持有此对象作为成员变量, 才能生效
-        private Mutex mMutex;
+        //private Mutex mMutex;
 
+        public static new App Current => (App)Application.Current;
+
+        //服务, 可用于IOC
+        public IServiceProvider Services { get; }
+
+        /**
         /// <summary>
         /// 显示已运行的程序
         /// </summary>
@@ -35,11 +44,54 @@ namespace AcgnuX
             ShowWindowAsync(instance.MainWindowHandle, 1); //显示
             SetForegroundWindow(instance.MainWindowHandle);            //放到前端
         }
+        **/
 
-        protected override async void OnStartup(StartupEventArgs e)
+        public App()
+        {
+            Services = ConfigureServices();
+            this.InitializeComponent();
+        }
+
+        /// <summary>
+        /// 注册服务
+        /// </summary>
+        /// <returns></returns>
+        private static IServiceProvider ConfigureServices()
+        {
+            return new ServiceCollection()
+                //service
+                .AddSingleton<AppSecretKeyRepo, AppSecretKeyRepo>()
+                .AddSingleton<ContactRepo, ContactRepo>()
+                .AddSingleton<MediaSyncConfigRepo, MediaSyncConfigRepo>()
+                .AddSingleton<ProxyAddressRepo, ProxyAddressRepo>()
+                .AddSingleton<Tan8SheetCrawlRecordRepo, Tan8SheetCrawlRecordRepo>()
+                .AddSingleton<Tan8SheetCrawlTaskRepo, Tan8SheetCrawlTaskRepo>()
+                .AddSingleton<Tan8SheetsRepo, Tan8SheetsRepo>()
+                .AddSingleton<CrawlRuleRepo, CrawlRuleRepo>()
+
+                //需要单例的组件
+                .AddSingleton<HttpWebServer, HttpWebServer>()
+                .AddSingleton<ProxyFactoryV2, ProxyFactoryV2>()
+
+                //viewmodel
+                .AddTransient<MainWindowViewModel>()
+                .AddTransient<DnsManageViewModel>()
+                .AddTransient<PwdRepositoryViewModel>()
+                .AddTransient<PianoScoreDownloadRecordViewModel>()
+                .AddTransient<Tan8PlayerViewModel>()
+                .AddTransient<SettingsViewModel>()
+                .AddTransient<Tan8SheetReponsitoryViewModel>()
+                .AddTransient<DeviceSyncViewModel>()
+                .AddTransient<DeviceSyncPathConfigDialogViewModel>()
+                .AddTransient<ContactManageViewModel>()
+                .BuildServiceProvider();
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
+            /**
             //检测是否单例启动
             mMutex = new Mutex(true, System.Reflection.Assembly.GetEntryAssembly().GetName().Name, out bool createdNew);
             if (!createdNew)
@@ -56,28 +108,31 @@ namespace AcgnuX
                     }
                 }
             }
+            **/
 
-            //初始化设置
-            var dbfilePath = Settings.Default.DBFilePath;   //ConfigUtil.Instance.Load().DbFilePath;
-
-            //检查Flash信任文件
-            Tan8PlayUtil.WriteTrustFile();
-
-            //检查数据库文件是否存在
-            if (!File.Exists(dbfilePath)) return;
-
-            //设置数据库, 创建必须的表
-            var initSQL = XamlUtil.GetApplicationResourceAsString(@"Assets\data\" + ApplicationConstant.DB_INIT_FILE);
-            await SQLite.SetDbFilePath(dbfilePath, initSQL);
-
-            //检查IP抓取服务
-            var evnFolder = Environment.CurrentDirectory;
-            var svcFolder = evnFolder.Replace(System.Reflection.Assembly.GetEntryAssembly().GetName().Name, ApplicationConstant.CRAWL_IP_SERVICE_NAME);
-            var svcPath = Path.Combine(svcFolder, ApplicationConstant.CRAWL_IP_SERVICE_NAME + ".exe");
-            if (File.Exists(svcPath))
+            Task.Run(() =>
             {
-                ServiceUtil.CheckAndStart(ApplicationConstant.CRAWL_IP_SERVICE_NAME, svcPath, new string[] { dbfilePath });
-            }
+                //初始化设置
+                var dbfilePath = Settings.Default.DBFilePath;   //ConfigUtil.Instance.Load().DbFilePath;
+
+                //检查数据库文件是否存在
+                if (!File.Exists(dbfilePath)) return;
+
+                //设置数据库, 创建必须的表
+                var initSQL = XamlUtil.GetApplicationResourceAsString(@"Assets\data\" + ApplicationConstant.DB_INIT_FILE);
+                SQLite.SetDbFilePath(dbfilePath, initSQL);
+
+                //检查IP抓取服务
+                var evnFolder = Environment.CurrentDirectory;
+                var svcFolder = evnFolder.Replace(System.Reflection.Assembly.GetEntryAssembly().GetName().Name, ApplicationConstant.CRAWL_IP_SERVICE_NAME);
+                var svcPath = Path.Combine(svcFolder, ApplicationConstant.CRAWL_IP_SERVICE_NAME + ".exe");
+                if (File.Exists(svcPath))
+                {
+                    ServiceUtil.CheckAndStart(ApplicationConstant.CRAWL_IP_SERVICE_NAME, svcPath, new string[] { dbfilePath });
+                }
+            });
+
+            new MainWindow().Show();
         }
     }
 }

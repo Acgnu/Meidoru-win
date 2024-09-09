@@ -12,7 +12,7 @@ namespace AcgnuX.Source.ViewModel.Design
     /// </summary>
     public class DeviceSyncDesignViewModel : DeviceSyncViewModel
     {
-        public DeviceSyncDesignViewModel()
+        public DeviceSyncDesignViewModel() : base(null)
         {
             ProgressText = "Design Progress Text";
             ProgressAlertLevel = Bussiness.Constants.AlertLevel.INFO;

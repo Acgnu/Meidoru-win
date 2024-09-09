@@ -19,21 +19,25 @@ namespace SharedLib.Utils
         /// 设置数据库文件路径
         /// </summary>
         /// <param name="filePath"></param>
-        public static Task<bool> SetDbFilePath(string filePath, string initSql = null)
+        public static void SetDbFilePath(string filePath, string initSql = null)
         {
-            return Task.Run(() =>
+            mDbFilePath = filePath;
+            try
             {
-                mDbFilePath = filePath;
-                try
+                if (!string.IsNullOrEmpty(initSql))
                 {
-                    if (!string.IsNullOrEmpty(initSql))
-                    {
-                        ExecuteNonQuery(initSql, null);
-                        OnDbFileSetEvent?.Invoke();
-                    }
+                    ExecuteNonQuery(initSql, null);
+                    OnDbFileSetEvent?.Invoke();
                 }
-                catch (Exception) { }
-                return true;
+            }
+            catch (Exception) { }
+        }
+
+        public static async void SetDbFilePathAsync(string filePath, string initSql = null)
+        {
+            await Task.Run(() =>
+            {
+                SetDbFilePath(filePath, initSql);
             });
         }
 

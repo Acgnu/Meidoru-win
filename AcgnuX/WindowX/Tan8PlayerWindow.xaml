@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Tan8PlayerWindow" Height="900" Width="800" Loaded="OnPageLoad">
-    <Window.DataContext>
+    <!--<Window.DataContext>
         <Binding Path="Tan8Player" Source="{StaticResource Locator}"></Binding>
-    </Window.DataContext>
+    </Window.DataContext>-->
     <Window.Icon>
         <DrawingImage>
             <DrawingImage.Drawing>

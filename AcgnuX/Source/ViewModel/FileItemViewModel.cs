@@ -3,9 +3,9 @@ using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using AcgnuX.Utils;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm;
 using MediaDevices;
 using SharedLib.Utils;
 using System;
@@ -16,13 +16,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace AcgnuX.Source.ViewModel
 {
     /// <summary>
     /// 文件视图模型
     /// </summary>
-    public class FileItemViewModel : ViewModelBase
+    public class FileItemViewModel : ObservableObject
     {
         //文件名
         public string Name { get; set; }
@@ -116,11 +117,7 @@ namespace AcgnuX.Source.ViewModel
                 var winTempFolder = Path.GetTempPath();
                 if (null == winTempFolder)
                 {
-                    Messenger.Default.Send(new BubbleTipViewModel
-                    {
-                        Text = "无法获取临时文件夹",
-                        AlertLevel = AlertLevel.ERROR
-                    });
+                    WindowUtil.ShowBubbleError("无法获取临时文件夹");
                     return;
                 }
                 var targetFullPath = Path.Combine(winTempFolder, Name);
@@ -133,11 +130,8 @@ namespace AcgnuX.Source.ViewModel
 
                 //发送进度消息
                 IsCopying = true;
-                Messenger.Default.Send(new BubbleTipViewModel
-                {
-                    Text = "正在复制文件",
-                    AlertLevel = AlertLevel.RUN
-                });
+                WindowUtil.ShowBubbleMessage("正在复制文件", AlertLevel.RUN);
+
                 //先复制目标文件到临时文件夹, 再打开
                 using (var device = DeviceSyncViewModel.SelectedDevice)
                 {
@@ -148,11 +142,7 @@ namespace AcgnuX.Source.ViewModel
                     device.Disconnect();
                 }
                 IsCopying = false;
-                Messenger.Default.Send(new BubbleTipViewModel
-                {
-                    Text = string.Format("已复制到临时文件夹 {0}", targetFullPath),
-                    AlertLevel = AlertLevel.INFO
-                });
+                WindowUtil.ShowBubbleInfo(string.Format("已复制到临时文件夹 {0}", targetFullPath));
                 System.Diagnostics.Process.Start(targetFullPath);
             }
         }
@@ -179,11 +169,7 @@ namespace AcgnuX.Source.ViewModel
                 FileUtil.DeleteFile(Path.Combine(FileItemsListViewModel.FolderPath, Name));
                 //从vm中移除对象
                 FileItemsListViewModel.FileItems.Remove(this);
-                Messenger.Default.Send(new BubbleTipViewModel
-                {
-                    Text = string.Format("文件[{0}]已删除", Name),
-                    AlertLevel = AlertLevel.INFO
-                });
+                WindowUtil.ShowBubbleInfo(string.Format("文件[{0}]已删除", Name));
             }
             else
             {
@@ -213,11 +199,7 @@ namespace AcgnuX.Source.ViewModel
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex);
-                    Messenger.Default.Send(new BubbleTipViewModel
-                    {
-                        Text = string.Format("[{0}]删除失败: [{1}]", Name, ex.Message),
-                        AlertLevel = AlertLevel.ERROR
-                    });
+                    WindowUtil.ShowBubbleError(string.Format("[{0}]删除失败: [{1}]", Name, ex.Message));
                 }
             }
             //}

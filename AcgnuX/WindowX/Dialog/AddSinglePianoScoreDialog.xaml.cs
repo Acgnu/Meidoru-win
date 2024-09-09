@@ -1,7 +1,7 @@
 ﻿using AcgnuX.Source.Bussiness.Common;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
-using GalaSoft.MvvmLight.Command;
+using CommunityToolkit.Mvvm.Input;
 using SharedLib.Utils;
 using System;
 using System.Windows;
@@ -61,6 +61,11 @@ namespace AcgnuX.WindowX.Dialog
             ConfirmAction?.Invoke(arg);
             DialogResult = true;
             Close();
+        }
+
+        private void BaseDialog_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
         }
     }
 }

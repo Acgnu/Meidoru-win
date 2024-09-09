@@ -4,9 +4,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:AcgnuX.WindowX.Dialog"
+        xmlns:bizv="clr-namespace:AcgnuX.Source.Bussiness.Validation"
         xmlns:res="clr-namespace:AcgnuX.Properties"
         mc:Ignorable="d"
-        Title="{x:Static res:Resources.S_EditCrawlRule}" Height="260" Width="420" Style="{StaticResource DialogWindowBaseStyle}" Loaded="OnDialogLoaded">
+        Title="{x:Static res:Resources.S_EditCrawlRule}" Height="260" Width="420" Style="{StaticResource DialogWindowBaseStyle}">
     
     <Window.Icon>
         <DrawingImage>
@@ -19,28 +20,35 @@
     </Window.Icon>
     
     <DockPanel>
-        <StackPanel DockPanel.Dock="Top">
+        <StackPanel x:Name="FormStackPanel" DockPanel.Dock="Top" DataContext="{Binding ContentViewModel}" Validation.Error="OnValidationError">
+            <StackPanel.BindingGroup>
+                <BindingGroup NotifyOnValidationError="True">
+                    <BindingGroup.ValidationRules>
+                        <bizv:ValidateCrawlRule />
+                    </BindingGroup.ValidationRules>
+                </BindingGroup>
+            </StackPanel.BindingGroup>
             <!--名称-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_Name}" Style="{StaticResource FormFieldTextBlock}" />
-                <TextBox Name="TextBlockName" Style="{StaticResource TextBoxBase}" Text="{Binding Path=McrawlRule.NameView, UpdateSourceTrigger=Explicit}"/>
+                <TextBox Name="TextBlockName" Style="{StaticResource TextBoxBase}" Text="{Binding Path=Name, Mode=TwoWay}"/>
             </DockPanel>
             <!--地址-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_Site}" Style="{StaticResource FormFieldTextBlock}" />
-                <TextBox Name="TextBlockSite" Style="{StaticResource TextBoxBase}" Text="{Binding Path=McrawlRule.UrlView, UpdateSourceTrigger=Explicit}"/>
+                <TextBox Name="TextBlockSite" Style="{StaticResource TextBoxBase}" Text="{Binding Path=Url, Mode=TwoWay}"/>
             </DockPanel>
             <!--规则-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="匹配规则" Style="{StaticResource FormFieldTextBlock}"/>
-                <TextBox Name="TextBlockParttten" Style="{StaticResource TextBoxBase}" Text="{Binding Path=McrawlRule.ParttenView, UpdateSourceTrigger=Explicit}"/>
+                <TextBox Name="TextBlockParttten" Style="{StaticResource TextBoxBase}" Text="{Binding Path=Partten, Mode=TwoWay}"/>
             </DockPanel>
             <!--页数-->
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="抓取页数" Style="{StaticResource FormFieldTextBlock}"/>
                 <Grid>
-                    <TextBox Name="TextBlockPage" Style="{StaticResource TextBoxBase}" Text="{Binding Path=McrawlRule.MaxPageView, UpdateSourceTrigger=Explicit}"/>
-                    <CheckBox Name="CheckboxEnable" Content="启用" IsChecked="{Binding McrawlRule.EnableView, UpdateSourceTrigger=Explicit}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    <TextBox Name="TextBlockPage" Style="{StaticResource TextBoxBase}" Text="{Binding Path=MaxPage, Mode=TwoWay}"/>
+                    <CheckBox Name="CheckboxEnable" Content="启用" IsChecked="{Binding Enable, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
                 </Grid>
              </DockPanel>
         </StackPanel>

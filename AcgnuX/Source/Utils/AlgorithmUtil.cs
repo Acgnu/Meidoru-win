@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace AcgnuX.Utils.Crypto
+namespace AcgnuX.Utils
 {
     class AlgorithmUtil
     {

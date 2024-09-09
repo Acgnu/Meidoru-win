@@ -52,4 +52,7 @@
     <!--导航菜单图标颜色-->
     <Color x:Key="NavMenuIconColor">Black</Color>
     <SolidColorBrush x:Key="NavMenuIconColorBrush" Color="{StaticResource NavMenuIconColor}" />
+    <!--控件边框颜色-->
+    <Color x:Key="ControlBorderColor">#FFd9d9d9</Color>
+    <SolidColorBrush x:Key="ControlBorderColorBrush" Color="{StaticResource ControlBorderColor}" />
 </ResourceDictionary>

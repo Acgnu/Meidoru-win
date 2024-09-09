@@ -1,4 +1,4 @@
-﻿<local:BasePage x:Class="AcgnuX.Pages.PwdRepositroy"
+﻿<Page x:Class="AcgnuX.Pages.PwdRepositroy"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -9,10 +9,6 @@
       mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="768"
       Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
 
-    <Page.DataContext>
-        <Binding Path="PwdRepository" Source="{StaticResource Locator}"></Binding>
-    </Page.DataContext>
-    
     <Grid>
         <Border Style="{StaticResource PageContainerBorderStyle}">
             <Grid>
@@ -30,7 +26,7 @@
                             <TextBlock Text="{x:Static res:Resources.S_Add}" Margin="5 0 0 0" />
                         </WrapPanel>
                     </Button>
-                    <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding FilterText, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" KeyUp="OnFilterBoxKeyDown" />
+                    <TextBox Style="{StaticResource TextBoxBase}" Text="{Binding FilterText, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"/>
                 </DockPanel>
                 <DataGrid 
                     x:Name="PwdDataGrid"
@@ -61,4 +57,4 @@
         </Button>-->
         <lc:BusyIndicator x:Name="BusyIndicator" IsBusy="{Binding IsBusy}" />
     </Grid>
-</local:BasePage>
+</Page>

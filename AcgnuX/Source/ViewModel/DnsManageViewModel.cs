@@ -1,100 +1,125 @@
 ﻿using AcgnuX.Bussiness.Ten.Dns;
-using AcgnuX.Model.Ten.Dns;
 using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Bussiness.Data;
 using AcgnuX.Source.Bussiness.Ten.Dns;
-using AcgnuX.Source.Model;
-using AcgnuX.Source.Model.Ten.Dns;
-using AcgnuX.WindowX.Dialog;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+using AcgnuX.Source.Utils;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
+using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Threading;
 
 namespace AcgnuX.Source.ViewModel
 {
     /// <summary>
     /// DNS管理界面VM
     /// </summary>
-    public class DnsManageViewModel : ViewModelBase
+    public class DnsManageViewModel : ObservableObject
     {
         //DNS表格数据内容
         public ObservableCollection<DnsItemViewModel> GridData { get; set; } = new ObservableCollection<DnsItemViewModel>();
-        //刷新按钮命令
-        public ICommand OnRefreshCommand { get; set; }
         //添加命令
         public ICommand OnAddCommand { get; set; }
         //腾讯dns调用对象
         public TenCloudDns TenDnsClient { get; set; }
         //秘钥repo
-        private readonly AppSecretKeyRepo _appSecretKeyRepo = AppSecretKeyRepo.Instance;
+        private readonly AppSecretKeyRepo _appSecretKeyRepo;
         //过滤文本
-        public string FilterText { get; set; }
+        private string filterText;
+        public string FilterText { get => filterText; set { filterText = value; OnFilterTextChanged(); } }
+        public ICollectionView _CollectionView;
         //是否忙
-        private bool _IsBusy = true;
-        public bool IsBusy 
-        { 
-            get { return _IsBusy; }
-            set { _IsBusy = value; RaisePropertyChanged(); }
-        }
+        private bool isBusy = false;
+        public bool IsBusy { get => isBusy; set => SetProperty(ref isBusy, value); }
 
-        public DnsManageViewModel()
+        public DnsManageViewModel(AppSecretKeyRepo appSecretKeyRepo)
         {
-            OnRefreshCommand = new RelayCommand(OnRefreshClick);
-
+            this._appSecretKeyRepo = appSecretKeyRepo;
             var appSecretKey = _appSecretKeyRepo.FindByPlatform("tencent");
-            TenDnsClient = new TenCloudDns(appSecretKey);
-            LoadDnsRecord();
-        }
-
-        /// <summary>
-        /// 刷新按钮点击事件
-        /// </summary>
-        public void OnRefreshClick()
-        {
-            LoadDnsRecord();
+            if (null != appSecretKey)
+            {
+                TenDnsClient = new TenCloudDns(appSecretKey);
+            }
         }
 
         /// <summary>
         /// 重新读取数据
         /// </summary>
-        private async void LoadDnsRecord()
+        public async void Load(bool reload)
         {
+            if (null != _CollectionView)
+            {
+                if (!reload) return;
+
+                GridData.Clear();
+                _CollectionView.Refresh();
+            }
+
             if (null == TenDnsClient) return;
             IsBusy = true;
 
-            var response = await TenDnsClient.QueryRecordsAsync<DnsRecordResult>(null, null);
+            var response = await TenDnsClient.QueryRecordsAsync(null, null);
             if (null != response)
             {
-                GridData.Clear();
                 foreach (var item in response.data.records)
                 {
-                    if (!string.IsNullOrEmpty(FilterText) && !item.Name.Contains(FilterText) && !item.Value.Contains(FilterText))
+                    GridData.Add(new DnsItemViewModel()
                     {
-                        //过滤
-                        continue;
-                    }
-                    GridData.Add(
-                                   new DnsItemViewModel()
-                                   {
-                                       Id = item.id,
-                                       Ttl = item.ttl,
-                                       Value = item.Value,
-                                       Enabled = item.enabled,
-                                       Updated_on = item.updated_on,
-                                       Name = item.Name,
-                                       Line = item.line,
-                                       Type = item.type,
-                                       TenDnsClient = TenDnsClient
-                                   });
+                        Id = item.id,
+                        Ttl = item.ttl,
+                        Value = item.Value,
+                        Enabled = item.enabled,
+                        Updated_on = item.updated_on,
+                        Name = item.Name,
+                        Line = item.line,
+                        Type = item.type,
+                        _TenDnsClient = TenDnsClient
+                    });
                 }
+                _CollectionView = CollectionViewSource.GetDefaultView(GridData);
             }
+            IsBusy = false;
+        }
+
+        /// <summary>
+        /// 搜索
+        /// </summary>
+        private void OnFilterTextChanged()
+        {
+            if (null == _CollectionView)
+            {
+                return;
+            }
+            if (string.IsNullOrEmpty(FilterText) && _CollectionView.Filter != null)
+            {
+                _CollectionView.Filter = null;
+            }
+            _CollectionView.Filter = new Predicate<object>((item) =>
+            {
+                var itemVm = item as DnsItemViewModel;
+                return itemVm.Name.Contains(FilterText) || itemVm.Value.Contains(FilterText);
+            });
+        }
+
+        /// <summary>
+        /// 删除记录
+        /// </summary>
+        /// <param name="selected"></param>
+        internal async void DeleteItem(DnsItemViewModel selected)
+        {
+            IsBusy = true;
+            var delResult = await TenDnsClient.DeleteRecordAsync(selected.Id.GetValueOrDefault());
+            if (delResult.code != 0)
+            {
+                WindowUtil.ShowBubbleError(delResult.message);
+                IsBusy = false;
+                return;
+            }
+            GridData.Remove(selected);
             IsBusy = false;
         }
     }

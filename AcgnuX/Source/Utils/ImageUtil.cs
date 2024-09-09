@@ -1,18 +1,9 @@
-﻿using AcgnuX.Utils;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Runtime.Caching;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Brush = System.Drawing.Brush;
-using Color = System.Drawing.Color;
 
 namespace AcgnuX.Source.Utils
 {
@@ -57,15 +48,14 @@ namespace AcgnuX.Source.Utils
         public static BitmapImage GetBitmapImage(byte[] bytes)
         {
             var stream = new MemoryStream(bytes);
-            var bitmap = GetBitmapImageFromStream(stream);
-            return bitmap;
+            return GetBitmapImageFromStream(stream);
         }
 
         public static BitmapImage GetBitmapImageFromStream(Stream stream)
         {
             BitmapImage bitmap = new BitmapImage();
             bitmap.BeginInit();
-            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.CacheOption = BitmapCacheOption.OnDemand;
             bitmap.StreamSource = stream;
             bitmap.EndInit();
             bitmap.Freeze();
@@ -113,9 +103,11 @@ namespace AcgnuX.Source.Utils
         /// <returns></returns>
         public static byte[] ImageToByteArray(Image image)
         {
-            MemoryStream ms = new MemoryStream();
-            image.Save(ms, GetImageFormat(image.RawFormat));
-            return ms.ToArray();
+            using (MemoryStream ms = new MemoryStream())
+            {
+                image.Save(ms, GetImageFormat(image.RawFormat));
+                return ms.ToArray();
+            }
         }
 
         /// <summary>
@@ -193,6 +185,22 @@ namespace AcgnuX.Source.Utils
                 Stretch = Stretch.UniformToFill,
                 Opacity = opacity
             };
+        }
+
+        /// <summary>
+        /// 从ImageBrush中读取文件字节数组
+        /// </summary>
+        /// <param name="imageBrush"></param>
+        /// <returns></returns>
+        public static byte[] ImageBrushToByte(ImageBrush imageBrush)
+        {
+            var bitmapImage = imageBrush.ImageSource as BitmapImage;
+            byte[] resultBytes = new byte[bitmapImage.StreamSource.Length];
+            using (var stream = bitmapImage.StreamSource)
+            {
+                stream.Read(resultBytes, 0, (int) bitmapImage.StreamSource.Length - 1);
+            }
+            return resultBytes;
         }
     }
 }

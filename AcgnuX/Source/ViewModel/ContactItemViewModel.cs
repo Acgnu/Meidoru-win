@@ -1,16 +1,13 @@
-﻿using AcgnuX.Pages;
-using AcgnuX.Source.Bussiness.Constants;
+﻿using AcgnuX.Source.Bussiness.Constants;
+using AcgnuX.Source.Bussiness.Data;
 using AcgnuX.Source.Model;
-using AcgnuX.WindowX.Dialog;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Windows;
-using System.Windows.Input;
 
 namespace AcgnuX.Source.ViewModel
 {
-    public class ContactItemViewModel : ViewModelBase
+    public class ContactItemViewModel : ObservableObject
     {
         /// <summary>
         /// 数据ID
@@ -19,107 +16,77 @@ namespace AcgnuX.Source.ViewModel
         /// <summary>
         /// 联系人平台 
         /// </summary>
-        private ContactPlatform? platform;
-        public ContactPlatform? Platform
-        {
-            get { return platform; }
-            set { platform = value; RaisePropertyChanged(); }
-        }
+        private ContactPlatform platform = ContactPlatform.QQ;
+        public ContactPlatform Platform { get => platform; set => SetProperty(ref platform, value); }
         /// <summary>
         /// 联系人名称/备注名称
         /// </summary>
         private string name;
-        public string Name 
-        {
-            get { return name; }
-            set { name = value; RaisePropertyChanged(); }
-        }
+        public string Name { get => name; set => SetProperty(ref name, value); }
         /// <summary>
         /// 联系人UID
         /// </summary>
         private string uid;
-        public string Uid
-        {
-            get { return uid; }
-            set { uid = value; RaisePropertyChanged(); }
-        }
+        public string Uid { get => uid; set => SetProperty(ref uid, value); }
         /// <summary>
         /// 联系人手机号
         /// </summary>
         private string phone;
-        public string Phone
-        {
-            get { return phone; }
-            set { phone = value; RaisePropertyChanged(); }
-        }
+        public string Phone { get => phone; set => SetProperty(ref phone, value); }
         /// <summary>
         /// 联系人头像/二维码
         /// </summary>
         private ByteArray avatar;
-        public ByteArray Avatar
-        {
-            get { return avatar; }
-            set { avatar = value; RaisePropertyChanged(); }
-        }
+        public ByteArray Avatar { get => avatar; set => SetProperty(ref avatar, value); }
+        //临时头像
+        public ByteArray TempAvatar { get; set; }
+
         /// <summary>
         /// True if this item is currently selected
         /// </summary>
         private bool isSelected = false;
-        public bool IsSelected {
-            get { return isSelected; }
-            set
+        public bool IsSelected { get => isSelected; set => SetProperty(ref isSelected, value); }
+
+        private readonly ContactRepo _ContactRepo = App.Current.Services.GetService<ContactRepo>();
+
+
+        /// <summary>
+        /// 联系人编辑完成
+        /// </summary>
+        /// <returns></returns>
+        public bool Save()
+        {
+            CopyTempAvatar();
+            if (null == Id)
             {
-                if (!IsSelected.Equals(value))
+                Id = _ContactRepo.Add(Platform.ToString(), Uid, Name, Phone, Avatar);
+            }
+            else
+            {
+                _ContactRepo.Update(Id.GetValueOrDefault(), Platform.ToString(), Uid, Name, Phone, Avatar);
+            }
+            return true;
+        }
+
+        internal void CopyTempAvatar()
+        {
+            if (null != TempAvatar) //修改了头像的情况
+            {
+                Avatar = TempAvatar;
+                TempAvatar = null;
+                return;
+            }
+            if (null == Avatar)     //没有头像的情况, 即新增, 读取默认头像
+            {
+                var uri = new Uri("pack://application:,,,/Assets/Images/avatar_default.jpg", UriKind.Absolute);
+                var streamInfo = App.GetResourceStream(uri);
+                using(var imageStream = streamInfo.Stream)
                 {
-                    isSelected = value;
-                    RaisePropertyChanged();
+                    byte[] bytes = new byte[imageStream.Length];
+                    imageStream.Read(bytes, 0, (int)imageStream.Length - 1);
+                    Avatar = new ByteArray(bytes);
                 }
             }
         }
-
-        private ContactManageViewModel _MngViewModel;
-
-        /// <summary>
-        /// Opens the current message thread
-        /// </summary>
-        public ICommand OnEditCommand { get; set; }
-
-        public ICommand OnDeleteCommand { get; set; }
-
-        public ICommand OnSelectedCommand { get; set; }
-
-        #region Constructor
-
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        public ContactItemViewModel(ContactManageViewModel mngVm)
-        {
-            // Create commands
-            OnEditCommand = new RelayCommand(OnEditItem);
-            OnDeleteCommand = new RelayCommand(DeleteItem);
-            _MngViewModel = mngVm;
-        }
-
-        #endregion
-
-        #region Command Methods
-
-        public void OnEditItem()
-        {
-            new EditContactDialog(this, _MngViewModel).ShowDialog();
-        }
-
-        public void DeleteItem()
-        {
-            IsSelected = true;
-            var result = new ConfirmDialog(AlertLevel.WARN, string.Format(Properties.Resources.S_DeleteConfirm, Name)).ShowDialog();
-            if (result.GetValueOrDefault())
-            {
-                _MngViewModel.DeleteContact(this);
-            }
-        }
-
-        #endregion
     }
 }

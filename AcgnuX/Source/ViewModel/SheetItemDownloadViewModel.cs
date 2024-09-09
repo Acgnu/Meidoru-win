@@ -5,37 +5,35 @@ using AcgnuX.Source.Model;
 using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
 using AcgnuX.Utils;
-using GalaSoft.MvvmLight;
+using CommunityToolkit.Mvvm.ComponentModel;
 using SharedLib.Model;
 using SharedLib.Utils;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
+using Microsoft.Extensions.DependencyInjection;
+using SharedLib.Data;
 
 namespace AcgnuX.Source.ViewModel
 {
     /// <summary>
     /// 乐谱库下载项 view model
     /// </summary>
-    public class SheetItemDownloadViewModel : ViewModelBase
+    public class SheetItemDownloadViewModel : ObservableObject
     {
         #region 属性 
         //乐谱ID
         public int Id { get; set; }
         //乐谱名称
-        public string Name
-        {
-            get { var len = 45; return LongName.Length > len ? LongName.Substring(0, len) + "..." : LongName; }
-            set { LongName = value; RaisePropertyChanged(); }
-        }
-        public string LongName { get; private set; }
+        private string name;
+        public string Name { get => name; set => SetProperty(ref name, value); }
         //进度
         private int _Progress;
-        public int Progress { get { return _Progress; } set { _Progress = value; RaisePropertyChanged(); } }
+        public int Progress { get => _Progress; set => SetProperty(ref _Progress, value); }
         //下载进度信息
         private string _ProgressText;
-        public string ProgressText { get => _ProgressText; set { _ProgressText = value; RaisePropertyChanged(); } }
+        public string ProgressText { get => _ProgressText; set => SetProperty(ref _ProgressText, value); }
         //进度条级别
         public AlertLevel ProgressAlertLevel { get; set; } = AlertLevel.RUN;
         //是否使用代理
@@ -48,7 +46,7 @@ namespace AcgnuX.Source.ViewModel
         public bool AutoDownload { get; set; }
         //是否执行任务中
         private bool _IsWorking;
-        public bool IsWorking { get { return _IsWorking; } set { _IsWorking = value; RaisePropertyChanged(); } }
+        public bool IsWorking { get { return _IsWorking; } set => SetProperty(ref _IsWorking, value); }
         #endregion
 
         #region 事件
@@ -56,12 +54,15 @@ namespace AcgnuX.Source.ViewModel
         public Action<int, bool, bool> DownloadFinishAction;
         #endregion
 
-        private readonly Tan8SheetsRepo _Tan8SheetsRepo = Tan8SheetsRepo.Instance;
-        private readonly Tan8SheetCrawlRecordRepo _Tan8SheetCrawlRecordRepo = Tan8SheetCrawlRecordRepo.Instance;
+        private readonly Tan8SheetsRepo _Tan8SheetsRepo;
+        private readonly Tan8SheetCrawlRecordRepo _Tan8SheetCrawlRecordRepo;
+        private readonly ProxyAddressRepo _ProxyAddressRepo;
 
         public SheetItemDownloadViewModel()
         {
-
+            this._Tan8SheetsRepo = App.Current.Services.GetService<Tan8SheetsRepo>();
+            this._Tan8SheetCrawlRecordRepo = App.Current.Services.GetService<Tan8SheetCrawlRecordRepo>();
+            this._ProxyAddressRepo = App.Current.Services.GetService<ProxyAddressRepo>();
         }
 
         #region 乐谱下载
@@ -172,7 +173,7 @@ namespace AcgnuX.Source.ViewModel
             string proxyAddress = null;
             if (UseProxy)
             {
-                proxyAddress = ProxyFactory.GetFirstProxy();
+                proxyAddress = _ProxyAddressRepo.GetFirstProxy();
             }
             var ypinfostring = RequestUtil.CrawlContentFromWebsit(SheetUrl, proxyAddress).data;
             //var ypinfostring = @"<html><body>yp_create_time=<yp_create_time>1573183398</yp_create_time><br/>yp_title=<yp_title>说好不哭（文武贝钢琴版）</yp_title><br/>yp_page_count=<yp_page_count>3</yp_page_count><br/>yp_page_width=<yp_page_width>1089</yp_page_width><br/>yp_page_height=<yp_page_height>1540</yp_page_height><br/>yp_is_dadiao=<yp_is_dadiao>1</yp_is_dadiao><br/>yp_key_note=<yp_key_note>10</yp_key_note><br/>yp_is_yanyin=<yp_is_yanyin>1</yp_is_yanyin><br/>ypad_url=<ypad_url>http://www.tan8.com//yuepuku/132/66138/66138_hegiahcc.ypad</ypad_url>ypad_url2=<ypad_url2>http://www.tan8.com//yuepuku/132/66138/66138_hegiahcc.ypa2</ypad_url2></body></html>";
@@ -180,7 +181,7 @@ namespace AcgnuX.Source.ViewModel
             var checkResult = CheckYuepuInfo(ypinfostring);
             if (UseProxy)
             {
-                ProxyFactory.RemoveProxy(proxyAddress, checkResult == Tan8SheetDownloadResult.VISTI_REACH_LIMIT ? 0 : 15 * 1000);
+                _ProxyAddressRepo.RemoveProxy(proxyAddress, checkResult == Tan8SheetDownloadResult.VISTI_REACH_LIMIT ? 0 : 15 * 1000);
             }
 
             if (checkResult != Tan8SheetDownloadResult.SUCCESS)

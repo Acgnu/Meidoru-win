@@ -53,10 +53,9 @@
     </Style>
     
     <!-- 无背景色带边框基本样式 -->
-    <SolidColorBrush x:Key="Button.Static.Border" Color="#FFd9d9d9"/>
     <Style x:Key="BorderOnlyButton" TargetType="{x:Type Button}">
         <!-- <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/> -->
-        <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource ControlBorderColorBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>

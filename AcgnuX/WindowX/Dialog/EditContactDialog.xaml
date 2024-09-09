@@ -5,10 +5,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:AcgnuX.WindowX.Dialog"
         xmlns:res="clr-namespace:AcgnuX.Properties"
-        xmlns:uc="clr-namespace:AcgnuX.Controls"
         xmlns:bizc="clr-namespace:AcgnuX.Source.Bussiness.Common"
+        xmlns:bizv="clr-namespace:AcgnuX.Source.Bussiness.Validation"
         mc:Ignorable="d"
-        Title="编辑联系人" Height="505" Width="260" Style="{StaticResource DialogWindowBaseStyle}" Loaded="OnDialogLoaded">
+        Title="编辑联系人" Height="265" Width="430" Style="{StaticResource DialogWindowBaseStyle}">
     
     <Window.Icon>
         <DrawingImage>
@@ -21,34 +21,49 @@
     </Window.Icon>
     
     <DockPanel>
-        <StackPanel DockPanel.Dock="Top">
-            <Image Height="250" Stretch="UniformToFill" 
-                   MouseLeftButtonDown="OnAvatarImageClick" 
-                   DataContext="{Binding Path=ContactItem.Avatar,Converter={bizc:ByteArrayToAvatarImageConverter}}"
-                   Source="{Binding Path=Result, IsAsync=True}" />
-            <DockPanel Style="{StaticResource FormDockBaseStyle}">
-                <TextBlock Text="平台" Style="{StaticResource FormFieldTextBlock}" Width="30" Padding="0 10 5 10" />
-                <ListBox Name="ListBoxPlatform" BorderBrush="{x:Null}" Background="Transparent" ItemsSource="{Binding mListBoxItems}" ItemContainerStyle="{StaticResource FromComboListBoxItemStyle}">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal" IsItemsHost="True" VerticalAlignment="Center"/>
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                </ListBox>
-            </DockPanel>
-            <DockPanel Style="{StaticResource FormDockBaseStyle}">
-                <TextBlock Text="UID" Style="{StaticResource FormFieldTextBlock}" Width="30" Padding="0 10 5 10" />
-                <TextBox Name="TextBlockUid" Style="{StaticResource TextBoxBase}" Text="{Binding Path=ContactItem.Uid, UpdateSourceTrigger=Explicit}"/>
-            </DockPanel>
-            <DockPanel Style="{StaticResource FormDockBaseStyle}">
-                <TextBlock Text="{x:Static res:Resources.S_Name}" Style="{StaticResource FormFieldTextBlock}" Width="30" Padding="0 10 5 10" />
-                <TextBox Name="TextBlockName" Style="{StaticResource TextBoxBase}" Text="{Binding Path=ContactItem.Name, UpdateSourceTrigger=Explicit}"/>
-            </DockPanel>
-            <DockPanel Style="{StaticResource FormDockBaseStyle}">
-                <TextBlock Text="手机" Style="{StaticResource FormFieldTextBlock}" Width="30" Padding="0 10 5 10" />
-                <TextBox Name="TextBlockPhone" Style="{StaticResource TextBoxBase}" Text="{Binding Path=ContactItem.Phone, UpdateSourceTrigger=Explicit}"/>
-            </DockPanel>
-        </StackPanel>
+        <Grid Name="FormGrid" DockPanel.Dock="Top" Validation.Error="OnValidationError" DataContext="{Binding ViewModel}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="160" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.BindingGroup>
+                <BindingGroup NotifyOnValidationError="True">
+                    <BindingGroup.ValidationRules>
+                        <bizv:ValidateContact ValidationStep="ConvertedProposedValue" />
+                    </BindingGroup.ValidationRules>
+                </BindingGroup>
+            </Grid.BindingGroup>
+            <Border x:Name="AvatarBorder" Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource ControlBorderColorBrush}" Margin="0 0 10 0" CornerRadius="3" MouseLeftButtonDown="OnAvatarImageClick"
+                    DataContext="{Binding Path=Avatar, Converter={bizc:ByteArrayToAvatarImageConverter}}" >
+                <Border.Background>
+                    <ImageBrush ImageSource="{Binding Path=Result, IsAsync=True}" />
+                </Border.Background>
+            </Border>
+            <StackPanel Orientation="Vertical" Grid.Column="1">
+                <DockPanel Style="{StaticResource FormDockBaseStyle}">
+                    <TextBlock Text="平台" Style="{StaticResource FormFieldTextBlock}" Width="30" Padding="0 10 5 10" />
+                    <ListBox Name="ListBoxPlatform" BorderBrush="{x:Null}" Background="Transparent" ItemContainerStyle="{StaticResource FromComboListBoxItemStyle}" SelectedItem="{Binding Path=Platform, Mode=TwoWay, Converter={bizc:ContactPlatformToStringConverter}}">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" IsItemsHost="True" VerticalAlignment="Center"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                    </ListBox>
+                </DockPanel>
+                <DockPanel Style="{StaticResource FormDockBaseStyle}">
+                    <TextBlock Text="UID" Style="{StaticResource FormFieldTextBlock}" Width="30" Padding="0 10 5 10" />
+                    <TextBox Name="TextBlockUid" Style="{StaticResource TextBoxBase}" Text="{Binding Uid, Mode=TwoWay}" />
+                </DockPanel>
+                <DockPanel Style="{StaticResource FormDockBaseStyle}">
+                    <TextBlock Text="{x:Static res:Resources.S_Name}" Style="{StaticResource FormFieldTextBlock}" Width="30" Padding="0 10 5 10" />
+                    <TextBox Name="TextBlockName" Style="{StaticResource TextBoxBase}" Text="{Binding Name, Mode=TwoWay}" />
+                </DockPanel>
+                <DockPanel Style="{StaticResource FormDockBaseStyle}">
+                    <TextBlock Text="手机" Style="{StaticResource FormFieldTextBlock}" Width="30" Padding="0 10 5 10" />
+                    <TextBox Name="TextBlockPhone" Style="{StaticResource TextBoxBase}" Text="{Binding Phone, Mode=TwoWay}"/>
+                </DockPanel>
+            </StackPanel>
+        </Grid>
         <Button x:Name="ConfirmButton" Content="{x:Static res:Resources.S_Confirm}" Click="OnConfirmClick" Style="{DynamicResource FormConfirmButtonStyle}" />
     </DockPanel>
 </local:BaseDialog>

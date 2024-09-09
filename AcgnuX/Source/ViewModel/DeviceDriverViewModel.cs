@@ -1,10 +1,10 @@
 ﻿using AcgnuX.Source.Model;
-using GalaSoft.MvvmLight;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.ComponentModel;
 
 namespace AcgnuX.ViewModel
 {
-    public class DeviceDriverViewModel : ViewModelBase
+    public class DeviceDriverViewModel : ObservableObject
     {
         /// <summary>
         /// 驱动值

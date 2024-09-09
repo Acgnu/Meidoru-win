@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualBasic.Devices;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,8 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Threading.Tasks;
 
 namespace SharedLib.Utils
 {
@@ -31,21 +34,29 @@ namespace SharedLib.Utils
         private static extern int SHOpenFolderAndSelectItems(IntPtr pidlList, uint cild, IntPtr children, uint dwFlags);
 
         /// <summary>
-        /// 从文件反序列化JSON到目标实体
+        /// 读取JSON内容到 JsonDocument
         /// </summary>
-        /// <typeparam name="T">目标实体</typeparam>
-        /// <param name="JsonFileFullPath">json文件的完整路径</param>
-        /// <returns>目标实体</returns>
-        public static T DeserializeJsonFromFile<T>(string JsonFileFullPath) where T : new()
+        /// <param name="filePath">文件完整路径</param>
+        /// <returns>需要使用using</returns>
+        public static async Task<JsonDocument> ParseJsonDocumentAsync(string filePath)
         {
-            //文件不存在则直接返回
-            if (!File.Exists(JsonFileFullPath))
+            using (var fileStream = File.OpenRead(filePath))
             {
-                return new T();
+                return await JsonDocument.ParseAsync(fileStream);
             }
-            var jsonData = File.ReadAllText(JsonFileFullPath);
-            //var obj = JsonConvert.DeserializeObject<T>(jsonData);
-            return JsonSerializer.Deserialize<T>(jsonData);
+        }
+
+        /// <summary>
+        /// 读取JSON内容到 JsonNode
+        /// </summary>
+        /// <param name="filePath">文件完整路径</param>
+        /// <returns></returns>
+        public static async Task<JsonNode> ParseJsonNodeAsync(string filePath)
+        {
+            using (var fileStream = File.OpenRead(filePath))
+            {
+                return await JsonNode.ParseAsync(fileStream);
+            }
         }
 
         /// <summary>
@@ -60,23 +71,29 @@ namespace SharedLib.Utils
         }
 
         /// <summary>
-        /// 增量将实体序列化为JSON存储到文件, 备份原文件
+        /// 创建 文件名.bak.后缀 备份
         /// </summary>
-        /// <param name="data">目标数据</param>
-        /// <param name="JsonFileFullPath">JSON完整保存目录</param>
-        public static void IncrSaveJsonToFile(object data, string JsonFileFullPath)
+        /// <param name="filePath"></param>
+        /// <returns>备份的文件名</returns>
+        public static string Backup(string filePath)
         {
-            if(File.Exists(JsonFileFullPath))
+            var backupPath = GenerateBackupFilePath(filePath);
+            if (File.Exists(backupPath))
             {
-                var originFileName = Path.GetFileNameWithoutExtension(JsonFileFullPath);
-                var originFileExtension = Path.GetExtension(JsonFileFullPath);
-                var orginFileDir = Path.GetDirectoryName(JsonFileFullPath);
-                var bakFileName = originFileName + ".bak" + originFileExtension;
-                var bakFileFullPath = Path.Combine(orginFileDir, bakFileName);
-                File.Copy(JsonFileFullPath, bakFileFullPath, true);
+                File.Delete(backupPath);
             }
-            // Update json data string
-            SaveJsonToFile(data, JsonFileFullPath);
+            File.Move(filePath, backupPath);
+            return backupPath;
+        }
+
+        public static string GenerateBackupFilePath(string filePath)
+        {
+            var originFileName = Path.GetFileNameWithoutExtension(filePath);
+            var originFileExtension = Path.GetExtension(filePath);
+            var orginFileDir = Path.GetDirectoryName(filePath);
+            var bakFileName = originFileName + ".bak" + originFileExtension;
+            var bakFileFullPath = Path.Combine(orginFileDir, bakFileName);
+            return bakFileFullPath;
         }
 
         /// <summary>
@@ -314,18 +331,18 @@ namespace SharedLib.Utils
         /// <param name="folder"></param>
         /// <param name="force"></param>
         /// <returns></returns>
-        public static string[] GetImageFilesWithMemoryCache(string key, string folder, bool force)
+        public static List<string> GetImageFilesWithMemoryCache(string key, string folder, bool force)
         {
-            if (!Directory.Exists(folder)) return new string[0];
+            if (!Directory.Exists(folder)) return new List<string>();
 
             var mc = MemoryCache.Default;
-            var files = mc[key] as string[];
+            var files = mc[key] as List<string>;
             if (null == files || force)
             {
                 files = Directory.GetFiles(folder)
                         .Where(e => Path.GetExtension(e).Equals(".jpg") || Path.GetExtension(e).Equals(".png"))
-                        .ToArray();
-                if (files.Length == 0) return new string[0];
+                        .ToList();
+                if (files.Count == 0) return new List<string>();
                 mc[key] = files;
             }
             return files;
@@ -339,36 +356,22 @@ namespace SharedLib.Utils
         public static string GetRandomSkinFile(string folder)
         {
             var files = GetImageFilesWithMemoryCache("skinFolder", folder, false);
-            if (files.Length == 0) return null;
-            return RandomUtil.GetRandomItem(files);
+            if (files.Count == 0) return null;
+            string resultFile;
+            System.Drawing.Image drawingImg;
+            do
+            {
+                resultFile = RandomUtil.GetRandomItem(files.ToArray());
+                drawingImg = System.Drawing.Image.FromFile(resultFile);
+                if (drawingImg.Height > drawingImg.Width)
+                {
+                    //只保留横屏图
+                    files.Remove(resultFile);
+                    continue;
+                }
+                break;
+            } while (files.Count > 0);
+            return resultFile;
         }
-
-        //public static JArray LoadJsonFile(string JsonFileFullPath)
-        //{
-        //    using (System.IO.StreamReader file = System.IO.File.OpenText(JsonFileFullPath))
-        //    {
-        //        using (JsonTextReader reader = new JsonTextReader(file))
-        //        {
-        //            return (JArray)JToken.ReadFrom(reader);
-        //        }
-        //    }
-
-        //FileStream fs = new FileStream(JsonFileFullPath, FileMode.Open);
-        //StreamReader fileStream = new StreamReader(fs);
-        //string str = "";
-        //string line;
-        //while ((line = fileStream.ReadLine()) != null)
-        //{
-        //    str += line;
-        //}
-        ////上面的代码没有意义，只是将Json文件的内容加载到字符串中
-
-        //JObject jObject = new JObject();        //新建 操作对象
-        //AccessTokenModel a = JsonConvert.DeserializeObject<AccessTokenModel>(str);
-
-        //Console.WriteLine(a.access_token);    //随意输出一个属性
-        //Console.ReadKey();
-
-        //}
     }
 }
