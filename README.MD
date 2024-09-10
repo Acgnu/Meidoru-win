@@ -71,6 +71,8 @@
 
 ![云解析](Preview/DeviceSync.jpg)
 
+![云解析](Preview/Contact.jpg)
+
 ![云解析](Preview/Settings.jpg)
 
 

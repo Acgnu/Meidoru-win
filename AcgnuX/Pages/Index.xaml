@@ -9,9 +9,6 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Index" Loaded="LoadData">
 
-    <Canvas x:Name="MainGrid">
-        <Button Click="Button_Click" Canvas.Top="200" Padding="20" Visibility="Hidden">
-            <TextBlock Text="Show Tips" />
-        </Button>
-    </Canvas>
+    <DockPanel LastChildFill="True">
+    </DockPanel>
 </Page>

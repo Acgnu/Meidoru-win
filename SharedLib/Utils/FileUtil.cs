@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualBasic.Devices;
+using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -80,7 +81,8 @@ namespace SharedLib.Utils
             var backupPath = GenerateBackupFilePath(filePath);
             if (File.Exists(backupPath))
             {
-                File.Delete(backupPath);
+                FileSystem.DeleteFile(filePath, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
+                //File.Delete(backupPath);
             }
             File.Move(filePath, backupPath);
             return backupPath;
@@ -135,6 +137,8 @@ namespace SharedLib.Utils
         {
             if (Directory.Exists(dir)) //如果存在这个文件夹删除之 
             {
+                FileSystem.DeleteDirectory(dir, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
+                /**
                 foreach (string d in Directory.GetFileSystemEntries(dir))
                 {
                     if (File.Exists(d))
@@ -143,6 +147,7 @@ namespace SharedLib.Utils
                         DeleteDir(d); //递归删除子文件夹 
                 }
                 Directory.Delete(dir, true); //删除已空文件夹                 
+                **/
             }
         }
 
@@ -169,7 +174,7 @@ namespace SharedLib.Utils
        /// <param name="filePath"></param>
         public static void DeleteFile(string filePath)
         {
-            if (File.Exists(filePath)) File.Delete(filePath);
+            if (File.Exists(filePath)) FileSystem.DeleteFile(filePath, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
         }
 
         /// <summary>

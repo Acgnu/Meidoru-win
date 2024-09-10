@@ -22,9 +22,8 @@
         </ListView.ItemContainerStyle>-->
         <ItemsControl.ItemTemplate>
             <DataTemplate>
-                <ListBoxItem 
+                <ListBoxItem
                     Template="{StaticResource ItemContainerControlTemplate}"
-                    Focusable="True"
                     PreviewMouseLeftButtonDown="OnFileItemPreviewMouseLeftButtonDown"
                     VerticalAlignment="Top" />
             </DataTemplate>

@@ -77,10 +77,10 @@
                 <lc2:AnimatedScrollViewer 
                         VerticalScrollBarVisibility="Visible" 
                         CanContentScroll="True">
-                    <ItemsControl ItemsSource="{Binding ListData, IsAsync=True}" Grid.Row="1" Style="{StaticResource FileItemsCompareItemsControlStyle}">
+                <ItemsControl ItemsSource="{Binding ListData, IsAsync=True}" Grid.Row="1" Style="{StaticResource FileItemsCompareItemsControlStyle}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <lc:FileItemCompareControl Margin="0 0 0 5"/>
+                                <lc:FileItemCompareControl Margin="0 0 0 5" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

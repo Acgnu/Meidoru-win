@@ -2,7 +2,10 @@
 using AcgnuX.Source.ViewModel;
 using CommunityToolkit.Mvvm.Messaging;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace AcgnuX.Pages
 {
@@ -14,7 +17,6 @@ namespace AcgnuX.Pages
         public Index()
         {
             InitializeComponent();
-            //BubbleTipViwerViewModel = new BubbleTipViwerViewModel();
             DataContext = this;
         }
 
@@ -22,9 +24,8 @@ namespace AcgnuX.Pages
         {
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        public void Button_Click_1(object sender, RoutedEventArgs e)
         {
-
         }
     }
 }
