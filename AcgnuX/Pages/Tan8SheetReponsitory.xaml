@@ -86,10 +86,6 @@
                 </ListBox>
             </Grid>
         </Border>
-        <!--刷新按钮-->
-        <Button Style="{StaticResource RefreshFloatButtonStyle}" Command="{Binding OnRefreshCommand}">
-            <Path Style="{StaticResource RefreshPathIcoStyle}"/>
-        </Button>
         <lc:BusyIndicator IsBusy="{Binding IsBusy}" />
     </Grid>
 </Page>

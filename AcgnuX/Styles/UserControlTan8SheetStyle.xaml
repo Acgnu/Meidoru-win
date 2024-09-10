@@ -99,7 +99,7 @@
                 <ControlTemplate>
                     <Grid ToolTip="{Binding Name}">
                         <ProgressBar Style="{StaticResource ProgressBarBaseStyle}" lc:ProgressAnimater.AnimateValue="{Binding Progress}" Visibility="{Binding IsWorking, Converter={bizc:BooleanToVisiblityConverter}, ConverterParameter=True}" />
-                        <Border Padding="3">
+                        <Border Padding="1">
                             <StackPanel Background="Transparent" Orientation="Horizontal">
                                 <Canvas Width="{StaticResource ItemSize}" Height="{StaticResource ItemSize}">
                                     <Canvas.Clip>

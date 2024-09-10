@@ -46,7 +46,6 @@
                         <DataGridTextColumn Binding="{Binding Describe}" Header="{x:Static res:Resources.S_Describe}" Width="*" />
                         <DataGridTextColumn Binding="{Binding Site}" Header="{x:Static res:Resources.S_Site}" Width="*" />
                         <DataGridTextColumn Binding="{Binding Uname}" Header="{x:Static res:Resources.S_Account}" Width="*" />
-                        <DataGridTextColumn Binding="{Binding Upass}" Header="{x:Static res:Resources.S_Password}" Width="*" />
                         <DataGridTextColumn Binding="{Binding Remark}" Header="{x:Static res:Resources.S_Remark}" Width="*" />
                     </DataGrid.Columns>
                 </DataGrid>

@@ -1,14 +1,9 @@
 ﻿using AcgnuX.Source.Bussiness.Data;
-using AcgnuX.Source.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SharedLib.Utils;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace AcgnuX.Source.ViewModel
@@ -27,16 +22,17 @@ namespace AcgnuX.Source.ViewModel
         //单选事件
         public ICommand OnItemsCheckboxClick { get; set; }
         //是否全选
-        public bool IsSyncConfigCheckedAll {
-            get => SyncConfigs.Where(item => item.Enable).Count() == SyncConfigs.Count(); 
+        public bool IsSyncConfigCheckedAll
+        {
+            get => SyncConfigs.Where(item => item.Enable).Count() == SyncConfigs.Count();
             set
-            { 
+            {
                 foreach (var item in SyncConfigs)
                 {
                     item.Enable = value;
                 }
                 OnPropertyChanged();
-            } 
+            }
         }
 
         //数据库访问
@@ -74,7 +70,7 @@ namespace AcgnuX.Source.ViewModel
         /// </summary>
         internal void DeleteSelected()
         {
-            if(null == SelectedItem)
+            if (null == SelectedItem)
             {
                 return;
             }

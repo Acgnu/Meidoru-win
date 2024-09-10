@@ -29,12 +29,12 @@ namespace AcgnuX.Source.ViewModel
         private bool _IsBusy = false;
         public bool IsBusy { get => _IsBusy; set => SetProperty(ref _IsBusy, value); }
         //是否没有数据
-        public bool IsEmpty { get { return ListData.Count == 0; } set { OnPropertyChanged(); } }
+        public bool IsEmpty { get => ListData.Count == 0; set => OnPropertyChanged(); }
         //过滤文本
-        public string FilterText { get; set; }
-
+        public string FilterText { get; set; }     
+        
         //刷新命令
-        public ICommand OnRefreshCommand { get; set; }
+        public ICommand OnRefreshCommand { get; }
 
         //乐谱库数据库
         private readonly Tan8SheetsRepo _Tan8SheetRepo;

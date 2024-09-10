@@ -169,7 +169,7 @@ namespace AcgnuX.Source.ViewModel
                 FileUtil.DeleteFile(Path.Combine(FileItemsListViewModel.FolderPath, Name));
                 //从vm中移除对象
                 FileItemsListViewModel.FileItems.Remove(this);
-                WindowUtil.ShowBubbleInfo(string.Format("文件[{0}]已删除", Name));
+                WindowUtil.ShowBubbleInfo(string.Format("文件[{0}]已移动到回收站", Name));
             }
             else
             {

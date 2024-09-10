@@ -3,7 +3,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:lc="clr-namespace:AcgnuX.Controls.AnimatedScrollViewer">
     <!--header和行的高度-->
-    <sys:Double x:Key="CommonRowHeight">46</sys:Double>
+    <sys:Double x:Key="CommonRowHeight">42</sys:Double>
 
     <Style TargetType="DataGridColumnHeader">
         <Setter Property="SnapsToDevicePixels" Value="True"/>
@@ -37,39 +37,55 @@
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Background" Value="{StaticResource DataGridItemBackgroundColorBrush}" />
         <Setter Property="Foreground" Value="#FF333333"/>
-        <!--<Setter Property="BorderThickness" Value="1.5" />
-        <Setter Property="BorderBrush" Value="Transparent" />-->
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="BorderBrush" Value="{StaticResource DataGridItemBackgroundColorBrush}" />
         <Setter Property="Margin" Value="0 0 0 5" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <Border Background="{TemplateBinding Background}" CornerRadius="2">
+                    <Border x:Name="RowBorder" Background="{TemplateBinding Background}" CornerRadius="2" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                         <DataGridCellsPresenter />
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource ButtonHoverColorBrush}"/>
+                            <!--<Setter Property="Foreground" Value="{StaticResource ThemeTextColorBrush}" />-->
+                            <Setter Property="Background" Value="{StaticResource WhiteBgHoverColorBrush}" />
+                            <!--<Setter Property="Foreground" Value="White"/>-->
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Duration="0:0:0.2" Storyboard.TargetName="RowBorder" Storyboard.TargetProperty="Background.Color"  From="{StaticResource WhiteBgHoverColor}">
+                                            <ColorAnimation.EasingFunction>
+                                                <CircleEase EasingMode="EaseOut" />
+                                            </ColorAnimation.EasingFunction>
+                                        </ColorAnimation>
+                                        <ColorAnimation Duration="0:0:0.2" Storyboard.TargetName="RowBorder" Storyboard.TargetProperty="BorderBrush.Color"  From="{StaticResource ButtonHoverColor}">
+                                            <ColorAnimation.EasingFunction>
+                                                <CircleEase EasingMode="EaseOut" />
+                                            </ColorAnimation.EasingFunction>
+                                        </ColorAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+
+                        <Trigger Property="Selector.IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource ButtonMainColorBrush}"/>
+                            <Setter Property="Background" Value="{StaticResource DataGridItemSelectedBackgroundColorBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <!--<Setter Property="BorderBrush" Value="{StaticResource ButtonHoverColorBrush}"/>-->
-                <!--<Setter Property="Foreground" Value="{StaticResource ThemeTextColorBrush}" />-->
-                <Setter Property="Background" Value="{StaticResource WhiteBgHoverColorBrush}" />
-                <!--<Setter Property="Foreground" Value="White"/>-->
-            </Trigger>
-
-            <Trigger Property="IsSelected" Value="True">
-                <!--<Setter Property="BorderBrush" Value="{StaticResource ButtonMainColorBrush}"/>-->
-                <Setter Property="Background" Value="{StaticResource DataGridItemSelectedBackgroundColorBrush}"/>
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
     <Style TargetType="DataGridCell">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="DataGridCell">
-                    <Border Height="{StaticResource CommonRowHeight}" Background="Transparent">
-                        <ContentPresenter VerticalAlignment="Center" />
+                    <Border Background="Transparent">
+                        <ContentPresenter VerticalAlignment="Center"/>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -77,12 +93,11 @@
         <Style.Triggers>
             <Trigger Property="IsSelected" Value="True">
                 <!--<Setter Property="Foreground" Value="{StaticResource ThemeTextColorBrush}"/>-->
-                <Setter Property="FontWeight" Value="Bold" />
+                <!--<Setter Property="FontWeight" Value="Bold" />-->
                 <Setter Property="Foreground" Value="Black"/>
             </Trigger>
         </Style.Triggers>
     </Style>
-    
 
     <Style TargetType="DataGrid">
         <Setter Property="IsHitTestVisible" Value="True" />

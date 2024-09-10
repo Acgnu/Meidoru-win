@@ -169,6 +169,7 @@
     <Compile Include="Pages\Index.xaml.cs">
       <DependentUpon>Index.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Source\Bussiness\Validation\ValidateSyncPath.cs" />
     <Compile Include="Source\Bussiness\Validation\ValidateAccount.cs" />
     <Compile Include="Source\Bussiness\Validation\ValidateCrawlRule.cs" />
     <Compile Include="Source\Bussiness\Validation\ValidateContact.cs" />

@@ -100,8 +100,8 @@
         <Setter Property="Margin" Value="0 3 5 2"/>
         <Setter Property="Padding" Value="0" />
         <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="BorderBrush" Value="Transparent"/>
-        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="BorderBrush" Value="{StaticResource DataGridItemBackgroundColorBrush}"/>
+        <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListBoxItem}">
@@ -114,6 +114,7 @@
                                 <Condition Property="IsMouseOver" Value="True"/>
                             </MultiTrigger.Conditions>
                             <Setter Property="Background" TargetName="Bd" Value="{StaticResource WhiteBgHoverColorBrush}"/>
+                            <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource ButtonHoverColorBrush}"/>
                         </MultiTrigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
@@ -124,7 +125,12 @@
                             <MultiTrigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation Duration="0:0:0.4" Storyboard.TargetName="Bd" Storyboard.TargetProperty="Background.Color" From="{StaticResource WhiteBgHoverColor}" To="{StaticResource DataGridItemBackgroundColor}" >
+                                        <ColorAnimation Duration="0:0:0.4" Storyboard.TargetName="Bd" Storyboard.TargetProperty="Background.Color" From="{StaticResource WhiteBgHoverColor}">
+                                            <ColorAnimation.EasingFunction>
+                                                <CircleEase EasingMode="EaseOut"/>
+                                            </ColorAnimation.EasingFunction>
+                                        </ColorAnimation>
+                                        <ColorAnimation Duration="0:0:0.4" Storyboard.TargetName="Bd" Storyboard.TargetProperty="BorderBrush.Color" From="{StaticResource WhiteBgHoverColor}">
                                             <ColorAnimation.EasingFunction>
                                                 <CircleEase EasingMode="EaseOut"/>
                                             </ColorAnimation.EasingFunction>
@@ -133,20 +139,10 @@
                                 </BeginStoryboard>
                             </MultiTrigger.EnterActions>
                         </MultiTrigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="Selector.IsSelectionActive" Value="False"/>
-                                <Condition Property="IsSelected" Value="True"/>
-                            </MultiTrigger.Conditions>
+                        <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Background" TargetName="Bd" Value="{StaticResource DataGridItemSelectedBackgroundColorBrush}"/>
-                        </MultiTrigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="Selector.IsSelectionActive" Value="True"/>
-                                <Condition Property="IsSelected" Value="True"/>
-                            </MultiTrigger.Conditions>
-                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource DataGridItemSelectedBackgroundColorBrush}"/>
-                        </MultiTrigger>
+                            <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource ButtonMainColorBrush}"/>
+                        </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
                         </Trigger>

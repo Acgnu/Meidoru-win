@@ -1,4 +1,5 @@
 ﻿using AcgnuX.Pages;
+using AcgnuX.Source.Bussiness.Data;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
@@ -11,6 +12,7 @@ using System.Data.SQLite;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AcgnuX.WindowX.Dialog
 {
@@ -19,23 +21,17 @@ namespace AcgnuX.WindowX.Dialog
     /// </summary>
     public partial class EditSyncConfigDialog : BaseDialog {
         //视图对象
-        public SyncConfigViewModel SyncConfig { get; set; } = new SyncConfigViewModel()
-        {
-            Enable = true
-        };
+        public SyncConfigViewModel ContentViewModel { get; }
+
+        private readonly MediaSyncConfigRepo _MediaSyncConfigRepo;
 
         public EditSyncConfigDialog(SyncConfigViewModel syncConfig)
         {
             InitializeComponent();
+            _MediaSyncConfigRepo = App.Current.Services.GetService<MediaSyncConfigRepo>();
+            ContentViewModel = syncConfig;
             DataContext = this;
-            if (null != syncConfig)
-            {
-                SyncConfig = syncConfig;
-                //SyncConfig.Id = syncConfig.Id;
-                //SyncConfig.PcPath = syncConfig.PcPath;
-                //SyncConfig.MobilePath = syncConfig.MobilePath;
-                //SyncConfig.Enable = syncConfig.Enable;
-            }
+            FormStackPanel.BindingGroup.BeginEdit();
         }
 
         /// <summary>
@@ -47,78 +43,22 @@ namespace AcgnuX.WindowX.Dialog
         {
             var button = sender as Button;
             button.IsEnabled = false;
-            int successRow;
-            ManualTriggerSourceUpdate();
-            if (0 == SyncConfig.Id)
+
+            if (!FormStackPanel.BindingGroup.CommitEdit())
             {
-                successRow = SaveSyncConfig(SyncConfig);
+                button.IsEnabled = true;
+                return; 
+            }
+
+            if (0 == ContentViewModel.Id)
+            {
+                ContentViewModel.Id = _MediaSyncConfigRepo.Add(ContentViewModel.PcPath, ContentViewModel.MobilePath, ContentViewModel.Enable);
             }
             else
             {
-                successRow = ModifySyncConfig(SyncConfig);
+                _MediaSyncConfigRepo.Update(ContentViewModel.Id, ContentViewModel.PcPath, ContentViewModel.MobilePath, ContentViewModel.Enable);
             }
-            if (successRow > 0)
-            {
-                DialogResult = true;
-            }
-            button.IsEnabled = true;
-            Close();
-        }
-
-        /// <summary>
-        /// 手动更新源
-        /// </summary>
-        private void ManualTriggerSourceUpdate()
-        {
-            //手动表格更新vm
-            BindingExpression binding = TextBlockPcPath.GetBindingExpression(TextBox.TextProperty);
-            binding.UpdateSource();
-            binding = TextBlockMobilePath.GetBindingExpression(TextBox.TextProperty);
-            binding.UpdateSource();
-            binding = CheckboxEnable.GetBindingExpression(CheckBox.IsCheckedProperty);
-            binding.UpdateSource();
-        }
-
-        /// <summary>
-        /// 新增同步配置
-        /// </summary>
-        /// <param name="syncConfig"></param>
-        /// <returns></returns>
-        private int SaveSyncConfig(SyncConfigViewModel syncConfig)
-        {
-            if(string.IsNullOrEmpty(syncConfig.PcPath) || string.IsNullOrEmpty(syncConfig.MobilePath)) return 0;
-
-            var row = SQLite.ExecuteNonQuery("INSERT INTO media_sync_config(ID, PC_PATH, MOBILE_PATH, ENABLE) VALUES ((SELECT IFNULL(MAX(ID), 0)+1 FROM media_sync_config), @PcPath, @MobilePath, @Enable)",
-                new List<SQLiteParameter> {
-                    new SQLiteParameter("@PcPath", syncConfig.PcPath) ,
-                    new SQLiteParameter("@MobilePath", syncConfig.MobilePath) ,
-                    new SQLiteParameter("@Enable", syncConfig.Enable)
-                });
-
-            if (row > 0)
-            {
-                //查询最新添加的记录ID
-                var newID = SQLite.sqlone("SELECT MAX(id) FROM media_sync_config", null);
-                syncConfig.Id = Convert.ToInt32(newID);
-            }
-            return row;
-        }
-
-        /// <summary>
-        /// 修改同步配置
-        /// </summary>
-        /// <param name="syncConfig"></param>
-        /// <returns></returns>
-        private int ModifySyncConfig(SyncConfigViewModel syncConfig)
-        {
-            var row = SQLite.ExecuteNonQuery("UPDATE media_sync_config SET PC_PATH = @PcPath, MOBILE_PATH = @MobilePath, ENABLE = @Enable WHERE ID = @Id",
-                new List<SQLiteParameter> {
-                    new SQLiteParameter("@PcPath", syncConfig.PcPath) ,
-                    new SQLiteParameter("@MobilePath", syncConfig.MobilePath) ,
-                    new SQLiteParameter("@Enable", syncConfig.Enable),
-                    new SQLiteParameter("@Id", syncConfig.Id)
-                });
-            return row;
+            AnimateClose((s, a) => DialogResult = true);
         }
 
         /// <summary>
@@ -132,6 +72,14 @@ namespace AcgnuX.WindowX.Dialog
             if (!string.IsNullOrEmpty(path))
             {
                 TextBlockPcPath.Text = path;
+            }
+        }
+
+        private void OnValidationError(object sender, ValidationErrorEventArgs e)
+        {
+            if (e.Action == ValidationErrorEventAction.Added)
+            {
+                WindowUtil.ShowBubbleError(e.Error.ErrorContent.ToString());
             }
         }
     }

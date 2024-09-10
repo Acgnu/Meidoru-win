@@ -2,11 +2,9 @@
 using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
-using CommunityToolkit.Mvvm;
-using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AcgnuX.WindowX.Dialog
 {
@@ -21,8 +19,8 @@ namespace AcgnuX.WindowX.Dialog
         public DeviceSyncPathConfigDialog()
         {
             InitializeComponent();
-            DataContext = this;
             ContentViewModel = App.Current.Services.GetService<DeviceSyncPathConfigDialogViewModel>();
+            DataContext = this;
         }
 
         /// <summary>
@@ -36,7 +34,7 @@ namespace AcgnuX.WindowX.Dialog
             //打开修改对话框
             var dialog = new EditSyncConfigDialog(ContentViewModel.SelectedItem);
             var result = dialog.ShowDialog();
-            if (result.GetValueOrDefault() == true)
+            if (result.GetValueOrDefault())
             {
                 ContentViewModel.NotifyCheckBoxChange();
             }
@@ -72,11 +70,14 @@ namespace AcgnuX.WindowX.Dialog
                 return;
             }
             //打开修改对话框
-            var dialog = new EditSyncConfigDialog(null);
-            var result = dialog.ShowDialog();
-            if (result.GetValueOrDefault() == true)
+            var newVm = new SyncConfigViewModel
             {
-                ContentViewModel.AddNewSyncConfig(dialog.SyncConfig);
+                Enable = true
+            };
+            var dialog = new EditSyncConfigDialog(newVm) ;
+            if (dialog.ShowDialog().GetValueOrDefault())
+            {
+                ContentViewModel.AddNewSyncConfig(newVm);
             }
         }
     }

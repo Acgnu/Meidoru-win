@@ -60,5 +60,44 @@ namespace AcgnuX.Source.Bussiness.Data
                 enable ? 1 : 0,
                 null == id ? "" : " WHERE id = " + id), null);
         }
+
+        /// <summary>
+        /// 新增同步配置
+        /// </summary>
+        /// <returns></returns>
+        internal int Add(string pcPath, string mobilePath, bool enable)
+        {
+            var row = SQLite.ExecuteNonQuery("INSERT INTO media_sync_config(ID, PC_PATH, MOBILE_PATH, ENABLE) VALUES ((SELECT IFNULL(MAX(ID), 0)+1 FROM media_sync_config), @PcPath, @MobilePath, @Enable)",
+                new List<SQLiteParameter> {
+                    new SQLiteParameter("@PcPath", pcPath) ,
+                    new SQLiteParameter("@MobilePath", mobilePath),
+                    new SQLiteParameter("@Enable", enable ? 1 : 0)
+                });
+
+            if (row == 0)
+            {
+                return 0;
+            }
+            //查询最新添加的记录ID
+            var newID = SQLite.sqlone("SELECT LAST_INSERT_ROWID() FROM media_sync_config", null);
+            return Convert.ToInt32(newID); ;
+        }
+
+        /// <summary>
+        /// 修改同步配置
+        /// </summary>
+        /// <param name="syncConfig"></param>
+        /// <returns></returns>
+        internal int Update(int id, string pcPath, string mobilePath, bool enable)
+        {
+            var row = SQLite.ExecuteNonQuery("UPDATE media_sync_config SET PC_PATH = @PcPath, MOBILE_PATH = @MobilePath, ENABLE = @Enable WHERE ID = @Id",
+                new List<SQLiteParameter> {
+                    new SQLiteParameter("@PcPath", pcPath) ,
+                    new SQLiteParameter("@MobilePath", mobilePath) ,
+                    new SQLiteParameter("@Enable", enable),
+                    new SQLiteParameter("@Id", id)
+                });
+            return row;
+        }
     }
 }

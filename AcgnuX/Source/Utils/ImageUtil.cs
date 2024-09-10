@@ -37,7 +37,13 @@ namespace AcgnuX.Source.Utils
         /// <returns>BitmapImage</returns>
         public static BitmapImage GetBitmapImage(string path)
         {
-            return GetBitmapImage(File.ReadAllBytes(path));
+            BitmapImage bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.UriSource = new Uri(path, UriKind.Absolute);
+            bitmap.EndInit();
+            bitmap.Freeze();
+            return bitmap;
         }
 
         /// <summary>
@@ -55,7 +61,7 @@ namespace AcgnuX.Source.Utils
         {
             BitmapImage bitmap = new BitmapImage();
             bitmap.BeginInit();
-            bitmap.CacheOption = BitmapCacheOption.OnDemand;
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
             bitmap.StreamSource = stream;
             bitmap.EndInit();
             bitmap.Freeze();
