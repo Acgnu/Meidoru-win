@@ -77,7 +77,7 @@ namespace AcgnuX.Source.ViewModel
         }
         private void NotifyButtonStep() { OnPropertyChanged(nameof(ButtonStep)); }
         //允许最大的任务数量
-        private readonly int _MaxTaskNum = 5;
+        private readonly int _MaxTaskNum = 1;
         //已经下载完成的数量(包括成功/失败)
         //private int _DownloadFinishNum = 0;
         //当前正在进行中的任务数量

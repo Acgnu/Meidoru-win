@@ -31,7 +31,6 @@ namespace AcgnuX.WindowX
             //监听单个乐谱下载完成事件
             WeakReferenceMessenger.Default.Register<ValueChangedMessage<int>>(this, (r, m) =>
             {
-                MessageBox.Show("监听单个乐谱下载完成事件");
                 Dispatcher.BeginInvoke((Action)delegate ()
                 {
                     ContentDataContext.OnSheetItemDownloadComplete(m.Value, DownloadRecordDataGrid);
