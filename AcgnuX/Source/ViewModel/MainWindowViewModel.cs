@@ -166,7 +166,10 @@ namespace AcgnuX.Source.ViewModel
         /// </summary>
         private void ExecuteRefreshBackgroundCommand(Window window)
         {
-            var skinFile = FileUtil.GetRandomSkinFile(Settings.Default.SkinFolderPath);
+            var folderPath = Settings.Default.SkinFolderPath;
+            if (string.IsNullOrEmpty(folderPath)) return;
+
+            var skinFile = FileUtil.GetRandomSkinFile(folderPath);
             if (skinFile == null) return;
 
             Settings.Default.SkinFilePath = skinFile;
