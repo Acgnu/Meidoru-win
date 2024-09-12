@@ -42,5 +42,9 @@
         /// 播放文件地址
         /// </summary>
         public string ypad_url2 { get; set; }
+        /// <summary>
+        /// 试听mp3文件
+        /// </summary>
+        public string mp3_url { get; set; }
     }
 }

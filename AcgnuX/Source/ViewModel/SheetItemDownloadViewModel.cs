@@ -107,8 +107,11 @@ namespace AcgnuX.Source.ViewModel
                 //下载出错则给出提示, 并等待下次任务
                 if (!result.success)
                 {
-                    //失败则清理资源
-                    FileUtil.DeleteDirWithName(Settings.Default.Tan8HomeDir, Id.ToString());
+                    if ((bool)result.data)
+                    {
+                        //下载失败, 并且标记是可以删除的, 则清理资源
+                        FileUtil.DeleteDirWithName(Settings.Default.Tan8HomeDir, Id.ToString());
+                    }
 
                     if (IsWorking)
                     {
@@ -155,6 +158,7 @@ namespace AcgnuX.Source.ViewModel
                 success = false,
                 code = 0,       //随便一个默认值
                 message = "任务中止",
+                data = true     //标记是否可以删除
             };
 
             //快速预检乐谱是否存在
@@ -255,19 +259,20 @@ namespace AcgnuX.Source.ViewModel
                     return downloadResult;
                 }
             }
-            //下载v2版播放文件
-            SetProgress(80, "下载播放文件...");
-            if (IsWorking == false) return downloadResult;         //在IO操作之前检查任务是否停止
+
+            //下载v3版mp3试听文件
+            SetProgress(70, "下载试听文件...");
+            //试听文件不在乎是否下载成功, 丢弃下载结果
+            var urlPrefix = tan8Music.ypad_url.Substring(0, tan8Music.ypad_url.LastIndexOf('/'));
+            var mp3_url = urlPrefix + string.Format("/tan8_{0}.mp3", Id);
+            _ = new FileDownloader().DownloadFile(mp3_url, Path.Combine(saveFullPath, "play.mp3"));
+
+                //下载v2版播放文件
+                SetProgress(80, "下载播放文件...");
             downResult = new FileDownloader().DownloadFile(tan8Music.ypad_url2, Path.Combine(saveFullPath, "play.ypdx"));
-            if (downResult != 0)
+            //没有播放文件, 又没有谱页的, 清理数据
+            if (downResult != 0 && tan8Music.yp_page_count == 0)
             {
-                //没有播放文件, 又没有谱页的, 清理数据
-                if (tan8Music.yp_page_count == 0)
-                {
-                    //清理下载文件
-                    if (IsWorking == false) return downloadResult;         //在IO操作之前检查任务是否停止
-                    FileUtil.DeleteDirWithName(libFolder, Id.ToString());
-                }
                 downloadResult.code = (byte)Tan8SheetDownloadResult.PLAY_FILE_DOWNLOAD_FAIL;
                 downloadResult.message = EnumLoader.GetDesc(Tan8SheetDownloadResult.PLAY_FILE_DOWNLOAD_FAIL);
                 return downloadResult;
@@ -275,7 +280,6 @@ namespace AcgnuX.Source.ViewModel
 
             //step.6 保存到数据库
             SetProgress(90, "保存数据库...");
-            if (IsWorking == false) return downloadResult;         //在IO操作之前检查任务是否停止
             _Tan8SheetsRepo.Save(Id, ypNameFolder, tan8Music, ypinfostring);
 
             SetProgress(100, "下载完成");
