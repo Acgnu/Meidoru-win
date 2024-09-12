@@ -41,7 +41,7 @@
                 <MultiTrigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard FillBehavior="Stop">
-                            <ColorAnimation Duration="0:0:0.4" Storyboard.TargetName="Container" Storyboard.TargetProperty="Background.Color" From="Transparent" To="{StaticResource DataGridHeaderBackgroundColor}" >
+                            <ColorAnimation Duration="{StaticResource ItemMouseOutAnimateDuration}" Storyboard.TargetName="Container" Storyboard.TargetProperty="Background.Color" From="Transparent" To="{StaticResource DataGridHeaderBackgroundColor}" >
                                 <ColorAnimation.EasingFunction>
                                     <CircleEase EasingMode="EaseOut"/>
                                 </ColorAnimation.EasingFunction>
@@ -98,7 +98,6 @@
     <Style TargetType="{x:Type ListBoxItem}" x:Key="PianoScoreListBoxItemContainerStyle">
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="Margin" Value="0 3 5 2"/>
-        <Setter Property="Padding" Value="0" />
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="BorderBrush" Value="{StaticResource DataGridItemBackgroundColorBrush}"/>
         <Setter Property="BorderThickness" Value="2"/>
@@ -125,12 +124,12 @@
                             <MultiTrigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation Duration="0:0:0.4" Storyboard.TargetName="Bd" Storyboard.TargetProperty="Background.Color" From="{StaticResource WhiteBgHoverColor}">
+                                        <ColorAnimation Duration="{StaticResource ItemMouseOutAnimateDuration}" Storyboard.TargetName="Bd" Storyboard.TargetProperty="Background.Color" From="{StaticResource WhiteBgHoverColor}">
                                             <ColorAnimation.EasingFunction>
                                                 <CircleEase EasingMode="EaseOut"/>
                                             </ColorAnimation.EasingFunction>
                                         </ColorAnimation>
-                                        <ColorAnimation Duration="0:0:0.4" Storyboard.TargetName="Bd" Storyboard.TargetProperty="BorderBrush.Color" From="{StaticResource WhiteBgHoverColor}">
+                                        <ColorAnimation Duration="{StaticResource ItemMouseOutAnimateDuration}" Storyboard.TargetName="Bd" Storyboard.TargetProperty="BorderBrush.Color" From="{StaticResource WhiteBgHoverColor}">
                                             <ColorAnimation.EasingFunction>
                                                 <CircleEase EasingMode="EaseOut"/>
                                             </ColorAnimation.EasingFunction>

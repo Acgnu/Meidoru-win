@@ -3,6 +3,7 @@ using AcgnuX.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using SharedLib.Utils;
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -31,7 +32,6 @@ namespace AcgnuX.ViewModel
 
         private string remark;
         public string Remark { get => remark; set => SetProperty(ref remark, value); }
-
 
         /// <summary>
         /// 保存项目

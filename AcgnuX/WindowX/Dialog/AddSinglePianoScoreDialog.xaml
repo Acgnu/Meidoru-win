@@ -6,7 +6,6 @@
         xmlns:local="clr-namespace:AcgnuX.WindowX.Dialog"
         xmlns:res="clr-namespace:AcgnuX.Properties"
         mc:Ignorable="d"
-                  Closing="BaseDialog_Closing"
         Title="{x:Static res:Resources.S_EditPianoScore}" Height="185" Width="420" Style="{StaticResource DialogWindowBaseStyle}">
 
     <Window.Icon>
@@ -53,7 +52,7 @@
 
         <!--确认按钮-->
         <Button Content="{x:Static res:Resources.S_Confirm}" 
-                Command="{Binding OnConfirmCommand}" 
+                Click="OnConfirmClick"
                 Style="{StaticResource FormConfirmButtonStyle}" 
                 DockPanel.Dock="Bottom"/>
     </DockPanel>

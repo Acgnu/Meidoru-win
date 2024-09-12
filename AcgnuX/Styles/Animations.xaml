@@ -1,43 +1,51 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <!--背景图片不透明度从0->0.85-->
     <DoubleAnimation x:Key="AniImageBrushFadeIn" Duration="0:0:0.3" From="0" To="0.85" FillBehavior="HoldEnd" />
 
     <!--窗口显示-->
+    <Duration x:Key="WindowFadeInDuration">0:0:0.2</Duration>
+    <sys:Double x:Key="WindowFadeStart">0.97</sys:Double>
+    <sys:Double x:Key="WindowFadeAccelerationRatio">0.2</sys:Double>
     <Storyboard x:Key="WindowFadeInStoryboard">
         <DoubleAnimation 
             Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" 
-            From="0.97" To="1" 
-            Duration="0:0:0.2" 
-            AccelerationRatio="0.2" />
+            From="{StaticResource WindowFadeStart}" To="1" 
+            Duration="{StaticResource WindowFadeInDuration}" 
+            AccelerationRatio="{StaticResource WindowFadeAccelerationRatio}" />
         <DoubleAnimation 
             Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" 
-            From="0.97" To="1" 
-            Duration="0:0:0.2" 
-            AccelerationRatio="0.2" />
+            From="{StaticResource WindowFadeStart}" To="1" 
+            Duration="{StaticResource WindowFadeInDuration}" 
+            AccelerationRatio="{StaticResource WindowFadeAccelerationRatio}" />
         <DoubleAnimation 
             Storyboard.TargetProperty="Opacity" 
             From="0" To="1" 
-            Duration="0:0:0.2" 
-            AccelerationRatio="0.2"/>
+            Duration="{StaticResource WindowFadeInDuration}" 
+            AccelerationRatio="{StaticResource WindowFadeAccelerationRatio}"/>
     </Storyboard>
 
     <!--窗口隐藏-->
+    <Duration x:Key="WindowFadeOutDuration">0:0:0.15</Duration>
     <Storyboard x:Key="WindowFadeOutStoryboard">
         <DoubleAnimation 
             Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" 
-            From="1" To="0.97"
-            Duration="0:0:0.15" 
-            DecelerationRatio="0.2" />
+            From="1" To="{StaticResource WindowFadeStart}"
+            Duration="{StaticResource WindowFadeOutDuration}" 
+            DecelerationRatio="{StaticResource WindowFadeAccelerationRatio}" />
         <DoubleAnimation 
             Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" 
-            From="1" To="0.97" 
-            Duration="0:0:0.15" 
-            DecelerationRatio="0.2" />
+            From="1" To="{StaticResource WindowFadeStart}" 
+            Duration="{StaticResource WindowFadeOutDuration}" 
+            DecelerationRatio="{StaticResource WindowFadeAccelerationRatio}" />
         <DoubleAnimation 
             Storyboard.TargetProperty="Opacity" 
             From="1" To="0"  
-            Duration="0:0:0.15" 
-            DecelerationRatio="0.2"/>
+            Duration="{StaticResource WindowFadeOutDuration}" 
+            DecelerationRatio="{StaticResource WindowFadeAccelerationRatio}"/>
     </Storyboard>
+
+    <!--列表项目鼠标移出过度时长-->
+    <Duration x:Key="ItemMouseOutAnimateDuration">0:0:0.4</Duration>
 </ResourceDictionary>

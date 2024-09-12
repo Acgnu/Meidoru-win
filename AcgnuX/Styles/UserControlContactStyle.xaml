@@ -35,7 +35,6 @@
                                     HorizontalAlignment="Left" LastChildFill="False">
                                 <Label DockPanel.Dock="Top" Content="{Binding Name}" Foreground="Black" FontSize="18" VerticalContentAlignment="Center"/>
                                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                                    <!--<lc:AsyncImage Source="{Binding Platform, Converter={bizc:ContactPlatformToImageSourceConverter}, ConverterParameter=True}" Width="26" Height="26" Margin="3 0 0 0" Opacity="0.7">-->
                                     <lc:AsyncImage Width="26" Height="26" Margin="3 0 0 0" Opacity="0.7">
                                         <lc:AsyncImage.Style>
                                             <Style TargetType="{x:Type lc:AsyncImage}">
@@ -87,8 +86,16 @@
                             <Trigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation Duration="0:0:0.2" Storyboard.TargetName="container" Storyboard.TargetProperty="Background.Color" From="{StaticResource WhiteBgHoverColor}" />
-                                        <ColorAnimation Duration="0:0:0.2" Storyboard.TargetName="container" Storyboard.TargetProperty="BorderBrush.Color" From="{StaticResource ButtonHoverColor}" />
+                                        <ColorAnimation Duration="{StaticResource ItemMouseOutAnimateDuration}" Storyboard.TargetName="container" Storyboard.TargetProperty="Background.Color" From="{StaticResource WhiteBgHoverColor}">
+                                            <ColorAnimation.EasingFunction>
+                                                <CircleEase EasingMode="EaseOut"/>
+                                            </ColorAnimation.EasingFunction>
+                                        </ColorAnimation>
+                                        <ColorAnimation Duration="{StaticResource ItemMouseOutAnimateDuration}" Storyboard.TargetName="container" Storyboard.TargetProperty="BorderBrush.Color" From="{StaticResource ButtonHoverColor}">
+                                            <ColorAnimation.EasingFunction>
+                                                <CircleEase EasingMode="EaseOut"/>
+                                            </ColorAnimation.EasingFunction>
+                                        </ColorAnimation>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>

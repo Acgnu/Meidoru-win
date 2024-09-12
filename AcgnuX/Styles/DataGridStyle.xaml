@@ -55,12 +55,12 @@
                             <Trigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation Duration="0:0:0.2" Storyboard.TargetName="RowBorder" Storyboard.TargetProperty="Background.Color"  From="{StaticResource WhiteBgHoverColor}">
+                                        <ColorAnimation Duration="{StaticResource ItemMouseOutAnimateDuration}" Storyboard.TargetName="RowBorder" Storyboard.TargetProperty="Background.Color"  From="{StaticResource WhiteBgHoverColor}">
                                             <ColorAnimation.EasingFunction>
                                                 <CircleEase EasingMode="EaseOut" />
                                             </ColorAnimation.EasingFunction>
                                         </ColorAnimation>
-                                        <ColorAnimation Duration="0:0:0.2" Storyboard.TargetName="RowBorder" Storyboard.TargetProperty="BorderBrush.Color"  From="{StaticResource ButtonHoverColor}">
+                                        <ColorAnimation Duration="{StaticResource ItemMouseOutAnimateDuration}" Storyboard.TargetName="RowBorder" Storyboard.TargetProperty="BorderBrush.Color"  From="{StaticResource ButtonHoverColor}">
                                             <ColorAnimation.EasingFunction>
                                                 <CircleEase EasingMode="EaseOut" />
                                             </ColorAnimation.EasingFunction>

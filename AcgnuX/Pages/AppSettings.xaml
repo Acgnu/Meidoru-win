@@ -5,7 +5,6 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
       xmlns:res="clr-namespace:AcgnuX.Properties"
-      xmlns:local="clr-namespace:AcgnuX.Pages"
       d:DesignWidth="1024" d:DesignHeight="768"
       xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
       Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded" Unloaded="OnPageUnloaded">

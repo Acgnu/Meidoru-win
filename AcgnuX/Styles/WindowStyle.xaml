@@ -42,14 +42,11 @@
                 <ControlTemplate TargetType="{x:Type Window}">
                     <Border Padding="10">
                         <Grid Background="{x:Static Brushes.GhostWhite}" SnapsToDevicePixels="True">
-                            <!--<Border Background ="{StaticResource PopupWindowBackgroundImg}" BorderBrush="LightGray" BorderThickness="1" SnapsToDevicePixels="True">-->
                             <Border 
                                 Background="{Binding DialogWindowBackgroundBrush, FallbackValue={x:Static Brushes.GhostWhite}}" 
-                                BorderBrush="LightGray" 
-                                BorderThickness="1" 
                                 SnapsToDevicePixels="True">
                                 <Border.Effect>
-                                    <DropShadowEffect ShadowDepth="0" Opacity="0.6" BlurRadius="10"/>
+                                    <DropShadowEffect ShadowDepth="0" Opacity="0.8" BlurRadius="10"/>
                                 </Border.Effect>
                             </Border>
                             <Grid>
@@ -142,7 +139,7 @@
                             <!--<Border x:Name="Container" Background="{x:Null}"/>-->
                             <Border Background="{Binding MainWindowBackgroundBrush, FallbackValue={x:Static Brushes.GhostWhite}}">
                                 <Border.Effect>
-                                    <DropShadowEffect ShadowDepth="0" Opacity="0.6" BlurRadius="10"/>
+                                    <DropShadowEffect ShadowDepth="0" Opacity="0.8" BlurRadius="10"/>
                                 </Border.Effect>
                             </Border>
                             <Grid>
@@ -192,12 +189,15 @@
                                     <!--主窗口操作按钮-->
                                     <Border Grid.Column="1" Background="{StaticResource DataGridHeaderBackgroundColorBrush}">
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding OnSettingCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Padding="0 6 0 4" Style="{StaticResource NoneStyleButtonStyle}" Template="{StaticResource CommonNoStyleButtonTemplate}">
-                                                <Path Data="{StaticResource Icon_Setting}" Style="{StaticResource NavMenuPathIconStyle}" Fill="{StaticResource {x:Static SystemColors.ControlTextBrushKey}}" Width="36" Height="12"/>
+                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding OnRefreshBackgroundCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Style="{StaticResource NavBarButtonStyle}" >
+                                                <Path Data="{StaticResource Icon_Cloth}" Style="{StaticResource NavBarFunctionIcoPathStyle}"/>
                                             </Button>
-                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MinimizeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="_" Padding="15 6 15 8" Style="{StaticResource NoneStyleButtonStyle}" Template="{StaticResource CommonNoStyleButtonTemplate}"/>
-                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MaximizeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="☐" Padding="15 6 15 2" Style="{StaticResource NoneStyleButtonStyle}" Template="{StaticResource CommonNoStyleButtonTemplate}"/>
-                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding CloseCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="✕" Padding="15 6 15 4" Style="{StaticResource NoneStyleButtonStyle}" Template="{StaticResource WindowCloseButtonTemplate}"/>
+                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding OnSettingCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Style="{StaticResource NavBarButtonStyle}" >
+                                                <Path Data="{StaticResource Icon_Setting}" Style="{StaticResource NavBarFunctionIcoPathStyle}"/>
+                                            </Button>
+                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MinimizeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="_" Style="{StaticResource NavBarButtonStyle}" />
+                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding MaximizeCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="☐" Style="{StaticResource NavBarButtonStyle}" />
+                                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding CloseCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Content="✕" Style="{StaticResource NavBarButtonStyle}" Template="{StaticResource WindowCloseButtonTemplate}"/>
                                         </StackPanel>
                                     </Border>
                                 </Grid>

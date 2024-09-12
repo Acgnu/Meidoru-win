@@ -6,10 +6,9 @@
       xmlns:dzn="clr-namespace:AcgnuX.Source.ViewModel.Design"
       xmlns:res="clr-namespace:AcgnuX.Properties"
       xmlns:lc="clr-namespace:AcgnuX.Controls"
-      xmlns:bizc="clr-namespace:AcgnuX.Source.Bussiness.Common"
       mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="800"
       Style="{StaticResource DataGridPageBaseStyle}" Loaded="OnPageLoaded">
-    
+
     <Grid>
         <Border Style="{StaticResource PageContainerBorderStyle}">
             <Grid>
@@ -44,7 +43,7 @@
                     d:DataContext="{d:DesignInstance {x:Type dzn:ContactListDesignModel}, IsDesignTimeCreatable=True}"/>
                 <Path Grid.Row="1" Style="{StaticResource EmptyDataIndicatorStyle}" 
                       Data="{StaticResource Icon_EmptySearchResult}"
-                      Visibility="{Binding IsEmpty, Converter={bizc:BooleanToVisiblityConverter}, ConverterParameter=True, FallbackValue=Hidden}"/>
+                      Visibility="{Binding IsEmpty, Converter={StaticResource FrameworkBooleanToVisibileConverter}, FallbackValue=Hidden}"/>
             </Grid>
         </Border>
         <lc:BusyIndicator IsBusy="{Binding IsBusy}" />

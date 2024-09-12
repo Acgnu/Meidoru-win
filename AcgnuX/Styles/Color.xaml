@@ -14,10 +14,10 @@
     <SolidColorBrush x:Key="ButtonHoverColorBrush" Color="{StaticResource ButtonHoverColor}" />
     <!--白底按钮悬停背景色-->
     <!--<Color x:Key="WhiteBgHoverColor">#99EAEAEA</Color>-->
-    <Color x:Key="WhiteBgHoverColor">#336EBDF7</Color>
+    <Color x:Key="WhiteBgHoverColor">#AAddeaf4</Color>
     <SolidColorBrush x:Key="WhiteBgHoverColorBrush" Color="{StaticResource WhiteBgHoverColor}" />
     <!--进度条运行颜色-->
-    <Color x:Key="ProgressBarRuningColor">#BB228B22</Color>
+    <Color x:Key="ProgressBarRuningColor">#992dc72d</Color>
     <SolidColorBrush x:Key="ProgressBarRuningColorBrush" Color="{StaticResource ProgressBarRuningColor}" />
     <!--进度条警告颜色-->
     <Color x:Key="ProgressBarWarnColor">#BBFFA500</Color>
@@ -28,10 +28,6 @@
     <!--主窗口背景色-->
     <Color x:Key="MainWindowBackgroundColor">Black</Color>
     <SolidColorBrush x:Key="MainWindowBackgroundColorBrush" Color="{StaticResource MainWindowBackgroundColor}" />
-    <!--主窗口背景图-->
-    <!--<ImageBrush x:Key="MainWindowBackgroundImg" Stretch="UniformToFill" ImageSource="/AcgnuX;component/Assets/Images/application_bg_default.jpg" TileMode="None" Opacity="0.85"/>-->
-    <!--弹窗背景图-->
-    <ImageBrush x:Key="PopupWindowBackgroundImg" Stretch="UniformToFill" ImageSource="/AcgnuX;component/Assets/Images/window_bg_default.jpg" TileMode="None" Opacity="0.85"/>
     <!--主窗口标题栏背景色-->
     <Color x:Key="MainWindowTitleBarColor">Transparent</Color>
     <SolidColorBrush x:Key="MainWindowTitleBarColorBrush" Color="{StaticResource MainWindowTitleBarColor}" />
@@ -39,14 +35,14 @@
     <Color x:Key="DataGridBackgroundColor">Transparent</Color>
     <SolidColorBrush x:Key="DataGridBackgroundColorBrush" Color="{StaticResource DataGridBackgroundColor}" />    
     <!--通用表格表头背景色-->
-    <Color x:Key="DataGridHeaderBackgroundColor">#88EDEDED</Color>
+    <Color x:Key="DataGridHeaderBackgroundColor">#CCEDEDED</Color>
     <SolidColorBrush x:Key="DataGridHeaderBackgroundColorBrush" Color="{StaticResource DataGridHeaderBackgroundColor}" />    
     <!--通用表格项目背景色-->
-    <Color x:Key="DataGridItemBackgroundColor">#55FFFFFF</Color>
+    <Color x:Key="DataGridItemBackgroundColor">#AAFFFFFF</Color>
     <SolidColorBrush x:Key="DataGridItemBackgroundColorBrush" Color="{StaticResource DataGridItemBackgroundColor}" />
     <!--通用表格项目选中背景色-->
     <!--<Color x:Key="DataGridItemSelectedBackgroundColor">#99CCCCCC</Color>-->
-    <Color x:Key="DataGridItemSelectedBackgroundColor">#3331AAFF</Color>
+    <Color x:Key="DataGridItemSelectedBackgroundColor">#AAceebff</Color>
     <SolidColorBrush x:Key="DataGridItemSelectedBackgroundColorBrush" Color="{StaticResource DataGridItemSelectedBackgroundColor}" />
     <!--导航菜单文字颜色-->
     <Color x:Key="NavMenuTextColor">#FF4F4F4F</Color>

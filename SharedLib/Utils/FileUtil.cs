@@ -329,6 +329,7 @@ namespace SharedLib.Utils
             }
         }
 
+        /**
         /// <summary>
         /// 从指定目录中获取图像文件, 优先从缓存中获取
         /// </summary>
@@ -352,6 +353,7 @@ namespace SharedLib.Utils
             }
             return files;
         }
+        **/
 
         /// <summary>
         /// 获取皮肤目录中随机的一个图片文件
@@ -360,7 +362,9 @@ namespace SharedLib.Utils
         /// <returns></returns>
         public static string GetRandomSkinFile(string folder)
         {
-            var files = GetImageFilesWithMemoryCache("skinFolder", folder, false);
+            var files = Directory.GetFiles(folder)
+                  .Where(e => Path.GetExtension(e).Equals(".jpg") || Path.GetExtension(e).Equals(".png"))
+                  .ToList();
             if (files.Count == 0) return null;
             string resultFile;
             System.Drawing.Image drawingImg;
@@ -368,12 +372,13 @@ namespace SharedLib.Utils
             {
                 resultFile = RandomUtil.GetRandomItem(files.ToArray());
                 drawingImg = System.Drawing.Image.FromFile(resultFile);
+                /**
                 if (drawingImg.Height > drawingImg.Width)
                 {
                     //只保留横屏图
                     files.Remove(resultFile);
                     continue;
-                }
+                }**/
                 break;
             } while (files.Count > 0);
             return resultFile;

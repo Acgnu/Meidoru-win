@@ -87,6 +87,19 @@ namespace AcgnuX.Source.Utils
             }
         }
 
+        /// <summary>
+        /// 获取主窗口的背景图片笔刷
+        /// </summary>
+        /// <returns></returns>
+        public static Brush GetMainWindowBackgroundBrush()
+        {
+            var mainWin = App.Current.MainWindow;
+            var containerBorder = VisualTreeHelper.GetChild(mainWin, 0) as Border;
+            var grid = VisualTreeHelper.GetChild(containerBorder, 0) as Grid;
+            var brushBorder = VisualTreeHelper.GetChild(grid, 0) as Border;
+            return brushBorder.Background as ImageBrush;
+        }
+
         /**
         /// <summary>
         /// 从应用程序中创建ResourceDictionary
