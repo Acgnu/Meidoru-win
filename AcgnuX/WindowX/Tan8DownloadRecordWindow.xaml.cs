@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using Microsoft.Extensions.DependencyInjection;
 using AcgnuX.Source.Utils;
+using SharedLib.Utils;
 
 namespace AcgnuX.WindowX
 {
@@ -84,13 +85,22 @@ namespace AcgnuX.WindowX
                 WindowUtil.ShowBubbleError("答应我, 先去配置数据库");
                 return;
             }
-            var dialog = new AddSinglePianoScoreDialog
+            var dialog = new AddSinglePianoScoreDialog();
+            if(dialog.ShowDialog().GetValueOrDefault())
             {
-                Owner = this,
-                //绑定窗口点击事件
-                ConfirmAction = ContentDataContext.TriggerTan8DownLoadTask
-            };
-            dialog.ShowDialog();
+                int? ypid = null;
+                if (!string.IsNullOrEmpty(dialog.Ypid) && DataUtil.IsNum(dialog.Ypid))
+                {
+                    ypid = Convert.ToInt32(dialog.Ypid);
+                }
+                ContentDataContext.TriggerTan8DownLoadTask(new Source.Model.Tan8SheetCrawlArg
+                {
+                    Name = dialog.SheetName,
+                    AutoDownload = dialog.AutoDownload,
+                    UseProxy = dialog.UseProxy,
+                    Ypid = ypid
+                });
+            }
         }
 
         /// <summary>

@@ -7,6 +7,7 @@ using Microsoft.Toolkit.Uwp.Notifications;
 using SharedLib.Utils;
 using System;
 using System.Collections.ObjectModel;
+using System.Runtime.Caching;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -40,6 +41,8 @@ namespace AcgnuX.Source.ViewModel
         public ICommand FaviconClickCommand { get; set; }
         //½øÈëÉèÖÃÒ³ÃæÃüÁî
         public ICommand OnSettingCommand { get; set; }
+        //¸ü»»±³¾°Í¼ÃüÁî
+        public ICommand OnRefreshBackgroundCommand { get; }
         //Ö÷´°¿Ú±³¾°Í¼Æ¬
         private Brush _mainWindowBackgroundBrush;
         public Brush MainWindowBackgroundBrush { get => _mainWindowBackgroundBrush; set => SetProperty(ref _mainWindowBackgroundBrush, value); }
@@ -81,6 +84,7 @@ namespace AcgnuX.Source.ViewModel
             });
 
             OnNavMenuItemClickCommand = new RelayCommand<NavMenu>(NavMenuItemClick);
+            OnRefreshBackgroundCommand = new RelayCommand<Window>(ExecuteRefreshBackgroundCommand);
             OnSettingCommand = new RelayCommand<Window>(OnSettingIconClick);
             FaviconClickCommand = new RelayCommand(OnFaviconClick);
             _IndexPage = new Index();
@@ -136,7 +140,6 @@ namespace AcgnuX.Source.ViewModel
             navMenus = new ObservableCollection<NavMenu>()
             {
                 new NavMenu() { name = "ÌÛÑ·ÔÆ½âÎö", pageType = typeof(DnsManage), icon=(Geometry)Application.Current.FindResource("Icon_Paperclip") },
-                //new NavMenu() { name = "WEB·þÎñ",pageType = typeof (WebServer), icon=(Geometry)Application.Current.FindResource("Icon_Server") },
                 new NavMenu() { name = "ÃÜÂë¿â",pageType = typeof( PwdRepositroy), icon=(Geometry)Application.Current.FindResource("Icon_PasswordBox") },
                 new NavMenu() { name = "Æ×¿â",pageType = typeof( Tan8SheetReponsitory), icon=(Geometry)Application.Current.FindResource("Icon_Book") },
                 new NavMenu() { name = "×¦»úÍ¬²½",pageType =typeof ( MobileDeviceControl), icon=(Geometry)Application.Current.FindResource("Icon_Cloud") },
@@ -149,11 +152,24 @@ namespace AcgnuX.Source.ViewModel
         /// </summary>
         public void InitBackgroundBrush(double windowWidth)
         {
-            var skinFile = FileUtil.GetRandomSkinFile(Settings.Default.SkinFolderPath);
-            MainWindowBackgroundBrush = ImageUtil.LoadImageAsBrush(skinFile, 0, 0, (int) windowWidth);
+            MainWindowBackgroundBrush = ImageUtil.LoadImageAsBrush(Settings.Default.SkinFilePath, 0, 0, (int) windowWidth);
+            MemoryCache.Default["skinBrush"] = MainWindowBackgroundBrush;
             MainWindowBackgroundBrush?.BeginAnimation(
                 Brush.OpacityProperty,
                 Application.Current.FindResource("AniImageBrushFadeIn") as DoubleAnimation);
+        }
+
+        /// <summary>
+        /// Ö´ÐÐ¸ü»»±³¾°ÃüÁî
+        /// </summary>
+        private void ExecuteRefreshBackgroundCommand(Window window)
+        {
+            var skinFile = FileUtil.GetRandomSkinFile(Settings.Default.SkinFolderPath);
+            if (skinFile == null) return;
+
+            Settings.Default.SkinFilePath = skinFile;
+            Settings.Default.Save();
+            InitBackgroundBrush(window.Width);
         }
     }
 }

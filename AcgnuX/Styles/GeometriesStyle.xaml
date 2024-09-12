@@ -15,6 +15,12 @@
         <Setter Property="Fill" Value="White" />
     </Style>
 
+    <!-- 导航栏功能按钮样式 -->
+    <Style x:Key="NavBarFunctionIcoPathStyle" TargetType="Path" BasedOn="{StaticResource MainStatusBarIcoPathStyle}">
+        <Setter Property="Fill" Value="{StaticResource {x:Static SystemColors.ControlTextBrushKey}}" />
+        <Setter Property="Width" Value="14" />
+    </Style>
+
     <!--空数据指示器-->
     <Style TargetType="Path" x:Key="EmptyDataIndicatorStyle" BasedOn="{StaticResource MainStatusBarIcoPathStyle}">
         <Setter Property="Fill" Value="{StaticResource ButtonMainColorBrush}" />
@@ -29,7 +35,7 @@
         <Setter Property="Data" Value="{StaticResource Icon_Add}" />
     </Style>
     
-    <!--主状态栏图标按钮-->
+    <!-- 刷新图标按钮 -->
     <Style TargetType="Path" x:Key="RefreshPathIcoStyle" BasedOn="{StaticResource MainStatusBarIcoPathStyle}">
         <Setter Property="Width" Value="25" />
         <Setter Property="Height" Value="25" />
@@ -44,10 +50,10 @@
     
     <!--设置页打开文件夹按钮-->
     <Style TargetType="Path" x:Key="SettingsOpenFolderPathIcoStyle">
-        <Setter Property="Stretch" Value="UniformToFill" />
+        <Setter Property="Stretch" Value="Uniform" />
         <Setter Property="Fill" Value="#FFF7E074" />
-        <Setter Property="Width" Value="25" />
-        <Setter Property="Height" Value="20" />
+        <Setter Property="Width" Value="30" />
+        <Setter Property="Height" Value="30" />
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Data" Value="{StaticResource Icon_OpenFolder}" />

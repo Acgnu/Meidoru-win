@@ -25,7 +25,7 @@ namespace AcgnuX.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("E:\\Codes\\Chromium\\loli\\data\\account.json")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string AccountFilePath {
             get {
                 return ((string)(this["AccountFilePath"]));
@@ -37,7 +37,7 @@ namespace AcgnuX.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("H:\\乐谱")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string Tan8HomeDir {
             get {
                 return ((string)(this["Tan8HomeDir"]));
@@ -49,7 +49,7 @@ namespace AcgnuX.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("E:\\档案\\master.db")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string DBFilePath {
             get {
                 return ((string)(this["DBFilePath"]));
@@ -68,6 +68,18 @@ namespace AcgnuX.Properties {
             }
             set {
                 this["SkinFolderPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SkinFilePath {
+            get {
+                return ((string)(this["SkinFilePath"]));
+            }
+            set {
+                this["SkinFilePath"] = value;
             }
         }
     }

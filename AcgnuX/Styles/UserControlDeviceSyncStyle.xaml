@@ -17,7 +17,8 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="BorderBrush" Value="Transparent"/>
-        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="CornerRadius" Value="3" />
         <Style.Triggers>
             <Trigger x:Name="Bd" Property="IsMouseOver" Value="True">
                 <Setter Property="BorderBrush" Value="{StaticResource ButtonHoverColorBrush}"/>
@@ -71,7 +72,7 @@
                 <Trigger.ExitActions>
                     <BeginStoryboard>
                         <Storyboard>
-                            <ColorAnimation Duration="0:0:0.4" Storyboard.TargetName="Bd" Storyboard.TargetProperty="Background.Color" From="{StaticResource DataGridItemSelectedBackgroundColor}">
+                            <ColorAnimation Duration="{StaticResource ItemMouseOutAnimateDuration}" Storyboard.TargetName="Bd" Storyboard.TargetProperty="Background.Color" From="{StaticResource DataGridItemSelectedBackgroundColor}">
                                 <ColorAnimation.EasingFunction>
                                     <CircleEase EasingMode="EaseOut"/>
                                 </ColorAnimation.EasingFunction>
@@ -88,6 +89,7 @@
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Margin" Value="5 0 0 2" />
         <Setter Property="FontSize" Value="15" />
+        <Setter Property="Cursor" Value="Hand" />
     </Style>
     <Style TargetType="StackPanel" x:Key="FolderNameStackPanelStyle">
         <Setter Property="Orientation" Value="Horizontal" />

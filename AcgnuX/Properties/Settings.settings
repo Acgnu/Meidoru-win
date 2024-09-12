@@ -3,15 +3,18 @@
   <Profiles />
   <Settings>
     <Setting Name="AccountFilePath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">E:\Codes\Chromium\loli\data\account.json</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="Tan8HomeDir" Type="System.String" Scope="User">
-      <Value Profile="(Default)">H:\乐谱</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="DBFilePath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">E:\档案\master.db</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="SkinFolderPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SkinFilePath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

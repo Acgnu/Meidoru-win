@@ -7,18 +7,8 @@
     <sys:Double x:Key="ItemHalfSize">35</sys:Double>
     <Point x:Key="CoverClipPoints" X="{StaticResource ItemHalfSize}" Y="{StaticResource ItemHalfSize}"/>
 
-    <!--播放按钮-->
-    <Style TargetType="Button" x:Key="PianoScorePlayButtonStyle" BasedOn="{StaticResource NoneStyleButtonStyle}">
-        <Setter Property="Background" Value="Black" />
-        <Setter Property="Opacity" Value="0" />
-        <Setter Property="Height" Value="{StaticResource ItemSize}"/>
-        <Setter Property="Width" Value="{StaticResource ItemSize}" />
-        <Setter Property="BorderBrush" Value="{x:Null}" />
-    </Style>
     <!--乐谱信息-->
-    <Style TargetType="Label" x:Key="ItemInfoLabelStyle">
-        <Setter Property="Margin" Value="5 0 5 0" />
-        <Setter Property="VerticalAlignment" Value="Center" />
+    <Style TargetType="Canvas" x:Key="ItemInfoGroupCanvasStyle">
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsWorking}" Value="True">
                 <Setter Property="Visibility" Value="Collapsed" />
@@ -28,60 +18,40 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
-    <!--乐谱信息-->
-    <Style TargetType="TextBlock" x:Key="TextBlockInfoIconStyle">
-        <Setter Property="Background" Value="{x:Null}" />
-    </Style>
+    
     <!--乐谱标题-->
     <Style TargetType="TextBox" x:Key="TextBoxSheetNameStyle">
-        <Setter Property="Margin" Value="10 10 0 5" />
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="FontSize" Value="15" />
         <Setter Property="Foreground" Value="#FF252525" />
         <Setter Property="Background" Value="{x:Null}" />
         <Setter Property="BorderBrush" Value="{x:Null}" />
     </Style>
-    <Style TargetType="TextBlock" x:Key="TextBlockProgressTextStyle">
-        <Setter Property="Margin" Value="10 0 0 0" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Visibility" Value="{Binding IsWorking, Converter={bizc:BooleanToVisiblityConverter}, ConverterParameter=True}" />
-    </Style>
+
     <!--乐谱版本信息-->
-    <Style TargetType="Label" x:Key="ItemVerInfoLabelStyle" BasedOn="{StaticResource ItemInfoLabelStyle}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate>
-                    <TextBlock x:Name="VerTextBlock" Style="{StaticResource TextBlockInfoIconStyle}" />
-                    <ControlTemplate.Triggers>
-                        <DataTrigger Binding="{Binding Ver}" Value="1">
-                            <Setter TargetName="VerTextBlock" Property="Text" Value="🎵 Flash" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Ver}" Value="2">
-                            <Setter TargetName="VerTextBlock" Property="Text" Value="🎹" />
-                        </DataTrigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+    <Style TargetType="TextBlock" x:Key="SheetVersionTextBlockStyle">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Ver}" Value="1">
+                <Setter Property="Text" Value="Flash" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Ver}" Value="2">
+                <Setter Property="Text" Value="🎹" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style> 
+    
     <!--乐谱收藏信息-->
-    <Style TargetType="Label" x:Key="ItemStarInfoLabelStyle" BasedOn="{StaticResource ItemInfoLabelStyle}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate>
-                    <TextBlock x:Name="InfoTextBlock" Style="{StaticResource TextBlockInfoIconStyle}"/>
-                    <ControlTemplate.Triggers>
-                        <DataTrigger Binding="{Binding Star}" Value="1">
-                            <Setter TargetName="InfoTextBlock" Property="Text" Value="🖤" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Star}" Value="0">
-                            <Setter TargetName="InfoTextBlock" Property="Text" Value="🤍" />
-                        </DataTrigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
+    <Style TargetType="TextBlock" x:Key="SheetStarTextBlockStyle">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Star}" Value="1">
+                <Setter Property="Text" Value="🖤" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Star}" Value="0">
+                <Setter Property="Text" Value="🤍" />
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
+    
     <!--乐谱封面-->
     <Style TargetType="Image" BasedOn="{StaticResource ImageBaseStyle}" x:Key="SheetItemCoverImageStyle">
         <Setter Property="Height" Value="{StaticResource ItemSize}" />
@@ -92,49 +62,62 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+    
     <!--条目整体样式模板-->
     <Style TargetType="ContentControl" x:Key="SheetItemControlStyle">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <Grid ToolTip="{Binding Name}">
-                        <ProgressBar Style="{StaticResource ProgressBarBaseStyle}" lc:ProgressAnimater.AnimateValue="{Binding Progress}" Visibility="{Binding IsWorking, Converter={bizc:BooleanToVisiblityConverter}, ConverterParameter=True}" />
-                        <Border Padding="1">
-                            <StackPanel Background="Transparent" Orientation="Horizontal">
-                                <Canvas Width="{StaticResource ItemSize}" Height="{StaticResource ItemSize}">
-                                    <Canvas.Clip>
-                                        <EllipseGeometry Center="{StaticResource CoverClipPoints}" RadiusX="{StaticResource ItemHalfSize}" RadiusY="{StaticResource ItemHalfSize}" />
-                                    </Canvas.Clip>
-                                    <lc:AsyncImage ImagePath="{Binding Cover, IsAsync=True}" Panel.ZIndex="0" Style="{StaticResource SheetItemCoverImageStyle}" />
-                                    <!--<Button x:Name="PlayCoverBorder" Style="{StaticResource PianoScorePlayButtonStyle}" Command="{Binding OnItemPlayCommand}">-->
-                                    <Button x:Name="PlayCoverBorder" Style="{StaticResource PianoScorePlayButtonStyle}" 
-                                                Command="{Binding OnItemPlayCommand}"
-                                                CommandParameter="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ListBox}}">
-                                        <Path Width="30" Height="30" Margin="8 0 0 0" Data="{DynamicResource Icon_Play}" Style="{StaticResource MainStatusBarIcoPathStyle}"/>
-                                    </Button>
-                                </Canvas>
-                                <StackPanel Orientation="Vertical">
-                                    <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={bizc:StringTruncateConverter}, ConverterParameter=45}" 
-                                                 Style="{StaticResource TextBoxSheetNameStyle}">
-                                        <TextBox.InputBindings>
-                                            <KeyBinding Key="Enter" Command="{Binding OnEditSheetNameCommand}" />
-                                        </TextBox.InputBindings>
-                                    </TextBox>
-                                    <StackPanel Orientation="Horizontal" Height="30">
-                                        <TextBlock Text="{Binding ProgressText}" Style="{StaticResource TextBlockProgressTextStyle}" />
-                                        <Label Content="{Binding Id}" ContentStringFormat="📄 {0}" Style="{StaticResource ItemInfoLabelStyle}"/>
-                                        <Label Content="{Binding YpCount}" ContentStringFormat="📒 {0}" Style="{StaticResource ItemInfoLabelStyle}"/>
-                                        <Label Style="{StaticResource ItemVerInfoLabelStyle}"/>
-                                        <Label Style="{StaticResource ItemStarInfoLabelStyle}">
-                                            <Label.InputBindings>
-                                                <MouseBinding MouseAction="LeftClick" Command="{Binding OnStarCommand}" />
-                                            </Label.InputBindings>
-                                        </Label>
-                                    </StackPanel>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
+                    <Canvas x:Name="ItemContainerCanvas" ToolTip="{Binding Name}" Height="74">
+                        <ProgressBar Style="{StaticResource ProgressBarBaseStyle}" lc:ProgressAnimater.AnimateValue="{Binding Progress}" Visibility="{Binding IsWorking, Converter={StaticResource FrameworkBooleanToVisibileConverter}}" Panel.ZIndex="0" Width="{Binding Path=ActualWidth, ElementName=ItemContainerCanvas}" Height="{Binding Path=Height, ElementName=ItemContainerCanvas}" Background="Transparent"/>
+                        <!--<ProgressBar Style="{StaticResource ProgressBarBaseStyle}" lc:ProgressAnimater.AnimateValue="{Binding Progress}" Visibility="{Binding IsWorking, Converter={StaticResource FrameworkBooleanToVisibileConverter}}" />-->
+                        <!--乐谱图标-->
+                        <Canvas Width="{StaticResource ItemSize}" Height="{Binding Width, RelativeSource={RelativeSource Self}}" Canvas.Top="2" Canvas.Left="{Binding Path=Top, RelativeSource={RelativeSource Self} }">
+                            <Canvas.Clip>
+                                <EllipseGeometry Center="{StaticResource CoverClipPoints}" RadiusX="{StaticResource ItemHalfSize}" RadiusY="{Binding RadiusX, RelativeSource={RelativeSource Self}}" />
+                            </Canvas.Clip>
+                            <lc:AsyncImage ImagePath="{Binding Cover, IsAsync=True}" Panel.ZIndex="0" Style="{StaticResource SheetItemCoverImageStyle}" />
+                            <!--播放按钮黑色背景-->
+                            <Canvas x:Name="PlayCoverBorder" Width="{StaticResource ItemSize}" Height="{Binding Width, RelativeSource={RelativeSource Self}}">
+                                <Canvas.Background>
+                                    <SolidColorBrush Color="Black" Opacity="0" />
+                                </Canvas.Background>
+                                <Canvas.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick" Command="{Binding OnItemPlayCommand}" CommandParameter="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ListBox}}" />
+                                </Canvas.InputBindings>
+                                <!--播放按钮图标-->
+                                <Path x:Name="PlayCoverIcon" Canvas.Left="23" Canvas.Top="20" Width="30" Height="{Binding Width, RelativeSource={RelativeSource Self}}" Data="{DynamicResource Icon_Play}" Stretch="Uniform">
+                                    <Path.Fill>
+                                        <SolidColorBrush Color="White" Opacity="0" />
+                                    </Path.Fill>
+                                </Path>
+                            </Canvas>
+                        </Canvas>
+                            <!--乐谱标题行-->
+                        <TextBox x:Name="SheetNameEditText" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={bizc:StringTruncateConverter}, ConverterParameter=45}" Style="{StaticResource TextBoxSheetNameStyle}" Canvas.Left="80" Canvas.Top="10">
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="Enter" Command="{Binding OnEditSheetNameCommand}" />
+                            </TextBox.InputBindings>
+                        </TextBox>
+                        <!--乐谱ID, 信息, 下载提示行-->
+                        <TextBlock Text="{Binding ProgressText}" Visibility="{Binding IsWorking, Converter={StaticResource FrameworkBooleanToVisibileConverter}}" Canvas.Left="83" Canvas.Top="46"/>
+                        <Canvas Height="{Binding Height, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Canvas}}" Style="{StaticResource ItemInfoGroupCanvasStyle}" Canvas.Top="46" Canvas.Left="83">
+                            <TextBlock>
+                                <Run Text="📄"/>
+                                <Run Text="{Binding Id}"/>
+                            </TextBlock>
+                            <TextBlock Canvas.Left="80">
+                                <Run Text="📒" />
+                                <Run Text="{Binding YpCount}" />
+                            </TextBlock>
+                            <TextBlock Style="{StaticResource SheetVersionTextBlockStyle}" Canvas.Left="135"/>
+                            <TextBlock Style="{StaticResource SheetStarTextBlockStyle}" Canvas.Left="190">
+                                <TextBlock.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick" Command="{Binding OnStarCommand}" />
+                                </TextBlock.InputBindings>
+                            </TextBlock>
+                        </Canvas>
+                    </Canvas>
                     <ControlTemplate.Triggers>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
@@ -144,7 +127,12 @@
                             <MultiTrigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Duration="0:0:0.3" Storyboard.TargetName="PlayCoverBorder" Storyboard.TargetProperty="Opacity" From="0" To="0.7">
+                                        <DoubleAnimation Duration="{StaticResource ItemMouseOutAnimateDuration}" Storyboard.TargetName="PlayCoverBorder" Storyboard.TargetProperty="(Canvas.Background).(SolidColorBrush.Opacity)" To="0.7">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CircleEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="{StaticResource ItemMouseOutAnimateDuration}" Storyboard.TargetName="PlayCoverIcon" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Opacity)" To="1">
                                             <DoubleAnimation.EasingFunction>
                                                 <CircleEase EasingMode="EaseOut"/>
                                             </DoubleAnimation.EasingFunction>
@@ -156,7 +144,12 @@
                             <MultiTrigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetName="PlayCoverBorder" Storyboard.TargetProperty="Opacity" From="0.7" To="0">
+                                        <DoubleAnimation Duration="{StaticResource ItemMouseOutAnimateDuration}" Storyboard.TargetName="PlayCoverBorder" Storyboard.TargetProperty="(Canvas.Background).(SolidColorBrush.Opacity)" To="0">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CircleEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="{StaticResource ItemMouseOutAnimateDuration}" Storyboard.TargetName="PlayCoverIcon" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Opacity)" To="0">
                                             <DoubleAnimation.EasingFunction>
                                                 <CircleEase EasingMode="EaseOut"/>
                                             </DoubleAnimation.EasingFunction>

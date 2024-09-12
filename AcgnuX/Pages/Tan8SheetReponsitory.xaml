@@ -51,10 +51,10 @@
                         </TextBox.InputBindings>
                     </TextBox>
                 </DockPanel>
-                <!--默认的打开播放器按钮-->
+                <!--无数据图标-->
                 <Path Grid.Row="1" Style="{StaticResource EmptyDataIndicatorStyle}" 
                       Data="{StaticResource Icon_EmptySearchResult}"
-                      Visibility="{Binding IsEmpty, Converter={bizc:BooleanToVisiblityConverter}, ConverterParameter=True}"/>
+                      Visibility="{Binding IsEmpty, Converter={StaticResource FrameworkBooleanToVisibileConverter}}"/>
                 <!--ListBox-->
                 <ListBox
                         VirtualizingPanel.IsContainerVirtualizable="True"

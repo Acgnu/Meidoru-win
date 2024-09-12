@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 
@@ -69,11 +70,12 @@ namespace AcgnuX.WindowX.Dialog
         {
             CloseCommand = new RelayCommand(() => AnimateClose());
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            Owner = Application.Current.MainWindow;
+            Owner = App.Current.MainWindow;
+            DialogWindowBackgroundBrush = XamlUtil.GetMainWindowBackgroundBrush();
             //mDispatcherTimer = new DispatcherTimer();
             //mDispatcherTimer.Tick += new EventHandler(DispatcherTimerHandler);
             //mDispatcherTimer.Interval = TimeSpan.FromSeconds(0.2);
-            this.Loaded += new RoutedEventHandler(OnBaseDialogLoaded);
+            //this.Loaded += new RoutedEventHandler(OnBaseDialogLoaded);
             //this.Closing += new CancelEventHandler(OnBaseDialogClosing);
         }
 
@@ -90,8 +92,8 @@ namespace AcgnuX.WindowX.Dialog
         /// <param name="e"></param>
         public void OnBaseDialogLoaded(object sender, RoutedEventArgs e)
         {
-            var skinFile = FileUtil.GetRandomSkinFile(Settings.Default.SkinFolderPath);
-            DialogWindowBackgroundBrush = ImageUtil.LoadImageAsBrush(skinFile, 0.85, 0, (int)Width);
+            //var skinFile = FileUtil.GetRandomSkinFile(Settings.Default.SkinFolderPath);
+            //DialogWindowBackgroundBrush = ImageUtil.LoadImageAsBrush(skinFile, 0.85, 0, (int)Width);
         }
 
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")

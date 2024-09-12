@@ -14,6 +14,7 @@ namespace AcgnuX.Pages
     /// </summary>
     public partial class Index
     {
+        public bool Bv { get; set; } = true;
         public Index()
         {
             InitializeComponent();

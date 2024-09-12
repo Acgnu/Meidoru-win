@@ -28,9 +28,10 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationRevision>1</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup>
@@ -62,6 +63,26 @@
     <ApplicationIcon>Assets\Ico\favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>BFC6F3044D17A6668ED9D68504C0E334DEA64795</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>AcgnuX_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AxInterop.ShockwaveFlashObjects">
       <HintPath>..\FlashControlLibrary\bin\Debug\AxInterop.ShockwaveFlashObjects.dll</HintPath>
@@ -137,18 +158,12 @@
     <Compile Include="Pages\AppSettings.xaml.cs">
       <DependentUpon>AppSettings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\WebServer.xaml.cs">
-      <DependentUpon>WebServer.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="SingleInstanceManager.cs" />
     <Compile Include="Source\Bussiness\Common\AsyncObservableCollection.cs" />
     <Compile Include="Source\Bussiness\Common\BaseValueConverter.cs" />
     <Compile Include="Source\Bussiness\Common\StringTruncateConverter.cs" />
-    <Compile Include="Source\Bussiness\Common\BooleanToVisiblityConverter.cs" />
-    <Compile Include="Source\Bussiness\Common\BooleanToVisiblityInverseConverter.cs" />
     <Compile Include="Source\Bussiness\Common\ByteArrayToAvatarImageConverter.cs" />
-    <Compile Include="Source\Bussiness\Common\ContactPlatformToStringConverter.cs" />
     <Compile Include="Source\Bussiness\Common\ContactPlatformToImageSourceConverter.cs" />
     <Compile Include="Source\Bussiness\Common\TaskCompletionNotifier.cs" />
     <Compile Include="Source\Bussiness\Constants\ContactPlatform.cs" />
@@ -187,7 +202,6 @@
     <Compile Include="Source\Model\DeviceSyncReadProgressItem.cs" />
     <Compile Include="Source\Model\DeviceSyncTaskArgs.cs" />
     <Compile Include="Source\Model\MediaSyncConfig.cs" />
-    <Compile Include="Source\Model\Account.cs" />
     <Compile Include="Source\Model\NavMenu.cs" />
     <Compile Include="Source\Model\Tan8SheetDownloadRecord.cs" />
     <Compile Include="Source\Model\Ten\Dns\DnsDomain.cs" />
@@ -319,10 +333,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\WebServer.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <DesignData Include="Source\ViewModel\DesignData\BubbleTipViwerDesignData.xaml">
       <SubType>Designer</SubType>
     </DesignData>
@@ -334,6 +344,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\CheckBoxStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\Component.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -482,6 +496,7 @@
     <Content Include="Assets\exe\ypres.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="AcgnuX_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -493,7 +508,6 @@
   <ItemGroup />
   <ItemGroup>
     <Resource Include="Assets\Images\tan8_sheet_preview_default.png" />
-    <Resource Include="Assets\Images\window_bg_default.jpg" />
     <Resource Include="Assets\data\init.sql" />
     <Content Include="Assets\exe\77player.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
