@@ -19,6 +19,7 @@ namespace SharedLib.Data
         public int GetProxyCountFromDB()
         {
             var result = SQLite.sqlone("SELECT COUNT(1) FROM proxy_address ORDER BY addtime", null);
+            if (string.IsNullOrEmpty(result)) return 0;
             return Convert.ToInt32(result);
         }
 
