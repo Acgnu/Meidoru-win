@@ -153,6 +153,8 @@ namespace AcgnuX.Source.ViewModel
         public void InitBackgroundBrush(double windowWidth)
         {
             MainWindowBackgroundBrush = ImageUtil.LoadImageAsBrush(Settings.Default.SkinFilePath, 0, 0, (int) windowWidth);
+            if (null == MainWindowBackgroundBrush) return;
+
             MemoryCache.Default["skinBrush"] = MainWindowBackgroundBrush;
             MainWindowBackgroundBrush?.BeginAnimation(
                 Brush.OpacityProperty,
