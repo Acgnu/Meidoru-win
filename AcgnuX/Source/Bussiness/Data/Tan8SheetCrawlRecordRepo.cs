@@ -94,6 +94,9 @@ namespace AcgnuX.Source.Bussiness.Data
         internal Tan8SheetDownloadRecord FindByYpid(int ypid)
         {
             var dataRow = SQLite.SqlRow(string.Format("SELECT id, ypid, name, strftime('%Y-%m-%d %H:%M:%S', create_time) create_time, result  FROM tan8_music_down_record WHERE ypid = {0} ORDER BY create_time DESC LIMIT 1", ypid));
+            
+            if (null == dataRow) return null;
+            
             return new Tan8SheetDownloadRecord
             {
                 Id = Convert.ToInt32(dataRow[0]),

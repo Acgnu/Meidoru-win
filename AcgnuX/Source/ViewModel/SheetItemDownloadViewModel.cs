@@ -47,11 +47,13 @@ namespace AcgnuX.Source.ViewModel
         //是否执行任务中
         private bool _IsWorking;
         public bool IsWorking { get { return _IsWorking; } set => SetProperty(ref _IsWorking, value); }
+        //乐谱版本
+        public byte Ver { get; set; }
         #endregion
 
         #region 事件
         //曲谱下载完成事件
-        public Action<int, bool, bool> DownloadFinishAction;
+        public Action<int> DownloadFinishAction;
         #endregion
 
         private readonly Tan8SheetsRepo _Tan8SheetsRepo;
@@ -71,6 +73,8 @@ namespace AcgnuX.Source.ViewModel
         /// </summary>
         public void OnStopDownloadEvent(ObservableCollection<SheetItemDownloadViewModel> listData)
         {
+            IsWorking = false;
+            /**
             if(IsWorking)
             {
                 IsWorking = false;
@@ -82,6 +86,7 @@ namespace AcgnuX.Source.ViewModel
                     listData.Remove(this);
                 }
             }
+            **/
         }
 
         /// <summary>
@@ -118,7 +123,9 @@ namespace AcgnuX.Source.ViewModel
                         SetProgress(null, string.Format("下载出错 {0}{1}", result.message, ", 正在重试..."));
 
                         //如果是自动下载, 且由是由于网络连接出错, 则不保存下载记录, 直接重试
-                        if (result.code == 8 || result.code == 3 || result.code == 7)
+                        if (result.code == (byte)Tan8SheetDownloadResult.NETWORK_ERROR
+                            || result.code == (byte)Tan8SheetDownloadResult.TOO_MANY_VISIT
+                            || result.code == (byte)Tan8SheetDownloadResult.VISTI_REACH_LIMIT)
                         {
                             //等待100毫秒, 避免阻塞UI
                             Thread.Sleep(100);
@@ -133,18 +140,14 @@ namespace AcgnuX.Source.ViewModel
                         }
                     }
                 }
-                if(IsWorking)
-                {
-                    //以下代码仅下载成功执行, 如果下载成功, 不论是否中止, 都保存乐谱信息, 当作成功
-                    //每次下载完, 保存最后下载的记录ID
-                    _Tan8SheetCrawlRecordRepo.Save(Id, AutoDownload, Name, result.code, result.message);
-                    Tan8PlayUtil.Exit(Id);
+                //不论下载成功与否都保存下载记录
+                _Tan8SheetCrawlRecordRepo.Save(Id, AutoDownload, Name, result.code, result.message);
+                Tan8PlayUtil.Exit(Id);
 
-                    //触发下载完成事件
-                    DownloadFinishAction?.Invoke(Id, result.success, IsWorking);
-                    IsWorking = false;      //设为False将退出循环, 结束任务
-                }
-            } while (IsWorking);
+                //触发下载完成事件
+                DownloadFinishAction?.Invoke(Id);
+                return;
+            } while (true);
         }
 
         /// <summary>
@@ -195,7 +198,7 @@ namespace AcgnuX.Source.ViewModel
                 return downloadResult;
             }
             //从乐谱信息解析到对象
-            var tan8Music = DataUtil.ParseToModel(ypinfostring);
+            var tan8Music = DataUtil.ParseToModel(Id, ypinfostring);
             //YpCount = tan8Music.yp_page_count;
 
             var ypNameFolder = IsTempName ? tan8Music.yp_title : Name;
@@ -213,12 +216,11 @@ namespace AcgnuX.Source.ViewModel
 
             var saveFullPath = Path.Combine(libFolder, Id.ToString());
             //step.3 创建文件夹
-            if (IsWorking == false) return downloadResult;         //在IO操作之前检查任务是否停止
             FileUtil.CreateFolder(saveFullPath);
 
             //step.3 下载曲谱封面
             var coverSavePath = Path.Combine(saveFullPath, ApplicationConstant.DEFAULT_COVER_NAME);
-            SetProgress(30, "下载封面...");
+            SetProgress(20, "下载封面...");
             var coverUrl = tan8Music.ypad_url.Substring(0, tan8Music.ypad_url.IndexOf('_')) + "_prev.jpg";
 
             if (IsWorking == false) return downloadResult;         //在IO操作之前检查任务是否停止
@@ -227,22 +229,21 @@ namespace AcgnuX.Source.ViewModel
             //if (downResult == 0) Cover = Path.Combine(libFolder, Id.ToString(), ApplicationConstant.DEFAULT_COVER_NAME);
 
             //封面下载完后校验图片是否有效
-            if (IsWorking == false) return downloadResult;         //在IO操作之前检查任务是否停止
             if (downResult == 0)
             {
+                if (IsWorking == false) return downloadResult;         //在IO操作之前检查任务是否停止
                 var isValidPreviewImg = ImageUtil.CheckImgIsValid(coverSavePath);
                 //如果文件损坏则删除
-                if (IsWorking == false) return downloadResult;         //在IO操作之前检查任务是否停止
                 if (!isValidPreviewImg) FileUtil.DeleteFile(coverSavePath);
             }
    
             //step.4 下载乐谱图片
-            var nowProgress = 30;
+            var nowProgress = 20;
             for (var i = 0; i < tan8Music.yp_page_count; i++)
             {
                 var message = string.Format("下载乐谱 {0} / {1}", i + 1, tan8Music.yp_page_count);
-                SetProgress(50 / tan8Music.yp_page_count + nowProgress, message);
-                nowProgress += 50 / tan8Music.yp_page_count;
+                SetProgress(40 / tan8Music.yp_page_count + nowProgress, message);
+                nowProgress += 40 / tan8Music.yp_page_count;
 
                 var downloadUrl = tan8Music.ypad_url + string.Format(".{0}.png", i);
                 if (IsWorking == false) return downloadResult;         //在IO操作之前检查任务是否停止
@@ -250,10 +251,6 @@ namespace AcgnuX.Source.ViewModel
                 //如果下载出错
                 if (pageDownloadResult != 0)
                 {
-                    //清理下载文件
-                    if (IsWorking == false) return downloadResult;         //在IO操作之前检查任务是否停止
-                    FileUtil.DeleteDirWithName(libFolder, Id.ToString());
-
                     downloadResult.code = (byte)Tan8SheetDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL;
                     downloadResult.message = EnumLoader.GetDesc(Tan8SheetDownloadResult.PIANO_SCORE_DOWNLOAD_FAIL);
                     return downloadResult;
@@ -267,20 +264,30 @@ namespace AcgnuX.Source.ViewModel
             var mp3_url = urlPrefix + string.Format("/tan8_{0}.mp3", Id);
             _ = new FileDownloader().DownloadFile(mp3_url, Path.Combine(saveFullPath, "play.mp3"));
 
-                //下载v2版播放文件
-                SetProgress(80, "下载播放文件...");
-            downResult = new FileDownloader().DownloadFile(tan8Music.ypad_url2, Path.Combine(saveFullPath, "play.ypdx"));
-            //没有播放文件, 又没有谱页的, 清理数据
-            if (downResult != 0 && tan8Music.yp_page_count == 0)
+            //下载v2版播放文件
+            SetProgress(80, "下载播放文件...");
+            downResult = new FileDownloader().DownloadFile(tan8Music.ypdx_url, Path.Combine(saveFullPath, "play.ypdx"));
+            if (downResult != 0)
             {
-                downloadResult.code = (byte)Tan8SheetDownloadResult.PLAY_FILE_DOWNLOAD_FAIL;
-                downloadResult.message = EnumLoader.GetDesc(Tan8SheetDownloadResult.PLAY_FILE_DOWNLOAD_FAIL);
-                return downloadResult;
+                //没有播放文件, 又没有谱页的, 清理数据
+                if (tan8Music.yp_page_count == 0)
+                {
+                    downloadResult.code = (byte)Tan8SheetDownloadResult.PLAY_FILE_DOWNLOAD_FAIL;
+                    downloadResult.message = EnumLoader.GetDesc(Tan8SheetDownloadResult.PLAY_FILE_DOWNLOAD_FAIL);
+                    return downloadResult;
+                }
+                //没有v2播放文件时, 下载V3版的播放文件
+                downResult = new FileDownloader().DownloadFile(tan8Music.ypn1_url, Path.Combine(saveFullPath, "play.ypn1"));
+                if (downResult == 0)
+                {
+                    //如果没有v2版本的ypdx播放文件, 但是有APP端的ypn1播放文件, 则标记乐谱版本为v3
+                    Ver = 3;
+                }
             }
 
             //step.6 保存到数据库
             SetProgress(90, "保存数据库...");
-            _Tan8SheetsRepo.Save(Id, ypNameFolder, tan8Music, ypinfostring);
+            _Tan8SheetsRepo.Save(Id, ypNameFolder, tan8Music.yp_page_count, Ver, ypinfostring);
 
             SetProgress(100, "下载完成");
             downloadResult.success = true;
@@ -305,6 +312,7 @@ namespace AcgnuX.Source.ViewModel
             if (source.Contains("验证错误")) return Tan8SheetDownloadResult.VALID_ERROR;
             //网络连接出错
             if (source.Equals(RequestUtil.CONNECTION_ERROR)) return Tan8SheetDownloadResult.NETWORK_ERROR;
+            if (Convert.ToInt32(DataUtil.GetXmlNodeValue(source, "yp_page_count")) > 124) return Tan8SheetDownloadResult.PAGE_TOO_MUCH;
             //默认返回成功
             return Tan8SheetDownloadResult.SUCCESS;
         }

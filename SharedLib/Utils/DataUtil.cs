@@ -31,20 +31,26 @@ namespace SharedLib.Utils
         /// </summary>
         /// <param name="source">接口返回的数据源</param>
         /// <returns>Qumusic</returns>
-        public static Tan8music ParseToModel(string source)
+        public static Tan8music ParseToModel(int ypid, string source)
         {
+            var ypad_url = GetXmlNodeValue(source, "ypad_url");
+            var ypa2_url = GetXmlNodeValue(source, "ypad_url2");
+            var urlPrefix = ypad_url.Substring(0, ypad_url.LastIndexOf('/'));
+            var mp3_url = urlPrefix + string.Format("/tan8_{0}.mp3", ypid);
             return new Tan8music()
             {
                 yp_create_time = Convert.ToUInt32(GetXmlNodeValue(source, "yp_create_time")),
                 yp_title = GetXmlNodeValue(source, "yp_title"),
                 yp_page_count = Convert.ToByte(GetXmlNodeValue(source, "yp_page_count")),
-                ypad_url = GetXmlNodeValue(source, "ypad_url"),
-                ypad_url2 = GetXmlNodeValue(source, "ypad_url2").Replace("ypa2", "ypdx"),
+                ypad_url = ypad_url,
+                ypdx_url = ypa2_url.Replace("ypa2", "ypdx"),
+                ypn1_url = ypa2_url.Replace("ypa2", "ypn1"),
                 yp_page_width = Convert.ToInt16(GetXmlNodeValue(source, "yp_page_width")),
                 yp_page_height = Convert.ToInt16(GetXmlNodeValue(source, "yp_page_height")),
                 yp_is_dadiao = Convert.ToByte(GetXmlNodeValue(source, "yp_is_dadiao")),
                 yp_key_note = Convert.ToByte(GetXmlNodeValue(source, "yp_key_note")),
-                yp_is_yanyin = Convert.ToByte(GetXmlNodeValue(source, "yp_is_yanyin"))
+                yp_is_yanyin = Convert.ToByte(GetXmlNodeValue(source, "yp_is_yanyin")), 
+                mp3_url = mp3_url
             };
         }
 
