@@ -77,7 +77,7 @@ namespace AcgnuX.Source.ViewModel
         }
         private void NotifyButtonStep() { OnPropertyChanged(nameof(ButtonStep)); }
         //允许最大的任务数量
-        private readonly int _MaxTaskNum = 1;
+        private readonly int _MaxTaskNum = 3;
         //已经下载完成的数量(包括成功/失败)
         //private int _DownloadFinishNum = 0;
         //当前正在进行中的任务数量
@@ -194,18 +194,23 @@ namespace AcgnuX.Source.ViewModel
         /// </summary>
         private void OnStopDownload()
         {
-            //如果有正在下载但是还没下载完的乐谱, 在停止时存入下次优先下载的列表中
-            foreach (var item in DownloadingData)
+            if (_DownloadTaskWorker.IsBusy)
             {
-                var sheetComplete = _Tan8SheetRepo.FindById(item.Id);
-                if (null == sheetComplete)
+                /**
+                //如果有正在下载但是还没下载完的乐谱, 在停止时存入下次优先下载的列表中
+                foreach (var item in DownloadingData)
                 {
-                    _SheetCrawlTaskRepo.AddNew(item.Id);
+                    var sheetComplete = _Tan8SheetRepo.FindById(item.Id);
+                    if (null == sheetComplete)
+                    {
+                        _SheetCrawlTaskRepo.AddNew(item.Id);
+                    }
                 }
+                **/
+                _StopBtnClickHandler?.Invoke(DownloadingData);
+                //NotifyIsDownloadListEmpty();
+                _DownloadTaskWorker.CancelAsync();
             }
-            _StopBtnClickHandler?.Invoke(DownloadingData);
-            //NotifyIsDownloadListEmpty();
-            _DownloadTaskWorker.CancelAsync();
         }
 
         /// <summary>
@@ -255,11 +260,15 @@ namespace AcgnuX.Source.ViewModel
             if (null != listDataItem)
             {
                 DownloadingData.Remove(listDataItem);
+                NotifyButtonStep();
             }
             //NotifyIsDownloadListEmpty();
             var record = _Tan8SheetCrawlRecordRepo.FindByYpid(newYpid);
-            DownloadRecordList.Insert(0, record);
-            dataGrid.ScrollIntoView(record);
+            if (null != record)
+            {
+                DownloadRecordList.Insert(0, record);
+                dataGrid.ScrollIntoView(record);
+            }
         }
 
         /// <summary>
@@ -477,8 +486,14 @@ namespace AcgnuX.Source.ViewModel
                     //如果是隐藏启动(即以下载为目的的启动), 找不到目标下载项, 可能是在重启Flash播放器的过程中停止下载了, 需要关闭
                     Tan8PlayUtil.Exit(ypid);
                 }
+                if (null != taskSheetItem)
+                {
+                    //可能在播放器启动之前就终止了任务, 此时需要通过完成事件移除下载列表的项目
+                    taskSheetItem.DownloadFinishAction?.Invoke(taskSheetItem.Id);
+                }
                 return;
             }
+            taskSheetItem.Ver = crawlArg.Ver;
             taskSheetItem.SheetUrl = crawlArg.SheetUrl;
             taskSheetItem.DownLoadTan8MusicV2Task();
         }
@@ -502,25 +517,20 @@ namespace AcgnuX.Source.ViewModel
             //{
 
             //}
-            NotifyButtonStep();
-            WindowUtil.ShowBubbleInfo("下载完成");
+            WindowUtil.ShowBubbleInfo("停止任务中, 正在下载的乐谱将继续完成下载");
         }
 
         /// <summary>
         /// 单个乐谱下载完成触发事件
         /// </summary>
         /// <param name="ypid"></param>
-        private void OnSheetItemDownloadComplete(int ypid, bool success, bool isWorking)
+        private void OnSheetItemDownloadComplete(int ypid)
         {
             //增加数量, 每完成一个子任务, 完成数量+1
             //Interlocked.Increment(ref _DownloadFinishNum);
             Interlocked.Decrement(ref _CurTaskNum);
-            //不是中止的, 不论下载成功/失败, 都发送通知
-            if (isWorking)
-            {
-                //发送下载完成通知
-                WeakReferenceMessenger.Default.Send(new ValueChangedMessage<int>(ypid));
-            }
+            //发送下载完成通知
+            WeakReferenceMessenger.Default.Send(new ValueChangedMessage<int>(ypid));
         }
         #endregion
     }

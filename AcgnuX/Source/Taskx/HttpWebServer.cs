@@ -174,7 +174,7 @@ namespace AcgnuX.Source.Taskx.Http
                 httpListenerContext.Request.QueryString["sccode"],
                 httpListenerContext.Request.QueryString["r1"],
                 httpListenerContext.Request.QueryString["r2"]),
-                //Ver = 1
+                Ver = 2
             });
         }
 
@@ -189,7 +189,7 @@ namespace AcgnuX.Source.Taskx.Http
             var rawData = SQLite.sqlone("SELECT origin_data FROM tan8_music WHERE ypid = @ypid", new SQLiteParameter[] { new SQLiteParameter("@ypid", ypid) });
 
             //从乐谱信息解析到对象
-            var tan8Music = DataUtil.ParseToModel(rawData);
+            var tan8Music = DataUtil.ParseToModel(Convert.ToInt32(ypid), rawData);
 
             //替换乐谱页和播放文件下载地址
             var pageUrl = LISTENING_ADDRESS + "yuepu/page?ypid=" + ypid;

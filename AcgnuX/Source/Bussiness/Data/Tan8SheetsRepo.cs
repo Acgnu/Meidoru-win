@@ -206,7 +206,7 @@ namespace AcgnuX.Source.Bussiness.Data
         /// <param name="tan8Music">弹琴吧接口对象</param>
         /// <param name="originstr">原始接口数据</param>
         /// <returns>数据库操作成功条数</returns>
-        internal int Save(int ypid, string name, Tan8music tan8Music, string originstr)
+        internal int Save(int ypid, string name, byte yp_page_count, byte ver, string originstr)
         {
             return SQLite.ExecuteNonQuery("insert or ignore into tan8_music(ypid, `name`, star, yp_count, origin_data) VALUES (@ypid, @name, @star, @yp_count, @origin_data)",
                 new List<SQLiteParameter>
@@ -214,7 +214,8 @@ namespace AcgnuX.Source.Bussiness.Data
                     new SQLiteParameter("@ypid", ypid) ,
                     new SQLiteParameter("@name", name) ,
                     new SQLiteParameter("@star", 0 as object) ,
-                    new SQLiteParameter("@yp_count", tan8Music.yp_page_count) ,
+                    new SQLiteParameter("@yp_count", yp_page_count) ,
+                    new SQLiteParameter("@ver", ver) ,
                     new SQLiteParameter("@origin_data", originstr)
                  });
         }
