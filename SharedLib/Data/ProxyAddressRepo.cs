@@ -34,6 +34,24 @@ namespace SharedLib.Data
             return SQLite.sqlone("SELECT address FROM proxy_address ORDER BY addtime LIMIT 1", null);
         }
 
+        /// <summary>
+        /// 获取指定的代理
+        /// </summary>
+        /// <returns></returns>
+        public ProxyAddress GetProxy(string proxyAddress)
+        {
+            var dbProxy = SQLite.SqlRow(string.Format(string.Format("SELECT address, rule_id FROM proxy_address WHERE address = '{0}'", proxyAddress)));
+            if (null != dbProxy && dbProxy.Length > 0)
+            {
+                return new ProxyAddress()
+                {
+                    Address = dbProxy[0],
+                    RuleId = Convert.ToInt32(dbProxy[1])
+                };
+            }
+            return null;
+        }
+
 
         /// <summary>
         /// 从代理池移除IP
@@ -42,6 +60,8 @@ namespace SharedLib.Data
         /// <param name="requeeTime">重新放入IP池的等待时间 (毫秒), 0 = 抛弃</param>
         public void RemoveProxy(string proxyAddress, int requeeTime)
         {
+            var dbProxy = GetProxy(proxyAddress);
+
             SQLite.ExecuteNonQuery("DELETE from proxy_address WHERE address = @address",
                 new List<SQLiteParameter> { new SQLiteParameter("@address", proxyAddress) });
 
@@ -50,7 +70,7 @@ namespace SharedLib.Data
             Task.Run(() =>
             {
                 Thread.Sleep(requeeTime);
-                SaveProxyToDB(proxyAddress);
+                SaveProxyToDB(proxyAddress, dbProxy.RuleId);
             });
         }
 
@@ -58,10 +78,13 @@ namespace SharedLib.Data
         /// 保存一条代理到数据库
         /// </summary>
         /// <param name="proxyAddress"></param>
-        public void SaveProxyToDB(string proxyAddress)
+        public void SaveProxyToDB(string proxyAddress, int ruleId)
         {
-            SQLite.ExecuteNonQuery("INSERT OR IGNORE INTO proxy_address(address, addtime) VALUES (@address, datetime('now', 'localtime'))",
-                      new List<SQLiteParameter> { new SQLiteParameter("@address", proxyAddress) });
+            SQLite.ExecuteNonQuery("INSERT OR IGNORE INTO proxy_address(address, addtime, rule_id) VALUES (@address, datetime('now', 'localtime'), @ruleId)",
+                      new List<SQLiteParameter> { 
+                          new SQLiteParameter("@address", proxyAddress),
+                          new SQLiteParameter("@ruleId", ruleId)
+                      });
         }
 
         /// <summary>

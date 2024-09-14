@@ -84,7 +84,10 @@ namespace AcgnuX.WindowX
                 WindowUtil.ShowBubbleError("答应我, 先去配置数据库");
                 return;
             }
-            var dialog = new AddSinglePianoScoreDialog();
+            var dialog = new AddSinglePianoScoreDialog()
+            {
+                Owner = this
+            };
             if(dialog.ShowDialog().GetValueOrDefault())
             {
                 int? ypid = null;

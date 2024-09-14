@@ -262,11 +262,11 @@ namespace AcgnuX.Source.ViewModel
             //试听文件不在乎是否下载成功, 丢弃下载结果
             var urlPrefix = tan8Music.ypad_url.Substring(0, tan8Music.ypad_url.LastIndexOf('/'));
             var mp3_url = urlPrefix + string.Format("/tan8_{0}.mp3", Id);
-            _ = new FileDownloader().DownloadFile(mp3_url, Path.Combine(saveFullPath, "play.mp3"));
+            _ = new FileDownloader().DownloadFile(mp3_url, Path.Combine(saveFullPath, ApplicationConstant.DEFAULT_SHEET_AUDIO_FILE));
 
             //下载v2版播放文件
             SetProgress(80, "下载播放文件...");
-            downResult = new FileDownloader().DownloadFile(tan8Music.ypdx_url, Path.Combine(saveFullPath, "play.ypdx"));
+            downResult = new FileDownloader().DownloadFile(tan8Music.ypdx_url, Path.Combine(saveFullPath, ApplicationConstant.DEFAULT_SHEET_PLAY_FILE_EXE));
             if (downResult != 0)
             {
                 //没有播放文件, 又没有谱页的, 清理数据
@@ -277,7 +277,7 @@ namespace AcgnuX.Source.ViewModel
                     return downloadResult;
                 }
                 //没有v2播放文件时, 下载V3版的播放文件
-                downResult = new FileDownloader().DownloadFile(tan8Music.ypn1_url, Path.Combine(saveFullPath, "play.ypn1"));
+                downResult = new FileDownloader().DownloadFile(tan8Music.ypn1_url, Path.Combine(saveFullPath, ApplicationConstant.DEFAULT_SHEET_PLAY_FILE_APP));
                 if (downResult == 0)
                 {
                     //如果没有v2版本的ypdx播放文件, 但是有APP端的ypn1播放文件, 则标记乐谱版本为v3

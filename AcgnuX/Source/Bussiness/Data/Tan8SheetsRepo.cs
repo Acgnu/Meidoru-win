@@ -208,7 +208,7 @@ namespace AcgnuX.Source.Bussiness.Data
         /// <returns>数据库操作成功条数</returns>
         internal int Save(int ypid, string name, byte yp_page_count, byte ver, string originstr)
         {
-            return SQLite.ExecuteNonQuery("insert or ignore into tan8_music(ypid, `name`, star, yp_count, origin_data) VALUES (@ypid, @name, @star, @yp_count, @origin_data)",
+            return SQLite.ExecuteNonQuery("insert or ignore into tan8_music(ypid, `name`, star, yp_count, ver, origin_data) VALUES (@ypid, @name, @star, @yp_count, @ver, @origin_data)",
                 new List<SQLiteParameter>
                 {
                     new SQLiteParameter("@ypid", ypid) ,

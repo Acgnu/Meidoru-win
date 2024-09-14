@@ -303,17 +303,30 @@ namespace AcgnuX.Pages
         ***/
 
         /// <summary>
-        /// 删除事件
+        /// 鼠标点击删除事件
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnDeleteClick(object sender, RoutedEventArgs e)
+        private void OnDeleteClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             var selected = ViewModel.SelectedListData;
             if (null == selected) return;
             var confirmDialog = new ConfirmDialog(AlertLevel.WARN, string.Format(Properties.Resources.S_DeleteConfirm, selected.Name));
             if (confirmDialog.ShowDialog().GetValueOrDefault())
             {
+                ViewModel.DeleteItem(selected);
+            }
+        }
+
+        /// <summary>
+        /// 键盘删除事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnSheetListBoxKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Delete)
+            {
+                var selected = ViewModel.SelectedListData;
+                if (null == selected) return;
                 ViewModel.DeleteItem(selected);
             }
         }

@@ -154,12 +154,6 @@ namespace AcgnuX.Source.ViewModel
                 {
                     foreach (var ypid in queueTaskData)
                     {
-                        var sheetComplete = _Tan8SheetRepo.FindById(ypid);
-                        if (null != sheetComplete)
-                        {
-                            _SheetCrawlTaskRepo.DelByYpid(ypid);
-                            continue;
-                        }
                         var taskItem = CreateTaskViewInstance(new Tan8SheetCrawlArg
                         {
                             Ypid = ypid,
@@ -269,6 +263,8 @@ namespace AcgnuX.Source.ViewModel
             {
                 DownloadRecordList.Insert(0, record);
                 dataGrid.ScrollIntoView(record);
+                //删除抓取任务中的数据 (如果有)
+                _SheetCrawlTaskRepo.DelByYpid(newYpid);
             }
         }
 
@@ -356,17 +352,21 @@ namespace AcgnuX.Source.ViewModel
                 //存在直接下一个
                 if (isYpExist)
                 {
+                    if (crawlArg.IsQueueTask)
+                    {
+                        //如果存在而且是队列任务, 则发送进度通知界面删除下载项和队列
+                        _DownloadTaskWorker.ReportProgress(0, new Tan8SheetCrawlArg
+                        {
+                            Ypid = crawlArg.Ypid,
+                            IsQueueTask = crawlArg.IsQueueTask
+                        });
+                    }
                     if (crawlArg.AutoDownload)
                     {
                         //检查任务是否中断
                         if (_DownloadTaskWorker.CancellationPending) break;
                         SetNextDownloadYpid(crawlArg);
                         continue;
-                    }
-                    else if (crawlArg.IsQueueTask)
-                    {
-                        //不是自动下载, 但是是队列下载, 要从数据中删除队列
-                        _SheetCrawlTaskRepo.DelByYpid(crawlArg.Ypid.GetValueOrDefault());
                     }
                     return;
                 }
@@ -411,7 +411,18 @@ namespace AcgnuX.Source.ViewModel
             //如果是队列任务, 那么此时下载列表里应该已经存在创建好的view对象, 只需更新部分信息即可
             if (crawlArg.IsQueueTask && existsEl != null)
             {
-                existsEl.AutoDownload = crawlArg.AutoDownload;
+                var dbSheet = _Tan8SheetRepo.FindById(existsEl.Id);
+                if (dbSheet != null)
+                {
+                    //如果乐谱已存在, 则删除队列数据并从下载列表移除
+                    _SheetCrawlTaskRepo.DelByYpid(existsEl.Id);
+                    DownloadingData.Remove(existsEl);
+                    NotifyButtonStep();
+                }
+                else
+                {
+                    existsEl.AutoDownload = crawlArg.AutoDownload;
+                }
             } 
             else
             {
@@ -439,7 +450,7 @@ namespace AcgnuX.Source.ViewModel
                 ProgressText = "等待中...",
                 AutoDownload = crawlArg.AutoDownload,
                 //单个乐谱下载完成事件
-                DownloadFinishAction = OnSheetItemDownloadComplete
+                DownloadFinishAction = OnSheetItemDownloadCompleteNotify
             };
             _StopBtnClickHandler += new Action<ObservableCollection<SheetItemDownloadViewModel>>(taskItemInstance.OnStopDownloadEvent);
             return taskItemInstance;
@@ -456,7 +467,7 @@ namespace AcgnuX.Source.ViewModel
             if (crawlArg.IsQueueTask)
             {
                 //取下一个ID时, 删除上一个ID
-                _SheetCrawlTaskRepo.DelByYpid(crawlArg.Ypid.GetValueOrDefault());
+                //_SheetCrawlTaskRepo.DelByYpid(crawlArg.Ypid.GetValueOrDefault());
                 if (DataUtil.IsEmptyCollection(mTaskQueue) && _CurTaskNum == 0)
                 {
                     OnStopDownload();
@@ -519,13 +530,14 @@ namespace AcgnuX.Source.ViewModel
 
             //}
             WindowUtil.ShowBubbleInfo("停止任务中, 正在下载的乐谱将继续完成下载");
+            NotifyButtonStep();
         }
 
         /// <summary>
         /// 单个乐谱下载完成触发事件
         /// </summary>
         /// <param name="ypid"></param>
-        private void OnSheetItemDownloadComplete(int ypid)
+        private void OnSheetItemDownloadCompleteNotify(int ypid)
         {
             //增加数量, 每完成一个子任务, 完成数量+1
             //Interlocked.Increment(ref _DownloadFinishNum);

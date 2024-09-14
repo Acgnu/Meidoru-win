@@ -119,6 +119,8 @@ namespace AcgnuX.Source.ViewModel
             //删除数据库数据
             _Tan8SheetRepo.DeleteById(itemVm.Id);
 
+            WindowUtil.ShowBubbleInfo(string.Format("[{0}] 已删除", itemVm.Name));
+
             //如果没有曲谱了, 则展示默认按钮
             if (DataUtil.IsEmptyCollection(ListData)) IsEmpty = true;
         }

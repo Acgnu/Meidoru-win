@@ -65,16 +65,18 @@
                         Grid.Row="1" 
                         Template="{StaticResource PianoScoreListBoxTemplate}" 
                         Style="{StaticResource DataListStyle}"
+                        MouseRightButtonUp="OnDeleteClick"
+                        KeyDown="OnSheetListBoxKeyDown"
                         ItemContainerStyle="{StaticResource PianoScoreListBoxItemContainerStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <ContentControl  
+                            <ContentControl
                                     d:DataContext="{d:DesignInstance {x:Type dzm:SheetItemDesignModel}, IsDesignTimeCreatable=True}" 
-                                    Style="{StaticResource SheetItemControlStyle}"/>
-                            <!--<lc:SheetItemControl />-->
+                                    Style="{StaticResource SheetItemControlStyle}">
+                            </ContentControl>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
-                    <ListBox.ContextMenu>
+                    <!--<ListBox.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="{x:Static res:Resources.S_OpenFolder}" 
                                       Command="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem.OnOpenSheetFolderCommand}"/>
@@ -82,7 +84,7 @@
                                         Command="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem.OnExportForShareCommand}"/>
                             <MenuItem Header="{x:Static res:Resources.S_Delete}" Click="OnDeleteClick"/>
                         </ContextMenu>
-                    </ListBox.ContextMenu>
+                    </ListBox.ContextMenu>-->
                 </ListBox>
             </Grid>
         </Border>

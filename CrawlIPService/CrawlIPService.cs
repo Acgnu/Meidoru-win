@@ -109,6 +109,7 @@ namespace CrawIPService
                 return;
             }
             mEventLog.WriteEntry(string.Format("执行参数: {0}", dbFilePath));
+            Settings.Default.DBFilePath = dbFilePath;
             Settings.Default.Save();
             SQLite.SetDbFilePath(dbFilePath);
             //抓取IP定时任务
@@ -211,7 +212,7 @@ namespace CrawIPService
                             mstr = mstr.NextMatch();
                             if (IsProxyValid(proxyAddress))
                             {
-                                _ProxyAddressRepo.SaveProxyToDB(proxyAddress);
+                                _ProxyAddressRepo.SaveProxyToDB(proxyAddress, item.Id);
                             }
                         }
                         if (!"正常".Equals(item.ExceptionDesc))

@@ -26,6 +26,7 @@
         <Setter Property="Foreground" Value="#FF252525" />
         <Setter Property="Background" Value="{x:Null}" />
         <Setter Property="BorderBrush" Value="{x:Null}" />
+        <Setter Property="ToolTip" Value="{Binding Name}" />
     </Style>
 
     <!--乐谱版本信息-->
@@ -37,6 +38,9 @@
             <DataTrigger Binding="{Binding Ver}" Value="2">
                 <Setter Property="Text" Value="🎹" />
             </DataTrigger>
+            <DataTrigger Binding="{Binding Ver}" Value="3">
+                <Setter Property="Text" Value="🎵" />
+            </DataTrigger>
         </Style.Triggers>
     </Style> 
     
@@ -45,9 +49,12 @@
         <Style.Triggers>
             <DataTrigger Binding="{Binding Star}" Value="1">
                 <Setter Property="Text" Value="🖤" />
+                <Setter Property="ToolTip" Value="取消收藏" />
+                <Setter Property="Foreground" Value="PaleVioletRed" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Star}" Value="0">
                 <Setter Property="Text" Value="🤍" />
+                <Setter Property="ToolTip" Value="收藏" />
             </DataTrigger>
         </Style.Triggers>
     </Style>
@@ -68,7 +75,11 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <Canvas x:Name="ItemContainerCanvas" ToolTip="{Binding Name}" Height="74">
+                    <!--需要Transparent来响应点击事件-->
+                    <Canvas x:Name="ItemContainerCanvas" Height="74" Background="Transparent">
+                        <Canvas.InputBindings>
+                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding OnOpenSheetFolderCommand}"/>
+                        </Canvas.InputBindings>
                         <ProgressBar Style="{StaticResource ProgressBarBaseStyle}" lc:ProgressAnimater.AnimateValue="{Binding Progress}" Visibility="{Binding IsWorking, Converter={StaticResource FrameworkBooleanToVisibileConverter}}" Panel.ZIndex="0" Width="{Binding Path=ActualWidth, ElementName=ItemContainerCanvas}" Height="{Binding Path=Height, ElementName=ItemContainerCanvas}" Background="Transparent"/>
                         <!--<ProgressBar Style="{StaticResource ProgressBarBaseStyle}" lc:ProgressAnimater.AnimateValue="{Binding Progress}" Visibility="{Binding IsWorking, Converter={StaticResource FrameworkBooleanToVisibileConverter}}" />-->
                         <!--乐谱图标-->
@@ -110,8 +121,13 @@
                                 <Run Text="📒" />
                                 <Run Text="{Binding YpCount}" />
                             </TextBlock>
-                            <TextBlock Style="{StaticResource SheetVersionTextBlockStyle}" Canvas.Left="135"/>
-                            <TextBlock Style="{StaticResource SheetStarTextBlockStyle}" Canvas.Left="190">
+                            <TextBlock Style="{StaticResource SheetVersionTextBlockStyle}" Canvas.Left="135" />
+                            <TextBlock Text="🚀" Canvas.Left="190" ToolTip="导出为分享包">
+                                <TextBlock.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick" Command="{Binding OnExportForShareCommand}" />
+                                </TextBlock.InputBindings>
+                            </TextBlock>
+                            <TextBlock Style="{StaticResource SheetStarTextBlockStyle}" Canvas.Left="245">
                                 <TextBlock.InputBindings>
                                     <MouseBinding MouseAction="LeftClick" Command="{Binding OnStarCommand}" />
                                 </TextBlock.InputBindings>
