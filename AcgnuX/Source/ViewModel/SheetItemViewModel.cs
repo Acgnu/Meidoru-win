@@ -54,15 +54,15 @@ namespace AcgnuX.Source.ViewModel
 
         #region 命令
         //播放按钮点击命令
-        public ICommand OnItemPlayCommand { get; set; }
+        public ICommand OnItemPlayCommand { get; }
         //点击收藏命令
-        public ICommand OnStarCommand { get; set; }
+        public ICommand OnStarCommand { get; }
         //打开所在文件夹命令
-        public ICommand OnOpenSheetFolderCommand { get; set; }
+        public ICommand OnOpenSheetFolderCommand { get; }
         //导出分享包命令
-        public ICommand OnExportForShareCommand { get; set; }
+        public ICommand OnExportForShareCommand { get; }
         //重命名命令
-        public ICommand OnEditSheetNameCommand { get; set; }
+        public ICommand OnEditSheetNameCommand { get; }
         #endregion
 
         //导出的Worker
@@ -100,23 +100,26 @@ namespace AcgnuX.Source.ViewModel
             //检查曲谱可否播放
             //var tan8Music = _Tan8SheetsRepo.FindById(Id);
             byte b1 = 1;
-            var playFileName = Ver == b1 ? "play.ypa2" : "play.ypdx";
+            var playFileName = Ver == b1 ? ApplicationConstant.DEFAULT_SHEET_PLAY_FILE_FLASH : ApplicationConstant.DEFAULT_SHEET_PLAY_FILE_EXE;
             var playFilePath = Path.Combine(Settings.Default.Tan8HomeDir, Id.ToString(), playFileName);
             //手动选中行
             sheetRepoViewModel.SelectedListData = this;
-            if (!File.Exists(playFilePath))
+            if (File.Exists(playFilePath))
             {
-                //无法播放的曲谱打开所在文件夹
-                var fullPath = Path.Combine(Settings.Default.Tan8HomeDir, Id.ToString());
-                if (Directory.Exists(fullPath))
-                {
-                    System.Diagnostics.Process.Start(fullPath);
-                }
+                //播放所选曲谱
+                Tan8PlayUtil.Exit(Id);
+                Tan8PlayUtil.ExePlayById(Id, Ver, false);
                 return;
             }
-            //播放所选曲谱
-            Tan8PlayUtil.Exit(Id);
-            Tan8PlayUtil.ExePlayById(Id, Ver, false);
+            //没有播放文件则判断有没有试听文件
+            var fullPath = Path.Combine(Settings.Default.Tan8HomeDir, Id.ToString(), ApplicationConstant.DEFAULT_SHEET_AUDIO_FILE);
+            if (!File.Exists(fullPath))
+            {
+                WindowUtil.ShowBubbleInfo("该乐谱缺少播放文件和试听文件, 无法播放");
+                return;
+            }
+            WindowUtil.ShowBubbleMessage("正在调用默认播放器...", AlertLevel.RUN);
+            System.Diagnostics.Process.Start(fullPath);
         }
 
         /// <summary>
@@ -134,10 +137,12 @@ namespace AcgnuX.Source.ViewModel
         private void OnOpenSheetFolder()
         {
             var fullPath = Path.Combine(Settings.Default.Tan8HomeDir, Id.ToString());
-            if (Directory.Exists(fullPath))
+            if (!Directory.Exists(fullPath))
             {
-                System.Diagnostics.Process.Start(fullPath);
+                WindowUtil.ShowBubbleError("目录不存在");
+                return;
             }
+            System.Diagnostics.Process.Start(fullPath);
         }
 
         #region 导出分享后台任务/进度/完成事件
@@ -150,23 +155,25 @@ namespace AcgnuX.Source.ViewModel
         {
             //如果已经存在分享包, 直接打开目标文件夹
             var fullPath = Path.Combine(Settings.Default.Tan8HomeDir, Id.ToString());
-            if (Directory.Exists(fullPath))
+            if (!Directory.Exists(fullPath))
             {
-                if (File.Exists(Path.Combine(fullPath, ApplicationConstant.SHARE_ZIP_NAME)))
+                WindowUtil.ShowBubbleError("乐谱目录不存在, 无法导出");
+                return;
+            }
+            if (File.Exists(Path.Combine(fullPath, ApplicationConstant.SHARE_ZIP_NAME)))
+            {
+                FileUtil.OpenAndChooseFile(Path.Combine(fullPath, ApplicationConstant.SHARE_ZIP_NAME));
+            }
+            else
+            {
+                //不存在则开始执行转换任务
+                if (mExportBgWorker.IsBusy)
                 {
-                    FileUtil.OpenAndChooseFile(Path.Combine(fullPath, ApplicationConstant.SHARE_ZIP_NAME));
+                    WindowUtil.ShowBubbleError("有正在进行中的任务");
+                    return;
                 }
-                else
-                {
-                    //不存在则开始执行转换任务
-                    if (mExportBgWorker.IsBusy)
-                    {
-                        WindowUtil.ShowBubbleError("有正在进行中的任务");
-                        return;
-                    }
-                    mExportBgWorker.RunWorkerAsync(this);
-                    IsWorking = true;
-                }
+                mExportBgWorker.RunWorkerAsync(this);
+                IsWorking = true;
             }
         }
 

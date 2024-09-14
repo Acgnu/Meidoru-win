@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS "crawl_rules" (
 CREATE TABLE IF NOT EXISTS "proxy_address" (
   "address" TEXT(40) NOT NULL,
   "addtime" TEXT(25) NOT NULL,
+  "rule_id" integer(11) NOT NULL,
   PRIMARY KEY ("address")
 );
 CREATE TABLE IF NOT EXISTS "tan8_music" (

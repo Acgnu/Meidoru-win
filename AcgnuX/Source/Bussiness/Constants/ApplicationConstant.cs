@@ -23,6 +23,14 @@ namespace AcgnuX.Source.Bussiness.Constants
         public static readonly string DEFAULT_COVER_NAME = "cover.jpg";
         // 默认的乐谱图片格式
         public static readonly string DEFAULT_SHEET_PAGE_FORMAT = ".png";
+        // 默认的乐谱试听文件名称
+        public static readonly string DEFAULT_SHEET_AUDIO_FILE = "play.mp3";
+        // 默认的Flash版本播放文件
+        public static readonly string DEFAULT_SHEET_PLAY_FILE_FLASH = "play.ypa2";
+        // 默认的EXE版本播放文件
+        public static readonly string DEFAULT_SHEET_PLAY_FILE_EXE = "play.ypdx";
+        // 默认的APP版本播放文件
+        public static readonly string DEFAULT_SHEET_PLAY_FILE_APP = "play.ypn1";
         //抓取IP服务名称
         public static readonly string CRAWL_IP_SERVICE_NAME = "CrawlIPService";
         //默认的数据库初始化文件
