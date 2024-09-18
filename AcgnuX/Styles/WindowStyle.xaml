@@ -56,52 +56,54 @@
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
                                 <!--标题栏背景色-->
-                                <Grid Grid.Column="0" Panel.ZIndex="1" Background="Transparent">
+                                <Grid Grid.Column="0" Panel.ZIndex="1" Background="{StaticResource DataGridHeaderBackgroundColorBrush}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <!--图标, 标题容器-->
-                                    <Border Padding="5" Grid.Column="0">
-                                        <StackPanel Orientation="Horizontal">
-                                            <!--图标样式-->
-                                            <Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Icon}" />
-                                            <!--标题文字-->
-                                            <Viewbox Grid.Column="1" Margin="5 0 0 0">
-                                                <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" />
-                                            </Viewbox>
-                                        </StackPanel>
-                                    </Border>
-                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <Canvas Grid.Column="0" Grid.Row="0" ClipToBounds="True">
+                                        <!--图标样式-->
+                                        <Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Icon}" Height="21" Width="21" Canvas.Left="8" Canvas.Top="8" />
+                                        <!--标题文字-->
+                                        <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" FontSize="14" Canvas.Left="40" Canvas.Top="10"/>
+                                    </Canvas>
+                                    <Canvas Grid.Column="1" Width="120" ClipToBounds="True">
                                         <Button WindowChrome.IsHitTestVisibleInChrome="True" 
                                                 Command="{Binding MinimizeCommand}" 
                                                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
                                                 Content="_" 
-                                                Padding="15,1" 
+                                                Padding="15,0" 
                                                 Style="{StaticResource NoneStyleButtonStyle}" 
                                                 Template="{StaticResource CommonNoStyleButtonTemplate}"
-                                                Visibility="{Binding CanMinimize, FallbackValue=False}"/>
+                                                Visibility="{Binding CanMinimize, FallbackValue=True}"
+                                                Height="{Binding ActualHeight,RelativeSource={RelativeSource AncestorType=Canvas}}"
+                                                Canvas.Right="80" />
                                         <Button WindowChrome.IsHitTestVisibleInChrome="True" 
                                                 Command="{Binding MaximizeCommand}" 
                                                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
                                                 Content="☐" 
-                                                Padding="15,1" 
+                                                Padding="15,0" 
                                                 Style="{StaticResource NoneStyleButtonStyle}" 
                                                 Template="{StaticResource CommonNoStyleButtonTemplate}"
-                                                Visibility="{Binding CanMaxmize, FallbackValue=False}"/>
+                                                Visibility="{Binding CanMaxmize, FallbackValue=False}"
+                                                Height="{Binding ActualHeight,RelativeSource={RelativeSource AncestorType=Canvas}}"
+                                                Canvas.Right="40"/>
                                         <!--对话框关闭按钮-->
                                         <Button WindowChrome.IsHitTestVisibleInChrome="True" 
                                                 Name="CloseDialogButton"
                                                 Command="{Binding CloseCommand}" 
                                                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
                                                 Content="✕" 
-                                                Padding="15,1" 
+                                                Padding="15,0"
                                                 Style="{StaticResource NoneStyleButtonStyle}" 
-                                                Template="{StaticResource WindowCloseButtonTemplate}" />
-                                    </StackPanel>
+                                                Template="{StaticResource WindowCloseButtonTemplate}" 
+                                                Height="{Binding ActualHeight,RelativeSource={RelativeSource AncestorType=Canvas}}"
+                                                Canvas.Right="0"/>
+                                    </Canvas>
                                 </Grid>
                                 <!--主内容-->
-                                <Border Grid.Row="1" Padding="5" SnapsToDevicePixels="True">
+                                <Border Grid.Row="1" Padding="5" SnapsToDevicePixels="True" Background="{StaticResource DataGridItemBackgroundColorBrush}">
                                     <ContentPresenter Content="{TemplateBinding Content}" />
                                 </Border>
                             </Grid>

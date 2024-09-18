@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrawlIPService", "..\CrawlI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedLib", "..\SharedLib\SharedLib.csproj", "{25BAEA97-B19B-454F-80E8-375ED79F7980}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProxyTestTool", "..\ProxyTestTool\ProxyTestTool.csproj", "{A3A251F6-760A-4E66-B3F8-6B770853643C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,14 @@ Global
 		{25BAEA97-B19B-454F-80E8-375ED79F7980}.Release|Any CPU.Build.0 = Release|Any CPU
 		{25BAEA97-B19B-454F-80E8-375ED79F7980}.Release|x64.ActiveCfg = Release|x64
 		{25BAEA97-B19B-454F-80E8-375ED79F7980}.Release|x64.Build.0 = Release|x64
+		{A3A251F6-760A-4E66-B3F8-6B770853643C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3A251F6-760A-4E66-B3F8-6B770853643C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3A251F6-760A-4E66-B3F8-6B770853643C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A3A251F6-760A-4E66-B3F8-6B770853643C}.Debug|x64.Build.0 = Debug|Any CPU
+		{A3A251F6-760A-4E66-B3F8-6B770853643C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3A251F6-760A-4E66-B3F8-6B770853643C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3A251F6-760A-4E66-B3F8-6B770853643C}.Release|x64.ActiveCfg = Release|Any CPU
+		{A3A251F6-760A-4E66-B3F8-6B770853643C}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -21,7 +21,7 @@ namespace AcgnuX.WindowX.Dialog
     public class BaseDialog : Window, INotifyPropertyChanged
     {
         //默认的标题栏高度
-        public int TitleHeightGridLength { get; } = 30;
+        public int TitleHeightGridLength { get; } = 38;
 
         //是否展示在状态栏
         public bool ShowInTaskBar { get; } = false;
