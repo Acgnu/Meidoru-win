@@ -245,6 +245,8 @@ namespace SharedLib.Utils
                 Req.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3";
                 Req.UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36";
                 Req.Method = "GET";
+                //Req.CookieContainer = new CookieContainer();
+                //Req.CookieContainer.Add(new Cookie("https_ydclearance", "d35f9958b5272f5073e030f7-28c7-453f-bae7-16b9294a006e-1726306381"));
                 HttpWebResponse Resp = (HttpWebResponse)Req.GetResponse();
                 Encoding code = Encoding.GetEncoding("UTF-8");
                 using (StreamReader sr = new StreamReader(Resp.GetResponseStream(), code))
