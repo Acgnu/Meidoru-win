@@ -62,6 +62,8 @@ namespace SharedLib.Data
         {
             var dbProxy = GetProxy(proxyAddress);
 
+            if (null == dbProxy) return; //可能被其他线程删掉了
+
             SQLite.ExecuteNonQuery("DELETE from proxy_address WHERE address = @address",
                 new List<SQLiteParameter> { new SQLiteParameter("@address", proxyAddress) });
 

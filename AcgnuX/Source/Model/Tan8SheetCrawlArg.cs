@@ -25,5 +25,7 @@ namespace AcgnuX.Source.Model
         public byte Ver { get; set; }
         //是否为队列下载
         public bool IsQueueTask { get; set; } = false;
+        //下载任务数
+        public int TaskNum { get; set; }
     }
 }

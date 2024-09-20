@@ -100,7 +100,8 @@ namespace AcgnuX.WindowX
                     Name = dialog.SheetName,
                     AutoDownload = dialog.AutoDownload,
                     UseProxy = dialog.UseProxy,
-                    Ypid = ypid
+                    Ypid = ypid,
+                    TaskNum = dialog.TaskNum.GetValueOrDefault()
                 });
             }
         }

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using AcgnuX.Source.Utils;
+using System.Windows;
 
 namespace AcgnuX.WindowX.Dialog
 {
@@ -16,6 +17,8 @@ namespace AcgnuX.WindowX.Dialog
         public bool UseProxy { get; set; } = true;
         //乐谱名称
         public string SheetName { get; set; }
+        //下载任务数
+        public int? TaskNum { get; set; }
         #endregion
 
         public AddSinglePianoScoreDialog()
@@ -29,6 +32,7 @@ namespace AcgnuX.WindowX.Dialog
         /// </summary>
         private void OnConfirmClick(object sender, RoutedEventArgs e)
         {
+            if (null == TaskNum) TaskNum = 5;
             AnimateClose((s, a) => DialogResult = true);
         }
     }

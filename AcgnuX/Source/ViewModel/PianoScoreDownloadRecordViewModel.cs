@@ -78,7 +78,7 @@ namespace AcgnuX.Source.ViewModel
         }
         private void NotifyButtonStep() { OnPropertyChanged(nameof(ButtonStep)); }
         //允许最大的任务数量
-        private readonly int _MaxTaskNum = 5;
+        private int _MaxTaskNum;
         //已经下载完成的数量(包括成功/失败)
         //private int _DownloadFinishNum = 0;
         //当前正在进行中的任务数量
@@ -181,6 +181,7 @@ namespace AcgnuX.Source.ViewModel
             TriggerTan8DownLoadTask(new Tan8SheetCrawlArg()
             {
                 UseProxy = true,
+                TaskNum = 1
             });
         }
 
@@ -237,6 +238,7 @@ namespace AcgnuX.Source.ViewModel
                 Ypid = record.Ypid + 1,
                 UseProxy = true,
                 IsQueueTask = false,
+                TaskNum = 5
                 //Ver = 2
             };
             TriggerTan8DownLoadTask(arg);
@@ -311,6 +313,7 @@ namespace AcgnuX.Source.ViewModel
             //重设下载完成数量
             //_DownloadFinishNum = 0;
             _CurTaskNum = 0;
+            _MaxTaskNum = crawlArg.TaskNum;
             //开启下载任务
             _DownloadTaskWorker.RunWorkerAsync(crawlArg);
             NotifyButtonStep();

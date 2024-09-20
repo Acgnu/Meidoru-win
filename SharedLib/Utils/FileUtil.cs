@@ -81,7 +81,7 @@ namespace SharedLib.Utils
             var backupPath = GenerateBackupFilePath(filePath);
             if (File.Exists(backupPath))
             {
-                FileSystem.DeleteFile(filePath, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
+                FileSystem.DeleteFile(backupPath, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
                 //File.Delete(backupPath);
             }
             File.Move(filePath, backupPath);
