@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:AcgnuX.WindowX.Dialog"
         xmlns:res="clr-namespace:AcgnuX.Properties"
         mc:Ignorable="d"
-        Title="{x:Static res:Resources.S_EditPianoScore}" Height="185" Width="420" Style="{StaticResource DialogWindowBaseStyle}">
+        Title="{x:Static res:Resources.S_EditPianoScore}" Height="225" Width="420" Style="{StaticResource DialogWindowBaseStyle}">
 
     <Window.Icon>
         <DrawingImage>
@@ -47,6 +47,10 @@
             <DockPanel Style="{StaticResource FormDockBaseStyle}">
                 <TextBlock Text="{x:Static res:Resources.S_Name}" Style="{StaticResource FormFieldTextBlock}"/>
                 <TextBox Text="{Binding SheetName, Mode=OneWayToSource}" Style="{StaticResource TextBoxSheetNameStyle}" />
+            </DockPanel>
+            <DockPanel Style="{StaticResource FormDockBaseStyle}">
+                <TextBlock Text="任务数" Style="{StaticResource FormFieldTextBlock}"/>
+                <TextBox Text="{Binding TaskNum, Mode=OneWayToSource, FallbackValue=5}" Style="{StaticResource TextBoxBase}" />
             </DockPanel>
         </StackPanel>
 

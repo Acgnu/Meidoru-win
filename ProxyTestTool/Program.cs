@@ -10,7 +10,7 @@ namespace ProxyTestTool
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main11(string[] args)
         {
             //var proxyProviderUrl = string.Format(@"https://www.kuaidaili.com/free/inha/{0}/", 1);
             var proxyProviderUrl = @"http://www.ip3366.net/";
