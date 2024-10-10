@@ -1,6 +1,5 @@
-﻿using AcgnuX.Bussiness.Ten.Dns;
-using AcgnuX.Source.Model.Ten.Dns;
-using AcgnuX.Source.Utils;
+﻿using AcgnuX.Source.Utils;
+using AlidnsLib;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using System;
@@ -13,7 +12,7 @@ namespace AcgnuX.Source.ViewModel
     /// </summary>
     public class DnsItemViewModel : ObservableObject
     {
-        public int? Id { get; set; }
+        public string Id { get; set; }
         public int Ttl { get; set; }
         public int Enabled { get; set; }
         public string Status { get; set; }
@@ -32,7 +31,7 @@ namespace AcgnuX.Source.ViewModel
         public string Type { get => type; set => SetProperty(ref type, value); }
 
  
-        public TenCloudDns _TenDnsClient { set; get; }
+        public AlidnsClient _AlidnsClient { set; get; }
 
 
         /// <summary>
@@ -48,17 +47,18 @@ namespace AcgnuX.Source.ViewModel
             if (Id == null)
             {
                 //新增
-                result = await _TenDnsClient.CreateRecordAsync(unCommitName, unCommitType, Line, unCommitValue);
+                result = await _AlidnsClient.CreateRecordAsync(unCommitName, unCommitType, Line, unCommitValue);
             }
             else
             {
                 //修改
-                result = await _TenDnsClient.ModifyRecordAsync(Id.GetValueOrDefault(), unCommitName, unCommitType, Line, unCommitValue);
+                result = await _AlidnsClient.ModifyRecordAsync(Id, unCommitName, unCommitType, Line, unCommitValue);
             }
 
-            if (result.code != 0)
+            if (result.Code != null)
             {
-                WindowUtil.ShowBubbleError(result.message);
+                Console.WriteLine(result.Message);
+                WindowUtil.ShowBubbleError(result.Message);
                 return false;
             }
             return true;

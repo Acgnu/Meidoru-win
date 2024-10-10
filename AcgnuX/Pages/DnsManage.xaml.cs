@@ -59,14 +59,14 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnBtnAddClick(object sender, RoutedEventArgs e)
         {
-            if (null == ViewModel.TenDnsClient)
+            if (null == ViewModel._AlidnsClient)
             {
                 WindowUtil.ShowBubbleError("未配置访问密钥");
                 return;
             }
             var result = new EditDnsRecordDialog(new DnsItemViewModel()
             {
-                _TenDnsClient = ViewModel.TenDnsClient
+                _AlidnsClient = ViewModel._AlidnsClient
             }).ShowDialog();
             if (result.GetValueOrDefault())
             {

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29326.143
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcgnuX", "AcgnuX.csproj", "{F976F226-446B-4C37-AB7E-EDF3B6B49A39}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedLib", "..\SharedLib\SharedLib.csproj", "{25BAEA97-B19B-454F-80E8-375ED79F7980}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProxyTestTool", "..\ProxyTestTool\ProxyTestTool.csproj", "{A3A251F6-760A-4E66-B3F8-6B770853643C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlidnsLib", "..\AlidnsLib\AlidnsLib.csproj", "{ACEA3FA3-86D9-47FF-A0B8-73BE989B476F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,14 @@ Global
 		{A3A251F6-760A-4E66-B3F8-6B770853643C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A3A251F6-760A-4E66-B3F8-6B770853643C}.Release|x64.ActiveCfg = Release|Any CPU
 		{A3A251F6-760A-4E66-B3F8-6B770853643C}.Release|x64.Build.0 = Release|Any CPU
+		{ACEA3FA3-86D9-47FF-A0B8-73BE989B476F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACEA3FA3-86D9-47FF-A0B8-73BE989B476F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACEA3FA3-86D9-47FF-A0B8-73BE989B476F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{ACEA3FA3-86D9-47FF-A0B8-73BE989B476F}.Debug|x64.Build.0 = Debug|Any CPU
+		{ACEA3FA3-86D9-47FF-A0B8-73BE989B476F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACEA3FA3-86D9-47FF-A0B8-73BE989B476F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACEA3FA3-86D9-47FF-A0B8-73BE989B476F}.Release|x64.ActiveCfg = Release|Any CPU
+		{ACEA3FA3-86D9-47FF-A0B8-73BE989B476F}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
