@@ -36,7 +36,7 @@ namespace AlidnsLib
             {
                 // Step 1: Concatenate the canonical request string
                 var canonicalQueryString = string.Join("&", request.QueryParam
-                    .Select(kvp => $"{RequestUtil.PercentEncode(kvp.Key)}={RequestUtil.PercentEncode(kvp.Value.ToString())}"));
+                    .Select(kvp => $"{PercentEncode(kvp.Key)}={PercentEncode(kvp.Value.ToString())}"));
 
                 string requestPayload = request.Body ?? "";
                 string hashedRequestPayload = AlgorithmUtil.Sha256Hex(requestPayload);
@@ -77,6 +77,14 @@ namespace AlidnsLib
                 Console.WriteLine("Failed to get authorization");
                 Console.WriteLine(e);
             }
+        }
+
+        private string PercentEncode(string value)
+        {
+            return Uri.EscapeDataString(value)
+                ?.Replace("+", "%20")
+                //.Replace("*", "%2A")
+                .Replace("%7E", "~");
         }
 
         /// <summary>
