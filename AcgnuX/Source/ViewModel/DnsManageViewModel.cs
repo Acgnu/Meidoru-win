@@ -1,6 +1,4 @@
-﻿using AcgnuX.Bussiness.Ten.Dns;
-using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Source.Bussiness.Data;
+﻿using AcgnuX.Source.Bussiness.Data;
 using AcgnuX.Source.Utils;
 using AlidnsLib;
 using CommunityToolkit.Mvvm.ComponentModel;
