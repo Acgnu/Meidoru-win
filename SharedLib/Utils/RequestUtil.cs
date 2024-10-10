@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace SharedLib.Utils
 {
@@ -312,6 +313,14 @@ namespace SharedLib.Utils
                 var result = client.PostAsync(url, content).Result.Content.ReadAsStringAsync().Result;
                 return result;
             }
+        }
+
+        public static string PercentEncode(string value)
+        {
+            return HttpUtility.UrlEncode(value)
+                ?.Replace("+", "%20")
+                .Replace("*", "%2A")
+                .Replace("%7E", "~");
         }
     }
 }

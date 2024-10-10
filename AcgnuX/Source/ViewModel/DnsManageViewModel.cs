@@ -1,8 +1,8 @@
 ﻿using AcgnuX.Bussiness.Ten.Dns;
 using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Bussiness.Data;
-using AcgnuX.Source.Bussiness.Ten.Dns;
 using AcgnuX.Source.Utils;
+using AlidnsLib;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -25,7 +25,7 @@ namespace AcgnuX.Source.ViewModel
         //添加命令
         public ICommand OnAddCommand { get; set; }
         //腾讯dns调用对象
-        public TenCloudDns TenDnsClient { get; set; }
+        public AlidnsClient _AlidnsClient { get; set; }
         //秘钥repo
         private readonly AppSecretKeyRepo _appSecretKeyRepo;
         //过滤文本
@@ -39,10 +39,10 @@ namespace AcgnuX.Source.ViewModel
         public DnsManageViewModel(AppSecretKeyRepo appSecretKeyRepo)
         {
             this._appSecretKeyRepo = appSecretKeyRepo;
-            var appSecretKey = _appSecretKeyRepo.FindByPlatform("tencent");
+            var appSecretKey = _appSecretKeyRepo.FindByPlatform("ali");
             if (null != appSecretKey)
             {
-                TenDnsClient = new TenCloudDns(appSecretKey);
+                _AlidnsClient = new AlidnsClient(appSecretKey.SecretId, appSecretKey.SecretKey, appSecretKey.PrivDomain, true);
             }
         }
 
@@ -59,25 +59,25 @@ namespace AcgnuX.Source.ViewModel
                 _CollectionView.Refresh();
             }
 
-            if (null == TenDnsClient) return;
+            if (null == _AlidnsClient) return;
             IsBusy = true;
 
-            var response = await TenDnsClient.QueryRecordsAsync(null, null);
+            var response = await _AlidnsClient.QueryRecordsAsync();
             if (null != response)
             {
-                foreach (var item in response.data.records)
+                foreach (var item in response.DomainRecords.Record)
                 {
                     GridData.Add(new DnsItemViewModel()
                     {
-                        Id = item.id,
-                        Ttl = item.ttl,
+                        Id = item.RecordId,
+                        Ttl = item.TTL,
                         Value = item.Value,
-                        Enabled = item.enabled,
-                        Updated_on = item.updated_on,
-                        Name = item.Name,
-                        Line = item.line,
-                        Type = item.type,
-                        _TenDnsClient = TenDnsClient
+                        Enabled = item.Status.Equals("ENABLE") ? 1 : 0,
+                        Updated_on = DateTimeOffset.FromUnixTimeMilliseconds(item.UpdateTimestamp).ToString("F"),
+                        Name = item.RR,
+                        Line = item.Line,
+                        Type = item.Type,
+                        _AlidnsClient = _AlidnsClient
                     });
                 }
                 _CollectionView = CollectionViewSource.GetDefaultView(GridData);
@@ -112,10 +112,10 @@ namespace AcgnuX.Source.ViewModel
         internal async void DeleteItem(DnsItemViewModel selected)
         {
             IsBusy = true;
-            var delResult = await TenDnsClient.DeleteRecordAsync(selected.Id.GetValueOrDefault());
-            if (delResult.code != 0)
+            var delResult = await _AlidnsClient.DeleteRecordAsync(selected.Id);
+            if (delResult.Code != null)
             {
-                WindowUtil.ShowBubbleError(delResult.message);
+                WindowUtil.ShowBubbleError(delResult.Message);
                 IsBusy = false;
                 return;
             }

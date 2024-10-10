@@ -186,7 +186,6 @@
     <Compile Include="Source\Bussiness\Data\Tan8SheetCrawlTaskRepo.cs" />
     <Compile Include="Source\Bussiness\Data\Tan8SheetsRepo.cs" />
     <Compile Include="Source\Bussiness\Data\ContactRepo.cs" />
-    <Compile Include="Source\Bussiness\Ten\Dns\TenCloudDns.cs" />
     <Compile Include="Pages\Index.xaml.cs">
       <DependentUpon>Index.xaml</DependentUpon>
     </Compile>
@@ -210,14 +209,8 @@
     <Compile Include="Source\Model\MediaSyncConfig.cs" />
     <Compile Include="Source\Model\NavMenu.cs" />
     <Compile Include="Source\Model\Tan8SheetDownloadRecord.cs" />
-    <Compile Include="Source\Model\Ten\Dns\DnsDomain.cs" />
-    <Compile Include="Source\Model\Ten\Dns\DnsMainData.cs" />
-    <Compile Include="Source\Model\Ten\Dns\DnsOperatorResult.cs" />
-    <Compile Include="Source\Model\Ten\Dns\DnsRecordResult.cs" />
-    <Compile Include="Source\Model\Ten\Dns\DnsOptResultData.cs" />
     <Compile Include="Source\Taskx\HttpWebServer.cs" />
     <Compile Include="Source\Taskx\ProxyFactoryV2.cs" />
-    <Compile Include="Source\Utils\AlgorithmUtil.cs" />
     <Compile Include="Source\Utils\ConfigUtil.cs" />
     <Compile Include="Source\Utils\ServiceUtil.cs" />
     <Compile Include="Source\Utils\EnumLoader.cs" />
@@ -468,7 +461,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Source\Model\Ten\Dns\DnsRecord.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -620,6 +612,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AlidnsLib\AlidnsLib.csproj">
+      <Project>{acea3fa3-86d9-47ff-a0b8-73be989b476f}</Project>
+      <Name>AlidnsLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharedLib\SharedLib.csproj">
       <Project>{25baea97-b19b-454f-80e8-375ed79f7980}</Project>
       <Name>SharedLib</Name>

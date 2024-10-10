@@ -30,10 +30,9 @@ namespace AcgnuX.WindowX.Dialog
             TypeListBox.ItemsSource = new string[]
             {
                 "A",
+                "AAAA",
                 "CNAME",
-                "TXT",
-                "MX",
-                "NS"
+                "TXT"
             };
         }
 
