@@ -314,13 +314,5 @@ namespace SharedLib.Utils
                 return result;
             }
         }
-
-        public static string PercentEncode(string value)
-        {
-            return HttpUtility.UrlEncode(value)
-                ?.Replace("+", "%20")
-                .Replace("*", "%2A")
-                .Replace("%7E", "~");
-        }
     }
 }
