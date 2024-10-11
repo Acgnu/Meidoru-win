@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SharedLib.Model;
 using SharedLib.Utils;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -87,7 +88,8 @@ namespace AcgnuX.Source.ViewModel
         /// <returns></returns>
         private SheetItemViewModel CreateViewInstance(Tan8Sheet tan8Sheet)
         {
-            var imgDir = Path.Combine(Settings.Default.Tan8HomeDir, tan8Sheet.Ypid.ToString(), ApplicationConstant.DEFAULT_COVER_NAME);
+            var yuepuPath = FileUtil.GetTan8YuepuFolder(Settings.Default.Tan8HomeDir, Convert.ToString(tan8Sheet.Ypid));
+            var imgDir = Path.Combine(yuepuPath, ApplicationConstant.DEFAULT_COVER_NAME);
             return new SheetItemViewModel()
             {
                 //对于不存在cover的路径使用默认图片
@@ -113,7 +115,8 @@ namespace AcgnuX.Source.ViewModel
             //删除文件夹
             if (!string.IsNullOrEmpty(itemVm.Name))
             {
-                FileUtil.DeleteDirWithName(Settings.Default.Tan8HomeDir, itemVm.Id.ToString());
+                var yuepuParent = FileUtil.GetTan8YuepuParentFolder(Settings.Default.Tan8HomeDir, itemVm.Id.ToString());
+                FileUtil.DeleteDirWithName(yuepuParent, itemVm.Id.ToString());
             }
 
             //删除数据库数据
