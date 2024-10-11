@@ -133,7 +133,8 @@ namespace AcgnuX.Source.Taskx.Http
             var ypidQuery = httpListenerContext.Request.QueryString["ypid"];
             var ypidSplit = ypidQuery.Split('.');
             //返回指定页
-            var previewImgPath = Path.Combine(Properties.Settings.Default.Tan8HomeDir, ypidSplit[0], "page." + ypidSplit[1] + ".png");
+            var yuepuPath = FileUtil.GetTan8YuepuFolder(Settings.Default.Tan8HomeDir, ypidSplit[0]);
+            var previewImgPath = Path.Combine(yuepuPath, "page." + ypidSplit[1] + ".png");
             WriteFile(previewImgPath, httpListenerContext);
         }
 
@@ -154,7 +155,8 @@ namespace AcgnuX.Source.Taskx.Http
                     playFileSuf = ".ypdx";
                 }
                 //返回指定页
-                var previewImgPath = Path.Combine(Settings.Default.Tan8HomeDir, ypid, "play" + playFileSuf);
+                var yuepuPath = FileUtil.GetTan8YuepuFolder(Settings.Default.Tan8HomeDir, ypid);
+                var previewImgPath = Path.Combine(yuepuPath, "play" + playFileSuf);
                 WriteFile(previewImgPath, httpListenerContext);
             }
         }
@@ -237,7 +239,8 @@ namespace AcgnuX.Source.Taskx.Http
             if (!string.IsNullOrEmpty(ypid))
             {
                 //根据名称返回文件夹中的乐谱第一页
-                var previewImgPath = Path.Combine(Settings.Default.Tan8HomeDir, ypid, "page.0.png");
+                var yuepuPath = FileUtil.GetTan8YuepuFolder(Settings.Default.Tan8HomeDir, ypid);
+                var previewImgPath = Path.Combine(yuepuPath, "page.0.png");
                 if(File.Exists(previewImgPath))
                 {
                     WriteFile(previewImgPath, httpListenerContext);

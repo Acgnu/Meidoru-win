@@ -162,7 +162,6 @@ namespace PatchTool
                     case "6": CheckOldHome(oldHomePath, autoCopy); break;
                     case "7": CheckWhiteBlackPreview(overwrite, threadCount); break;
                     case "8": CheckSheetPreviewImg(threadCount); break;
-                    case "9": CheckDirName(); break;
                     case "10": CheckFileMD5(savePath, ypHomePath); break;
                     case "11": BatchDel(ypHomePath); break;
                     case "12": BatchDelFromInputFile(ypHomePath, sourceFilePath); break;
@@ -198,7 +197,8 @@ namespace PatchTool
             foreach (DataRow dataRow in dataSet.Rows)
             {
                 cur++;
-                if (!Directory.Exists(Path.Combine(ypHomePath, Convert.ToString(dataRow["ypid"]))))
+                var yuepuPath = FileUtil.GetTan8YuepuFolder(ypHomePath, Convert.ToString(dataRow["ypid"]));
+                if (!Directory.Exists(yuepuPath))
                 {
                     totalNe++;
                     Console.WriteLine(dataRow["name"] + "   ----进度:" + cur + "/" + total + "");
@@ -232,15 +232,19 @@ namespace PatchTool
             var total = 0;
             foreach (var d in dir)
             {
-                var ypid = Path.GetFileName(d);
-                var num = SQLite.sqlone("select count(1) num from tan8_music where ypid = @ypid", new SQLiteParameter[] { new SQLiteParameter("@ypid", ypid) });
-                var num32 = Convert.ToInt32(num);
-                if(num32 == 0)
+                var dir2 = Directory.GetDirectories(d);
+                foreach (var d2 in dir2)
                 {
-                    total++;
-                    allFolderNames.Append(ypid).Append("\r\n");
-                    Console.WriteLine(ypid);
-                    if (autoDel) FileUtil.DeleteDirWithName(ypHomePath, ypid);
+                    var ypid = Path.GetFileName(d2);
+                    var num = SQLite.sqlone("select count(1) num from tan8_music where ypid = @ypid", new SQLiteParameter[] { new SQLiteParameter("@ypid", ypid) });
+                    var num32 = Convert.ToInt32(num);
+                    if (num32 == 0)
+                    {
+                        total++;
+                        allFolderNames.Append(ypid).Append("\r\n");
+                        Console.WriteLine(ypid);
+                        if (autoDel) FileUtil.DeleteDirWithName(FileUtil.GetTan8YuepuParentFolder(ypHomePath, ypid), ypid);
+                    }
                 }
             }
             if(allFolderNames.Length > 0)
@@ -284,7 +288,7 @@ namespace PatchTool
                 if(autoDel && !string.IsNullOrEmpty(savePath))
                 {
                     repeatNameIds.ForEach(e => {
-                        FileUtil.DeleteDirWithName(ypHomePath, e);
+                        FileUtil.DeleteDirWithName(FileUtil.GetTan8YuepuParentFolder(ypHomePath, e), e);
                     });
                 }
             }
@@ -327,11 +331,12 @@ namespace PatchTool
             var fixNum = 0;
             foreach (DataRow dataRow in dataSet.Rows)
             {
-                if (!File.Exists(Path.Combine(ypHomePath, Convert.ToString(dataRow["ypid"]), "play.ypdx")))
+                var yuepuPath = FileUtil.GetTan8YuepuFolder(ypHomePath, Convert.ToString(dataRow["ypid"]));
+                if (!File.Exists(Path.Combine(yuepuPath, "play.ypdx")))
                 {
                     fixNum++;
-                    var tan8Music = DataUtil.ParseToModel(Convert.ToString(dataRow["origin_data"]));
-                    var downResult = new FileDownloader().DownloadFile(tan8Music.ypad_url2, Path.Combine(ypHomePath, Convert.ToString(dataRow["ypid"]), "play.ypdx"));
+                    var tan8Music = DataUtil.ParseToModel(Convert.ToInt32(dataRow["ypid"]), Convert.ToString(dataRow["origin_data"]));
+                    var downResult = new FileDownloader().DownloadFile(tan8Music.ypdx_url, Path.Combine(yuepuPath, "play.ypdx"));
                     Console.WriteLine(Convert.ToInt32(dataRow["ypid"]) + " - " + Convert.ToString(dataRow["name"]) + "   播放文件下载" + (downResult == 0 ? "成功" : "失败"));
                 }
             }
@@ -350,7 +355,7 @@ namespace PatchTool
             var yp0Ypids = SQLite.sqlcolumn("SELECT ypid FROM tan8_music WHERE yp_count = 0", null);
             foreach(var ypid in yp0Ypids)
             {
-                var files = Directory.GetFiles(Path.Combine(ypHomePath, ypid));
+                var files = Directory.GetFiles(FileUtil.GetTan8YuepuFolder(ypHomePath, ypid));
                 var hasPlayFile = false;
                 if(files.Length > 0)
                 {
@@ -369,7 +374,7 @@ namespace PatchTool
                     Console.WriteLine(ypid);
                     if (autoDel)
                     {
-                        FileUtil.DeleteDirWithName(ypHomePath, ypid);
+                        FileUtil.DeleteDirWithName(FileUtil.GetTan8YuepuParentFolder(ypHomePath, ypid), ypid);
                     }
                 }
             }
@@ -430,13 +435,14 @@ namespace PatchTool
                         if (i > 0)
                         {
                             //复制文件
-                            if (!Directory.Exists(Path.Combine(ypHomePath, Convert.ToString(dataRow["ypid"]))))
+                            var yuepuPath = FileUtil.GetTan8YuepuFolder(ypHomePath, Convert.ToString(dataRow["ypid"]));
+                            if (!Directory.Exists(yuepuPath))
                             {
-                                FileUtil.CreateFolder(Path.Combine(ypHomePath, Convert.ToString(dataRow["ypid"])));
+                                FileUtil.CreateFolder(yuepuPath);
                             }
                             foreach (var file in files)
                             {
-                                FileUtil.CopyFile(file, Path.Combine(ypHomePath, Convert.ToString(dataRow["ypid"]), Path.GetFileName(file)));
+                                FileUtil.CopyFile(file, Path.Combine(yuepuPath, Path.GetFileName(file)));
                             }
                             copyTotal++;
                         }
@@ -481,7 +487,7 @@ namespace PatchTool
             Console.WriteLine("正在添加任务队列...");
             foreach (DataRow dataRow in dataSet.Rows)
             {
-                if (Directory.Exists(Path.Combine(ypHomePath, Convert.ToString(dataRow["ypid"]))))
+                if (Directory.Exists(FileUtil.GetTan8YuepuFolder(ypHomePath, Convert.ToString(dataRow["ypid"]))))
                 {
                     sheetDirQueue.Enqueue(new Tan8Sheet()
                     {
@@ -506,10 +512,10 @@ namespace PatchTool
                         var isOk = sheetDirQueue.TryDequeue(out pianoScore);
                         if (isOk)
                         {
-                            var sheetDir = Path.Combine(ypHomePath, pianoScore.Ypid.ToString());
+                            var sheetDir = FileUtil.GetTan8YuepuFolder(ypHomePath, pianoScore.Ypid.ToString());
                             var previewPicName = "public.png";
                             //检查目标文件夹是否已经存在已处理的图片
-                            if (File.Exists(Path.Combine(ypHomePath, sheetDir, previewPicName)))
+                            if (File.Exists(Path.Combine(sheetDir, previewPicName)))
                             {
                                 IImageRepo imageAPI = ImageRepoFactory.GetRandomApi();
                                 //IImageRepo imageAPI = new PrntImageRepo();
@@ -517,7 +523,7 @@ namespace PatchTool
                                 extraArgs.Add("uploadFileFormName", "sheet_" + pianoScore.Ypid + ".png");
                                 ImageRepoUploadArg uploadArg = new ImageRepoUploadArg()
                                 {
-                                    FullFilePath = Path.Combine(ypHomePath, sheetDir, previewPicName),
+                                    FullFilePath = Path.Combine(sheetDir, previewPicName),
                                     ExtraArgs = extraArgs
                                 };
                                 InvokeResult<ImageRepoUploadResult> invokeResult;
@@ -575,7 +581,7 @@ namespace PatchTool
             var total = dataSet.Rows.Count;
             foreach (DataRow dataRow in dataSet.Rows)
             {
-                if (Directory.Exists(Path.Combine(ypHomePath, Convert.ToString(dataRow["ypid"]))))
+                if (Directory.Exists(FileUtil.GetTan8YuepuFolder(ypHomePath, Convert.ToString(dataRow["ypid"]))))
                 {
                     Console.WriteLine(string.Format("正在添加 {0} 到任务队列...", dataRow["name"]));
                     sheetDirQueue.Enqueue(new Tan8Sheet() 
@@ -597,11 +603,11 @@ namespace PatchTool
                         var isOk = sheetDirQueue.TryDequeue(out pianoScore);
                         if (isOk)
                         {
-                            var sheetDir = Path.Combine(ypHomePath, pianoScore.Ypid.ToString());
+                            var sheetDir = FileUtil.GetTan8YuepuFolder(ypHomePath, pianoScore.Ypid.ToString());
                             var previewPicName = "public.png";
                             bool doProcess = true;
                             //检查目标文件夹是否已经存在已处理的图片
-                            if (File.Exists(Path.Combine(ypHomePath, sheetDir, previewPicName)))
+                            if (File.Exists(Path.Combine(sheetDir, previewPicName)))
                             {
                                 doProcess = overwrite ? true : false;
                             }
@@ -619,7 +625,7 @@ namespace PatchTool
                                     var titleName = pianoScore.Name.EndsWith(sufId) ? pianoScore.Name.Substring(0, pianoScore.Name.Length - sufId.Length) : pianoScore.Name;
                                     Bitmap rawImg = (Bitmap)Bitmap.FromFile(sheetFile);
                                     Bitmap bmp = Tan8SheetMaskUtil.CreateIegalTan8Sheet(rawImg, titleName, 1, pianoScore.YpCount, true);
-                                    bmp.Save(Path.Combine(ypHomePath, sheetDir, previewPicName), ImageFormat.Png);
+                                    bmp.Save(Path.Combine(sheetDir, previewPicName), ImageFormat.Png);
                                     bmp.Dispose();
                                 }
                             }
@@ -694,29 +700,6 @@ namespace PatchTool
             }
         }
 
-        private static void CheckDirName()
-        {
-            Console.WriteLine("重命名乐谱文件夹名称");
-            var ypHomePath = Settings.Default.Tan8HomeDir;
-            if (string.IsNullOrEmpty(ypHomePath))
-            {
-                Console.WriteLine("无法获取乐谱路径, 先检查一下配置文件");
-                return;
-            }
-            var dir = Directory.GetDirectories(ypHomePath);
-            foreach (var d in dir)
-            {
-                var folderName = Path.GetFileName(d);
-                var ypid = SQLite.sqlone("SELECT ypid FROM tan8_music where name = @name", new SQLiteParameter[] { new SQLiteParameter("@name", folderName) });
-                if(!string.IsNullOrEmpty(ypid))
-                {
-                    FileUtil.RenameFolder(Path.Combine(ypHomePath, folderName), ypid);
-                    Console.WriteLine("{0} -> {1}", d, ypid);
-                }
-            }
-            Console.WriteLine("重命名完成");
-        }
-
         /// <summary>
         /// 对播放文件执行MD5校验, 记录重复的乐谱ID
         /// </summary>
@@ -738,41 +721,44 @@ namespace PatchTool
             Dictionary<string, List<string>> repeat = new Dictionary<string, List<string>>();
             for (var i = 0; i < dir.Length; i++)
             {
-                //Console.Clear();
-                Console.WriteLine("进度 {0} / {1}", i + 1, dir.Length);
-                var d = dir[i];
-                var folderName = Path.GetFileName(d);
-                var playFileHash = string.Empty;
-                if(File.Exists(Path.Combine(d, "play.ypdx")))
+                var dir2 = Directory.GetDirectories(dir[i]);
+                foreach (var d in dir2)
                 {
-                    playFileHash = FileUtil.GetMD5(Path.Combine(d, "play.ypdx"));
-                } 
-                else if (File.Exists(Path.Combine(d, "play.ypa2")))
-                {
-                    playFileHash = FileUtil.GetMD5(Path.Combine(d, "play.ypa2"));
-                }
-                else
-                {
-                    continue;
-                }
-                if (md5.ContainsKey(playFileHash))
-                {
-                    if(repeat.ContainsKey(playFileHash))
+                    //Console.Clear();
+                    Console.WriteLine("进度 {0} / {1} / {2}", i + 1, dir.Length, dir2.Length);
+                    var folderName = Path.GetFileName(d);
+                    var playFileHash = string.Empty;
+                    if (File.Exists(Path.Combine(d, "play.ypdx")))
                     {
-                        repeat[playFileHash].Add(folderName);
+                        playFileHash = FileUtil.GetMD5(Path.Combine(d, "play.ypdx"));
+                    }
+                    else if (File.Exists(Path.Combine(d, "play.ypa2")))
+                    {
+                        playFileHash = FileUtil.GetMD5(Path.Combine(d, "play.ypa2"));
                     }
                     else
                     {
-                        repeat[playFileHash] = new List<string>()
+                        continue;
+                    }
+                    if (md5.ContainsKey(playFileHash))
+                    {
+                        if (repeat.ContainsKey(playFileHash))
+                        {
+                            repeat[playFileHash].Add(folderName);
+                        }
+                        else
+                        {
+                            repeat[playFileHash] = new List<string>()
                         {
                             md5[playFileHash],
                             folderName
                         };
+                        }
                     }
-                }
-                else
-                {
-                    md5[playFileHash] = folderName;
+                    else
+                    {
+                        md5[playFileHash] = folderName;
+                    }
                 }
             }
 
@@ -823,7 +809,7 @@ namespace PatchTool
                 }
                 var ypid = Convert.ToInt32(line);
                 //删除文件夹
-                FileUtil.DeleteDirWithName(delHome, line);
+                FileUtil.DeleteDirWithName(FileUtil.GetTan8YuepuParentFolder(delHome, line), line);
 
                 //删除数据库数据
                 SQLite.ExecuteNonQuery("DELETE FROM tan8_music WHERE ypid = @ypid", new List<SQLiteParameter> { new SQLiteParameter("@ypid", ypid) });
@@ -912,7 +898,7 @@ namespace PatchTool
                         foreach (var item in seqDic)
                         {
                             //删除文件夹
-                            FileUtil.DeleteDirWithName(delHome, Convert.ToString(item.Value));
+                            FileUtil.DeleteDirWithName(FileUtil.GetTan8YuepuParentFolder(delHome, Convert.ToString(item.Value)), Convert.ToString(item.Value));
 
                             //删除数据库数据
                             SQLite.ExecuteNonQuery("DELETE FROM tan8_music WHERE ypid = @ypid", new List<SQLiteParameter> { new SQLiteParameter("@ypid", item.Value) });
@@ -955,7 +941,7 @@ namespace PatchTool
                         if (autoDel)
                         {
                             //删除文件夹
-                            FileUtil.DeleteDirWithName(homePath, ypid);
+                            FileUtil.DeleteDirWithName(FileUtil.GetTan8YuepuParentFolder(homePath, ypid), ypid);
 
                             //删除数据库数据
                             SQLite.ExecuteNonQuery("DELETE FROM tan8_music WHERE ypid = @ypid", new List<SQLiteParameter> { new SQLiteParameter("@ypid", ypid) });

@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualBasic.Devices;
+﻿using AcgnuX.Utils;
+using Microsoft.VisualBasic.Devices;
 using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
@@ -382,6 +383,26 @@ namespace SharedLib.Utils
                 break;
             } while (files.Count > 0);
             return resultFile;
+        }
+
+        /// <summary>
+        /// 获取乐谱目录
+        /// </summary>
+        /// <param name="home"></param>
+        /// <param name="ypid"></param>
+        /// <returns></returns>
+        public static string GetTan8YuepuFolder(string home, string ypid)
+        {
+            var md5 = AlgorithmUtil.GetMD5(ypid);
+            var suffix = md5.Substring(md5.Length - 2);
+            return Path.Combine(home, suffix, ypid);
+        }
+
+        public static string GetTan8YuepuParentFolder(string home, string ypid)
+        {
+            var md5 = AlgorithmUtil.GetMD5(ypid);
+            var suffix = md5.Substring(md5.Length - 2);
+            return Path.Combine(home, suffix);
         }
     }
 }

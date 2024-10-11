@@ -115,7 +115,7 @@ namespace AcgnuX.Source.ViewModel
                     if ((bool)result.data)
                     {
                         //下载失败, 并且标记是可以删除的, 则清理资源
-                        FileUtil.DeleteDirWithName(Settings.Default.Tan8HomeDir, Id.ToString());
+                        FileUtil.DeleteDirWithName(FileUtil.GetTan8YuepuParentFolder(Settings.Default.Tan8HomeDir, Id.ToString()), Id.ToString());
                     }
 
                     if (IsWorking)
@@ -214,7 +214,7 @@ namespace AcgnuX.Source.ViewModel
             //校验保存路径是否重复
             var libFolder = Settings.Default.Tan8HomeDir;
 
-            var saveFullPath = Path.Combine(libFolder, Id.ToString());
+            var saveFullPath = FileUtil.GetTan8YuepuFolder(libFolder, Id.ToString());
             //step.3 创建文件夹
             FileUtil.CreateFolder(saveFullPath);
 

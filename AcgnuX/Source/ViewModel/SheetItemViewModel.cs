@@ -101,7 +101,8 @@ namespace AcgnuX.Source.ViewModel
             //var tan8Music = _Tan8SheetsRepo.FindById(Id);
             byte b1 = 1;
             var playFileName = Ver == b1 ? ApplicationConstant.DEFAULT_SHEET_PLAY_FILE_FLASH : ApplicationConstant.DEFAULT_SHEET_PLAY_FILE_EXE;
-            var playFilePath = Path.Combine(Settings.Default.Tan8HomeDir, Id.ToString(), playFileName);
+            var yuepuPath = FileUtil.GetTan8YuepuFolder(Settings.Default.Tan8HomeDir, Id.ToString());
+            var playFilePath = Path.Combine(yuepuPath, playFileName);
             //手动选中行
             sheetRepoViewModel.SelectedListData = this;
             if (File.Exists(playFilePath))
@@ -112,7 +113,7 @@ namespace AcgnuX.Source.ViewModel
                 return;
             }
             //没有播放文件则判断有没有试听文件
-            var fullPath = Path.Combine(Settings.Default.Tan8HomeDir, Id.ToString(), ApplicationConstant.DEFAULT_SHEET_AUDIO_FILE);
+            var fullPath = Path.Combine(yuepuPath, ApplicationConstant.DEFAULT_SHEET_AUDIO_FILE);
             if (!File.Exists(fullPath))
             {
                 WindowUtil.ShowBubbleInfo("该乐谱缺少播放文件和试听文件, 无法播放");
@@ -136,7 +137,7 @@ namespace AcgnuX.Source.ViewModel
         /// </summary>
         private void OnOpenSheetFolder()
         {
-            var fullPath = Path.Combine(Settings.Default.Tan8HomeDir, Id.ToString());
+            var fullPath = FileUtil.GetTan8YuepuFolder(Settings.Default.Tan8HomeDir, Id.ToString());
             if (!Directory.Exists(fullPath))
             {
                 WindowUtil.ShowBubbleError("目录不存在");
@@ -154,7 +155,7 @@ namespace AcgnuX.Source.ViewModel
         private void OnExportForShare()
         {
             //如果已经存在分享包, 直接打开目标文件夹
-            var fullPath = Path.Combine(Settings.Default.Tan8HomeDir, Id.ToString());
+            var fullPath = FileUtil.GetTan8YuepuFolder(Settings.Default.Tan8HomeDir, Id.ToString());
             if (!Directory.Exists(fullPath))
             {
                 WindowUtil.ShowBubbleError("乐谱目录不存在, 无法导出");
@@ -194,7 +195,7 @@ namespace AcgnuX.Source.ViewModel
                 return;
             }
 
-            var fullPath = Path.Combine(Settings.Default.Tan8HomeDir, Id.ToString());
+            var fullPath = FileUtil.GetTan8YuepuFolder(Settings.Default.Tan8HomeDir, Id.ToString());
             if (!Directory.Exists(fullPath))
             {
                 worker.ReportProgress(5, "乐谱文件不存在");
