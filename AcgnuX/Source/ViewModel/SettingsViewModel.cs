@@ -51,100 +51,32 @@ namespace AcgnuX.Source.ViewModel
             get => Settings.Default.SkinFolderPath;
             set => SetProperty(Settings.Default.SkinFolderPath, value, Settings.Default, (s, v) => { s.SkinFolderPath = v; s.Save(); });
         }
+        /// <summary>
+        /// 代理
+        /// </summary>
+        public string HttpProxyAddress
+        {
+            get => Settings.Default.HttpProxyAddress;
+            set {
+                if (string.IsNullOrEmpty(value)) return;
+                if (!value.StartsWith("http://")) return;
+                SetProperty(Settings.Default.HttpProxyAddress, value, Settings.Default, (s, v) => { s.HttpProxyAddress = v; s.Save(); });
+            }
+        }
 
         //IP代理数量
         private int _proxyCount = 0;
         public int ProxyCount { get => _proxyCount; set => SetProperty(ref _proxyCount, value); }
-        //抓取规则
-        public ObservableCollection<CrawlRuleViewModel> CrawlRuls { get; set; } = new ObservableCollection<CrawlRuleViewModel>();
-        //是否全选
-        public bool IsCheckedAll { get; set; }
-        //checbox事件
-        public ICommand OnCrawlRuleCheckboxClick { get; set; }
 
         private readonly ProxyFactoryV2 _ProxyFactoryV2;
-        private readonly CrawlRuleRepo _CrawlRuleRepo;
 
-        public SettingsViewModel(ProxyFactoryV2 proxyFactoryV2, CrawlRuleRepo crawlRuleRepo)
+        public SettingsViewModel(ProxyFactoryV2 proxyFactoryV2)
         {
-            _CrawlRuleRepo = crawlRuleRepo;
             _ProxyFactoryV2 = proxyFactoryV2;
             //代理池数量变更监听
             ProxyCount = _ProxyFactoryV2.GetProxyCount;
             //IP代理池数量变化通知
             _ProxyFactoryV2.mProxyPoolCountChangeHandler += new Action<int>((curNum) => ProxyCount = curNum);
-            OnCrawlRuleCheckboxClick = new RelayCommand<object>((sender) => OnGridCheckBoxClick(sender));
-            SQLite.OnDbFileSetEvent += LoadCrawlRule;
-        }
-
-
-        /// <summary>
-        /// 表格checkbox点击事件
-        /// </summary>
-        /// <param name="sender"></param>
-        private void OnGridCheckBoxClick(object sender)
-        {
-            CheckBox checkBox = sender as CheckBox;
-            if (checkBox.Tag.Equals("0"))
-            {
-                //全选
-                foreach (var crawlRule in CrawlRuls)
-                {
-                    crawlRule.Enable = checkBox.IsChecked.GetValueOrDefault() ? Convert.ToByte(1) : Convert.ToByte(0);
-                }
-                //for (int i = 0; i < mCrawlRulsDataGrid.Items.Count; i++)
-                //{
-                //    //获取行
-                //    DataGridRow neddrow = (DataGridRow)this.mCrawlRulsDataGrid.ItemContainerGenerator.ContainerFromIndex(i);
-                //    //获取该行的某列
-                //    CheckBox cb = (CheckBox)this.mCrawlRulsDataGrid.Columns[mCrawlRulsDataGrid.Columns.Count - 1].GetCellContent(neddrow);
-                //    cb.IsChecked = checkBox.IsChecked;
-                //}
-                _CrawlRuleRepo.UpdateCrawlRulesEnable(null, checkBox.IsChecked.GetValueOrDefault());
-            }
-            else
-            {
-                //单选
-                _CrawlRuleRepo.UpdateCrawlRulesEnable(Convert.ToInt32(checkBox.Tag), checkBox.IsChecked.GetValueOrDefault());
-                CheckIsCheckedAll(true);
-            }
-            _ProxyFactoryV2.RestartCrawlIPService();
-        }
-        
-        /// <summary>
-        /// 检查是否全部选中
-        /// </summary>
-        /// <param name="doNotify"></param>
-        public void CheckIsCheckedAll(bool doNotify)
-        {
-            IsCheckedAll = CrawlRuls.Where(item => item.Enable == 1).Count() == CrawlRuls.Count();
-            if(doNotify) OnPropertyChanged(nameof(IsCheckedAll));
-        }
-
-
-        /// <summary>
-        /// 读取抓取规则
-        /// </summary>
-        internal async void LoadCrawlRule()
-        {
-            CrawlRuls.Clear();
-            var result = await _CrawlRuleRepo.FindCrawlRuleAsync();
-            foreach (var rule in result)
-            {
-                CrawlRuls.Add(new CrawlRuleViewModel(rule));
-            }
-            CheckIsCheckedAll(false);
-        }
-
-        /// <summary>
-        /// 删除抓取规则
-        /// </summary>
-        /// <param name="item"></param>
-        internal void DeleteCrawlRule(CrawlRuleViewModel item)
-        {
-            _CrawlRuleRepo.Delete(item.Id);
-            CrawlRuls.Remove(item);
-            CheckIsCheckedAll(true);
         }
     }
 }

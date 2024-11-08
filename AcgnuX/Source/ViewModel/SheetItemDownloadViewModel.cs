@@ -14,6 +14,7 @@ using System.IO;
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using SharedLib.Data;
+using AcgnuX.Pages;
 
 namespace AcgnuX.Source.ViewModel
 {
@@ -58,13 +59,11 @@ namespace AcgnuX.Source.ViewModel
 
         private readonly Tan8SheetsRepo _Tan8SheetsRepo;
         private readonly Tan8SheetCrawlRecordRepo _Tan8SheetCrawlRecordRepo;
-        private readonly ProxyAddressRepo _ProxyAddressRepo;
 
         public SheetItemDownloadViewModel()
         {
             this._Tan8SheetsRepo = App.Current.Services.GetService<Tan8SheetsRepo>();
             this._Tan8SheetCrawlRecordRepo = App.Current.Services.GetService<Tan8SheetCrawlRecordRepo>();
-            this._ProxyAddressRepo = App.Current.Services.GetService<ProxyAddressRepo>();
         }
 
         #region 乐谱下载
@@ -180,16 +179,12 @@ namespace AcgnuX.Source.ViewModel
             string proxyAddress = null;
             if (UseProxy)
             {
-                proxyAddress = _ProxyAddressRepo.GetFirstProxy();
+                proxyAddress = Settings.Default.HttpProxyAddress;
             }
             var ypinfostring = RequestUtil.CrawlContentFromWebsit(SheetUrl, proxyAddress).data;
             //var ypinfostring = @"<html><body>yp_create_time=<yp_create_time>1573183398</yp_create_time><br/>yp_title=<yp_title>说好不哭（文武贝钢琴版）</yp_title><br/>yp_page_count=<yp_page_count>3</yp_page_count><br/>yp_page_width=<yp_page_width>1089</yp_page_width><br/>yp_page_height=<yp_page_height>1540</yp_page_height><br/>yp_is_dadiao=<yp_is_dadiao>1</yp_is_dadiao><br/>yp_key_note=<yp_key_note>10</yp_key_note><br/>yp_is_yanyin=<yp_is_yanyin>1</yp_is_yanyin><br/>ypad_url=<ypad_url>http://www.tan8.com//yuepuku/132/66138/66138_hegiahcc.ypad</ypad_url>ypad_url2=<ypad_url2>http://www.tan8.com//yuepuku/132/66138/66138_hegiahcc.ypa2</ypad_url2></body></html>";
             //校验返回的乐谱信息
             var checkResult = CheckYuepuInfo(ypinfostring);
-            if (UseProxy)
-            {
-                _ProxyAddressRepo.RemoveProxy(proxyAddress, checkResult == Tan8SheetDownloadResult.VISTI_REACH_LIMIT ? 0 : 15 * 1000);
-            }
 
             if (checkResult != Tan8SheetDownloadResult.SUCCESS)
             {

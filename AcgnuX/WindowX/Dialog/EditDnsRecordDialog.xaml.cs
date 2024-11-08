@@ -32,7 +32,8 @@ namespace AcgnuX.WindowX.Dialog
                 "A",
                 "AAAA",
                 "CNAME",
-                "TXT"
+                "TXT",
+                "MX"
             };
         }
 

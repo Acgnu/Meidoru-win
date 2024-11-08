@@ -63,11 +63,9 @@ namespace AcgnuX
                 .AddSingleton<AppSecretKeyRepo, AppSecretKeyRepo>()
                 .AddSingleton<ContactRepo, ContactRepo>()
                 .AddSingleton<MediaSyncConfigRepo, MediaSyncConfigRepo>()
-                .AddSingleton<ProxyAddressRepo, ProxyAddressRepo>()
                 .AddSingleton<Tan8SheetCrawlRecordRepo, Tan8SheetCrawlRecordRepo>()
                 .AddSingleton<Tan8SheetCrawlTaskRepo, Tan8SheetCrawlTaskRepo>()
                 .AddSingleton<Tan8SheetsRepo, Tan8SheetsRepo>()
-                .AddSingleton<CrawlRuleRepo, CrawlRuleRepo>()
 
                 //需要单例的组件
                 .AddSingleton<HttpWebServer, HttpWebServer>()
@@ -121,15 +119,6 @@ namespace AcgnuX
                 //设置数据库, 创建必须的表
                 var initSQL = XamlUtil.GetApplicationResourceAsString(@"Assets\data\" + ApplicationConstant.DB_INIT_FILE);
                 SQLite.SetDbFilePath(dbfilePath, initSQL);
-
-                //检查IP抓取服务
-                var evnFolder = Environment.CurrentDirectory;
-                var svcFolder = evnFolder.Replace(System.Reflection.Assembly.GetEntryAssembly().GetName().Name, ApplicationConstant.CRAWL_IP_SERVICE_NAME);
-                var svcPath = Path.Combine(svcFolder, ApplicationConstant.CRAWL_IP_SERVICE_NAME + ".exe");
-                if (File.Exists(svcPath))
-                {
-                    ServiceUtil.CheckAndStart(ApplicationConstant.CRAWL_IP_SERVICE_NAME, svcPath, new string[] { dbfilePath });
-                }
             });
 
             new MainWindow().Show();

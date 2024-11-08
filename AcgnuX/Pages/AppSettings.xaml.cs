@@ -34,10 +34,6 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private async void OnPageLoaded(object sender, RoutedEventArgs e)
         {
-            if (ViewModel.CrawlRuls.Count == 0)
-            {
-                ViewModel.LoadCrawlRule();
-            }
             await _ProxyFactoryV2.StartTrack();
         }
 
@@ -96,63 +92,6 @@ namespace AcgnuX.Pages
             if (!string.IsNullOrEmpty(path))
             {
                 ViewModel.SkinFolderPath = path;
-            }
-        }
-
-        /// <summary>
-        /// 行双击选中事件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnCrawlRulsDataGridDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (null == CrawlConfigDataGrid.SelectedItem) return;
-            //打开修改对话框
-            var dialog = new EditCrawlDialog(CrawlConfigDataGrid.SelectedItem as CrawlRuleViewModel);
-            var result = dialog.ShowDialog();
-            if (result.GetValueOrDefault())
-            {
-                ViewModel.CheckIsCheckedAll(true);
-            }
-        }
-
-        /// <summary>
-        /// 添加规则按钮点击事件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnAddCrawlClick(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrEmpty(Settings.Default.DBFilePath))
-            {
-                WindowUtil.ShowBubbleError("答应我, 先去配置数据库");
-                return;
-            }
-            //打开修改对话框
-            var dialog = new EditCrawlDialog(new CrawlRuleViewModel());
-            var result = dialog.ShowDialog();
-            if (result.GetValueOrDefault())
-            {
-                ViewModel.CrawlRuls.Add(dialog.ContentViewModel);
-                ViewModel.CheckIsCheckedAll(true);
-            }
-        }
-
-        /// <summary>
-        /// 规则删除事件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnItemMouseRightClick(object sender, MouseButtonEventArgs e)
-        {
-            XamlUtil.SelectRow(CrawlConfigDataGrid, e);
-            var selected = CrawlConfigDataGrid.SelectedItem as CrawlRuleViewModel;
-            if (null == selected) return;
-            //删除对话框
-            var result = new ConfirmDialog(AlertLevel.WARN, string.Format(Properties.Resources.S_DeleteConfirm, string.Format("{0}", selected.Name))).ShowDialog();
-            if (result.GetValueOrDefault())
-            {
-                ViewModel.DeleteCrawlRule(selected);
             }
         }
 

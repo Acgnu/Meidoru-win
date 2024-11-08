@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Timers;
 using Microsoft.Extensions.DependencyInjection;
 using SharedLib.Data;
+using SharedLib.Utils;
+using System.Net.Http;
 
 namespace AcgnuX.Source.Taskx
 {
@@ -57,22 +59,19 @@ namespace AcgnuX.Source.Taskx
         }
 
         /// <summary>
-        /// 重新执行IP代理抓取任务
-        /// </summary>
-        public void RestartCrawlIPService()
-        {
-            ServiceUtil.Restart(ApplicationConstant.CRAWL_IP_SERVICE_NAME, new string[] { Settings.Default.DBFilePath });
-        }
-
-        /// <summary>
         /// 每隔1秒查询代理数量
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        private void OnTimer(object sender, ElapsedEventArgs args)
+        private async void OnTimer(object sender, ElapsedEventArgs args)
         {
-            var repo = App.Current.Services.GetService<ProxyAddressRepo>();
-            ProxyCount = repo.GetProxyCountFromDB();
+            var proxyAddress = Settings.Default.HttpProxyAddress;
+            if(string.IsNullOrEmpty(proxyAddress)) return;
+
+            var num = await RequestUtil.TaskFormRequestAsync(proxyAddress + "/ip-nums", null, HttpMethod.Get);
+            if(!DataUtil.IsNum(num)) return;
+
+            ProxyCount = Convert.ToInt32(num);
             mProxyPoolCountChangeHandler?.Invoke(ProxyCount);
         }
     }
