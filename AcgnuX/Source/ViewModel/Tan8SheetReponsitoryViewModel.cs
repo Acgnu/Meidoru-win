@@ -76,7 +76,7 @@ namespace AcgnuX.Source.ViewModel
         {
             return await Task.Run(() =>
             {
-                return _Tan8SheetRepo.Find(keyword, 1, 500);
+                return _Tan8SheetRepo.Find(keyword, 1, 200);
             });
         }
 

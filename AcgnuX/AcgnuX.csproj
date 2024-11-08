@@ -240,7 +240,6 @@
     <Compile Include="Source\ViewModel\SheetItemViewModel.cs" />
     <Compile Include="Source\ViewModel\PwdRepositoryViewModel.cs" />
     <Compile Include="Source\ViewModel\SyncConfigViewModel.cs" />
-    <Compile Include="Source\ViewModel\CrawlRuleViewModel.cs" />
     <Compile Include="Source\ViewModel\Tan8PlayerViewModel.cs" />
     <Compile Include="Source\ViewModel\SettingsViewModel.cs" />
     <Compile Include="Source\ViewModel\PianoScoreDownloadRecordViewModel.cs" />
@@ -264,9 +263,6 @@
     </Compile>
     <Compile Include="WindowX\Dialog\EditSyncConfigDialog.xaml.cs">
       <DependentUpon>EditSyncConfigDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="WindowX\Dialog\EditCrawlDialog.xaml.cs">
-      <DependentUpon>EditCrawlDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="WindowX\Dialog\EditAccountDialog.xaml.cs">
       <DependentUpon>EditAccountDialog.xaml</DependentUpon>
@@ -442,9 +438,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="WindowX\Dialog\EditSyncConfigDialog.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="WindowX\Dialog\EditCrawlDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Include="WindowX\Dialog\EditAccountDialog.xaml">

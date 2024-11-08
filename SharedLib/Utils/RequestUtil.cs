@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -48,19 +49,31 @@ namespace SharedLib.Utils
         /// <param name="prams"></param>
         /// <param name="method"></param>
         /// <returns></returns>
-        public static async Task<HttpResponseMessage> TaskFormRequestAsync<T>(string url, SortedDictionary<string, string> prams, HttpMethod method) where T : new()
+        public static async Task<string> TaskFormRequestAsync(string url, SortedDictionary<string, string> prams, HttpMethod method)
         {
             var client = new HttpClient();
-            var body = new FormUrlEncodedContent(prams);
+            HttpResponseMessage response;
             if (method == HttpMethod.Post)
             {
-                return await client.PostAsync(url, body);
-            }
-            if (method == HttpMethod.Get)
+                var body = new FormUrlEncodedContent(prams);
+                response = await client.PostAsync(url, body);
+            } 
+            else if (method == HttpMethod.Get) 
             {
-               //
+                //TODO: 拼接参数
+                response = await client.GetAsync(url);
             }
-            throw new InvalidOperationException("不支持的请求方式");
+            else
+            {
+                throw new InvalidOperationException("不支持的请求方式");
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                Console.WriteLine(string.Format("{0} post fail with status code {1}", url, response.StatusCode));
+                return string.Empty;
+            }
+            return await response.Content.ReadAsStringAsync();
         }
 
         public static async Task<HttpResponseMessage> TaskJsonRequestAsync<T>(string url, SortedDictionary<string, string> prams, HttpMethod method) where T : new()
