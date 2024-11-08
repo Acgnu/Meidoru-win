@@ -51,29 +51,37 @@ namespace SharedLib.Utils
         /// <returns></returns>
         public static async Task<string> TaskFormRequestAsync(string url, SortedDictionary<string, string> prams, HttpMethod method)
         {
-            var client = new HttpClient();
-            HttpResponseMessage response;
-            if (method == HttpMethod.Post)
+            try
             {
-                var body = new FormUrlEncodedContent(prams);
-                response = await client.PostAsync(url, body);
-            } 
-            else if (method == HttpMethod.Get) 
-            {
-                //TODO: 拼接参数
-                response = await client.GetAsync(url);
-            }
-            else
-            {
-                throw new InvalidOperationException("不支持的请求方式");
-            }
+                var client = new HttpClient();
+                HttpResponseMessage response;
+                if (method == HttpMethod.Post)
+                {
+                    var body = new FormUrlEncodedContent(prams);
+                    response = await client.PostAsync(url, body);
+                }
+                else if (method == HttpMethod.Get)
+                {
+                    //TODO: 拼接参数
+                    response = await client.GetAsync(url);
+                }
+                else
+                {
+                    throw new InvalidOperationException("不支持的请求方式");
+                }
 
-            if (response.StatusCode != HttpStatusCode.OK)
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    Console.WriteLine(string.Format("{0} post fail with status code {1}", url, response.StatusCode));
+                    return string.Empty;
+                }
+                return await response.Content.ReadAsStringAsync();
+            } 
+            catch (Exception ex)
             {
-                Console.WriteLine(string.Format("{0} post fail with status code {1}", url, response.StatusCode));
-                return string.Empty;
+                Console.WriteLine(ex);
             }
-            return await response.Content.ReadAsStringAsync();
+            return String.Empty;
         }
 
         public static async Task<HttpResponseMessage> TaskJsonRequestAsync<T>(string url, SortedDictionary<string, string> prams, HttpMethod method) where T : new()
