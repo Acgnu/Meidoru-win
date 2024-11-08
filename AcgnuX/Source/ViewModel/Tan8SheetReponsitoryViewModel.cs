@@ -10,6 +10,7 @@ using SharedLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -76,7 +77,8 @@ namespace AcgnuX.Source.ViewModel
         {
             return await Task.Run(() =>
             {
-                return _Tan8SheetRepo.Find(keyword, 1, 200);
+                var pageSize = string.IsNullOrEmpty(keyword) ? 100 : 300;
+                return _Tan8SheetRepo.Find(keyword, 1, pageSize);
             });
         }
 
