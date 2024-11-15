@@ -307,6 +307,8 @@ namespace AcgnuX.Source.ViewModel
             if (source.Contains("验证错误")) return Tan8SheetDownloadResult.VALID_ERROR;
             //网络连接出错
             if (source.Equals(RequestUtil.CONNECTION_ERROR)) return Tan8SheetDownloadResult.NETWORK_ERROR;
+            //格式不对, 可能是接口方改了格式, 也可能是代理错误, 暂时当作代理错误处理, 将会执行重试
+            if (!source.StartsWith("<html><body>yp_create_time")) return Tan8SheetDownloadResult.VISTI_REACH_LIMIT;
             if (Convert.ToInt32(DataUtil.GetXmlNodeValue(source, "yp_page_count")) > 124) return Tan8SheetDownloadResult.PAGE_TOO_MUCH;
             //默认返回成功
             return Tan8SheetDownloadResult.SUCCESS;
