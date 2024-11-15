@@ -38,7 +38,7 @@ namespace AcgnuX.Source.Taskx
                     OnTimer(null, null);
                     mProxyCounter = new Timer
                     {
-                        Interval = 1000 // 1 seconds
+                        Interval = 3000 // 3 seconds
                     };
                     mProxyCounter.Elapsed += new ElapsedEventHandler(OnTimer);
                     mProxyCounter.Start();

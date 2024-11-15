@@ -61,6 +61,7 @@ namespace SharedLib.Utils
         /// <returns>true 是</returns>
         public static bool IsNum(string value)
         {
+            if (string.IsNullOrEmpty(value)) return false;
             return Regex.IsMatch(value, @"^[+-]?\d*[.]?\d*$");
         }
 
