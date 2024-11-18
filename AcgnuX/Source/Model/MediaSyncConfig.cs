@@ -1,11 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AcgnuX.Source.Model
+﻿namespace AcgnuX.Source.Model
 {
     /// <summary>
     /// 指定需要同步的路径对应关系

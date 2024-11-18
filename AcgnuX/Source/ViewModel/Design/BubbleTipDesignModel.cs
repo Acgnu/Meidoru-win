@@ -1,8 +1,4 @@
-﻿using AcgnuX.Source.ViewModel;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-
-namespace AcgnuX.Source.ViewModel.Design
+﻿namespace AcgnuX.Source.ViewModel.Design
 {
     public class BubbleTipDesignModel : BubbleTipViewModel
     {

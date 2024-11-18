@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Media;
@@ -85,7 +84,7 @@ namespace AcgnuX.Source.Utils
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex); 
+                Console.WriteLine(ex);
             }
             return null;
         }
@@ -139,7 +138,7 @@ namespace AcgnuX.Source.Utils
         {
             try
             {
-                if(!File.Exists(path)) return false;
+                if (!File.Exists(path)) return false;
                 var bitmap = GetBitmapImage(path);
                 if (null == bitmap)
                 {
@@ -204,7 +203,7 @@ namespace AcgnuX.Source.Utils
             byte[] resultBytes = new byte[bitmapImage.StreamSource.Length];
             using (var stream = bitmapImage.StreamSource)
             {
-                stream.Read(resultBytes, 0, (int) bitmapImage.StreamSource.Length - 1);
+                stream.Read(resultBytes, 0, (int)bitmapImage.StreamSource.Length - 1);
             }
             return resultBytes;
         }

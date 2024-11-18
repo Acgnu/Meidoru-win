@@ -2,10 +2,9 @@
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
 using AcgnuX.WindowX.Dialog;
-using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AcgnuX.Pages
 {

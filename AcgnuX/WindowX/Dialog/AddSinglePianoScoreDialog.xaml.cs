@@ -1,5 +1,4 @@
-﻿using AcgnuX.Source.Utils;
-using System.Windows;
+﻿using System.Windows;
 
 namespace AcgnuX.WindowX.Dialog
 {

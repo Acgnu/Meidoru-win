@@ -1,20 +1,14 @@
-﻿using System;
+﻿using SharedLib.ImageNetRepository;
+using SharedLib.Model;
+using SharedLib.Utils;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using PatchTool.Properties;
-using SharedLib.ImageNetRepository;
-using SharedLib.Model;
-using SharedLib.Utils;
+using System.Xml.Linq;
 
 namespace PatchTool
 {
@@ -35,12 +29,12 @@ namespace PatchTool
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-               //SetDB(@"E:\曲谱\master.db");
-               //ClearInvalidPlayFileSheet(false, @"E:\曲谱");
-               //if (true)
-               //{
-               //    return;
-               //}
+            //SetDB(@"E:\曲谱\master.db");
+            //ClearInvalidPlayFileSheet(false, @"E:\曲谱");
+            //if (true)
+            //{
+            //    return;
+            //}
             var command = "?";
             var autoDel = false;
             var autoCopy = false;
@@ -92,11 +86,11 @@ namespace PatchTool
             Console.WriteLine("-i 最大乐谱ID 默认0 例: -i666");
             Console.WriteLine("-s 输入文件路径 例: -sC:\\sql.sql");
             Console.WriteLine("-o 是否覆盖");
-            
-            while(true)
+
+            while (true)
             {
                 var inputLine = Console.ReadLine();
-                if(inputLine.Equals("e"))
+                if (inputLine.Equals("e"))
                 {
                     return;
                 }
@@ -172,6 +166,73 @@ namespace PatchTool
         }
 
 
+        private static string ReadAcgnuXSetting(string settingName)
+        {
+            // 获取 WPF 应用程序的设置文件路径
+            string settingsPath = FindAcgnuXConfigPath();
+
+            if (!File.Exists(settingsPath))
+            {
+                Console.WriteLine("user.conf 不存在, 需要修改代码中的配置路径");
+                return null;
+            }
+            try
+            {
+                var doc = XDocument.Load(settingsPath);
+                var setting = doc.Descendants("setting")
+                    .FirstOrDefault(s => s.Attribute("name")?.Value == settingName);
+
+                return setting?.Element("value")?.Value;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading settings: {ex.Message}");
+            }
+            return null;
+        }
+
+        public static string FindAcgnuXConfigPath(string appName = "AcgnuX")
+        {
+            try
+            {
+                // 基础路径
+                string basePath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    appName
+                );
+
+                if (Directory.Exists(basePath))
+                {
+                    // 查找包含特定前缀的目录
+                    var configDir = Directory.GetDirectories(basePath)
+                        .FirstOrDefault(d => d.Contains($"{appName}_Url_"));
+
+                    if (configDir != null)
+                    {
+                        // 假设使用最新版本
+                        var versionDirs = Directory.GetDirectories(configDir);
+                        var latestVersion = versionDirs.OrderByDescending(d => d).FirstOrDefault();
+
+                        if (latestVersion != null)
+                        {
+                            string configPath = Path.Combine(latestVersion, "user.config");
+                            if (File.Exists(configPath))
+                            {
+                                return configPath;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error finding config path: {ex.Message}");
+            }
+
+            return null;
+        }
+
+
         //private static void ShowTips()
         //{
         //    Console.WriteLine("太麻烦了懒得写, 去看源码");
@@ -190,8 +251,8 @@ namespace PatchTool
             var cur = 0;
             var delSQL = new StringBuilder("DELETE FROM tan8_music WHERE ypid in (");
             //找出文件夹存在, 而数据库中不存在的
-            
-            var ypHomePath = Settings.Default.Tan8HomeDir;
+
+            var ypHomePath = ReadAcgnuXSetting("Tan8HomeDir");
             var dataSet = SQLite.SqlTable("SELECT ypid, name FROM tan8_music", null);
             var total = dataSet.Rows.Count;
             foreach (DataRow dataRow in dataSet.Rows)
@@ -208,7 +269,7 @@ namespace PatchTool
             delSQL.Length -= 1;
             delSQL.Append(")");
             Console.WriteLine("共" + totalNe + "个");
-            if(totalNe > 0)
+            if (totalNe > 0)
             {
                 Console.WriteLine(delSQL.ToString());
                 if (!string.IsNullOrEmpty(savePath))
@@ -226,7 +287,7 @@ namespace PatchTool
         {
             Console.WriteLine("检查不存在于数据的文件夹");
             //找出文件夹存在, 而数据库中不存在的
-            var ypHomePath = Settings.Default.Tan8HomeDir;
+            var ypHomePath = ReadAcgnuXSetting("Tan8HomeDir");
             var dir = Directory.GetDirectories(ypHomePath);
             var allFolderNames = new StringBuilder();
             var total = 0;
@@ -247,10 +308,10 @@ namespace PatchTool
                     }
                 }
             }
-            if(allFolderNames.Length > 0)
+            if (allFolderNames.Length > 0)
             {
                 Console.WriteLine("\n共" + total + "个");
-                if(!string.IsNullOrEmpty(savePath))
+                if (!string.IsNullOrEmpty(savePath))
                 {
                     FileUtil.SaveStringToFile(allFolderNames.ToString(), Path.GetDirectoryName(savePath), Path.GetFileName(savePath));
                     Console.WriteLine("文件已保存至" + savePath);
@@ -269,7 +330,7 @@ namespace PatchTool
         private static void CheckRepeat(string savePath, bool autoDel)
         {
             Console.WriteLine("检查并重新下载重名的乐谱");
-            var ypHomePath = Settings.Default.Tan8HomeDir;
+            var ypHomePath = ReadAcgnuXSetting("Tan8HomeDir");
             var dataSet = SQLite.SqlTable("SELECT count(1) num, name FROM tan8_music GROUP BY name HAVING num > 1 ORDER BY num DESC", null);
             var reDownBuilder = new StringBuilder("INSERT INTO tan8_music_down_task values");
             var delSQLBuilder = new StringBuilder("DELETE FROM tan8_music WHERE ypid in (");
@@ -279,20 +340,22 @@ namespace PatchTool
                 var repeatNameIds = SQLite.sqlcolumn("SELECT ypid FROM tan8_music WHERE name = @name", new List<SQLiteParameter>() { new SQLiteParameter("name", dataRow["name"]) });
                 if (repeatNameIds.Count <= 1) continue;
                 total++;
-                repeatNameIds.ForEach(e => {
+                repeatNameIds.ForEach(e =>
+                {
                     reDownBuilder.Append("(").Append(e).Append(")").Append(",");
                     delSQLBuilder.Append(e).Append(",");
                 });
                 Console.WriteLine(dataRow["name"] + " - " + dataRow["num"]);
                 //指定了ID保存路径, 自动删除才有效
-                if(autoDel && !string.IsNullOrEmpty(savePath))
+                if (autoDel && !string.IsNullOrEmpty(savePath))
                 {
-                    repeatNameIds.ForEach(e => {
+                    repeatNameIds.ForEach(e =>
+                    {
                         FileUtil.DeleteDirWithName(FileUtil.GetTan8YuepuParentFolder(ypHomePath, e), e);
                     });
                 }
             }
-            if(total == 0)
+            if (total == 0)
             {
                 Console.WriteLine("没有重名的乐谱");
             }
@@ -327,7 +390,7 @@ namespace PatchTool
             {
                 new SQLiteParameter("ypid", maxYpid)
             });
-            var ypHomePath = Settings.Default.Tan8HomeDir;
+            var ypHomePath = ReadAcgnuXSetting("Tan8HomeDir");
             var fixNum = 0;
             foreach (DataRow dataRow in dataSet.Rows)
             {
@@ -351,17 +414,17 @@ namespace PatchTool
         private static void Clean0PageYuepu(bool autoDel)
         {
             var total = 0;
-            var ypHomePath = Settings.Default.Tan8HomeDir;
+            var ypHomePath = ReadAcgnuXSetting("Tan8HomeDir");
             var yp0Ypids = SQLite.sqlcolumn("SELECT ypid FROM tan8_music WHERE yp_count = 0", null);
-            foreach(var ypid in yp0Ypids)
+            foreach (var ypid in yp0Ypids)
             {
                 var files = Directory.GetFiles(FileUtil.GetTan8YuepuFolder(ypHomePath, ypid));
                 var hasPlayFile = false;
-                if(files.Length > 0)
+                if (files.Length > 0)
                 {
-                    foreach(var fileName in files)
+                    foreach (var fileName in files)
                     {
-                        if(fileName.EndsWith("ypdx") || fileName.EndsWith("ypa2"))
+                        if (fileName.EndsWith("ypdx") || fileName.EndsWith("ypa2"))
                         {
                             hasPlayFile = true;
                             break;
@@ -395,7 +458,7 @@ namespace PatchTool
                 Console.WriteLine("没有指定旧乐谱路径");
                 return;
             }
-            var ypHomePath = Settings.Default.Tan8HomeDir;
+            var ypHomePath = ReadAcgnuXSetting("Tan8HomeDir");
             var dataSet = SQLite.SqlTable("SELECT * FROM tan8_music_old", null);
             var total = dataSet.Rows.Count;
             var copyTotal = 0;
@@ -460,7 +523,7 @@ namespace PatchTool
                 //var svcFolder = evnFolder.Replace(System.Reflection.Assembly.GetEntryAssembly().GetName().Name, "AcgnuX");
                 //var configPath = Path.Combine(svcFolder, "AcgnuX.ini");
                 //如果没有指定数据库文件, 则使用默认
-                dbPath = Settings.Default.DBFilePath;
+                dbPath = ReadAcgnuXSetting("DBFilePath");
             }
             Console.WriteLine("数据库路径 :" + dbPath);
             SQLite.SetDbFilePath(dbPath);
@@ -475,7 +538,7 @@ namespace PatchTool
         private static void CheckSheetPreviewImg(int threadCount)
         {
             Console.WriteLine("执行上传乐谱首页任务, 线程数 = " + threadCount);
-            var ypHomePath = Settings.Default.Tan8HomeDir;
+            var ypHomePath = ReadAcgnuXSetting("Tan8HomeDir");
             if (string.IsNullOrEmpty(ypHomePath))
             {
                 Console.WriteLine("无法获取乐谱路径, 先检查一下配置文件");
@@ -504,7 +567,7 @@ namespace PatchTool
             {
                 ManualResetEvent mre = new ManualResetEvent(false);
                 manualEvents.Add(mre);
-                ThreadPool.QueueUserWorkItem((object obj) => 
+                ThreadPool.QueueUserWorkItem((object obj) =>
                 {
                     while (sheetDirQueue.Count > 0)
                     {
@@ -570,8 +633,8 @@ namespace PatchTool
         private static void CheckWhiteBlackPreview(bool overwrite, int threadCount)
         {
             Console.WriteLine("执行水印任务, 线程数 = " + threadCount);
-            var ypHomePath = Settings.Default.Tan8HomeDir;
-            if(string.IsNullOrEmpty(ypHomePath))
+            var ypHomePath = ReadAcgnuXSetting("Tan8HomeDir");
+            if (string.IsNullOrEmpty(ypHomePath))
             {
                 Console.WriteLine("无法获取乐谱路径, 先检查一下配置文件");
                 return;
@@ -584,7 +647,7 @@ namespace PatchTool
                 if (Directory.Exists(FileUtil.GetTan8YuepuFolder(ypHomePath, Convert.ToString(dataRow["ypid"]))))
                 {
                     Console.WriteLine(string.Format("正在添加 {0} 到任务队列...", dataRow["name"]));
-                    sheetDirQueue.Enqueue(new Tan8Sheet() 
+                    sheetDirQueue.Enqueue(new Tan8Sheet()
                     {
                         Ypid = Convert.ToInt32(dataRow["ypid"]),
                         Name = dataRow["name"].ToString(),
@@ -646,7 +709,7 @@ namespace PatchTool
             var singleTestDirName = "";// 1、Dreamer's Waltz - David Lanz（Sacred Road）大卫·兰兹【神圣之路】钢琴曲集";
             try
             {
-                if(string.IsNullOrEmpty(singleTestDirName))
+                if (string.IsNullOrEmpty(singleTestDirName))
                 {
                     ConcurrentQueue<string> sheetDirQueue = new ConcurrentQueue<string>();
                     var sheetHome = Directory.GetDirectories(@"E:\\曲谱");
@@ -689,7 +752,7 @@ namespace PatchTool
                 {
                     string dirName = singleTestDirName;
                     Bitmap rawImg = (Bitmap)Bitmap.FromFile(@"E:\曲谱\" + dirName + @"\page.0.png");
-                    Bitmap bmp = Tan8SheetMaskUtil.CreateIegalTan8Sheet(rawImg, dirName, 1 , 10, true);
+                    Bitmap bmp = Tan8SheetMaskUtil.CreateIegalTan8Sheet(rawImg, dirName, 1, 10, true);
                     bmp.Save(Path.Combine(@"C:\Users\Administrator\Desktop\去水印", dirName + ".png"), ImageFormat.Png);
                     bmp.Dispose();
                 }
@@ -708,7 +771,7 @@ namespace PatchTool
         private static void CheckFileMD5(string savePath, string ypHomePath)
         {
             Console.WriteLine("MD5排重...");
-            ypHomePath = string.IsNullOrEmpty(ypHomePath) ? Settings.Default.Tan8HomeDir : ypHomePath;
+            ypHomePath = string.IsNullOrEmpty(ypHomePath) ? ReadAcgnuXSetting("Tan8HomeDir") : ypHomePath;
             if (string.IsNullOrEmpty(ypHomePath))
             {
                 Console.WriteLine("无法获取乐谱路径, 先检查一下配置文件");
@@ -779,7 +842,7 @@ namespace PatchTool
             }
             Console.WriteLine(sql.ToString());
             Console.WriteLine("检查完毕, 共 {0} 首乐谱重复, 共 {1} 个文件", repeatSheetNum, repeatFileNum);
-            if(!string.IsNullOrEmpty(savePath))
+            if (!string.IsNullOrEmpty(savePath))
             {
                 FileUtil.SaveStringToFile(sql.ToString(), Path.GetDirectoryName(savePath), Path.GetFileName(savePath));
                 Console.WriteLine("SQL文件已保存至{0}", savePath);
@@ -792,18 +855,18 @@ namespace PatchTool
         /// <param name="ypHome"></param>
         private static void BatchDel(string ypHome)
         {
-            var delHome = string.IsNullOrEmpty(ypHome) ? Settings.Default.Tan8HomeDir : ypHome;
+            var delHome = string.IsNullOrEmpty(ypHome) ? ReadAcgnuXSetting("Tan8HomeDir") : ypHome;
             Console.WriteLine("已进入批量删除模式, 复制ID到输入框, 回车即可删除指定乐谱, 输入 e 回车退出");
             Console.WriteLine("谱库路径: {0}", delHome);
             while (true)
             {
                 var line = Console.ReadLine();
-                if(string.IsNullOrEmpty(line))
+                if (string.IsNullOrEmpty(line))
                 {
                     Console.WriteLine("输入有误");
                     continue;
                 }
-                if("e".Equals(line))
+                if ("e".Equals(line))
                 {
                     break;
                 }
@@ -824,18 +887,18 @@ namespace PatchTool
         /// <param name="inputSQLFilePath"></param>
         private static void BatchDelFromInputFile(string ypHome, string inputSQLFilePath)
         {
-            if(string.IsNullOrEmpty(inputSQLFilePath))
+            if (string.IsNullOrEmpty(inputSQLFilePath))
             {
                 Console.WriteLine("输入文件路径有误");
                 return;
             }
-            if(!File.Exists(inputSQLFilePath))
+            if (!File.Exists(inputSQLFilePath))
             {
                 Console.WriteLine("输入文件不存在");
                 return;
             }
-            var delHome = string.IsNullOrEmpty(ypHome) ? Settings.Default.Tan8HomeDir : ypHome;
-            
+            var delHome = string.IsNullOrEmpty(ypHome) ? ReadAcgnuXSetting("Tan8HomeDir") : ypHome;
+
             Console.WriteLine("已进入批量删除模式, 系统将列出重复的选项, 输入需要选择需要保留的选项, 回车删除其他乐谱");
             Console.WriteLine("谱库路径: {0}", delHome);
 
@@ -849,7 +912,7 @@ namespace PatchTool
                     while ((line = fileStream.ReadLine()) != null)
                     {
                         Console.Clear();
-                        if(lastDel.Length > 0)
+                        if (lastDel.Length > 0)
                         {
                             Console.WriteLine("已删除: {0}", lastDel.ToString());
                             lastDel.Clear();
@@ -919,7 +982,7 @@ namespace PatchTool
         /// <param name="ypHomePath"></param>
         private static void ClearInvalidPlayFileSheet(bool autoDel, string ypHomePath)
         {
-            var homePath = string.IsNullOrEmpty(ypHomePath) ? Settings.Default.Tan8HomeDir : ypHomePath;
+            var homePath = string.IsNullOrEmpty(ypHomePath) ? ReadAcgnuXSetting("Tan8HomeDir") : ypHomePath;
             Console.WriteLine("谱库路径: {0}", homePath);
             var yp0Ypids = SQLite.sqlcolumn("SELECT ypid FROM tan8_music WHERE yp_count = 0", null);
             Console.WriteLine("共 {0} 个0页乐谱", yp0Ypids.Count);
@@ -931,7 +994,7 @@ namespace PatchTool
                 Tan8PlayUtil.ExePlayById(Convert.ToInt32(ypid), 2, false);
 
                 var timeout = true;
-                for(var i = 0; i < 10; i++)
+                for (var i = 0; i < 10; i++)
                 {
                     Thread.Sleep(1000);
                     var errDialog = FindWindow(null, "pmady");
@@ -950,8 +1013,8 @@ namespace PatchTool
                         timeout = false;
                         break;
                     }
-                }    
-                if(timeout)
+                }
+                if (timeout)
                 {
                     Console.WriteLine("{0} OK!", ypid);
                 }

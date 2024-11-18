@@ -1,9 +1,6 @@
 ﻿using AcgnuX.Source.Utils;
 using AlidnsLib;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Messaging;
-using System;
-using System.Threading.Tasks;
 
 namespace AcgnuX.Source.ViewModel
 {
@@ -30,7 +27,7 @@ namespace AcgnuX.Source.ViewModel
         private string type = "A";
         public string Type { get => type; set => SetProperty(ref type, value); }
 
- 
+
         public AlidnsClient _AlidnsClient { set; get; }
 
 

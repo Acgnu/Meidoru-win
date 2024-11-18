@@ -23,8 +23,9 @@ namespace AcgnuX.Source.ViewModel
             //初始化命令
             MinimizeCommand = new RelayCommand<Window>((window) => window.WindowState = WindowState.Minimized);
             MaximizeCommand = new RelayCommand<Window>((window) => window.WindowState ^= WindowState.Maximized);
-            CloseCommand = new RelayCommand<Window>((window) => {
-           
+            CloseCommand = new RelayCommand<Window>((window) =>
+            {
+
             });
 
             //注册事件

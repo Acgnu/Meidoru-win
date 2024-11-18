@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SharedLib.Model
+﻿namespace SharedLib.Model
 {
     public class ProxyAddress
     {

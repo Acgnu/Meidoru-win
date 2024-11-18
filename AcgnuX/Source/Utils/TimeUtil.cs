@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AcgnuX.Utils
+﻿namespace AcgnuX.Utils
 {
     class TimeUtil
     {

@@ -1,12 +1,7 @@
 ﻿using SharedLib.Model;
 using SharedLib.Utils;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SharedLib.Data
 {
@@ -119,7 +114,7 @@ namespace SharedLib.Data
         {
             SQLite.ExecuteNonQuery("UPDATE crawl_rules SET exception_desc  = @desc WHERE id =@id",
                   new List<SQLiteParameter> {
-                        new SQLiteParameter("@desc", desc), 
+                        new SQLiteParameter("@desc", desc),
                       new SQLiteParameter("@id", id)
                   });
         }

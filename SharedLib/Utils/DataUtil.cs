@@ -1,7 +1,5 @@
 ﻿using SharedLib.Model;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 
@@ -49,7 +47,7 @@ namespace SharedLib.Utils
                 yp_page_height = Convert.ToInt16(GetXmlNodeValue(source, "yp_page_height")),
                 yp_is_dadiao = Convert.ToByte(GetXmlNodeValue(source, "yp_is_dadiao")),
                 yp_key_note = Convert.ToByte(GetXmlNodeValue(source, "yp_key_note")),
-                yp_is_yanyin = Convert.ToByte(GetXmlNodeValue(source, "yp_is_yanyin")), 
+                yp_is_yanyin = Convert.ToByte(GetXmlNodeValue(source, "yp_is_yanyin")),
                 mp3_url = mp3_url
             };
         }
@@ -84,10 +82,10 @@ namespace SharedLib.Utils
         public static List<string> FindDiffEls(string[] source1, string[] source2)
         {
             List<string> diffEls = new List<string>();
-            for(var i = 0; i < source2.Length; i++)
+            for (var i = 0; i < source2.Length; i++)
             {
                 var contains = false;
-                for(var j = 0; j < source1.Length; j++)
+                for (var j = 0; j < source1.Length; j++)
                 {
                     if (source1[j].Equals(source2[i]))
                     {
@@ -95,7 +93,7 @@ namespace SharedLib.Utils
                         break;
                     }
                 }
-                if(!contains)
+                if (!contains)
                 {
                     diffEls.Add(source2[i]);
                 }

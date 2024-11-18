@@ -1,11 +1,5 @@
 ﻿using AcgnuX.Source.Model;
-using AcgnuX.Source.Utils;
 using SharedLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AcgnuX.Source.Bussiness.Data
 {
@@ -22,7 +16,7 @@ namespace AcgnuX.Source.Bussiness.Data
         public AppSecretKey FindByPlatform(string platform)
         {
             var dbSecret = SQLite.SqlRow(
-                string.Format("SELECT secret_id, secret_key, priv_domain, priv_sub_domain, Platform FROM app_secret_keys WHERE platform = '{0}'", 
+                string.Format("SELECT secret_id, secret_key, priv_domain, priv_sub_domain, Platform FROM app_secret_keys WHERE platform = '{0}'",
                 platform));
             if (null != dbSecret && dbSecret.Length > 0)
             {

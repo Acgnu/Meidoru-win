@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AcgnuX.Source.Model
+﻿namespace AcgnuX.Source.Model
 {
     /// <summary>
     /// 字节数组包装

@@ -1,14 +1,7 @@
 ﻿using SharedLib.Model;
 using SharedLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace SharedLib.ImageNetRepository
 {
@@ -46,7 +39,7 @@ namespace SharedLib.ImageNetRepository
 
             //执行上传
             var response = RequestUtil.UploadFile(
-                "https://prntscr.com/upload.php", 
+                "https://prntscr.com/upload.php",
                 arg.FullFilePath,
                 "image",
                 arg.ExtraArgs["uploadFileFormName"],
@@ -68,7 +61,7 @@ namespace SharedLib.ImageNetRepository
 
             //设置匹配规则
             Match mstr = Regex.Match(crawlResult.data, "(?m)<meta property=\"og: image\" content=\"(.*?)\"/>");
-            if(!mstr.Success)
+            if (!mstr.Success)
             {
                 invokeResult.message = "数据抓取失败";
                 return invokeResult;

@@ -3,12 +3,9 @@ using AcgnuX.Properties;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Toolkit.Uwp.Notifications;
 using SharedLib.Utils;
-using System;
 using System.Collections.ObjectModel;
 using System.Runtime.Caching;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -49,7 +46,7 @@ namespace AcgnuX.Source.ViewModel
         //设置页面
         private AppSettings _AppSettingsPage;
         //首页
-        private readonly Index _IndexPage;
+        private readonly Pages.Index _IndexPage;
         //主内容
         private Page _MainContent;
         public Page MainContent { get => _MainContent; set => SetProperty(ref _MainContent, value); }
@@ -73,7 +70,7 @@ namespace AcgnuX.Source.ViewModel
                     Task.Run(() =>
                     {
                         //清空所有通知
-                        ToastNotificationManagerCompat.Uninstall();
+                        //AppNotificationManager.Uninstall();
                         //退出Tan8播放器
                         Tan8PlayUtil.ExitAll();
                         //退出程序
@@ -87,7 +84,7 @@ namespace AcgnuX.Source.ViewModel
             OnRefreshBackgroundCommand = new RelayCommand<Window>(ExecuteRefreshBackgroundCommand);
             OnSettingCommand = new RelayCommand<Window>(OnSettingIconClick);
             FaviconClickCommand = new RelayCommand(OnFaviconClick);
-            _IndexPage = new Index();
+            _IndexPage = new Pages.Index();
             MainContent = _IndexPage;
         }
 
@@ -152,7 +149,7 @@ namespace AcgnuX.Source.ViewModel
         /// </summary>
         public void InitBackgroundBrush(double windowWidth)
         {
-            MainWindowBackgroundBrush = ImageUtil.LoadImageAsBrush(Settings.Default.SkinFilePath, 0, 0, (int) windowWidth);
+            MainWindowBackgroundBrush = ImageUtil.LoadImageAsBrush(Settings.Default.SkinFilePath, 0, 0, (int)windowWidth);
             if (null == MainWindowBackgroundBrush) return;
 
             MemoryCache.Default["skinBrush"] = MainWindowBackgroundBrush;

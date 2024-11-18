@@ -1,6 +1,4 @@
-﻿using AcgnuX.Source.Model;
-using CommunityToolkit.Mvvm.ComponentModel;
-using System.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AcgnuX.ViewModel
 {

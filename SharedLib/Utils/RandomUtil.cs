@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 
 namespace SharedLib.Utils
 {
@@ -27,14 +26,14 @@ namespace SharedLib.Utils
             return sbuilder.ToString();
             //return "MNVUbM";
         }
-        
+
         /// <summary>
         /// 获取指定范围内的随机整数
         /// </summary>
         /// <param name="start">开始范围</param>
         /// <param name="end">结束范围</param>
         /// <returns></returns>
-        public static int GetRangeRandomNum(int start , int end)
+        public static int GetRangeRandomNum(int start, int end)
         {
             Random rand = new Random();
             return rand.Next(start, end);

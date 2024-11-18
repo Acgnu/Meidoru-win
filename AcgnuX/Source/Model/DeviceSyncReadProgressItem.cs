@@ -1,8 +1,5 @@
 ﻿using AcgnuX.Source.Bussiness;
 using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Source.Model;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace AcgnuX.Source.ViewModel
 {

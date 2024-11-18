@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms;
-
-namespace FlashControlLibrary
+﻿namespace FlashControlLibrary
 {
     public partial class UserControl1 : UserControl
     {

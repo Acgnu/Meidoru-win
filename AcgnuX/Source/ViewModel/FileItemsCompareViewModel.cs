@@ -1,12 +1,6 @@
-﻿using AcgnuX.Source.Model;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace AcgnuX.Source.ViewModel
@@ -62,7 +56,11 @@ namespace AcgnuX.Source.ViewModel
         /// <param name="e"></param>
         private void OnOpenFolderClick()
         {
-            System.Diagnostics.Process.Start(PcFolderPath);
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = PcFolderPath,
+                UseShellExecute = true
+            });
         }
     }
 }

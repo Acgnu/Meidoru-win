@@ -1,7 +1,5 @@
 ﻿using AcgnuX.Source.Model;
 using SharedLib.Utils;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 
@@ -20,7 +18,7 @@ namespace AcgnuX.Source.Bussiness.Data
         public List<MediaSyncConfig> FindConfig(bool? enable)
         {
             var confgs = new List<MediaSyncConfig>();
-            var dataSet = SQLite.SqlTable(string.Format("SELECT id, pc_path, mobile_path, enable FROM media_sync_config {0}",  
+            var dataSet = SQLite.SqlTable(string.Format("SELECT id, pc_path, mobile_path, enable FROM media_sync_config {0}",
                 null == enable ? "" : string.Format("where enable = {0}", enable.GetValueOrDefault() ? 1 : 0)), null);
             if (null == dataSet || dataSet.Rows.Count == 0)
             {

@@ -1,11 +1,4 @@
-﻿using AcgnuX.Pages;
-using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Source.Model;
-using AcgnuX.Source.Utils;
-using System;
-using System.IO;
-using System.Windows;
-using System.Windows.Resources;
+﻿using AcgnuX.Source.Bussiness.Constants;
 
 namespace AcgnuX.Source.ViewModel.Design
 {

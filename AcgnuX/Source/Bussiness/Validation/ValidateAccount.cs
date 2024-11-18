@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Data;
 
@@ -30,12 +25,12 @@ namespace AcgnuX.Source.Bussiness.Validation
                 return new ValidationResult(false, "需要填写站点哦");
             }
 
-            if (string.IsNullOrEmpty((string) uname))
+            if (string.IsNullOrEmpty((string)uname))
             {
                 return new ValidationResult(false, "需要填写账号哦");
             }
 
-            if (string.IsNullOrEmpty((string) upass))
+            if (string.IsNullOrEmpty((string)upass))
             {
                 return new ValidationResult(false, "需要填写密码哦");
             }

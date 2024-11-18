@@ -2,21 +2,13 @@
 using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
-using AcgnuX.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm;
 using MediaDevices;
 using SharedLib.Utils;
-using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
-using CommunityToolkit.Mvvm.Messaging;
 
 namespace AcgnuX.Source.ViewModel
 {
@@ -41,8 +33,9 @@ namespace AcgnuX.Source.ViewModel
         //预览图
         public ByteArray PreviewImg { get; set; }
         //预览图类型 0-图片字节数组, 1-默认IMAGE图标, 2-默认VIDEO图标, 3-默认AUDIO图标, 20-默认OTHER图标
-        public int PreviewImgType { 
-            get 
+        public int PreviewImgType
+        {
+            get
             {
                 if (null != PreviewImg && null != PreviewImg.Data && PreviewImg.Data.Length > 0) return 0;
                 return (int)ContentType;
@@ -66,7 +59,7 @@ namespace AcgnuX.Source.ViewModel
         //设备同步主viewModel
         public DeviceSyncViewModel DeviceSyncViewModel { get; set; }
 
-        public FileItemViewModel ()
+        public FileItemViewModel()
         {
             ItemLeftClickCommand = new RelayCommand(ImgItemLeftClick);
             ItemRightClickCommand = new RelayCommand(ImgItemRightClick);
@@ -106,7 +99,11 @@ namespace AcgnuX.Source.ViewModel
             if (FileItemsListViewModel.SyncDeviceType == SyncDeviceType.PC)
             {
                 //如果文件存在于PC, 则打开文件
-                System.Diagnostics.Process.Start(Path.Combine(FileItemsListViewModel.FolderPath, Name));
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = Path.Combine(FileItemsListViewModel.FolderPath, Name),
+                    UseShellExecute = true
+                });
             }
             else
             {
@@ -122,9 +119,13 @@ namespace AcgnuX.Source.ViewModel
                 }
                 var targetFullPath = Path.Combine(winTempFolder, Name);
                 //如果已经存在于临时文件夹, 则直接打开
-                if (System.IO.File.Exists(targetFullPath))
+                if (File.Exists(targetFullPath))
                 {
-                    System.Diagnostics.Process.Start(targetFullPath);
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = targetFullPath,
+                        UseShellExecute = true
+                    });
                     return;
                 }
 
@@ -143,7 +144,11 @@ namespace AcgnuX.Source.ViewModel
                 }
                 IsCopying = false;
                 WindowUtil.ShowBubbleInfo(string.Format("已复制到临时文件夹 {0}", targetFullPath));
-                System.Diagnostics.Process.Start(targetFullPath);
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = targetFullPath,
+                    UseShellExecute = true
+                });
             }
         }
 
@@ -156,7 +161,7 @@ namespace AcgnuX.Source.ViewModel
         {
             var selectedDevice = DeviceSyncViewModel.SelectedDevice;
             var selectedDriver = DeviceSyncViewModel.SelectedDriver;
-            if (FileItemsListViewModel.SyncDeviceType== SyncDeviceType.PHONE && (null == selectedDevice || null == selectedDriver))
+            if (FileItemsListViewModel.SyncDeviceType == SyncDeviceType.PHONE && (null == selectedDevice || null == selectedDriver))
                 return;
 
             //var confirmDialog = new ConfirmDialog(AlertLevel.WARN, string.Format(Properties.Resources.S_DeleteConfirm, Name));

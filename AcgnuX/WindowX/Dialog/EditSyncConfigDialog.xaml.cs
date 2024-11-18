@@ -1,25 +1,17 @@
-﻿using AcgnuX.Pages;
-using AcgnuX.Source.Bussiness.Data;
-using AcgnuX.Source.Model;
-using AcgnuX.Source.Taskx;
+﻿using AcgnuX.Source.Bussiness.Data;
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
-using SharedLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data.SQLite;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AcgnuX.WindowX.Dialog
 {
     /// <summary>
     /// 编辑账号的弹窗
     /// </summary>
-    public partial class EditSyncConfigDialog : BaseDialog {
+    public partial class EditSyncConfigDialog : BaseDialog
+    {
         //视图对象
         public SyncConfigViewModel ContentViewModel { get; }
 
@@ -47,7 +39,7 @@ namespace AcgnuX.WindowX.Dialog
             if (!FormStackPanel.BindingGroup.CommitEdit())
             {
                 button.IsEnabled = true;
-                return; 
+                return;
             }
 
             if (0 == ContentViewModel.Id)

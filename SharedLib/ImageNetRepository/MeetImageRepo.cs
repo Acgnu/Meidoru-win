@@ -1,12 +1,6 @@
 ﻿using SharedLib.Model;
 using SharedLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace SharedLib.ImageNetRepository
 {
@@ -77,8 +71,8 @@ namespace SharedLib.ImageNetRepository
             var response = RequestUtil.UploadFile(
                 "https://www.hualigs.cn/api/upload",
                 arg.FullFilePath,
-                "image", 
-                arg.ExtraArgs["uploadFileFormName"], 
+                "image",
+                arg.ExtraArgs["uploadFileFormName"],
                 args);
             if (string.IsNullOrEmpty(response))
             {

@@ -1,6 +1,5 @@
 ﻿using AcgnuX.Source.Bussiness.Constants;
 using CommunityToolkit.Mvvm.ComponentModel;
-using System;
 
 namespace AcgnuX.Source.ViewModel
 {
@@ -12,7 +11,7 @@ namespace AcgnuX.Source.ViewModel
         //警示级别
         public AlertLevel AlertLevel { get; set; }
         //文本
-        public string Text { get; set;}
+        public string Text { get; set; }
         //是否展示
         private bool isShow;
         public bool IsShow { get => isShow; set => SetProperty(ref isShow, value); }

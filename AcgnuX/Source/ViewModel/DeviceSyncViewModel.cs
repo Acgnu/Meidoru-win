@@ -9,13 +9,10 @@ using CommunityToolkit.Mvvm.Input;
 using MediaDevices;
 using Microsoft.Toolkit.Uwp.Notifications;
 using SharedLib.Utils;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using UsbMonitor;
@@ -45,21 +42,23 @@ namespace AcgnuX.Source.ViewModel
 
         //是否有设备接入
         private bool _IsDeviceConnected;
-        public bool IsDeviceConnected { get => _IsDeviceConnected; set  => SetProperty(ref _IsDeviceConnected, value); }
+        public bool IsDeviceConnected { get => _IsDeviceConnected; set => SetProperty(ref _IsDeviceConnected, value); }
         //所有设备列表
-        public ObservableCollection<MediaDevice> DeviceListData { get; set; }  = new ObservableCollection<MediaDevice>();
+        public ObservableCollection<MediaDevice> DeviceListData { get; set; } = new ObservableCollection<MediaDevice>();
         //标识设备是否选中
         //public bool IsDeviceSelected { get => SelectedDevice == null; set { OnPropertyChanged(); } }
         //选中的设备
         private MediaDevice _SelectedDevice;
-        public MediaDevice SelectedDevice { get => _SelectedDevice; 
-            set 
-            { 
-                _SelectedDevice = value; 
-                OnPropertyChanged(); 
+        public MediaDevice SelectedDevice
+        {
+            get => _SelectedDevice;
+            set
+            {
+                _SelectedDevice = value;
+                OnPropertyChanged();
                 ComboBoxDeviceSelectionChanged();
                 NotifyUIStep();
-            } 
+            }
         }
 
         //可用的驱动列表
@@ -68,18 +67,21 @@ namespace AcgnuX.Source.ViewModel
         //public bool IsDriverSelected { get => SelectedDevice == null; set { OnPropertyChanged(); } }
         //选中的驱动器
         private DeviceDriverViewModel _SelectedDriver;
-        public DeviceDriverViewModel SelectedDriver { get => _SelectedDriver; 
-            set 
-            { 
-                _SelectedDriver = value; 
+        public DeviceDriverViewModel SelectedDriver
+        {
+            get => _SelectedDriver;
+            set
+            {
+                _SelectedDriver = value;
                 OnPropertyChanged();
                 NotifyUIStep();
                 ComboBoxDriverSelectionChanged();
-            } 
+            }
         }
 
         //UI阶段展示
-        public int Step { 
+        public int Step
+        {
             get
             {
                 //if (DesignerProperties.GetIsInDesignMode(this)) return 2;
@@ -145,11 +147,11 @@ namespace AcgnuX.Source.ViewModel
 
             //if(!IsInDesignMode)
             //{
-                UsbMonitor = new UsbMonitorManager(Application.Current.MainWindow);
-                //this.mUsbMonitor.UsbPort += OnUsb;
-                UsbMonitor.UsbDeviceInterface += OnUsb;
-                //this.mUsbMonitor.UsbChanged += OnUsb;
-                CheckDevice(false);
+            UsbMonitor = new UsbMonitorManager(Application.Current.MainWindow);
+            //this.mUsbMonitor.UsbPort += OnUsb;
+            UsbMonitor.UsbDeviceInterface += OnUsb;
+            //this.mUsbMonitor.UsbChanged += OnUsb;
+            CheckDevice(false);
             //}
 
             //test data

@@ -1,20 +1,14 @@
 ﻿using AcgnuX.Properties;
 using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Bussiness.Data;
-using AcgnuX.Source.Model;
-using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
 using AcgnuX.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.DependencyInjection;
 using SharedLib.Model;
 using SharedLib.Utils;
-using System;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Threading;
-using Microsoft.Extensions.DependencyInjection;
-using SharedLib.Data;
-using AcgnuX.Pages;
 
 namespace AcgnuX.Source.ViewModel
 {
@@ -231,7 +225,7 @@ namespace AcgnuX.Source.ViewModel
                 //如果文件损坏则删除
                 if (!isValidPreviewImg) FileUtil.DeleteFile(coverSavePath);
             }
-   
+
             //step.4 下载乐谱图片
             var nowProgress = 20;
             for (var i = 0; i < tan8Music.yp_page_count; i++)

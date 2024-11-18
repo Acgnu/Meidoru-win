@@ -1,24 +1,18 @@
-﻿using AcgnuX.Source.Bussiness.Common;
-using AcgnuX.Source.Bussiness.Constants;
+﻿using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Bussiness.Data;
 using AcgnuX.Source.Model;
+using AcgnuX.Source.Utils;
 using AcgnuX.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using SharedLib.Utils;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
-using System.Linq;
-using System.Threading;
 using System.Windows.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using CommunityToolkit.Mvvm.Messaging.Messages;
-using AcgnuX.Source.Utils;
-using System.Timers;
 
 namespace AcgnuX.Source.ViewModel
 {
@@ -66,15 +60,15 @@ namespace AcgnuX.Source.ViewModel
         //private void NotifyIsDownloadListEmpty () { OnPropertyChanged(nameof(IsDownloadListEmpty)); }
         //悬浮按钮展示阶段 1-点击新增, 2-点击继续, 3-点击停止
         private int _STEP_ADD = 1, _STEP_CONTINUE = 2, _STEP_STOP = 3;
-        public int ButtonStep 
-        { 
-            get 
+        public int ButtonStep
+        {
+            get
             {
                 //if (IsInDesignMode) return _STEP_STOP;
                 if (_DownloadTaskWorker.IsBusy) return _STEP_STOP;
                 if (DownloadingData.Count == 0) return _STEP_ADD;
                 return _STEP_CONTINUE;
-            } 
+            }
         }
         private void NotifyButtonStep() { OnPropertyChanged(nameof(ButtonStep)); }
         //允许最大的任务数量
@@ -138,7 +132,7 @@ namespace AcgnuX.Source.ViewModel
             List<int> codes = new List<int>();
             foreach (var item in FilterBoxList)
             {
-                if(item.IsChecked)
+                if (item.IsChecked)
                     codes.Add(item.Value);
             }
             var data = _Tan8SheetCrawlRecordRepo.Find(codes);
@@ -426,7 +420,7 @@ namespace AcgnuX.Source.ViewModel
                 {
                     existsEl.AutoDownload = crawlArg.AutoDownload;
                 }
-            } 
+            }
             else
             {
                 //创建一个新的item, 开启下载任务
@@ -497,7 +491,7 @@ namespace AcgnuX.Source.ViewModel
             {
                 var isHideStarted = Tan8PlayUtil.IsHideStarted(ypid);
                 if (isHideStarted != null && isHideStarted.GetValueOrDefault())
-                {         
+                {
                     //如果是隐藏启动(即以下载为目的的启动), 找不到目标下载项, 可能是在重启Flash播放器的过程中停止下载了, 需要关闭
                     Tan8PlayUtil.Exit(ypid);
                 }
@@ -576,11 +570,11 @@ namespace AcgnuX.Source.ViewModel
         /// </summary>
         //private void OnFilter(PianoScoreDownloadRecordViewModel listViewModel)
         //{
-            //IsChecked = !IsChecked;
-            //由于页面创建的时候就会触发选中事件, 此处手动限制, 只有在所有数据加载之后才会触发此事件
-            //comment-on 2022-11-29, mvvm模式不会在初始化下触发
-            //if (!IsCheckBoxInited) return;
-            //listViewModel.Load();
+        //IsChecked = !IsChecked;
+        //由于页面创建的时候就会触发选中事件, 此处手动限制, 只有在所有数据加载之后才会触发此事件
+        //comment-on 2022-11-29, mvvm模式不会在初始化下触发
+        //if (!IsCheckBoxInited) return;
+        //listViewModel.Load();
         //}
     }
 }

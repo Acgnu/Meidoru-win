@@ -3,17 +3,14 @@ using AcgnuX.ViewModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SharedLib.Utils;
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
+using System.ComponentModel;
+using System.IO;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.IO;
-using System.ComponentModel;
+using System.Windows;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace AcgnuX.Source.ViewModel
 {

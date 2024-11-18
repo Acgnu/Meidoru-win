@@ -4,11 +4,9 @@ using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
 using AcgnuX.ViewModel;
 using AcgnuX.WindowX.Dialog;
-using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AcgnuX.Pages
 {
@@ -45,7 +43,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnBtnAddClick(object sender, RoutedEventArgs e)
         {
-            if(string.IsNullOrEmpty(Settings.Default.AccountFilePath))
+            if (string.IsNullOrEmpty(Settings.Default.AccountFilePath))
             {
                 WindowUtil.ShowBubbleError("未配置账号保存文件路径");
                 return;
@@ -98,7 +96,7 @@ namespace AcgnuX.Pages
             var grid = (DataGrid)sender;
             XamlUtil.SelectRow(grid, e);
             var selected = grid.SelectedItem;
-            if(null == selected) e.Handled = true;
+            if (null == selected) e.Handled = true;
         }
     }
 }

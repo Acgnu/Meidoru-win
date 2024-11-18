@@ -1,13 +1,10 @@
-﻿using AcgnuX.Properties;
-using AcgnuX.Source.Bussiness.Constants;
+﻿using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Taskx;
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
-using AcgnuX.WindowX.Dialog;
 using Microsoft.Extensions.DependencyInjection;
 using SharedLib.Utils;
 using System.Windows;
-using System.Windows.Input;
 
 namespace AcgnuX.Pages
 {

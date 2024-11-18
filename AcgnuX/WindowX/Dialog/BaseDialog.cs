@@ -1,17 +1,10 @@
-﻿using AcgnuX.Pages;
-using AcgnuX.Properties;
-using AcgnuX.Source.Utils;
+﻿using AcgnuX.Source.Utils;
 using CommunityToolkit.Mvvm.Input;
-using SharedLib.Utils;
-using System;
 using System.ComponentModel;
-using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Threading;
 
 namespace AcgnuX.WindowX.Dialog
 {
@@ -49,8 +42,8 @@ namespace AcgnuX.WindowX.Dialog
         public System.Windows.Media.Brush DialogWindowBackgroundBrush
         {
             get => _dialogWindowBackgroundBrush;
-            set 
-            { 
+            set
+            {
                 if (value != null)
                 {
                     _dialogWindowBackgroundBrush = value; NotifyPropertyChanged();

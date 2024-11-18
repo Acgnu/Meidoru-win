@@ -1,6 +1,4 @@
-﻿using AcgnuX.Source.Utils;
-using SharedLib.Utils;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
@@ -28,14 +26,14 @@ namespace AcgnuX.Controls
                 if (value)
                 {
                     Visibility = Visibility.Visible;
-                    var _fadeInAnimation = (DoubleAnimation) FindResource("FadeInAnimation");
+                    var _fadeInAnimation = (DoubleAnimation)FindResource("FadeInAnimation");
                     BeginAnimation(UIElement.OpacityProperty, _fadeInAnimation);
                 }
                 else
                 {
                     //var fadeOutStoryboard = (Storyboard) this.FindResource("FadeOutStoryboard");
                     //fadeOutStoryboard.AutoReverse = true;
-                    var _fadeOutAnimation = (DoubleAnimation) FindResource("FadeOutAnimation");
+                    var _fadeOutAnimation = (DoubleAnimation)FindResource("FadeOutAnimation");
                     _fadeOutAnimation.Completed += (sender, e) => Visibility = Visibility.Collapsed;
                     BeginAnimation(UIElement.OpacityProperty, _fadeOutAnimation);
                 }
@@ -73,7 +71,7 @@ namespace AcgnuX.Controls
         private static void OnIsBusyPropertyChange(DependencyObject obj, DependencyPropertyChangedEventArgs args)
         {
             var indicator = obj as BusyIndicator;
-            indicator.IsBusy = (bool) args.NewValue;
+            indicator.IsBusy = (bool)args.NewValue;
         }
 
         /**

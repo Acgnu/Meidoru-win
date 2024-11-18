@@ -1,15 +1,6 @@
 ﻿using AcgnuX.Properties;
 using AcgnuX.Source.Taskx;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using SharedLib.Utils;
-using System;
-using System.Collections.ObjectModel;
-using System.Data;
-using System.Linq;
-using System.Windows.Controls;
-using System.Windows.Input;
-using SharedLib.Data;
 
 namespace AcgnuX.Source.ViewModel
 {
@@ -21,15 +12,15 @@ namespace AcgnuX.Source.ViewModel
         /// <summary>
         /// 账号文件
         /// </summary>
-        public string AccountJsonPath 
-        { 
-            get => Settings.Default.AccountFilePath; 
-            set => SetProperty(Settings.Default.AccountFilePath, value, Settings.Default, (s, v) => { s.AccountFilePath = v; s.Save(); }); 
+        public string AccountJsonPath
+        {
+            get => Settings.Default.AccountFilePath;
+            set => SetProperty(Settings.Default.AccountFilePath, value, Settings.Default, (s, v) => { s.AccountFilePath = v; s.Save(); });
         }
         /// <summary>
         /// 乐谱目录
         /// </summary>
-        public string PianoScorePath 
+        public string PianoScorePath
         {
             get => Settings.Default.Tan8HomeDir;
             set => SetProperty(Settings.Default.Tan8HomeDir, value, Settings.Default, (s, v) => { s.Tan8HomeDir = v; s.Save(); });
@@ -57,7 +48,8 @@ namespace AcgnuX.Source.ViewModel
         public string HttpProxyAddress
         {
             get => Settings.Default.HttpProxyAddress;
-            set {
+            set
+            {
                 if (string.IsNullOrEmpty(value)) return;
                 if (!value.StartsWith("http://")) return;
                 SetProperty(Settings.Default.HttpProxyAddress, value, Settings.Default, (s, v) => { s.HttpProxyAddress = v; s.Save(); });

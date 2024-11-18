@@ -1,7 +1,6 @@
 ﻿using AcgnuX.Properties;
 using AcgnuX.Source.Model;
 using SharedLib.Utils;
-using System;
 using System.Data.SQLite;
 using System.IO;
 using System.Net;
@@ -29,7 +28,7 @@ namespace AcgnuX.Source.Taskx.Http
 
         //标识是否正在监听
         public bool IsListen { get => httpListener.IsListening; }
-    
+
 
         /// <summary>
         /// 启动监听
@@ -47,12 +46,12 @@ namespace AcgnuX.Source.Taskx.Http
         /// <param name="ar"></param>
         private void ListenRequest(IAsyncResult ar)
         {
-            if(!httpListener.IsListening) return;
+            if (!httpListener.IsListening) return;
 
             //继续异步监听
             httpListener.BeginGetContext(ListenRequest, null);
             //获得context对象
-            var context = httpListener.EndGetContext(ar); 
+            var context = httpListener.EndGetContext(ar);
 
             //var request = context.Request;
             var response = context.Response;
@@ -67,7 +66,7 @@ namespace AcgnuX.Source.Taskx.Http
             }
             catch (Exception ex)
             {
-                if(ex.HResult == -2147467259)
+                if (ex.HResult == -2147467259)
                 {
                     Console.WriteLine("Code: -2147467259, Message: " + ex.Message);
                 }
@@ -117,7 +116,7 @@ namespace AcgnuX.Source.Taskx.Http
                 FetchPianoScore(httpListenerContext);
             }
             //v2版曲谱地址
-            if(httpListenerContext.Request.Url.LocalPath.Equals("/yuepu/info/v2"))
+            if (httpListenerContext.Request.Url.LocalPath.Equals("/yuepu/info/v2"))
             {
                 ResponseV2Yuepu(httpListenerContext);
             }
@@ -150,7 +149,7 @@ namespace AcgnuX.Source.Taskx.Http
             if (!string.IsNullOrEmpty(ypid))
             {
                 var playFileSuf = ".ypa2";
-                if("2".Equals(v))
+                if ("2".Equals(v))
                 {
                     playFileSuf = ".ypdx";
                 }
@@ -217,13 +216,13 @@ namespace AcgnuX.Source.Taskx.Http
             }
         }
 
-            /// <summary>
-            /// 响应sound.swf
-            /// </summary>
-            /// <param name="httpListenerContext"></param>
+        /// <summary>
+        /// 响应sound.swf
+        /// </summary>
+        /// <param name="httpListenerContext"></param>
         private void ResponseSoundFlash(HttpListenerContext httpListenerContext)
         {
-            WriteFile(Environment.CurrentDirectory + @"\Assets\flash\sounds.swf" , httpListenerContext);
+            WriteFile(Environment.CurrentDirectory + @"\Assets\flash\sounds.swf", httpListenerContext);
         }
 
         /// <summary>
@@ -241,7 +240,7 @@ namespace AcgnuX.Source.Taskx.Http
                 //根据名称返回文件夹中的乐谱第一页
                 var yuepuPath = FileUtil.GetTan8YuepuFolder(Settings.Default.Tan8HomeDir, ypid);
                 var previewImgPath = Path.Combine(yuepuPath, "page.0.png");
-                if(File.Exists(previewImgPath))
+                if (File.Exists(previewImgPath))
                 {
                     WriteFile(previewImgPath, httpListenerContext);
                     return;

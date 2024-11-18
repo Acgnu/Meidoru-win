@@ -2,12 +2,9 @@
 using AcgnuX.Source.Model;
 using AcgnuX.Utils;
 using SharedLib.Utils;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AcgnuX.Source.Bussiness.Data
 {
@@ -34,9 +31,9 @@ namespace AcgnuX.Source.Bussiness.Data
             {
                 var avatar = dataRow["avatar"];
                 var avatarBytes = new byte[0];
-                if(avatar != DBNull.Value)
+                if (avatar != DBNull.Value)
                 {
-                    avatarBytes = (byte []) avatar;
+                    avatarBytes = (byte[])avatar;
                 }
                 resultSet.Add(new Contact()
                 {
@@ -44,9 +41,9 @@ namespace AcgnuX.Source.Bussiness.Data
                     Name = Convert.ToString(dataRow["name"]),
                     Uid = Convert.ToString(dataRow["uid"]),
                     Phone = Convert.ToString(dataRow["phone"]),
-                    Platform = (ContactPlatform) EnumLoader.GetByValue(typeof(ContactPlatform), Convert.ToString(dataRow["platform"])),
+                    Platform = (ContactPlatform)EnumLoader.GetByValue(typeof(ContactPlatform), Convert.ToString(dataRow["platform"])),
                     Avatar = avatarBytes
-                }) ;
+                });
             }
             return resultSet;
         }
@@ -70,7 +67,7 @@ namespace AcgnuX.Source.Bussiness.Data
         public int Add(string platform, string uid, string name, string phone, ByteArray avatar)
         {
             var i = SQLite.ExecuteNonQuery(
-                "INSERT INTO contact(id, platform, uid, name, phone, avatar) VALUES ((SELECT IFNULL(MAX(id),0)  + 1 FROM contact), @platform, @uid, @name, @phone, @avatar)", 
+                "INSERT INTO contact(id, platform, uid, name, phone, avatar) VALUES ((SELECT IFNULL(MAX(id),0)  + 1 FROM contact), @platform, @uid, @name, @phone, @avatar)",
                 new List<SQLiteParameter>
             {
                 new SQLiteParameter("@platform", platform),
@@ -80,7 +77,7 @@ namespace AcgnuX.Source.Bussiness.Data
                 new SQLiteParameter("@avatar", avatar.Data)
             });
 
-            if(i  == 0) return i;
+            if (i == 0) return i;
 
             var sLastId = SQLite.sqlone("SELECT LAST_INSERT_ROWID() FROM contact", null);
             return Convert.ToInt32(sLastId);

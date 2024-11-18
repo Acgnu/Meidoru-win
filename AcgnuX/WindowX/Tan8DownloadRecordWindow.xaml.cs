@@ -1,15 +1,13 @@
 ﻿using AcgnuX.Properties;
-using AcgnuX.Source.Bussiness.Constants;
+using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
 using AcgnuX.WindowX.Dialog;
-using System;
-using System.Windows;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using Microsoft.Extensions.DependencyInjection;
-using AcgnuX.Source.Utils;
 using SharedLib.Utils;
+using System.Windows;
+using System.Windows.Input;
 
 namespace AcgnuX.WindowX
 {
@@ -88,7 +86,7 @@ namespace AcgnuX.WindowX
             {
                 Owner = this
             };
-            if(dialog.ShowDialog().GetValueOrDefault())
+            if (dialog.ShowDialog().GetValueOrDefault())
             {
                 int? ypid = null;
                 if (!string.IsNullOrEmpty(dialog.Ypid) && DataUtil.IsNum(dialog.Ypid))

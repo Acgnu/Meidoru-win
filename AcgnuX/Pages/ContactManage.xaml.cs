@@ -1,11 +1,9 @@
 ﻿using AcgnuX.Properties;
-using AcgnuX.Source.Bussiness.Constants;
+using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
 using AcgnuX.WindowX.Dialog;
-using CommunityToolkit.Mvvm.Messaging;
-using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
-using AcgnuX.Source.Utils;
+using System.Windows;
 
 namespace AcgnuX.Pages
 {
@@ -42,7 +40,7 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnBtnAddClick(object sender, RoutedEventArgs e)
         {
-            if(ViewModel.SafeMode)
+            if (ViewModel.SafeMode)
             {
                 return;
             }
@@ -52,7 +50,7 @@ namespace AcgnuX.Pages
                 return;
             }
             var newItem = new ContactItemViewModel();
-            if(new EditContactDialog(newItem).ShowDialog().GetValueOrDefault())
+            if (new EditContactDialog(newItem).ShowDialog().GetValueOrDefault())
             {
                 ViewModel.ContactItems.Insert(0, newItem);
             }

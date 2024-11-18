@@ -1,8 +1,8 @@
 ﻿
 using AcgnuX.Source.ViewModel;
 using AcgnuX.WindowX.Dialog;
-using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
+using System.Windows;
 
 namespace AcgnuX.Pages
 {

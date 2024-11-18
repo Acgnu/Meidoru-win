@@ -1,12 +1,6 @@
 ﻿using SharedLib.Model;
 using SharedLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace SharedLib.ImageNetRepository
 {
@@ -15,7 +9,7 @@ namespace SharedLib.ImageNetRepository
     /// https://www.oleou.com/zt/tuc/
     /// </summary>
     public class OleouImageRepo : IImageRepo
-    { 
+    {
         private static readonly string[] CHANNELS = {
             "tt",       //头条
             "sg",  //搜狗
@@ -42,7 +36,7 @@ namespace SharedLib.ImageNetRepository
             //执行上传
             //var uploadFileFormName = "sheet_" + RandomUtil.makeSring(false, 8) + ".png";
             var response = RequestUtil.UploadFile(
-                "https://image.kieng.cn/upload.html?type=" + apiType, 
+                "https://image.kieng.cn/upload.html?type=" + apiType,
                 arg.FullFilePath,
                 "image",
                arg.ExtraArgs["uploadFileFormName"],

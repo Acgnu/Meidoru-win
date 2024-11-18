@@ -120,9 +120,6 @@
   <data name="S_Account" xml:space="preserve">
     <value>账号</value>
   </data>
-  <data name="S_Add" xml:space="preserve">
-    <value>新增</value>
-  </data>
   <data name="S_AutoDownload" xml:space="preserve">
     <value>自动下载</value>
   </data>
@@ -281,5 +278,8 @@
   </data>
   <data name="S_UseProxy" xml:space="preserve">
     <value>使用代理</value>
+  </data>
+  <data name="S_Add" xml:space="preserve">
+    <value>添加</value>
   </data>
 </root>

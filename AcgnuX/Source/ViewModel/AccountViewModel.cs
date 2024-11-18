@@ -2,12 +2,9 @@
 using AcgnuX.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using SharedLib.Utils;
-using System;
-using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Threading.Tasks;
 
 namespace AcgnuX.ViewModel
 {
@@ -48,7 +45,7 @@ namespace AcgnuX.ViewModel
                 ["Upass"] = Upass,
                 ["Remark"] = Remark
             };
-            if (null == Id) 
+            if (null == Id)
             {
                 //新增
                 Id = TimeUtil.CurrentMillis();
@@ -63,7 +60,7 @@ namespace AcgnuX.ViewModel
                 var nodeArray = node.Root.AsArray();
                 for (var i = 0; i < nodeArray.Count; i++)
                 {
-                    if(nodeArray[i]["Id"].GetValue<long>().Equals(Id.GetValueOrDefault()))
+                    if (nodeArray[i]["Id"].GetValue<long>().Equals(Id.GetValueOrDefault()))
                     {
                         nodeArray.RemoveAt(i);
                         nodeArray.Insert(i, editNode);

@@ -74,7 +74,7 @@ namespace AcgnuX.WindowX.Dialog
             {
                 Enable = true
             };
-            var dialog = new EditSyncConfigDialog(newVm) ;
+            var dialog = new EditSyncConfigDialog(newVm);
             if (dialog.ShowDialog().GetValueOrDefault())
             {
                 ContentViewModel.AddNewSyncConfig(newVm);

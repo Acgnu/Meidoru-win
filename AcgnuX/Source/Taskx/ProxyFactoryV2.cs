@@ -1,15 +1,7 @@
 ﻿using AcgnuX.Properties;
-using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Source.Bussiness.Data;
-using AcgnuX.Source.Utils;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Timers;
-using Microsoft.Extensions.DependencyInjection;
-using SharedLib.Data;
 using SharedLib.Utils;
 using System.Net.Http;
+using System.Timers;
 
 namespace AcgnuX.Source.Taskx
 {
@@ -23,7 +15,7 @@ namespace AcgnuX.Source.Taskx
         //当前代理IP数量
         private int ProxyCount = 0;
         public int GetProxyCount => ProxyCount;
-        private Timer mProxyCounter;
+        private System.Timers.Timer mProxyCounter;
 
 
         /// <summary>
@@ -36,7 +28,7 @@ namespace AcgnuX.Source.Taskx
                 await Task.Run(() =>
                 {
                     OnTimer(null, null);
-                    mProxyCounter = new Timer
+                    mProxyCounter = new System.Timers.Timer
                     {
                         Interval = 3000 // 3 seconds
                     };
@@ -66,10 +58,10 @@ namespace AcgnuX.Source.Taskx
         private async void OnTimer(object sender, ElapsedEventArgs args)
         {
             var proxyAddress = Settings.Default.HttpProxyAddress;
-            if(string.IsNullOrEmpty(proxyAddress)) return;
+            if (string.IsNullOrEmpty(proxyAddress)) return;
 
             var num = await RequestUtil.TaskFormRequestAsync(proxyAddress + "/ip-nums", null, HttpMethod.Get);
-            if(!DataUtil.IsNum(num)) return;
+            if (!DataUtil.IsNum(num)) return;
 
             ProxyCount = Convert.ToInt32(num);
             mProxyPoolCountChangeHandler?.Invoke(ProxyCount);

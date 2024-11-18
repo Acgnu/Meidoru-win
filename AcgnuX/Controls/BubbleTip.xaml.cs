@@ -1,19 +1,7 @@
 ﻿using AcgnuX.Source.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace AcgnuX.Controls
 {
@@ -22,9 +10,9 @@ namespace AcgnuX.Controls
     /// </summary>
     public partial class BubbleTip : UserControl
     {
-        public bool IsShow 
+        public bool IsShow
         {
-            get { return ( bool )GetValue(IsShowProperty); } 
+            get { return (bool)GetValue(IsShowProperty); }
             set { SetValue(IsShowProperty, value); }
         }
 
@@ -43,7 +31,7 @@ namespace AcgnuX.Controls
         private static void OnIsShowPropertyChange(DependencyObject obj, DependencyPropertyChangedEventArgs args)
         {
             var bubbleTip = obj as BubbleTip;
-            var IsShow = (bool) args.NewValue;
+            var IsShow = (bool)args.NewValue;
             if (IsShow)
             {
                 bubbleTip.Visibility = Visibility.Visible;

@@ -1,10 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
+﻿using System.Windows.Media.Imaging;
 
 namespace AcgnuX.Source.Bussiness.Constants
 {
@@ -45,7 +39,7 @@ namespace AcgnuX.Source.Bussiness.Constants
         private static BitmapImage mDefaultSheetCover = null;
         public static BitmapImage GetDefaultSheetCover()
         {
-            if(null == mDefaultSheetCover)
+            if (null == mDefaultSheetCover)
             {
                 mDefaultSheetCover = new BitmapImage(new Uri(
                     string.Format("pack://application:,,,/{0};component/Assets/Images/piano-cover-default.jpg", System.Reflection.Assembly.GetEntryAssembly().GetName().Name),

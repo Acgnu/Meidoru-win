@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Data.SQLite;
-using System.Threading.Tasks;
 
 namespace SharedLib.Utils
 {
@@ -78,7 +75,7 @@ namespace SharedLib.Utils
         /// <returns></returns>
         private static SQLiteConnection GetConnection()
         {
-            if(string.IsNullOrEmpty(mDbFilePath)) return null;
+            if (string.IsNullOrEmpty(mDbFilePath)) return null;
 
             var connectionString = new SQLiteConnectionStringBuilder
             {
@@ -182,7 +179,7 @@ namespace SharedLib.Utils
             {
                 if (null == connection) return 0;
                 var cmd = new SQLiteCommand(sql, connection);
-                if(null != sqlParams && sqlParams.Count > 0)
+                if (null != sqlParams && sqlParams.Count > 0)
                 {
                     cmd.Parameters.AddRange(sqlParams.ToArray());
                 }
@@ -253,7 +250,7 @@ namespace SharedLib.Utils
                     sqlcmd.Parameters.AddRange(sqlParams);
                 }
                 var obj = sqlcmd.ExecuteScalar();
-                if(null == obj)
+                if (null == obj)
                 {
                     return string.Empty;
                 }
@@ -284,7 +281,7 @@ namespace SharedLib.Utils
 
                 var columnList = new List<string>();
                 var sqlcmd = new SQLiteCommand(sql, connection);//sql语句
-                if(null != sqlArgs && sqlArgs.Count > 0)
+                if (null != sqlArgs && sqlArgs.Count > 0)
                 {
                     sqlcmd.Parameters.AddRange(sqlArgs.ToArray());
                 }
@@ -324,7 +321,7 @@ namespace SharedLib.Utils
                     Connection = connection,
                     CommandTimeout = 120
                 };
-                if(null != sqlArgs && sqlArgs.Count > 0)
+                if (null != sqlArgs && sqlArgs.Count > 0)
                 {
                     sqlcmd.Parameters.AddRange(sqlArgs.ToArray());
                 }

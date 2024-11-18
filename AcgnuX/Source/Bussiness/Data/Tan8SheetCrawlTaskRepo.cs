@@ -1,9 +1,6 @@
 ﻿using SharedLib.Utils;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Linq;
 
 namespace AcgnuX.Source.Bussiness.Data
 {

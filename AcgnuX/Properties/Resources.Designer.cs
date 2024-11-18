@@ -70,7 +70,7 @@ namespace AcgnuX.Properties {
         }
         
         /// <summary>
-        ///   查找类似 新增 的本地化字符串。
+        ///   查找类似 添加 的本地化字符串。
         /// </summary>
         public static string S_Add {
             get {

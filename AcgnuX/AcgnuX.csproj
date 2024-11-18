@@ -1,504 +1,45 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F976F226-446B-4C37-AB7E-EDF3B6B49A39}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>AcgnuX</RootNamespace>
-    <AssemblyName>AcgnuX</AssemblyName>
-    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <TargetFrameworkProfile />
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>3</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <PublishWizardCompleted>true</PublishWizardCompleted>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-  </PropertyGroup>
-  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
     <StartupObject>AcgnuX.EntryPoint</StartupObject>
+	<WindowsSdkPackageVersion>10.0.22621.38</WindowsSdkPackageVersion>
+	<ApplicationIcon>Assets\Ico\favicon.ico</ApplicationIcon>
+	<SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>Assets\Ico\favicon.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <OutputPath>bin\Debug\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <OutputPath>bin\Release\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestCertificateThumbprint>BFC6F3044D17A6668ED9D68504C0E334DEA64795</ManifestCertificateThumbprint>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestKeyFile>AcgnuX_TemporaryKey.pfx</ManifestKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignManifests>false</SignManifests>
-  </PropertyGroup>
-  <PropertyGroup>
-    <TargetZone>LocalIntranet</TargetZone>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="AxInterop.ShockwaveFlashObjects">
-      <HintPath>..\FlashControlLibrary\bin\Debug\AxInterop.ShockwaveFlashObjects.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="PresentationFramework.Aero2" />
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration.Install" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.Runtime.Caching" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceProcess" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="WindowsFormsIntegration" />
+    <None Remove="Assets\data\init.sql" />
+    <None Remove="Assets\exe\77player.exe" />
+    <None Remove="Assets\exe\intl.dll" />
+    <None Remove="Assets\exe\libglib-2.0-0.dll" />
+    <None Remove="Assets\exe\libgthread-2.0-0.dll" />
+    <None Remove="Assets\exe\pdflib.dll" />
+    <None Remove="Assets\exe\pmady.dll" />
+    <None Remove="Assets\exe\wzsfont.ttf" />
+    <None Remove="Assets\exe\ypres.dat" />
+    <None Remove="Assets\flash\flashplayer.exe" />
+    <None Remove="Assets\flash\fuckTan8\Main.swf" />
+    <None Remove="Assets\flash\sounds.swf" />
+    <None Remove="Assets\Ico\favicon.ico" />
+    <None Remove="Assets\Images\avatar_default.jpg" />
+    <None Remove="Assets\Images\icon_audio_file.png" />
+    <None Remove="Assets\Images\icon_image_file.png" />
+    <None Remove="Assets\Images\icon_qq.png" />
+    <None Remove="Assets\Images\icon_unknow_file.png" />
+    <None Remove="Assets\Images\icon_video_file.png" />
+    <None Remove="Assets\Images\icon_we.png" />
+    <None Remove="Assets\Images\loading_nekololi.gif" />
+    <None Remove="Assets\Images\piano-cover-default.jpg" />
+    <None Remove="Assets\Images\tan8_sheet_preview_default.png" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\AnimatedScrollViewer\AnimatedListBox.cs" />
-    <Compile Include="Controls\AnimatedScrollViewer\AnimatedScrollViewer.cs" />
-    <Compile Include="Controls\FileItemCompareControl.xaml.cs">
-      <DependentUpon>FileItemCompareControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\FileItemListControl.xaml.cs">
-      <DependentUpon>FileItemListControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ProgressAnimater.cs" />
-    <Compile Include="Controls\AsyncImage.cs" />
-    <Compile Include="Controls\BubbleTip.xaml.cs">
-      <DependentUpon>BubbleTip.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\BubbleTipViwer.xaml.cs">
-      <DependentUpon>BubbleTipViwer.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\BusyIndicator.xaml.cs">
-      <DependentUpon>BusyIndicator.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\FadeAnimateItemsBehavior.cs" />
-    <Compile Include="Controls\GifImage.cs" />
-    <Compile Include="Controls\RangeObservableCollection.cs" />
-    <Compile Include="EntryPoint.cs" />
-    <Compile Include="Pages\DnsManage.xaml.cs">
-      <DependentUpon>DnsManage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\MobileDeviceControl.xaml.cs">
-      <DependentUpon>MobileDeviceControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\ContactManage.xaml.cs">
-      <DependentUpon>ContactManage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Tan8SheetReponsitory.xaml.cs">
-      <DependentUpon>Tan8SheetReponsitory.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\PwdRepositroy.xaml.cs">
-      <DependentUpon>PwdRepositroy.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\AppSettings.xaml.cs">
-      <DependentUpon>AppSettings.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Settings.cs" />
-    <Compile Include="SingleInstanceManager.cs" />
-    <Compile Include="Source\Bussiness\Common\AsyncObservableCollection.cs" />
-    <Compile Include="Source\Bussiness\Common\BaseValueConverter.cs" />
-    <Compile Include="Source\Bussiness\Common\StringTruncateConverter.cs" />
-    <Compile Include="Source\Bussiness\Common\ByteArrayToAvatarImageConverter.cs" />
-    <Compile Include="Source\Bussiness\Common\ContactPlatformToImageSourceConverter.cs" />
-    <Compile Include="Source\Bussiness\Common\TaskCompletionNotifier.cs" />
-    <Compile Include="Source\Bussiness\Constants\ContactPlatform.cs" />
-    <Compile Include="Source\Bussiness\Constants\ReadSyncFileTaskProgressType.cs" />
-    <Compile Include="Source\Bussiness\Constants\SyncTaskProgressType.cs" />
-    <Compile Include="Source\Bussiness\Constants\SyncContentType.cs" />
-    <Compile Include="Source\Bussiness\Constants\ApplicationConstant.cs" />
-    <Compile Include="Source\Bussiness\Constants\Tan8SheetDownloadResult.cs" />
-    <Compile Include="Source\Bussiness\Constants\AlertLevel.cs" />
-    <Compile Include="Source\Bussiness\Constants\SyncDeviceType.cs" />
-    <Compile Include="Source\Bussiness\Data\AppSecretKeyRepo.cs" />
-    <Compile Include="Source\Bussiness\Data\MediaSyncConfigRepo.cs" />
-    <Compile Include="Source\Bussiness\Data\Tan8SheetCrawlRecordRepo.cs" />
-    <Compile Include="Source\Bussiness\Data\Tan8SheetCrawlTaskRepo.cs" />
-    <Compile Include="Source\Bussiness\Data\Tan8SheetsRepo.cs" />
-    <Compile Include="Source\Bussiness\Data\ContactRepo.cs" />
-    <Compile Include="Pages\Index.xaml.cs">
-      <DependentUpon>Index.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Source\Bussiness\Validation\ValidateSyncPath.cs" />
-    <Compile Include="Source\Bussiness\Validation\ValidateAccount.cs" />
-    <Compile Include="Source\Bussiness\Validation\ValidateCrawlRule.cs" />
-    <Compile Include="Source\Bussiness\Validation\ValidateContact.cs" />
-    <Compile Include="Source\Model\Tan8SheetCrawlArg.cs" />
-    <Compile Include="Source\Utils\ImageUtil.cs" />
-    <Compile Include="Source\Utils\MediaUtil.cs" />
-    <Compile Include="Source\ViewModel\ContactManageViewModel.cs" />
-    <Compile Include="Source\ViewModel\Design\BubbleTipDesignModel.cs" />
-    <Compile Include="Source\ViewModel\Design\BubbleTipViwerDesignModel.cs" />
-    <Compile Include="Source\ViewModel\Design\ContactListDesignModel.cs" />
-    <Compile Include="Source\ViewModel\Design\ContactItemDesignModel.cs" />
-    <Compile Include="Source\Model\AppSecretKey.cs" />
-    <Compile Include="Source\Model\ByteArray.cs" />
-    <Compile Include="Source\Model\Contact.cs" />
-    <Compile Include="Source\Model\DeviceSyncReadProgressItem.cs" />
-    <Compile Include="Source\Model\DeviceSyncTaskArgs.cs" />
-    <Compile Include="Source\Model\MediaSyncConfig.cs" />
-    <Compile Include="Source\Model\NavMenu.cs" />
-    <Compile Include="Source\Model\Tan8SheetDownloadRecord.cs" />
-    <Compile Include="Source\Taskx\HttpWebServer.cs" />
-    <Compile Include="Source\Taskx\ProxyFactoryV2.cs" />
-    <Compile Include="Source\Utils\ConfigUtil.cs" />
-    <Compile Include="Source\Utils\ServiceUtil.cs" />
-    <Compile Include="Source\Utils\EnumLoader.cs" />
-    <Compile Include="Source\Utils\TimeUtil.cs" />
-    <Compile Include="Source\Utils\WindowUtil.cs" />
-    <Compile Include="Source\Utils\XamlUtil.cs" />
-    <Compile Include="Source\ViewModel\BubbleTipViwerViewModel.cs" />
-    <Compile Include="Source\ViewModel\BubbleTipViewModel.cs" />
-    <Compile Include="Source\ViewModel\ContactItemViewModel.cs" />
-    <Compile Include="Source\ViewModel\Design\DeviceSyncDesignViewModel.cs" />
-    <Compile Include="Source\ViewModel\Design\FileItemDesignViewModel.cs" />
-    <Compile Include="Source\ViewModel\Design\FileItemListDesignViewModel.cs" />
-    <Compile Include="Source\ViewModel\Design\FileItemsCompareDesignViewModel.cs" />
-    <Compile Include="Source\ViewModel\Design\SheetItemDesignModel.cs" />
-    <Compile Include="Source\ViewModel\Design\SheetItemDownloadDesignModel.cs" />
-    <Compile Include="Source\ViewModel\DeviceDriverViewModel.cs" />
-    <Compile Include="Source\ViewModel\AccountViewModel.cs" />
-    <Compile Include="Source\ViewModel\CommonWindowViewModel.cs" />
-    <Compile Include="Source\ViewModel\DeviceSyncPathConfigDialogViewModel.cs" />
-    <Compile Include="Source\ViewModel\DeviceSyncViewModel.cs" />
-    <Compile Include="Source\ViewModel\DnsItemViewModel.cs" />
-    <Compile Include="Source\ViewModel\DnsManageViewModel.cs" />
-    <Compile Include="Source\ViewModel\FileItemsCompareViewModel.cs" />
-    <Compile Include="Source\ViewModel\FileItemsListViewModel.cs" />
-    <Compile Include="Source\ViewModel\FileItemViewModel.cs" />
-    <Compile Include="Source\ViewModel\SheetItemDownloadViewModel.cs" />
-    <Compile Include="Source\ViewModel\SheetItemViewModel.cs" />
-    <Compile Include="Source\ViewModel\PwdRepositoryViewModel.cs" />
-    <Compile Include="Source\ViewModel\SyncConfigViewModel.cs" />
-    <Compile Include="Source\ViewModel\Tan8PlayerViewModel.cs" />
-    <Compile Include="Source\ViewModel\SettingsViewModel.cs" />
-    <Compile Include="Source\ViewModel\PianoScoreDownloadRecordViewModel.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Source\ViewModel\MainWindowViewModel.cs" />
-    <Compile Include="Source\ViewModel\Tan8SheetReponsitoryViewModel.cs" />
-    <Compile Include="WindowX\Dialog\BaseDialog.cs" />
-    <Compile Include="WindowX\Dialog\ConfirmDialog.xaml.cs">
-      <DependentUpon>ConfirmDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="WindowX\Dialog\AddSinglePianoScoreDialog.xaml.cs">
-      <DependentUpon>AddSinglePianoScoreDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="WindowX\Dialog\DeviceSyncPathConfigDialog.xaml.cs">
-      <DependentUpon>DeviceSyncPathConfigDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="WindowX\Dialog\EditContactDialog.xaml.cs">
-      <DependentUpon>EditContactDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="WindowX\Dialog\EditSyncConfigDialog.xaml.cs">
-      <DependentUpon>EditSyncConfigDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="WindowX\Dialog\EditAccountDialog.xaml.cs">
-      <DependentUpon>EditAccountDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="WindowX\Dialog\EditDnsRecordDialog.xaml.cs">
-      <DependentUpon>EditDnsRecordDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="WindowX\Tan8DownloadRecordWindow.xaml.cs">
-      <DependentUpon>Tan8DownloadRecordWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="WindowX\Tan8PlayerWindow.xaml.cs">
-      <DependentUpon>Tan8PlayerWindow.xaml</DependentUpon>
-    </Compile>
-    <Page Include="App.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\BubbleTip.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\BubbleTipViwer.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\BusyIndicator.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\FileItemCompareControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\FileItemListControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\DnsManage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Index.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\MobileDeviceControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\ContactManage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Pages\Tan8SheetReponsitory.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\PwdRepositroy.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\AppSettings.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <DesignData Include="Source\ViewModel\DesignData\BubbleTipViwerDesignData.xaml">
-      <SubType>Designer</SubType>
-    </DesignData>
-    <DesignData Include="Source\ViewModel\DesignData\BubbleTipDesignViewData.xaml">
-      <SubType>Designer</SubType>
-    </DesignData>
-    <Page Include="Styles\Animations.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\CheckBoxStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\Component.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\DockPanelStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\Geometries.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Styles\Color.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\ComboBoxStyle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Styles\ImageStyle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Styles\BorderStyle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Styles\ButtonStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\DataGridStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\PageStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\ScrollBarStyle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Styles\ListBoxStyle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Styles\TextBlockStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\GeometriesStyle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Styles\TextBoxStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\ProgressBarStyle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Styles\UserControlContactStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\UserControlDeviceSyncStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\UserControlTan8SheetStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\WindowStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MainWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="WindowX\Dialog\ConfirmDialog.xaml" />
-    <Page Include="WindowX\Dialog\AddSinglePianoScoreDialog.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="WindowX\Dialog\DeviceSyncPathConfigDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="WindowX\Dialog\EditContactDialog.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="WindowX\Dialog\EditSyncConfigDialog.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="WindowX\Dialog\EditAccountDialog.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="WindowX\Dialog\EditDnsRecordDialog.xaml" />
-    <Page Include="WindowX\Tan8DownloadRecordWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="WindowX\Tan8PlayerWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <Resource Include="Assets\Images\loading_nekololi.gif" />
-    <Resource Include="Assets\Images\avatar_default.jpg" />
-    <Resource Include="Assets\Images\icon_qq.png" />
-    <Resource Include="Assets\Images\icon_we.png" />
-    <Resource Include="Assets\Images\icon_audio_file.png" />
-    <Resource Include="Assets\Images\icon_image_file.png" />
-    <Resource Include="Assets\Images\icon_unknow_file.png" />
-    <Resource Include="Assets\Images\icon_video_file.png" />
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Content Include="Assets\exe\wzsfont.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\exe\ypres.dat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <None Include="Properties\app.manifest" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <Resource Include="Assets\Images\tan8_sheet_preview_default.png" />
-    <Resource Include="Assets\data\init.sql" />
     <Content Include="Assets\exe\77player.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -517,6 +58,12 @@
     <Content Include="Assets\exe\pmady.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\exe\wzsfont.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\exe\ypres.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\flash\flashplayer.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -526,93 +73,70 @@
     <Content Include="Assets\flash\sounds.swf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+    <PackageReference Include="Enums.NET" Version="5.0.0" />
+    <PackageReference Include="MediaDevices" Version="1.10.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.3" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+    <PackageReference Include="System.Net.Http.Json" Version="9.0.0" />
+    <PackageReference Include="System.Runtime.Caching" Version="9.0.0" />
+    <PackageReference Include="taglib-sharp-netstandard2.0" Version="2.1.0" />
+    <PackageReference Include="VirtualizingWrapPanel" Version="2.1.0" />
+    <PackageReference Include="WindowsAPICodePack" Version="8.0.6" />
+    <PackageReference Include="WpfUsbMonitor" Version="3.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AlidnsLib\AlidnsLib.csproj" />
+    <ProjectReference Include="..\SharedLib\SharedLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\data\init.sql" />
     <Resource Include="Assets\Ico\favicon.ico" />
+    <Resource Include="Assets\Images\avatar_default.jpg" />
+    <Resource Include="Assets\Images\icon_audio_file.png" />
+    <Resource Include="Assets\Images\icon_image_file.png" />
+    <Resource Include="Assets\Images\icon_qq.png" />
+    <Resource Include="Assets\Images\icon_unknow_file.png" />
+    <Resource Include="Assets\Images\icon_video_file.png" />
+    <Resource Include="Assets\Images\icon_we.png" />
+    <Resource Include="Assets\Images\loading_nekololi.gif">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Assets\Images\piano-cover-default.jpg" />
+    <Resource Include="Assets\Images\tan8_sheet_preview_default.png" />
   </ItemGroup>
+
   <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 和 x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
+
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm">
-      <Version>8.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="Enums.NET">
-      <Version>4.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="MediaDevices">
-      <Version>1.10.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
-      <Version>3.3.4</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp">
-      <Version>4.11.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection">
-      <Version>8.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies">
-      <Version>1.0.0</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
-      <Version>7.1.2</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Windows.SDK.Contracts">
-      <Version>10.0.19041.1</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf">
-      <Version>1.1.122</Version>
-    </PackageReference>
-    <PackageReference Include="System.Collections">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Data.SQLite.Core">
-      <Version>1.0.118</Version>
-    </PackageReference>
-    <PackageReference Include="System.Net.Http.Json">
-      <Version>8.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Runtime.WindowsRuntime">
-      <Version>4.6.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Runtime.WindowsRuntime.UI.Xaml">
-      <Version>4.6.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.ValueTuple">
-      <Version>4.5.0</Version>
-    </PackageReference>
-    <PackageReference Include="taglib-sharp-netstandard2.0">
-      <Version>2.1.0</Version>
-    </PackageReference>
-    <PackageReference Include="VirtualizingWrapPanel">
-      <Version>2.0.10</Version>
-    </PackageReference>
-    <PackageReference Include="WpfUsbMonitor">
-      <Version>3.2.1</Version>
-    </PackageReference>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\AlidnsLib\AlidnsLib.csproj">
-      <Project>{acea3fa3-86d9-47ff-a0b8-73be989b476f}</Project>
-      <Name>AlidnsLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SharedLib\SharedLib.csproj">
-      <Project>{25baea97-b19b-454f-80e8-375ed79f7980}</Project>
-      <Name>SharedLib</Name>
-    </ProjectReference>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>

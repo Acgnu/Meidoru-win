@@ -1,12 +1,5 @@
-﻿using AcgnuX.Pages;
-using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Source.Model;
-using AcgnuX.Source.Utils;
-using AcgnuX.Source.ViewModel;
+﻿using AcgnuX.Source.Utils;
 using AcgnuX.ViewModel;
-using CommunityToolkit.Mvvm.Messaging;
-using System;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -51,7 +44,7 @@ namespace AcgnuX.WindowX.Dialog
 
         private void OnValidationError(object sender, ValidationErrorEventArgs e)
         {
-            if(e.Action == ValidationErrorEventAction.Added)
+            if (e.Action == ValidationErrorEventAction.Added)
             {
                 WindowUtil.ShowBubbleError(e.Error.ErrorContent.ToString());
             }

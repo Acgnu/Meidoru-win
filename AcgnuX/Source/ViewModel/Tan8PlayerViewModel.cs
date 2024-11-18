@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace AcgnuX.Source.ViewModel
+﻿namespace AcgnuX.Source.ViewModel
 {
     /// <summary>
     /// 弹琴吧播放器视窗viewModel

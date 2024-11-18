@@ -1,13 +1,7 @@
-﻿using SharedLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using SharedLib.Model;
+﻿using SharedLib.Model;
+using SharedLib.Utils;
 using System.Data;
+using System.Data.SQLite;
 
 namespace SharedLib.Data
 {
@@ -83,7 +77,7 @@ namespace SharedLib.Data
         public void SaveProxyToDB(string proxyAddress, int ruleId)
         {
             SQLite.ExecuteNonQuery("INSERT OR IGNORE INTO proxy_address(address, addtime, rule_id) VALUES (@address, datetime('now', 'localtime'), @ruleId)",
-                      new List<SQLiteParameter> { 
+                      new List<SQLiteParameter> {
                           new SQLiteParameter("@address", proxyAddress),
                           new SQLiteParameter("@ruleId", ruleId)
                       });

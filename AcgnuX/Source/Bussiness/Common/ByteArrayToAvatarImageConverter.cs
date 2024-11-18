@@ -1,12 +1,6 @@
-﻿using AcgnuX.Source.Bussiness.Constants;
-using AcgnuX.Source.Model;
+﻿using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace AcgnuX.Source.Bussiness.Common
@@ -28,7 +22,7 @@ namespace AcgnuX.Source.Bussiness.Common
                 if (null == defaultAvatar)
                 {
                     var uri = new Uri("../../Assets/Images/avatar_default.jpg", UriKind.Relative);
-                    using(var fileStream = App.GetResourceStream(uri).Stream)
+                    using (var fileStream = App.GetResourceStream(uri).Stream)
                     {
                         defaultAvatar = ImageUtil.GetBitmapImageFromStream(fileStream);
                         return defaultAvatar;
@@ -51,7 +45,7 @@ namespace AcgnuX.Source.Bussiness.Common
             if (value is byte[] v)
             {
                 bytes = v;
-            } 
+            }
             else if (value is ByteArray ba)
             {
                 bytes = ba.Data;
@@ -69,7 +63,7 @@ namespace AcgnuX.Source.Bussiness.Common
                     //var stream = FileUtil.GetApplicationResourceAsStream(@"../../Assets/Images/avatar_default.jpg");
                     //return ImageUtil.GetBitmapImageFromStream(stream.Stream);
                 });
-            } 
+            }
             else
             {
                 task = Task.Run(() =>

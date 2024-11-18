@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 
 namespace SharedLib.Utils
 {
@@ -35,15 +32,15 @@ namespace SharedLib.Utils
         /// </param>
         //public static void ExePlay(string command, bool isHide)
         //{
-            //Exit();
-            //mFlashProcess = new Process();
-            //mFlashProcess.StartInfo.FileName = Environment.CurrentDirectory + @"\Assets\flash\flashplayer.exe";
-            //mFlashProcess.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "/maininteractive/ccv/";//程序闪退问题，要强行指定工作目录
-            //mFlashProcess.StartInfo.UseShellExecute = true;//关键代码
-            //mFlashProcess.StartInfo.WindowStyle = isHide ? ProcessWindowStyle.isHide : ProcessWindowStyle.Normal;//关键代码
-            //mFlashProcess.StartInfo.Arguments = command;
-            //mFlashProcess.Start();
-            //mFlashProcess = Process.Start(Environment.CurrentDirectory + @"\Assets\flash\flashplayer.exe", command);
+        //Exit();
+        //mFlashProcess = new Process();
+        //mFlashProcess.StartInfo.FileName = Environment.CurrentDirectory + @"\Assets\flash\flashplayer.exe";
+        //mFlashProcess.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "/maininteractive/ccv/";//程序闪退问题，要强行指定工作目录
+        //mFlashProcess.StartInfo.UseShellExecute = true;//关键代码
+        //mFlashProcess.StartInfo.WindowStyle = isHide ? ProcessWindowStyle.isHide : ProcessWindowStyle.Normal;//关键代码
+        //mFlashProcess.StartInfo.Arguments = command;
+        //mFlashProcess.Start();
+        //mFlashProcess = Process.Start(Environment.CurrentDirectory + @"\Assets\flash\flashplayer.exe", command);
         //}
 
         /// <summary>
@@ -69,7 +66,7 @@ namespace SharedLib.Utils
                     WindowStyle = isHide ? ProcessWindowStyle.Hidden : ProcessWindowStyle.Normal,//关键代码
                     Arguments = Environment.CurrentDirectory + @"\Assets\flash\fuckTan8\Main.swf?id=" + ypid,
                 });
-            } 
+            }
             else if (version == 2)
             {
                 playerProcess = Process.Start(new ProcessStartInfo()
@@ -93,7 +90,7 @@ namespace SharedLib.Utils
         public static void Exit(int ypid)
         {
             var hasKey = ExitProcess(ypid);
-            if(hasKey) _PlayerProcessDictionary.Remove(ypid);
+            if (hasKey) _PlayerProcessDictionary.Remove(ypid);
         }
 
         /// <summary>

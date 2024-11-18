@@ -1,1 +1,0 @@
-int setSysVol(int level);		//defined in cpplib/endpointvolumn.cpp

@@ -6,12 +6,8 @@ using AcgnuX.Source.Taskx.Http;
 using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
 using Microsoft.Extensions.DependencyInjection;
-using SharedLib.Data;
 using SharedLib.Utils;
-using System;
-using System.Collections.ObjectModel;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace AcgnuX

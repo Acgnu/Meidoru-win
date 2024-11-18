@@ -1,10 +1,7 @@
 ﻿using AcgnuX.Source.Model;
-using AcgnuX.Source.ViewModel;
 //using AxShockwaveFlashObjects;
-using System;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Forms.Integration;
 
 namespace AcgnuX.WindowX
 {
@@ -27,7 +24,7 @@ namespace AcgnuX.WindowX
         /// <param name="e"></param>
         private void OnPageLoad(object sender, RoutedEventArgs e)
         {
-            WindowsFormsHost formHost = new WindowsFormsHost();
+            //WindowsFormsHost formHost = new WindowsFormsHost();
             //axShockwaveFlash = new AxShockwaveFlash();
             //formHost.Child = axShockwaveFlash;
             //PlayerGrid.Children.Add(formHost);

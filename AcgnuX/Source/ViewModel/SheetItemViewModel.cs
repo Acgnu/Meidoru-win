@@ -4,16 +4,14 @@ using AcgnuX.Source.Bussiness.Data;
 using AcgnuX.Source.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm;
+using Microsoft.Extensions.DependencyInjection;
 using SharedLib.Utils;
-using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AcgnuX.Source.ViewModel
 {
@@ -95,7 +93,7 @@ namespace AcgnuX.Source.ViewModel
         /// <summary>
         /// 调用播放
         /// </summary>
-        private void OnCallItemPlay(Tan8SheetReponsitoryViewModel sheetRepoViewModel)
+        private void OnCallItemPlay(Tan8SheetReponsitoryViewModel? sheetRepoViewModel)
         {
             //检查曲谱可否播放
             //var tan8Music = _Tan8SheetsRepo.FindById(Id);
@@ -120,7 +118,11 @@ namespace AcgnuX.Source.ViewModel
                 return;
             }
             WindowUtil.ShowBubbleMessage("正在调用默认播放器...", AlertLevel.RUN);
-            System.Diagnostics.Process.Start(fullPath);
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = fullPath,
+                UseShellExecute = true
+            });
         }
 
         /// <summary>
@@ -143,7 +145,11 @@ namespace AcgnuX.Source.ViewModel
                 WindowUtil.ShowBubbleError("目录不存在");
                 return;
             }
-            System.Diagnostics.Process.Start(fullPath);
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = fullPath,
+                UseShellExecute = true
+            });
         }
 
         #region 导出分享后台任务/进度/完成事件
@@ -238,7 +244,7 @@ namespace AcgnuX.Source.ViewModel
             //调用压缩工具进行打包
             //可使用 -email 直接邮寄, bandzip帮助文档 https://www.bandisoft.com/bandizip/help/parameter/
             worker.ReportProgress(85, "正在压缩..");
-            var zipProcess = System.Diagnostics.Process.Start("Bandizip.exe", string.Format("c -y \"{0}\" \"{1}\"",
+            var zipProcess = Process.Start("Bandizip.exe", string.Format("c -y \"{0}\" \"{1}\"",
                 Path.Combine(fullPath, ApplicationConstant.SHARE_ZIP_NAME),
                 Path.Combine(fullPath, ApplicationConstant.SHARE_TEMP_FOLDER_NAME)));
 
@@ -320,7 +326,7 @@ namespace AcgnuX.Source.ViewModel
         private void OnUpdateSheetName()
         {
             var result = _Tan8SheetsRepo.UpdateName(Id, Name);
-            if(!result.success)
+            if (!result.success)
             {
                 WindowUtil.ShowBubbleError(result.message);
                 return;

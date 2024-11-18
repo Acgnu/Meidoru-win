@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AcgnuX.Source.ViewModel.Design
+﻿namespace AcgnuX.Source.ViewModel.Design
 {
     /// <summary>
     /// 乐谱下载项视图模型

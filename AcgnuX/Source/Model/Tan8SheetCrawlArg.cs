@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AcgnuX.Source.Model
+﻿namespace AcgnuX.Source.Model
 {
     /// <summary>
     /// tan8乐谱下载参数

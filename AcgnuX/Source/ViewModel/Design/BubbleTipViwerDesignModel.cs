@@ -1,6 +1,4 @@
-﻿using AcgnuX.Source.ViewModel;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 
 namespace AcgnuX.Source.ViewModel.Design
 {

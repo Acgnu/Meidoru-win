@@ -1,18 +1,13 @@
 ﻿using AcgnuX.Properties;
 using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.Bussiness.Data;
-using AcgnuX.Source.Model;
 using AcgnuX.Source.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SharedLib.Model;
 using SharedLib.Utils;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace AcgnuX.Source.ViewModel
@@ -33,8 +28,8 @@ namespace AcgnuX.Source.ViewModel
         //是否没有数据
         public bool IsEmpty { get => ListData.Count == 0; set => OnPropertyChanged(); }
         //过滤文本
-        public string FilterText { get; set; }     
-        
+        public string FilterText { get; set; }
+
         //刷新命令
         public ICommand OnRefreshCommand { get; }
 

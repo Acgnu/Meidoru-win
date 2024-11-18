@@ -1,7 +1,9 @@
 ﻿using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.ViewModel;
 using CommunityToolkit.Mvvm.Messaging;
-using System.Windows.Forms;
+using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
+
 
 namespace AcgnuX.Source.Utils
 {
@@ -25,7 +27,7 @@ namespace AcgnuX.Source.Utils
                 RestoreDirectory = true,
                 FilterIndex = 1
             };
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            if (openFileDialog.ShowDialog() == true)
             {
                 return openFileDialog.FileName;
             }
@@ -40,14 +42,15 @@ namespace AcgnuX.Source.Utils
         /// <returns></returns>
         public static string OpenFolderDialogForPath(string initialPath)
         {
-            var dialog = new FolderBrowserDialog()
+            var dialog = new CommonOpenFileDialog()
             {
-                Description = "请选择文件路径"
+                IsFolderPicker = true,
+                Title = "请选择文件路径"
             };
 
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                return dialog.SelectedPath;
+                return dialog.FileName;
             }
             return "";
         }

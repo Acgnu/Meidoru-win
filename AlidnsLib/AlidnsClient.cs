@@ -1,11 +1,6 @@
 ﻿using AcgnuX.Utils;
-using SharedLib.Utils;
-using System;
-using System.Linq;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace AlidnsLib
@@ -169,7 +164,7 @@ namespace AlidnsLib
         /// <param name="value"></param>
         /// <returns></returns>
         public async Task<DnsOperatorResult> CreateRecordAsync(string name, string type, string line, string value)
-        {         
+        {
             var request = CreateDefaultRequest("AddDomainRecord");
 
             request.QueryParam["DomainName"] = Domain;

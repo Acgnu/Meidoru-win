@@ -1,15 +1,7 @@
 ﻿using SharedLib.Model;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
-using System.IO;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
-using System.Threading.Tasks;
-using System.Web;
 
 namespace SharedLib.Utils
 {
@@ -76,7 +68,7 @@ namespace SharedLib.Utils
                     return string.Empty;
                 }
                 return await response.Content.ReadAsStringAsync();
-            } 
+            }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
@@ -321,7 +313,7 @@ namespace SharedLib.Utils
                 client.Timeout = TimeSpan.FromMinutes(3);
                 var content = new MultipartFormDataContent();
                 //添加字符串参数，参数名为
-                if(null != args)
+                if (null != args)
                 {
                     foreach (KeyValuePair<string, object> kvp in args)
                     {

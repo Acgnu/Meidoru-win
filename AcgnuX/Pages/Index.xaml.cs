@@ -1,11 +1,4 @@
-﻿using AcgnuX.Controls;
-using AcgnuX.Source.ViewModel;
-using CommunityToolkit.Mvvm.Messaging;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Windows;
-using System.Windows.Media.Imaging;
+﻿using System.Windows;
 
 namespace AcgnuX.Pages
 {

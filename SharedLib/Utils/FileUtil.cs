@@ -1,18 +1,11 @@
 ﻿using AcgnuX.Utils;
-using Microsoft.VisualBasic.Devices;
 using Microsoft.VisualBasic.FileIO;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.Caching;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Threading.Tasks;
 
 namespace SharedLib.Utils
 {
@@ -24,7 +17,7 @@ namespace SharedLib.Utils
         /// <summary>
         /// windows系统保留文件夹名
         /// </summary>
-        private static readonly string[] RESERVED_FOLDER_NAMES = { "CON", "PRN", "AUX", "CLOCK$", "NUL", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "LPT1"};
+        private static readonly string[] RESERVED_FOLDER_NAMES = { "CON", "PRN", "AUX", "CLOCK$", "NUL", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "LPT1" };
 
         [DllImport("shell32.dll", ExactSpelling = true)]
         private static extern void ILFree(IntPtr pidlList);
@@ -169,10 +162,10 @@ namespace SharedLib.Utils
             DeleteDir(Path.Combine(dirPrePath, dirName));
         }
 
-       /// <summary>
-       /// 删除目标文件
-       /// </summary>
-       /// <param name="filePath"></param>
+        /// <summary>
+        /// 删除目标文件
+        /// </summary>
+        /// <param name="filePath"></param>
         public static void DeleteFile(string filePath)
         {
             if (File.Exists(filePath)) FileSystem.DeleteFile(filePath, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
@@ -208,8 +201,9 @@ namespace SharedLib.Utils
         /// <param name="newFolderName">新的名称</param>
         public static void RenameFolder(string originPath, string newFolderName)
         {
-            Computer MyComputer = new Computer();
-            MyComputer.FileSystem.RenameDirectory(originPath, newFolderName);
+            //Computer MyComputer = new Computer();
+            //MyComputer.FileSystem.RenameDirectory(originPath, newFolderName);
+            Directory.Move(originPath, Path.Combine(Path.GetDirectoryName(originPath), newFolderName));
         }
 
         /// <summary>

@@ -1,7 +1,4 @@
-﻿using System.ComponentModel;
-using System.Runtime.Serialization;
-
-namespace AcgnuX.Source.Bussiness.Constants
+﻿namespace AcgnuX.Source.Bussiness.Constants
 {
     /// <summary>
     /// 联系人平台

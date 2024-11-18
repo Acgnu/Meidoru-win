@@ -1,7 +1,4 @@
 ﻿using AcgnuX.Controls;
-using AcgnuX.Source.ViewModel;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace AcgnuX.Source.ViewModel.Design
 {
@@ -24,14 +21,14 @@ namespace AcgnuX.Source.ViewModel.Design
                 },
                 new ContactItemViewModel ()
                 {
-                    Id = 2,      
+                    Id = 2,
                     Name = "Friend02",
                     Platform = Bussiness.Constants.ContactPlatform.QQ,
                     Phone = "15555555555"
                 },
                 new ContactItemViewModel ()
                 {
-                    Id = 3,      
+                    Id = 3,
                     Name = "Friend03",
                     Platform = Bussiness.Constants.ContactPlatform.QQ,
                     Phone = "16666666666"

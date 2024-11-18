@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace AlidnsLib
+﻿namespace AlidnsLib
 {
     public class DnsMainData
     {

@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media.Animation;
 
 /// <summary>
@@ -20,15 +10,15 @@ using System.Windows.Media.Animation;
 /// </summary>
 namespace AcgnuX.Controls.AnimatedScrollViewer
 {
-[TemplatePart(Name = "PART_AniVerticalScrollBar", Type = typeof(ScrollBar))]
-[TemplatePart(Name = "PART_AniHorizontalScrollBar", Type = typeof(ScrollBar))]
+    [TemplatePart(Name = "PART_AniVerticalScrollBar", Type = typeof(ScrollBar))]
+    [TemplatePart(Name = "PART_AniHorizontalScrollBar", Type = typeof(ScrollBar))]
 
     public class AnimatedScrollViewer : ScrollViewer
     {
         #region PART items
         ScrollBar _aniVerticalScrollBar;
         ScrollBar _aniHorizontalScrollBar;
-                
+
         #endregion
 
         static AnimatedScrollViewer()
@@ -61,7 +51,7 @@ namespace AcgnuX.Controls.AnimatedScrollViewer
 
         void AnimatedScrollViewer_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            
+
             AnimatedScrollViewer thisScroller = (AnimatedScrollViewer)sender;
 
             if (thisScroller.CanKeyboardScroll)
@@ -118,7 +108,7 @@ namespace AcgnuX.Controls.AnimatedScrollViewer
 
                 e.Handled = isKeyHandled;
             }
-            
+
         }
 
         private double NormalizeScrollPos(AnimatedScrollViewer thisScroll, double scrollChange, Orientation o)
@@ -138,7 +128,7 @@ namespace AcgnuX.Controls.AnimatedScrollViewer
             {
                 returnValue = thisScroll.ScrollableWidth;
             }
-            
+
             return returnValue;
         }
 
@@ -152,22 +142,22 @@ namespace AcgnuX.Controls.AnimatedScrollViewer
             double mouseWheelChange = (double)e.Delta;
 
             AnimatedScrollViewer thisScroller = (AnimatedScrollViewer)sender;
-            double newVOffset = thisScroller.TargetVerticalOffset - (mouseWheelChange/3);
-            if(newVOffset < 0)
+            double newVOffset = thisScroller.TargetVerticalOffset - (mouseWheelChange / 3);
+            if (newVOffset < 0)
             {
                 thisScroller.TargetVerticalOffset = 0;
             }
             else if (newVOffset > thisScroller.ScrollableHeight)
             {
                 thisScroller.TargetVerticalOffset = thisScroller.ScrollableHeight;
-            } 
-            else 
+            }
+            else
             {
                 thisScroller.TargetVerticalOffset = newVOffset;
             }
             e.Handled = true;
         }
-    
+
         void VScrollBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             AnimatedScrollViewer thisScroller = this;
@@ -205,7 +195,7 @@ namespace AcgnuX.Controls.AnimatedScrollViewer
         void HScrollBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             AnimatedScrollViewer thisScroller = this;
-            
+
             double oldTargetHOffset = (double)e.OldValue;
             double newTargetHOffset = (double)e.NewValue;
 
@@ -235,7 +225,7 @@ namespace AcgnuX.Controls.AnimatedScrollViewer
                 {
                     thisScroller.TargetHorizontalOffset = newTargetHOffset;
                 }
-            }            
+            }
         }
 
         #endregion
@@ -259,13 +249,13 @@ namespace AcgnuX.Controls.AnimatedScrollViewer
         private static void OnTargetVerticalOffsetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             AnimatedScrollViewer thisScroller = (AnimatedScrollViewer)d;
-            
+
             if ((double)e.NewValue != thisScroller._aniVerticalScrollBar.Value)
             {
                 thisScroller._aniVerticalScrollBar.Value = (double)e.NewValue;
             }
 
-            thisScroller.animateScroller(thisScroller);           
+            thisScroller.animateScroller(thisScroller);
         }
 
         #endregion
@@ -308,16 +298,16 @@ namespace AcgnuX.Controls.AnimatedScrollViewer
             get { return (double)GetValue(HorizontalScrollOffsetProperty); }
             set { SetValue(HorizontalScrollOffsetProperty, value); }
         }
-        public static readonly DependencyProperty HorizontalScrollOffsetProperty = 
-            DependencyProperty.Register("HorizontalScrollOffset", typeof(double), typeof(AnimatedScrollViewer), 
+        public static readonly DependencyProperty HorizontalScrollOffsetProperty =
+            DependencyProperty.Register("HorizontalScrollOffset", typeof(double), typeof(AnimatedScrollViewer),
             new PropertyMetadata(0.0, new PropertyChangedCallback(OnHorizontalScrollOffsetChanged)));
-            
+
         private static void OnHorizontalScrollOffsetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             AnimatedScrollViewer thisSViewer = (AnimatedScrollViewer)d;
             thisSViewer.ScrollToHorizontalOffset((double)e.NewValue);
         }
-            
+
         #endregion
 
         #region VerticalScrollOffset (DependencyProperty) (double)
@@ -355,10 +345,10 @@ namespace AcgnuX.Controls.AnimatedScrollViewer
         }
         public static readonly DependencyProperty ScrollingTimeProperty =
             DependencyProperty.Register("ScrollingTime", typeof(TimeSpan), typeof(AnimatedScrollViewer),
-              new PropertyMetadata(new TimeSpan(0,0,0,0,500)));
+              new PropertyMetadata(new TimeSpan(0, 0, 0, 0, 500)));
 
         #endregion
-    
+
         #region ScrollingSpline (DependencyProperty)
 
         /// <summary>
@@ -415,7 +405,7 @@ namespace AcgnuX.Controls.AnimatedScrollViewer
             thisScrollViewer.BeginAnimation(VerticalScrollOffsetProperty, animateVScrollKeyFramed);
 
             CommandBindingCollection testCollection = thisScrollViewer.CommandBindings;
-            int blah = testCollection.Count; 
+            int blah = testCollection.Count;
 
         }
         #endregion

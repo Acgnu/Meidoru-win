@@ -1,19 +1,3 @@
-CREATE TABLE IF NOT EXISTS "crawl_rules" (
-  "id" INTEGER(11) NOT NULL,
-  "name" TEXT(20) NOT NULL,
-  "url" TEXT(250) NOT NULL,
-  "partten" TEXT(140) NOT NULL,
-  "max_page" integer(5) NOT NULL,
-  "exception_desc" TEXT(20) NULL,
-  "enable" integer(1) NOT NULL,
-  PRIMARY KEY ("id")
-);
-CREATE TABLE IF NOT EXISTS "proxy_address" (
-  "address" TEXT(40) NOT NULL,
-  "addtime" TEXT(25) NOT NULL,
-  "rule_id" integer(11) NOT NULL,
-  PRIMARY KEY ("address")
-);
 CREATE TABLE IF NOT EXISTS "tan8_music" (
   "ypid" INTEGER(11) NOT NULL,
   "name" TEXT(100) NOT NULL,

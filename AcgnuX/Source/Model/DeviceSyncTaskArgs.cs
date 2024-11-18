@@ -1,13 +1,6 @@
 ﻿using AcgnuX.Source.Bussiness;
 using AcgnuX.Source.Bussiness.Constants;
 using AcgnuX.Source.ViewModel;
-using MediaDevices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 
 namespace AcgnuX.Source.Model
 {

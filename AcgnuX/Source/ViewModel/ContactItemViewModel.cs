@@ -3,7 +3,6 @@ using AcgnuX.Source.Bussiness.Data;
 using AcgnuX.Source.Model;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace AcgnuX.Source.ViewModel
 {
@@ -80,7 +79,7 @@ namespace AcgnuX.Source.ViewModel
             {
                 var uri = new Uri("pack://application:,,,/Assets/Images/avatar_default.jpg", UriKind.Absolute);
                 var streamInfo = App.GetResourceStream(uri);
-                using(var imageStream = streamInfo.Stream)
+                using (var imageStream = streamInfo.Stream)
                 {
                     byte[] bytes = new byte[imageStream.Length];
                     imageStream.Read(bytes, 0, (int)imageStream.Length - 1);

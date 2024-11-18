@@ -1,5 +1,5 @@
 ﻿namespace AcgnuX.Source.Model
-{ 
+{
     /// <summary>
     /// 曲谱下载记录
     /// </summary>
