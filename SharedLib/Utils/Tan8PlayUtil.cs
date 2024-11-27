@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Net.Http.Headers;
 
 namespace SharedLib.Utils
 {

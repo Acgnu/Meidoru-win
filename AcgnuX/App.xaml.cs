@@ -7,6 +7,7 @@ using AcgnuX.Source.Utils;
 using AcgnuX.Source.ViewModel;
 using Microsoft.Extensions.DependencyInjection;
 using SharedLib.Utils;
+using System.Configuration;
 using System.IO;
 using System.Windows;
 
@@ -107,6 +108,11 @@ namespace AcgnuX
             Task.Run(() =>
             {
                 //初始化设置
+                string configFilePath = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
+                if (!File.Exists(configFilePath))
+                {
+                    ConfigUtil.TryRestoreFromPreviousVersion(Settings.Default);
+                }
                 var dbfilePath = Settings.Default.DBFilePath;   //ConfigUtil.Instance.Load().DbFilePath;
 
                 //检查数据库文件是否存在

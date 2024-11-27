@@ -1,6 +1,9 @@
-﻿using System.IO;
+﻿using AcgnuX.Properties;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Xml.Linq;
+using Windows.UI.ApplicationSettings;
 
 namespace AcgnuX.Source.Utils
 {
@@ -118,6 +121,56 @@ namespace AcgnuX.Source.Utils
         public static int DeleteKey(string section, string key, string filePath)
         {
             return Write(section, key, null, filePath);
+        }
+
+        /// <summary>
+        /// 尝试从之前的设置文件中读取设置内容
+        /// </summary>
+        /// <param name="_settings"></param>
+        internal static void TryRestoreFromPreviousVersion(Settings _settings)
+        {
+            var localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var appDataDirectory = Path.Combine(localAppDataPath, AppDomain.CurrentDomain.FriendlyName);
+
+            // 获取最新版本的配置文件
+            DateTime? lastWriteTime = null;
+            string lastConfigFile = string.Empty;
+            foreach (var dir in Directory.GetDirectories(appDataDirectory)) 
+            {
+                foreach (var subDir in Directory.GetDirectories(dir))
+                {
+                    var configFiles = Directory.GetFiles(subDir);
+                    if (configFiles.Length == 0) continue;
+
+                    var configFile = configFiles[0];
+                    var fileLastWriteTime = File.GetLastWriteTime(configFile);
+                    if (null == lastWriteTime || fileLastWriteTime.CompareTo(lastWriteTime) > 0)
+                    {
+                        lastWriteTime = fileLastWriteTime;
+                        lastConfigFile = configFile;
+                        continue;
+                    }
+                }
+            }
+
+            if (string.IsNullOrEmpty(lastConfigFile))
+            {
+                return;
+            }
+
+            //从xml中恢复
+            var doc = XDocument.Load(lastConfigFile);
+            foreach (var node in doc.Descendants("setting"))
+            {
+                var settingName = node.Attribute("name")?.Value;
+                if (string.IsNullOrEmpty(settingName)) {  continue; }
+
+                var prop = _settings.GetType().GetProperty(settingName);
+                if (null == prop) { continue; }
+
+                _settings[settingName] = node.Value;
+            }
+            _settings.Save();
         }
     }
 }
