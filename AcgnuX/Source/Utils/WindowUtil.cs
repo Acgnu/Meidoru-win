@@ -2,7 +2,6 @@
 using AcgnuX.Source.ViewModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Win32;
-using Microsoft.WindowsAPICodePack.Dialogs;
 
 
 namespace AcgnuX.Source.Utils
@@ -42,15 +41,15 @@ namespace AcgnuX.Source.Utils
         /// <returns></returns>
         public static string OpenFolderDialogForPath(string initialPath)
         {
-            var dialog = new CommonOpenFileDialog()
+            var dialog = new OpenFolderDialog()
             {
-                IsFolderPicker = true,
+                Multiselect = false,
                 Title = "请选择文件路径"
             };
 
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            if (dialog.ShowDialog().GetValueOrDefault())
             {
-                return dialog.FileName;
+                return dialog.FolderName;
             }
             return "";
         }

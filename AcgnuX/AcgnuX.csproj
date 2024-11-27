@@ -86,7 +86,6 @@
     <PackageReference Include="System.Runtime.Caching" Version="9.0.0" />
     <PackageReference Include="taglib-sharp-netstandard2.0" Version="2.1.0" />
     <PackageReference Include="VirtualizingWrapPanel" Version="2.1.0" />
-    <PackageReference Include="WindowsAPICodePack" Version="8.0.6" />
     <PackageReference Include="WpfUsbMonitor" Version="3.2.1" />
   </ItemGroup>
 
