@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Net.Http.Headers;
 
 namespace SharedLib.Utils
 {
@@ -12,7 +13,7 @@ namespace SharedLib.Utils
         /// 修改过的flash请求localhost执行会受到flashplayer的安全限制
         /// 此处创建白名单文件解除限制
         /// </summary>
-        private static readonly string mFlashSecurityPath = @"\Macromedia\Flash Player\#Security\FlashPlayerTrust\";
+        private static readonly string mFlashSecurityPath = Path.Combine("Macromedia", "Flash Player", "#Security", "FlashPlayerTrust");
         /// <summary>
         /// 针对此应用程序的配置文件
         /// </summary>
@@ -22,6 +23,10 @@ namespace SharedLib.Utils
         /// key=乐谱ID, value=线程
         /// </summary>
         private static readonly Dictionary<int, Process> _PlayerProcessDictionary = new Dictionary<int, Process>();
+        /// <summary>
+        /// 标记信任文件是否已经检查
+        /// </summary>
+        private static bool _CheckedTrustFile = false;
 
         /// <summary>
         /// 使用外部flashplayer.exe播放swf文件
@@ -51,27 +56,24 @@ namespace SharedLib.Utils
         /// <param name="isHide">true 隐藏播放器窗口</param>
         public static void ExePlayById(int ypid, int version, bool isHide)
         {
-            Process playerProcess;
+            Process? playerProcess;
             if (version == 1)
             {
                 //检查信任文件是否存在
-                var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                if (!File.Exists(appDataPath + mFlashSecurityPath + mFlashTrustFileName))
-                {
-                    WriteTrustFile();
-                }
+                WriteTrustFile();
+
                 playerProcess = Process.Start(new ProcessStartInfo()
                 {
-                    FileName = Environment.CurrentDirectory + @"\Assets\flash\flashplayer.exe",
+                    FileName = Path.Combine(Environment.CurrentDirectory, "Assets", "flash", "flashplayer.exe"),
                     WindowStyle = isHide ? ProcessWindowStyle.Hidden : ProcessWindowStyle.Normal,//关键代码
-                    Arguments = Environment.CurrentDirectory + @"\Assets\flash\fuckTan8\Main.swf?id=" + ypid,
+                    Arguments = Path.Combine(Environment.CurrentDirectory, "Assets", "flash", "fuckTan8", "Main.swf?id=" + ypid),
                 });
             }
             else if (version == 2)
             {
                 playerProcess = Process.Start(new ProcessStartInfo()
                 {
-                    FileName = Environment.CurrentDirectory + @"\Assets\exe\77player.exe",
+                    FileName = Path.Combine(Environment.CurrentDirectory, "Assets", "exe", "77player.exe"),
                     WindowStyle = isHide ? ProcessWindowStyle.Hidden : ProcessWindowStyle.Normal,//关键代码
                     Arguments = string.Format("file=http://www.fucktan8.com/open_yp.php?ypid={0}&uid=999999999", ypid)
                 });
@@ -161,9 +163,26 @@ namespace SharedLib.Utils
         /// </summary>
         public static void WriteTrustFile()
         {
+            if (_CheckedTrustFile)
+            {
+                return;
+            }
             //检查信任文件是否存在
             var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            FileUtil.SaveStringToFile(Environment.CurrentDirectory + @"\Assets\flash", appDataPath + mFlashSecurityPath, mFlashTrustFileName);
+            var trustFolderPath = Path.Combine(appDataPath, mFlashSecurityPath);
+            var trustFilePath = Path.Combine(trustFolderPath, mFlashTrustFileName);
+            var trustContent = Path.Combine(Environment.CurrentDirectory, "Assets", "flash");
+            if (File.Exists(trustFilePath))
+            {
+                var content = File.ReadAllText(trustFilePath);
+                if (string.Equals(trustContent, content))
+                {
+                    _CheckedTrustFile = true;
+                    return;
+                }
+            }
+            FileUtil.SaveStringToFile(trustContent, trustFolderPath, mFlashTrustFileName);
+            _CheckedTrustFile = true;
         }
     }
 }
