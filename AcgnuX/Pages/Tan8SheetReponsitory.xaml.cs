@@ -4,6 +4,7 @@ using AcgnuX.Source.ViewModel;
 using AcgnuX.WindowX;
 using AcgnuX.WindowX.Dialog;
 using Microsoft.Extensions.DependencyInjection;
+using System.Formats.Asn1;
 using System.Windows;
 
 namespace AcgnuX.Pages
@@ -305,14 +306,14 @@ namespace AcgnuX.Pages
         /// <summary>
         /// 鼠标点击删除事件
         /// </summary>
-        private void OnDeleteClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private async void OnDeleteClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             var selected = ViewModel.SelectedListData;
             if (null == selected) return;
             var confirmDialog = new ConfirmDialog(AlertLevel.WARN, string.Format(Properties.Resources.S_DeleteConfirm, selected.Name));
             if (confirmDialog.ShowDialog().GetValueOrDefault())
             {
-                ViewModel.DeleteItem(selected);
+                await ViewModel.DeleteItem(selected);
             }
         }
 
@@ -321,13 +322,13 @@ namespace AcgnuX.Pages
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnSheetListBoxKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private async void OnSheetListBoxKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == System.Windows.Input.Key.Delete)
             {
                 var selected = ViewModel.SelectedListData;
                 if (null == selected) return;
-                ViewModel.DeleteItem(selected);
+                await ViewModel.DeleteItem(selected);
             }
         }
     }

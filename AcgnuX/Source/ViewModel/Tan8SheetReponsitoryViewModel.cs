@@ -8,6 +8,7 @@ using SharedLib.Model;
 using SharedLib.Utils;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Windows;
 using System.Windows.Input;
 
 namespace AcgnuX.Source.ViewModel
@@ -104,25 +105,30 @@ namespace AcgnuX.Source.ViewModel
         /// 删除条目
         /// </summary>
         /// <param name="itemVm"></param>
-        public void DeleteItem(SheetItemViewModel itemVm)
+        public async Task DeleteItem(SheetItemViewModel itemVm)
         {
+            IsBusy = true;
+
             //释放文件资源
             ListData.Remove(itemVm);
 
             //删除文件夹
-            if (!string.IsNullOrEmpty(itemVm.Name))
+            await Task.Run(() =>
             {
-                var yuepuParent = FileUtil.GetTan8YuepuParentFolder(Settings.Default.Tan8HomeDir, itemVm.Id.ToString());
-                FileUtil.DeleteDirWithName(yuepuParent, itemVm.Id.ToString());
-            }
-
-            //删除数据库数据
-            _Tan8SheetRepo.DeleteById(itemVm.Id);
+                if (!string.IsNullOrEmpty(itemVm.Name))
+                {
+                    var yuepuParent = FileUtil.GetTan8YuepuParentFolder(Settings.Default.Tan8HomeDir, itemVm.Id.ToString());
+                    FileUtil.DeleteDirWithName(yuepuParent, itemVm.Id.ToString());
+                }
+                //删除数据库数据
+                 _Tan8SheetRepo.DeleteById(itemVm.Id);
+            });
 
             WindowUtil.ShowBubbleInfo(string.Format("[{0}] 已删除", itemVm.Name));
 
             //如果没有曲谱了, 则展示默认按钮
             if (DataUtil.IsEmptyCollection(ListData)) IsEmpty = true;
+            IsBusy = false;
         }
     }
 }
