@@ -2,6 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style TargetType="Border" x:Key="PageContainerBorderStyle">
-        <Setter Property="Padding" Value="5 8 0 5" />
+        <Setter Property="Padding" Value="5 8 5 5" />
     </Style>
 </ResourceDictionary>
