@@ -10,6 +10,7 @@ using SharedLib.Utils;
 using System.Configuration;
 using System.IO;
 using System.Windows;
+using System.Xml.Linq;
 
 namespace AcgnuX
 {
@@ -111,7 +112,7 @@ namespace AcgnuX
                 string configFilePath = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
                 if (!File.Exists(configFilePath))
                 {
-                    ConfigUtil.TryRestoreFromPreviousVersion(Settings.Default);
+                    TryRestoreFromPreviousVersion(Settings.Default, AppDomain.CurrentDomain.FriendlyName);
                 }
                 var dbfilePath = Settings.Default.DBFilePath;   //ConfigUtil.Instance.Load().DbFilePath;
 
@@ -124,6 +125,32 @@ namespace AcgnuX
             });
 
             new MainWindow().Show();
+        }
+
+        /// <summary>
+        /// 尝试从之前的设置文件中读取设置内容
+        /// </summary>
+        /// <param name="_settings"></param>
+        private void TryRestoreFromPreviousVersion(Settings _settings, string applicatioName)
+        {
+            var lastConfigFile = ConfigUtil.GetLatestConfigFile(applicatioName);
+            if (string.IsNullOrEmpty(lastConfigFile))
+            {
+                return;
+            }
+            //从xml中恢复
+            var doc = XDocument.Load(lastConfigFile);
+            foreach (var node in doc.Descendants("setting"))
+            {
+                var settingName = node.Attribute("name")?.Value;
+                if (string.IsNullOrEmpty(settingName)) { continue; }
+
+                var prop = _settings.GetType().GetProperty(settingName);
+                if (null == prop) { continue; }
+
+                _settings[settingName] = node.Value;
+            }
+            _settings.Save();
         }
     }
 }

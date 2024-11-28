@@ -1,9 +1,7 @@
-﻿using AcgnuX.Properties;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml.Linq;
-using Windows.UI.ApplicationSettings;
 
 namespace AcgnuX.Source.Utils
 {
@@ -124,18 +122,19 @@ namespace AcgnuX.Source.Utils
         }
 
         /// <summary>
-        /// 尝试从之前的设置文件中读取设置内容
+        /// 获取指定应用用户最新的配置文件路径
         /// </summary>
-        /// <param name="_settings"></param>
-        internal static void TryRestoreFromPreviousVersion(Settings _settings)
+        /// <param name="applicationName"></param>
+        /// <returns>配置文件路径或空</returns>
+        public static string GetLatestConfigFile(string applicationName)
         {
             var localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            var appDataDirectory = Path.Combine(localAppDataPath, AppDomain.CurrentDomain.FriendlyName);
+            var appDataDirectory = Path.Combine(localAppDataPath, applicationName);
 
             // 获取最新版本的配置文件
             DateTime? lastWriteTime = null;
             string lastConfigFile = string.Empty;
-            foreach (var dir in Directory.GetDirectories(appDataDirectory)) 
+            foreach (var dir in Directory.GetDirectories(appDataDirectory))
             {
                 foreach (var subDir in Directory.GetDirectories(dir))
                 {
@@ -152,25 +151,7 @@ namespace AcgnuX.Source.Utils
                     }
                 }
             }
-
-            if (string.IsNullOrEmpty(lastConfigFile))
-            {
-                return;
-            }
-
-            //从xml中恢复
-            var doc = XDocument.Load(lastConfigFile);
-            foreach (var node in doc.Descendants("setting"))
-            {
-                var settingName = node.Attribute("name")?.Value;
-                if (string.IsNullOrEmpty(settingName)) {  continue; }
-
-                var prop = _settings.GetType().GetProperty(settingName);
-                if (null == prop) { continue; }
-
-                _settings[settingName] = node.Value;
-            }
-            _settings.Save();
+            return lastConfigFile;
         }
     }
 }
