@@ -53,12 +53,18 @@ namespace AcgnuX.Pages
         /// <param name="e"></param>
         private void OnBtnOpenDownloadManageClick(object sender, RoutedEventArgs e)
         {
+            var mngWin = Application.Current.Windows.OfType<Tan8DownloadManageWindow>().FirstOrDefault();
+            if (mngWin != null)
+            {
+                mngWin.Activate();
+                return;
+            }
             var _DownloadMangeWindow = new Tan8DownloadManageWindow()
             {
                 ShowInTaskbar = true,
                 Owner = null
             };
-            _Tan8WebListener.DownloadRequestAction = _DownloadMangeWindow.ContentDataContext.DoDownloadTaskDispatche; ;
+            _Tan8WebListener.DownloadRequestAction = _DownloadMangeWindow.ContentDataContext.DoDownloadTaskDispatche;
 
             var mainWin = App.Current.MainWindow;
             _DownloadMangeWindow.Top = mainWin.Top + (mainWin.Height - _DownloadMangeWindow.Height) / 2;

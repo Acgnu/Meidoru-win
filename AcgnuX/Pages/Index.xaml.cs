@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using SharedLib.Utils;
+using System.Windows;
 
 namespace AcgnuX.Pages
 {

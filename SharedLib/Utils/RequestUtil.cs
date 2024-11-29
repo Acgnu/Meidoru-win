@@ -1,5 +1,6 @@
 ﻿using SharedLib.Model;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 
@@ -14,7 +15,7 @@ namespace SharedLib.Utils
         /// </summary>
         private const string Suffix = ".downloading";
 
-        public event Action<int> ShowDownloadPercent;
+        //public event Action<int> ShowDownloadPercent;
 
         /**
          * HTTP协议POST请求添加参数的封装方法
@@ -96,147 +97,87 @@ namespace SharedLib.Utils
         /// <param name="url">http地址</param>
         /// <param name="localfile">本地文件</param>
         /// <returns>错误码</returns>
-        public int DownloadFile(string url, string localfile)
+        public static int DownloadFile(string url, string localfile)
         {
             int ret = 0;
             string localfileReal = localfile;
             string localfileWithSuffix = localfileReal + Suffix;
 
+            if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(localfileReal))
+                return 1;
+
+            if (File.Exists(localfileReal))
+                return 0;
+
             try
             {
                 long startPosition = 0;
-                FileStream writeStream = null;
-
-                if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(localfileReal))
-                    return 1;
-
                 //取得远程文件长度
-                long remoteFileLength = GetHttpLength(url);
+                using HttpClient client = new();
+                var headResponse = client.SendAsync(new HttpRequestMessage(HttpMethod.Head, url)).Result;
+                headResponse.EnsureSuccessStatusCode();
+                long remoteFileLength = headResponse.Content.Headers.ContentLength ?? 0;
+
                 if (remoteFileLength == 0)
                     return 2;
-
-                if (File.Exists(localfileReal))
-                    return 0;
 
                 //判断要下载的文件是否存在
                 if (File.Exists(localfileWithSuffix))
                 {
-                    writeStream = File.OpenWrite(localfileWithSuffix);
-                    startPosition = writeStream.Length;
+                    startPosition = new FileInfo(localfileWithSuffix).Length;
                     if (startPosition > remoteFileLength)
                     {
-                        writeStream.Close();
                         FileUtil.DeleteFile(localfileWithSuffix);
-                        writeStream = new FileStream(localfileWithSuffix, FileMode.Create);
+                        startPosition = 0;
                     }
                     else if (startPosition == remoteFileLength)
                     {
-                        DownloadFileOk(localfileReal, localfileWithSuffix);
-                        writeStream.Close();
                         return 0;
                     }
-                    else
-                        writeStream.Seek(startPosition, SeekOrigin.Begin);
                 }
-                else
-                    writeStream = new FileStream(localfileWithSuffix, FileMode.Create);
 
-                HttpWebRequest req = null;
-                HttpWebResponse rsp = null;
-                try
-                {
-                    req = (HttpWebRequest)HttpWebRequest.Create(url);
-                    if (startPosition > 0)
-                        req.AddRange((int)startPosition);
+                client.DefaultRequestHeaders.Range = new RangeHeaderValue(startPosition, null);
+                using var readStream = client.GetStreamAsync(url).Result;
 
-                    rsp = (HttpWebResponse)req.GetResponse();
-                    using (Stream readStream = rsp.GetResponseStream())
-                    {
-                        byte[] btArray = new byte[ByteSize];
-                        long currPostion = startPosition;
-                        int contentSize = 0;
-                        while ((contentSize = readStream.Read(btArray, 0, btArray.Length)) > 0)
-                        {
-                            writeStream.Write(btArray, 0, contentSize);
-                            currPostion += contentSize;
+                //long currPostion = startPosition;
+                //int contentSize = 0;
 
-                            ShowDownloadPercent?.Invoke((int)(currPostion * 100 / remoteFileLength));
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("获取远程文件失败！exception：\n" + ex.ToString());
-                    ret = 3;
-                }
-                finally
-                {
-                    if (writeStream != null)
-                        writeStream.Close();
-                    if (rsp != null)
-                        rsp.Close();
-                    if (req != null)
-                        req.Abort();
+                using var fileStream = new FileStream(localfileWithSuffix, FileMode.OpenOrCreate, FileAccess.Write);
+                fileStream.Seek(startPosition, SeekOrigin.Begin);
 
-                    if (ret == 0)
-                        DownloadFileOk(localfileReal, localfileWithSuffix);
-                }
+                readStream.CopyTo(fileStream);
+
+                //currPostion += contentSize;
+
+                //ShowDownloadPercent?.Invoke((int)(currPostion * 100 / remoteFileLength));
             }
             catch (Exception ex)
             {
                 Console.WriteLine("获取远程文件失败！exception：\n" + ex.ToString());
                 ret = 4;
             }
+            finally
+            {
+                if (ret == 0)
+                {
+                    try
+                    {
+                        //去掉.downloading后缀
+                        FileInfo fi = new(localfileWithSuffix);
+                        fi.MoveTo(localfileReal);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                    }
+                    finally
+                    {
+                        //通知完成
+                        //ShowDownloadPercent?.Invoke(100);
+                    }
+                }
+            }
             return ret;
-        }
-
-        /// <summary>
-        /// 下载完成
-        /// </summary>
-        private void DownloadFileOk(string localfileReal, string localfileWithSuffix)
-        {
-            try
-            {
-                //去掉.downloading后缀
-                FileInfo fi = new FileInfo(localfileWithSuffix);
-                fi.MoveTo(localfileReal);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-            finally
-            {
-                //通知完成
-                ShowDownloadPercent?.Invoke(100);
-            }
-        }
-
-        // 从文件头得到远程文件的长度
-        private long GetHttpLength(string url)
-        {
-            long length = 0;
-            HttpWebRequest req = null;
-            HttpWebResponse rsp = null;
-            try
-            {
-                req = (HttpWebRequest)HttpWebRequest.Create(url);
-                rsp = (HttpWebResponse)req.GetResponse();
-                if (rsp.StatusCode == HttpStatusCode.OK)
-                    length = rsp.ContentLength;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("获取远程文件大小失败！exception：\n" + ex.ToString());
-            }
-            finally
-            {
-                if (rsp != null)
-                    rsp.Close();
-                if (req != null)
-                    req.Abort();
-            }
-            return length;
         }
 
         /// <summary>
@@ -245,33 +186,35 @@ namespace SharedLib.Utils
         /// <param name="url"></param>
         /// <param name="proxyAddress">网页代理 可以为null</param>
         /// <returns></returns>
-        public static InvokeResult<string> CrawlContentFromWebsit(string url, string proxyAddress, int timeout)
+        public static InvokeResult<string> CrawlContentFromWebsit(string url, string? proxyAddress, int timeout)
         {
             try
             {
-                HttpWebRequest Req = (HttpWebRequest)WebRequest.Create(url);
+                SocketsHttpHandler httpHandler;
                 if (!string.IsNullOrEmpty(proxyAddress))
                 {
-                    WebProxy proxy = new WebProxy(proxyAddress);
-                    Req.Proxy = proxy;
-                }
-                Req.Timeout = timeout;
-                Req.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3";
-                Req.UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36";
-                Req.Method = "GET";
-                //Req.CookieContainer = new CookieContainer();
-                //Req.CookieContainer.Add(new Cookie("https_ydclearance", "d35f9958b5272f5073e030f7-28c7-453f-bae7-16b9294a006e-1726306381"));
-                HttpWebResponse Resp = (HttpWebResponse)Req.GetResponse();
-                Encoding code = Encoding.GetEncoding("UTF-8");
-                using (StreamReader sr = new StreamReader(Resp.GetResponseStream(), code))
-                {
-                    var content = sr.ReadToEnd();
-                    return new InvokeResult<string>()
+                    httpHandler = new()
                     {
-                        success = true,
-                        data = content
+                        Proxy = new WebProxy(proxyAddress)
                     };
                 }
+                else
+                {
+                    httpHandler = new SocketsHttpHandler();
+                }
+                using var Req = new HttpClient(httpHandler);
+                Req.Timeout = TimeSpan.FromMilliseconds(timeout);
+                Req.DefaultRequestHeaders.Accept.ParseAdd("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3"); 
+                Req.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36");
+                //Req.CookieContainer = new CookieContainer();
+                //Req.CookieContainer.Add(new Cookie("https_ydclearance", "d35f9958b5272f5073e030f7-28c7-453f-bae7-16b9294a006e-1726306381"));
+                var respon = Req.GetAsync(url).Result;
+                respon.EnsureSuccessStatusCode();
+                return new InvokeResult<string>()
+                {
+                    success = true,
+                    data = respon.Content.ReadAsStringAsync().Result
+                };
             }
             catch (Exception e)
             {
@@ -292,7 +235,7 @@ namespace SharedLib.Utils
         /// <param name="url"></param>
         /// <param name="proxyAddress">网页代理 可以为null</param>
         /// <returns></returns>
-        public static InvokeResult<string> CrawlContentFromWebsit(string url, string proxyAddress)
+        public static InvokeResult<string> CrawlContentFromWebsit(string url, string? proxyAddress)
         {
             return CrawlContentFromWebsit(url, proxyAddress, 5000);
         }

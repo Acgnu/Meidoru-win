@@ -213,7 +213,7 @@ namespace AcgnuX.Source.ViewModel
             var coverUrl = tan8Music.ypad_url.Substring(0, tan8Music.ypad_url.IndexOf('_')) + "_prev.jpg";
 
             if (IsWorking == false) return downloadResult;         //在IO操作之前检查任务是否停止
-            var downResult = new FileDownloader().DownloadFile(coverUrl, coverSavePath);
+            var downResult = RequestUtil.DownloadFile(coverUrl, coverSavePath);
             //封面下载失败不管, 下载成功则展示
             //if (downResult == 0) Cover = Path.Combine(libFolder, Id.ToString(), ApplicationConstant.DEFAULT_COVER_NAME);
 
@@ -236,7 +236,7 @@ namespace AcgnuX.Source.ViewModel
 
                 var downloadUrl = tan8Music.ypad_url + string.Format(".{0}.png", i);
                 if (IsWorking == false) return downloadResult;         //在IO操作之前检查任务是否停止
-                int pageDownloadResult = new FileDownloader().DownloadFile(downloadUrl, Path.Combine(saveFullPath, string.Format("page.{0}.png", i)));
+                int pageDownloadResult = RequestUtil.DownloadFile(downloadUrl, Path.Combine(saveFullPath, string.Format("page.{0}.png", i)));
                 //如果下载出错
                 if (pageDownloadResult != 0)
                 {
@@ -251,11 +251,11 @@ namespace AcgnuX.Source.ViewModel
             //试听文件不在乎是否下载成功, 丢弃下载结果
             var urlPrefix = tan8Music.ypad_url.Substring(0, tan8Music.ypad_url.LastIndexOf('/'));
             var mp3_url = urlPrefix + string.Format("/tan8_{0}.mp3", Id);
-            _ = new FileDownloader().DownloadFile(mp3_url, Path.Combine(saveFullPath, ApplicationConstant.DEFAULT_SHEET_AUDIO_FILE));
+            _ = RequestUtil.DownloadFile(mp3_url, Path.Combine(saveFullPath, ApplicationConstant.DEFAULT_SHEET_AUDIO_FILE));
 
             //下载v2版播放文件
             SetProgress(80, "下载播放文件...");
-            downResult = new FileDownloader().DownloadFile(tan8Music.ypdx_url, Path.Combine(saveFullPath, ApplicationConstant.DEFAULT_SHEET_PLAY_FILE_EXE));
+            downResult = RequestUtil.DownloadFile(tan8Music.ypdx_url, Path.Combine(saveFullPath, ApplicationConstant.DEFAULT_SHEET_PLAY_FILE_EXE));
             if (downResult != 0)
             {
                 //没有播放文件, 又没有谱页的, 清理数据
@@ -266,7 +266,7 @@ namespace AcgnuX.Source.ViewModel
                     return downloadResult;
                 }
                 //没有v2播放文件时, 下载V3版的播放文件
-                downResult = new FileDownloader().DownloadFile(tan8Music.ypn1_url, Path.Combine(saveFullPath, ApplicationConstant.DEFAULT_SHEET_PLAY_FILE_APP));
+                downResult = RequestUtil.DownloadFile(tan8Music.ypn1_url, Path.Combine(saveFullPath, ApplicationConstant.DEFAULT_SHEET_PLAY_FILE_APP));
                 if (downResult == 0)
                 {
                     //如果没有v2版本的ypdx播放文件, 但是有APP端的ypn1播放文件, 则标记乐谱版本为v3
