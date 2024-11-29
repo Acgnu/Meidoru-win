@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS "tan8_music" (
   "star" integer(1),
   "yp_count" integer(2),
   "ver" integer(1),
+  "hot" integer(1),
   "origin_data" TEXT(1200),
   PRIMARY KEY ("ypid")
 );

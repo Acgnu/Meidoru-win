@@ -12,7 +12,9 @@
         // 喜好评级 1 - 5
         public byte Star { get; set; }
         public byte YpCount { get; set; }
-        //版本 1, 2
+        //版本 1, 2, 3
         public byte Ver { get; set; }
+        //是否热门
+        public byte Hot { get ; set ; }
     }
 }

@@ -34,6 +34,9 @@ namespace AcgnuX.Source.ViewModel
         //是否收藏
         private byte _Star;
         public byte Star { get => _Star; set => SetProperty(ref _Star, value); }
+        //是否热门
+        private bool _Hot;
+        public bool Hot { get => _Hot; set => SetProperty(ref _Hot, value); }
         //封面图
         private string _Cover;
         public string Cover { get => _Cover; set => SetProperty(ref _Cover, value); }

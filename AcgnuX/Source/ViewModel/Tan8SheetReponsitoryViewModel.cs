@@ -97,7 +97,8 @@ namespace AcgnuX.Source.ViewModel
                 Id = tan8Sheet.Ypid,
                 Ver = tan8Sheet.Ver,
                 Star = tan8Sheet.Star,
-                YpCount = tan8Sheet.YpCount
+                YpCount = tan8Sheet.YpCount,
+                Hot = tan8Sheet.Hot == 1
             };
         }
 

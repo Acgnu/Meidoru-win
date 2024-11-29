@@ -27,6 +27,7 @@
         <Setter Property="Background" Value="{x:Null}" />
         <Setter Property="BorderBrush" Value="{x:Null}" />
         <Setter Property="ToolTip" Value="{Binding Name}" />
+        <Setter Property="Margin" Value="-2 0 0 0" />
     </Style>
 
     <!--乐谱版本信息-->
@@ -105,11 +106,14 @@
                             </Canvas>
                         </Canvas>
                             <!--乐谱标题行-->
-                        <TextBox x:Name="SheetNameEditText" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={bizc:StringTruncateConverter}, ConverterParameter=45}" Style="{StaticResource TextBoxSheetNameStyle}" Canvas.Left="80" Canvas.Top="10">
-                            <TextBox.InputBindings>
-                                <KeyBinding Key="Enter" Command="{Binding OnEditSheetNameCommand}" />
-                            </TextBox.InputBindings>
-                        </TextBox>
+                        <StackPanel Orientation="Horizontal" Canvas.Left="83" Canvas.Top="10">
+                            <TextBlock Text="🔥" Foreground="#f6552a" VerticalAlignment="Center" Margin="0 0 3 0" Visibility="{Binding Hot, Converter={StaticResource FrameworkBooleanToVisibileConverter}}" />
+                            <TextBox x:Name="SheetNameEditText" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={bizc:StringTruncateConverter}, ConverterParameter=45}" Style="{StaticResource TextBoxSheetNameStyle}">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Key="Enter" Command="{Binding OnEditSheetNameCommand}" />
+                                </TextBox.InputBindings>
+                            </TextBox>
+                        </StackPanel>
                         <!--乐谱ID, 信息, 下载提示行-->
                         <TextBlock Text="{Binding ProgressText}" Visibility="{Binding IsWorking, Converter={StaticResource FrameworkBooleanToVisibileConverter}}" Canvas.Left="83" Canvas.Top="46"/>
                         <Canvas Height="{Binding Height, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Canvas}}" Style="{StaticResource ItemInfoGroupCanvasStyle}" Canvas.Top="46" Canvas.Left="83">

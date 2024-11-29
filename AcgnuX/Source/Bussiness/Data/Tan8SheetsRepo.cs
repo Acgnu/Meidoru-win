@@ -2,7 +2,10 @@
 using SharedLib.Utils;
 using System.Data;
 using System.Data.SQLite;
+using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
+using Windows.Data.Text;
 
 namespace AcgnuX.Source.Bussiness.Data
 {
@@ -31,7 +34,7 @@ namespace AcgnuX.Source.Bussiness.Data
             var sqlArgs = new List<SQLiteParameter>();
             if (!string.IsNullOrEmpty(keyword))
             {
-                var keywordGroup = keyword.Length > 2 ? keyword.Split(':') : new string[] { string.Empty };
+                var keywordGroup = keyword.Length > 2 ? keyword.Split(':') : [string.Empty];
                 //高级搜索
                 if (keywordGroup[0].Equals("f"))
                 {
@@ -58,6 +61,11 @@ namespace AcgnuX.Source.Bussiness.Data
                     //以 .. 结尾
                     sql.Append(" and name like @name");
                     sqlArgs.Add(new SQLiteParameter("@name", "%" + keywordGroup[1]));
+                }
+                else if (keywordGroup[0].Equals("r"))
+                {
+                    //直接条件查询
+                    sql.Append(" AND ").Append(keywordGroup[1]);
                 }
                 else
                 {
@@ -86,7 +94,7 @@ namespace AcgnuX.Source.Bussiness.Data
             sqlArgs.Add(new SQLiteParameter("@maxRow", pageSize));
             sqlArgs.Add(new SQLiteParameter("@curPage", pageNo));
 
-            var dataSet = SQLite.SqlTable("select ypid, name, star, yp_count, ver " + sql.ToString(), sqlArgs);
+            var dataSet = SQLite.SqlTable("select ypid, name, star, hot, yp_count, ver " + sql.ToString(), sqlArgs);
 
             foreach (DataRow dataRow in dataSet.Rows)
             {
@@ -97,6 +105,7 @@ namespace AcgnuX.Source.Bussiness.Data
                     Star = Convert.ToByte(dataRow["star"]),
                     YpCount = Convert.ToByte(dataRow["yp_count"]),
                     Ver = Convert.ToByte(dataRow["ver"]),
+                    Hot = Convert.ToByte(dataRow["hot"]),
                 });
             }
             return dataList;
